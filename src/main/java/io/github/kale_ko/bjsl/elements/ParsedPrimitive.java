@@ -1,13 +1,13 @@
-package io.github.kale_ko.bjsl.json;
+package io.github.kale_ko.bjsl.elements;
 
-public class JsonPrimitive extends JsonElement {
+public class ParsedPrimitive extends ParsedElement {
     public enum PrimitiveType {
         STRING, NUMBER, BOOLEAN, NULL
     }
 
     protected PrimitiveType primitiveType;
 
-    private JsonPrimitive(Object value, PrimitiveType type) {
+    private ParsedPrimitive(Object value, PrimitiveType type) {
         super(null, null, value);
 
         if (type == null) {
@@ -137,7 +137,7 @@ public class JsonPrimitive extends JsonElement {
         }
     }
 
-    public static JsonPrimitive from(Object value) {
+    public static ParsedPrimitive from(Object value) {
         if (value instanceof String) {
             return fromString((String) value);
         } else if (value instanceof Byte) {
@@ -163,43 +163,43 @@ public class JsonPrimitive extends JsonElement {
         }
     }
 
-    public static JsonPrimitive fromString(String value) {
-        return new JsonPrimitive(value, PrimitiveType.STRING);
+    public static ParsedPrimitive fromString(String value) {
+        return new ParsedPrimitive(value, PrimitiveType.STRING);
     }
 
-    public static JsonPrimitive fromByte(byte value) {
-        return new JsonPrimitive((long) value, PrimitiveType.NUMBER);
+    public static ParsedPrimitive fromByte(byte value) {
+        return new ParsedPrimitive((long) value, PrimitiveType.NUMBER);
     }
 
-    public static JsonPrimitive fromChar(char value) {
-        return new JsonPrimitive((long) value, PrimitiveType.NUMBER);
+    public static ParsedPrimitive fromChar(char value) {
+        return new ParsedPrimitive((long) value, PrimitiveType.NUMBER);
     }
 
-    public static JsonPrimitive fromShort(short value) {
-        return new JsonPrimitive((long) value, PrimitiveType.NUMBER);
+    public static ParsedPrimitive fromShort(short value) {
+        return new ParsedPrimitive((long) value, PrimitiveType.NUMBER);
     }
 
-    public static JsonPrimitive fromInteger(int value) {
-        return new JsonPrimitive((long) value, PrimitiveType.NUMBER);
+    public static ParsedPrimitive fromInteger(int value) {
+        return new ParsedPrimitive((long) value, PrimitiveType.NUMBER);
     }
 
-    public static JsonPrimitive fromLong(long value) {
-        return new JsonPrimitive(value, PrimitiveType.NUMBER);
+    public static ParsedPrimitive fromLong(long value) {
+        return new ParsedPrimitive(value, PrimitiveType.NUMBER);
     }
 
-    public static JsonPrimitive fromFloat(float value) {
-        return new JsonPrimitive((double) value, PrimitiveType.NUMBER);
+    public static ParsedPrimitive fromFloat(float value) {
+        return new ParsedPrimitive((double) value, PrimitiveType.NUMBER);
     }
 
-    public static JsonPrimitive fromDouble(double value) {
-        return new JsonPrimitive(value, PrimitiveType.NUMBER);
+    public static ParsedPrimitive fromDouble(double value) {
+        return new ParsedPrimitive(value, PrimitiveType.NUMBER);
     }
 
-    public static JsonPrimitive fromBoolean(boolean value) {
-        return new JsonPrimitive(value, PrimitiveType.BOOLEAN);
+    public static ParsedPrimitive fromBoolean(boolean value) {
+        return new ParsedPrimitive(value, PrimitiveType.BOOLEAN);
     }
 
-    public static JsonPrimitive fromNull() {
-        return new JsonPrimitive(null, PrimitiveType.NULL);
+    public static ParsedPrimitive fromNull() {
+        return new ParsedPrimitive(null, PrimitiveType.NULL);
     }
 }
