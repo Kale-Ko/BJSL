@@ -1,14 +1,14 @@
-package io.github.kale_ko.bjsl.json;
+package io.github.kale_ko.bjsl.elements;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class JsonArray extends JsonElement {
-    private JsonArray() {
-        this(new ArrayList<JsonElement>());
+public class ParsedArray extends ParsedElement {
+    private ParsedArray() {
+        this(new ArrayList<ParsedElement>());
     }
 
-    private JsonArray(List<JsonElement> array) {
+    private ParsedArray(List<ParsedElement> array) {
         super(null, array, null);
     }
 
@@ -16,11 +16,11 @@ public class JsonArray extends JsonElement {
         return this.array.size();
     }
 
-    public List<JsonElement> getValues() {
-        return new ArrayList<JsonElement>(this.array);
+    public List<ParsedElement> getValues() {
+        return new ArrayList<ParsedElement>(this.array);
     }
 
-    public JsonElement get(int index) {
+    public ParsedElement get(int index) {
         if (index < this.array.size()) {
             return this.array.get(index);
         } else {
@@ -28,7 +28,7 @@ public class JsonArray extends JsonElement {
         }
     }
 
-    public void set(int index, JsonElement value) {
+    public void set(int index, ParsedElement value) {
         if (index < this.array.size()) {
             this.array.set(index, value);
         } else {
@@ -44,11 +44,11 @@ public class JsonArray extends JsonElement {
         }
     }
 
-    public static JsonArray create() {
-        return new JsonArray();
+    public static ParsedArray create() {
+        return new ParsedArray();
     }
 
-    public static JsonArray from(List<JsonElement> array) {
-        return new JsonArray(array);
+    public static ParsedArray from(List<ParsedElement> array) {
+        return new ParsedArray(array);
     }
 }
