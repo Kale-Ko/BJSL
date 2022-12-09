@@ -9,12 +9,40 @@ archivesBaseName = "bjsl"
 group = "io.github.kale_ko"
 version = project.project_version
 
+configurations {
+    dependency
+    dependency.canBeResolved = true
+
+    compileOnly {
+        extendsFrom dependency
+    }
+}
+
 repositories {
     mavenCentral()
 }
 
-dependencies { }
+dependencies {
+    dependency "com.fasterxml.jackson.core:jackson-core:${project.jackson_version}"
+    dependency "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${project.jackson_version}"
+    dependency "com.fasterxml.jackson.dataformat:jackson-dataformat-toml:${project.jackson_version}"
+    dependency "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${project.jackson_version}"
+    dependency "com.fasterxml.jackson.dataformat:jackson-dataformat-properties:${project.jackson_version}"
+}
 
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
+}
+
+tasks.register("buildFat", Jar) {
+    dependsOn tasks.build
+
+    sourceCompatibility = JavaVersion.toVersion(project.java_version)
+    targetCompatibility = JavaVersion.toVersion(project.java_version)
+
+    duplicatesStrategy = "exclude"
+    classifier = "fat"
+
+    from files(project.sourceSets.main.output)
+    from files(project.configurations.dependency.collect { it.isDirectory() ? it : zipTree(it) })
 }
