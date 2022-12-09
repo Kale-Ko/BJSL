@@ -172,6 +172,10 @@ public class ParsedPrimitive extends ParsedElement {
     }
 
     public static ParsedPrimitive fromString(String value) {
+        if (value == null) {
+            throw new NullPointerException("\"value\" must be a string");
+        }
+
         return new ParsedPrimitive(value, PrimitiveType.STRING);
     }
 
