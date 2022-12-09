@@ -1,0 +1,20 @@
+plugins {
+    id "java"
+}
+
+sourceCompatibility = JavaVersion.toVersion(project.java_version)
+targetCompatibility = JavaVersion.toVersion(project.java_version)
+
+archivesBaseName = "bjsl"
+group = "io.github.kale_ko"
+version = project.project_version
+
+repositories {
+    mavenCentral()
+}
+
+dependencies { }
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
