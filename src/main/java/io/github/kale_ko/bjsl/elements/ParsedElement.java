@@ -9,10 +9,6 @@ public class ParsedElement {
     protected Object primitive;
 
     protected ParsedElement(SortedMap<String, ParsedElement> map, List<ParsedElement> array, Object primitive) {
-        if (map == null && array == null && primitive == null) {
-            throw new NullPointerException("One of \"map\", \"array\", or \"primitive\" must not be null");
-        }
-
         this.object = map;
         this.array = array;
         this.primitive = primitive;
@@ -39,6 +35,6 @@ public class ParsedElement {
     }
 
     public ParsedPrimitive asJsonPrimitive() {
-        return ParsedPrimitive.from(this.primitive);
+        return ParsedPrimitive.fromObject(this.primitive);
     }
 }
