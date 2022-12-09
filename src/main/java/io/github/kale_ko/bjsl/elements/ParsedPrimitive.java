@@ -2,7 +2,7 @@ package io.github.kale_ko.bjsl.elements;
 
 public class ParsedPrimitive extends ParsedElement {
     public enum PrimitiveType {
-        STRING, NUMBER, BOOLEAN, NULL
+        STRING, BYTE, CHAR, SHORT, INTEGER, LONG, FLOAT, DOUBLE, BOOLEAN, NULL
     }
 
     protected PrimitiveType primitiveType;
@@ -17,44 +17,52 @@ public class ParsedPrimitive extends ParsedElement {
         this.primitiveType = type;
     }
 
+    public PrimitiveType getType() {
+        return this.primitiveType;
+    }
+
     public boolean isString() {
         return this.primitiveType == PrimitiveType.STRING;
     }
 
     public boolean isByte() {
-        return this.primitiveType == PrimitiveType.NUMBER;
+        return this.primitiveType == PrimitiveType.BYTE;
     }
 
     public boolean isChar() {
-        return this.primitiveType == PrimitiveType.NUMBER;
+        return this.primitiveType == PrimitiveType.CHAR;
     }
 
     public boolean isShort() {
-        return this.primitiveType == PrimitiveType.NUMBER;
+        return this.primitiveType == PrimitiveType.SHORT;
     }
 
     public boolean isInteger() {
-        return this.primitiveType == PrimitiveType.NUMBER;
+        return this.primitiveType == PrimitiveType.INTEGER;
     }
 
     public boolean isLong() {
-        return this.primitiveType == PrimitiveType.NUMBER;
+        return this.primitiveType == PrimitiveType.LONG;
     }
 
     public boolean isFloat() {
-        return this.primitiveType == PrimitiveType.NUMBER;
+        return this.primitiveType == PrimitiveType.FLOAT;
     }
 
     public boolean isDouble() {
-        return this.primitiveType == PrimitiveType.NUMBER;
+        return this.primitiveType == PrimitiveType.DOUBLE;
     }
 
     public boolean isBoolean() {
-        return this.primitiveType == PrimitiveType.NUMBER;
+        return this.primitiveType == PrimitiveType.BOOLEAN;
     }
 
     public boolean isNull() {
         return this.primitiveType == PrimitiveType.NULL;
+    }
+
+    public Object asObject() {
+        return this.primitive;
     }
 
     public String asString() {
@@ -66,39 +74,39 @@ public class ParsedPrimitive extends ParsedElement {
     }
 
     public byte asByte() {
-        if (this.primitiveType == PrimitiveType.NUMBER) {
-            return (byte) this.primitive;
+        if (this.primitiveType == PrimitiveType.BYTE) {
+            return (byte) (long) this.primitive;
         } else {
             throw new ClassCastException("\"value\" is not a byte");
         }
     }
 
     public char asChar() {
-        if (this.primitiveType == PrimitiveType.NUMBER) {
-            return (char) this.primitive;
+        if (this.primitiveType == PrimitiveType.CHAR) {
+            return (char) (long) this.primitive;
         } else {
             throw new ClassCastException("\"value\" is not a char");
         }
     }
 
     public short asShort() {
-        if (this.primitiveType == PrimitiveType.NUMBER) {
-            return (short) this.primitive;
+        if (this.primitiveType == PrimitiveType.SHORT) {
+            return (short) (long) this.primitive;
         } else {
             throw new ClassCastException("\"value\" is not a short");
         }
     }
 
     public int asInteger() {
-        if (this.primitiveType == PrimitiveType.NUMBER) {
-            return (int) this.primitive;
+        if (this.primitiveType == PrimitiveType.INTEGER) {
+            return (int) (long) this.primitive;
         } else {
             throw new ClassCastException("\"value\" is not a integer");
         }
     }
 
     public long asLong() {
-        if (this.primitiveType == PrimitiveType.NUMBER) {
+        if (this.primitiveType == PrimitiveType.LONG) {
             return (long) this.primitive;
         } else {
             throw new ClassCastException("\"value\" is not a long");
@@ -106,15 +114,15 @@ public class ParsedPrimitive extends ParsedElement {
     }
 
     public float asFloat() {
-        if (this.primitiveType == PrimitiveType.NUMBER) {
-            return (float) this.primitive;
+        if (this.primitiveType == PrimitiveType.FLOAT) {
+            return (float) (double) this.primitive;
         } else {
             throw new ClassCastException("\"value\" is not a float");
         }
     }
 
     public double asDouble() {
-        if (this.primitiveType == PrimitiveType.NUMBER) {
+        if (this.primitiveType == PrimitiveType.DOUBLE) {
             return (double) this.primitive;
         } else {
             throw new ClassCastException("\"value\" is not a double");
@@ -122,7 +130,7 @@ public class ParsedPrimitive extends ParsedElement {
     }
 
     public boolean asBoolean() {
-        if (this.primitiveType == PrimitiveType.NUMBER) {
+        if (this.primitiveType == PrimitiveType.BOOLEAN) {
             return (boolean) this.primitive;
         } else {
             throw new ClassCastException("\"value\" is not a boolean");
@@ -137,7 +145,7 @@ public class ParsedPrimitive extends ParsedElement {
         }
     }
 
-    public static ParsedPrimitive from(Object value) {
+    public static ParsedPrimitive fromObject(Object value) {
         if (value instanceof String) {
             return fromString((String) value);
         } else if (value instanceof Byte) {
@@ -168,31 +176,31 @@ public class ParsedPrimitive extends ParsedElement {
     }
 
     public static ParsedPrimitive fromByte(byte value) {
-        return new ParsedPrimitive((long) value, PrimitiveType.NUMBER);
+        return new ParsedPrimitive((long) value, PrimitiveType.BYTE);
     }
 
     public static ParsedPrimitive fromChar(char value) {
-        return new ParsedPrimitive((long) value, PrimitiveType.NUMBER);
+        return new ParsedPrimitive((long) value, PrimitiveType.CHAR);
     }
 
     public static ParsedPrimitive fromShort(short value) {
-        return new ParsedPrimitive((long) value, PrimitiveType.NUMBER);
+        return new ParsedPrimitive((long) value, PrimitiveType.SHORT);
     }
 
     public static ParsedPrimitive fromInteger(int value) {
-        return new ParsedPrimitive((long) value, PrimitiveType.NUMBER);
+        return new ParsedPrimitive((long) value, PrimitiveType.INTEGER);
     }
 
     public static ParsedPrimitive fromLong(long value) {
-        return new ParsedPrimitive(value, PrimitiveType.NUMBER);
+        return new ParsedPrimitive(value, PrimitiveType.LONG);
     }
 
     public static ParsedPrimitive fromFloat(float value) {
-        return new ParsedPrimitive((double) value, PrimitiveType.NUMBER);
+        return new ParsedPrimitive((double) value, PrimitiveType.FLOAT);
     }
 
     public static ParsedPrimitive fromDouble(double value) {
-        return new ParsedPrimitive(value, PrimitiveType.NUMBER);
+        return new ParsedPrimitive(value, PrimitiveType.DOUBLE);
     }
 
     public static ParsedPrimitive fromBoolean(boolean value) {
