@@ -1,14 +1,14 @@
-package io.github.kale_ko.bjsl.json;
+package io.github.kale_ko.bjsl.elements;
 
 import java.util.List;
 import java.util.SortedMap;
 
-public class JsonElement {
-    protected SortedMap<String, JsonElement> object;
-    protected List<JsonElement> array;
+public class ParsedElement {
+    protected SortedMap<String, ParsedElement> object;
+    protected List<ParsedElement> array;
     protected Object primitive;
 
-    protected JsonElement(SortedMap<String, JsonElement> map, List<JsonElement> array, Object primitive) {
+    protected ParsedElement(SortedMap<String, ParsedElement> map, List<ParsedElement> array, Object primitive) {
         if (map == null && array == null && primitive == null) {
             throw new NullPointerException("One of \"map\", \"array\", or \"primitive\" must not be null");
         }
@@ -30,15 +30,15 @@ public class JsonElement {
         return this.primitive != null;
     }
 
-    public JsonObject asJsonObject() {
-        return JsonObject.from(this.object);
+    public ParsedObject asJsonObject() {
+        return ParsedObject.from(this.object);
     }
 
-    public JsonArray asJsonArray() {
-        return JsonArray.from(this.array);
+    public ParsedArray asJsonArray() {
+        return ParsedArray.from(this.array);
     }
 
-    public JsonPrimitive asJsonPrimitive() {
-        return JsonPrimitive.from(this.primitive);
+    public ParsedPrimitive asJsonPrimitive() {
+        return ParsedPrimitive.from(this.primitive);
     }
 }
