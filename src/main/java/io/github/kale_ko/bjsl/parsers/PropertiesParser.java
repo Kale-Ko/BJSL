@@ -3,7 +3,6 @@ package io.github.kale_ko.bjsl.parsers;
 import java.io.IOException;
 import java.io.PipedReader;
 import java.io.PipedWriter;
-import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -11,11 +10,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.dataformat.javaprop.JavaPropsFactory;
 import io.github.kale_ko.bjsl.elements.ParsedArray;
 import io.github.kale_ko.bjsl.elements.ParsedElement;
 import io.github.kale_ko.bjsl.elements.ParsedObject;
 
-public class JsonParser extends Parser {
+public class PropertiesParser extends Parser {
     public static ParsedElement parse(String data) {
         if (data == null) {
             throw new NullPointerException("\"data\" can not be null");
@@ -24,7 +24,7 @@ public class JsonParser extends Parser {
         data = data.trim();
 
         try {
-            com.fasterxml.jackson.core.JsonParser parser = JsonFactory.builder().build().createParser(data);
+            com.fasterxml.jackson.core.JsonParser parser = JavaPropsFactory.builder().build().createParser(data);
             parser.setCodec(new ObjectMapper());
             TreeNode tree = parser.readValueAsTree();
             parser.close();
@@ -71,7 +71,7 @@ public class JsonParser extends Parser {
 
                 PipedWriter writer = new PipedWriter();
                 PipedReader reader = new PipedReader(writer);
-                JsonGenerator generator = JsonFactory.builder().build().createGenerator(writer);
+                JsonGenerator generator = JavaPropsFactory.builder().build().createGenerator(writer);
                 generator.setCodec(new ObjectMapper());
                 generator.writeTree(tree);
                 generator.close();
@@ -95,7 +95,7 @@ public class JsonParser extends Parser {
 
                 PipedWriter writer = new PipedWriter();
                 PipedReader reader = new PipedReader(writer);
-                JsonGenerator generator = JsonFactory.builder().build().createGenerator(writer);
+                JsonGenerator generator = JavaPropsFactory.builder().build().createGenerator(writer);
                 generator.setCodec(new ObjectMapper());
                 generator.writeTree(tree);
                 generator.close();
