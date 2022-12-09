@@ -1,16 +1,16 @@
-package io.github.kale_ko.bjsl.json;
+package io.github.kale_ko.bjsl.elements;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-public class JsonObject extends JsonElement {
-    private JsonObject() {
-        this(new TreeMap<String, JsonElement>());
+public class ParsedObject extends ParsedElement {
+    private ParsedObject() {
+        this(new TreeMap<String, ParsedElement>());
     }
 
-    private JsonObject(SortedMap<String, JsonElement> object) {
+    private ParsedObject(SortedMap<String, ParsedElement> object) {
         super(object, null, null);
     }
 
@@ -22,8 +22,8 @@ public class JsonObject extends JsonElement {
         return new ArrayList<String>(this.object.keySet());
     }
 
-    public List<JsonElement> getValues() {
-        return new ArrayList<JsonElement>(this.object.values());
+    public List<ParsedElement> getValues() {
+        return new ArrayList<ParsedElement>(this.object.values());
     }
 
     public Boolean has(String key) {
@@ -34,7 +34,7 @@ public class JsonObject extends JsonElement {
         return this.object.containsKey(key);
     }
 
-    public JsonElement get(String key) {
+    public ParsedElement get(String key) {
         if (key == null) {
             throw new NullPointerException("\"key\" can not be null");
         }
@@ -46,7 +46,7 @@ public class JsonObject extends JsonElement {
         }
     }
 
-    public void set(String key, JsonElement value) {
+    public void set(String key, ParsedElement value) {
         if (key == null) {
             throw new NullPointerException("\"key\" can not be null");
         }
@@ -69,11 +69,11 @@ public class JsonObject extends JsonElement {
         }
     }
 
-    public static JsonObject create() {
-        return new JsonObject();
+    public static ParsedObject create() {
+        return new ParsedObject();
     }
 
-    public static JsonObject from(SortedMap<String, JsonElement> object) {
-        return new JsonObject(object);
+    public static ParsedObject from(SortedMap<String, ParsedElement> object) {
+        return new ParsedObject(object);
     }
 }
