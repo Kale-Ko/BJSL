@@ -28,6 +28,18 @@ public class ParsedArray extends ParsedElement {
         }
     }
 
+    public void add(ParsedElement value) {
+        this.array.add(value);
+    }
+
+    public void addAt(int index, ParsedElement value) {
+        if (index <= this.array.size()) {
+            this.array.add(index, value);
+        } else {
+            throw new IndexOutOfBoundsException("\"index\" is out of bounds for length \"" + this.array.size() + "\"");
+        }
+    }
+
     public void set(int index, ParsedElement value) {
         if (index < this.array.size()) {
             this.array.set(index, value);
