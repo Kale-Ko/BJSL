@@ -28,10 +28,18 @@ public class ParsedArray extends ParsedElement {
     }
 
     public void add(ParsedElement value) {
+        if (value == null) {
+            throw new NullPointerException("\"value\" can not be null");
+        }
+
         this.array.add(value);
     }
 
     public void addAt(int index, ParsedElement value) {
+        if (value == null) {
+            throw new NullPointerException("\"value\" can not be null");
+        }
+
         if (index <= this.array.size()) {
             this.array.add(index, value);
         } else {
@@ -40,6 +48,10 @@ public class ParsedArray extends ParsedElement {
     }
 
     public void set(int index, ParsedElement value) {
+        if (value == null) {
+            throw new NullPointerException("\"value\" can not be null");
+        }
+
         if (index < this.array.size()) {
             this.array.set(index, value);
         } else {
@@ -60,6 +72,10 @@ public class ParsedArray extends ParsedElement {
     }
 
     public static ParsedArray from(ArrayList<ParsedElement> array) {
+        if (array == null) {
+            throw new NullPointerException("\"array\" can not be null");
+        }
+
         return new ParsedArray(array);
     }
 }
