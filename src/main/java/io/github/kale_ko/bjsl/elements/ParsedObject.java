@@ -51,6 +51,10 @@ public class ParsedObject extends ParsedElement {
             throw new NullPointerException("\"key\" can not be null");
         }
 
+        if (value == null) {
+            throw new NullPointerException("\"value\" can not be null");
+        }
+
         if (this.object.containsKey(key)) {
             this.object.remove(key);
         }
@@ -74,6 +78,10 @@ public class ParsedObject extends ParsedElement {
     }
 
     public static ParsedObject from(Map<String, ParsedElement> object) {
+        if (object == null) {
+            throw new NullPointerException("\"object\" can not be null");
+        }
+
         return new ParsedObject(new LinkedHashMap<String, ParsedElement>(object));
     }
 }
