@@ -1,14 +1,14 @@
 package io.github.kale_ko.bjsl.elements;
 
-import java.util.List;
-import java.util.SortedMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 public class ParsedElement {
-    protected SortedMap<String, ParsedElement> object;
-    protected List<ParsedElement> array;
+    protected LinkedHashMap<String, ParsedElement> object;
+    protected ArrayList<ParsedElement> array;
     protected Object primitive;
 
-    protected ParsedElement(SortedMap<String, ParsedElement> map, List<ParsedElement> array, Object primitive) {
+    protected ParsedElement(LinkedHashMap<String, ParsedElement> map, ArrayList<ParsedElement> array, Object primitive) {
         this.object = map;
         this.array = array;
         this.primitive = primitive;
