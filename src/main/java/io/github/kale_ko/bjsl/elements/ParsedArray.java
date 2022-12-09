@@ -1,14 +1,13 @@
 package io.github.kale_ko.bjsl.elements;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ParsedArray extends ParsedElement {
     private ParsedArray() {
         this(new ArrayList<ParsedElement>());
     }
 
-    private ParsedArray(List<ParsedElement> array) {
+    private ParsedArray(ArrayList<ParsedElement> array) {
         super(null, array, null);
     }
 
@@ -16,7 +15,7 @@ public class ParsedArray extends ParsedElement {
         return this.array.size();
     }
 
-    public List<ParsedElement> getValues() {
+    public ArrayList<ParsedElement> getValues() {
         return new ArrayList<ParsedElement>(this.array);
     }
 
@@ -60,7 +59,7 @@ public class ParsedArray extends ParsedElement {
         return new ParsedArray();
     }
 
-    public static ParsedArray from(List<ParsedElement> array) {
+    public static ParsedArray from(ArrayList<ParsedElement> array) {
         return new ParsedArray(array);
     }
 }

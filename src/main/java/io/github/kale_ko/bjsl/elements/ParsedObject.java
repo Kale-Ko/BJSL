@@ -1,16 +1,16 @@
 package io.github.kale_ko.bjsl.elements;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.Map;
 
 public class ParsedObject extends ParsedElement {
     private ParsedObject() {
-        this(new TreeMap<String, ParsedElement>());
+        this(new LinkedHashMap<String, ParsedElement>());
     }
 
-    private ParsedObject(SortedMap<String, ParsedElement> object) {
+    private ParsedObject(LinkedHashMap<String, ParsedElement> object) {
         super(object, null, null);
     }
 
@@ -73,7 +73,7 @@ public class ParsedObject extends ParsedElement {
         return new ParsedObject();
     }
 
-    public static ParsedObject from(SortedMap<String, ParsedElement> object) {
-        return new ParsedObject(object);
+    public static ParsedObject from(Map<String, ParsedElement> object) {
+        return new ParsedObject(new LinkedHashMap<String, ParsedElement>(object));
     }
 }
