@@ -110,7 +110,7 @@ public class YamlParser extends Parser {
 
                 return output.toString().trim();
             } else {
-                return element.asPrimitive().asObject().toString().trim();
+                return element.asPrimitive().get().toString().trim();
             }
         } catch (IOException e) {
             e.printStackTrace();
