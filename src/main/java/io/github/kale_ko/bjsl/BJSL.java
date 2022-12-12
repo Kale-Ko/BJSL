@@ -8,34 +8,34 @@ import io.github.kale_ko.bjsl.parsers.YamlParser;
 
 public class BJSL {
     public static ParsedElement parseJson(String json) {
-        return JsonParser.parse(json);
+        return JsonParser.toElement(json);
     }
 
     public static String stringifyJson(ParsedElement json) {
-        return JsonParser.stringify(json);
+        return JsonParser.toString(json);
     }
 
     public static ParsedElement parseYaml(String yaml) {
-        return YamlParser.parse(yaml);
+        return YamlParser.toElement(yaml);
     }
 
     public static String stringifyYaml(ParsedElement yaml) {
-        return YamlParser.stringify(yaml);
+        return YamlParser.toString(yaml);
     }
 
     public static ParsedElement parseToml(String toml) {
-        return TomlParser.parse(toml);
+        return TomlParser.toElement(toml);
     }
 
     public static String stringifyToml(ParsedElement toml) {
-        return TomlParser.stringify(toml);
+        return TomlParser.toString(toml);
     }
 
     public static ParsedElement parseProperties(String properties) {
-        return PropertiesParser.parse(properties);
+        return PropertiesParser.toElement(properties);
     }
 
     public static String stringifyProperties(ParsedElement properties) {
-        return PropertiesParser.stringify(properties);
+        return PropertiesParser.toString(properties);
     }
 }
