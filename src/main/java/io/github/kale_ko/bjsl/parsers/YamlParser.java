@@ -16,7 +16,7 @@ import io.github.kale_ko.bjsl.elements.ParsedElement;
 import io.github.kale_ko.bjsl.elements.ParsedObject;
 
 public class YamlParser extends Parser {
-    public static ParsedElement parse(String data) {
+    public static ParsedElement toElement(String data) {
         if (data == null) {
             throw new NullPointerException("\"data\" can not be null");
         }
@@ -33,7 +33,7 @@ public class YamlParser extends Parser {
                 ParsedObject objectElement = ParsedObject.create();
 
                 objectNode.fieldNames().forEachRemaining((String subKey) -> {
-                    elementify(objectElement, subKey, objectNode.get(subKey));
+                    toElements(objectElement, subKey, objectNode.get(subKey));
                 });
 
                 return objectElement;
@@ -41,7 +41,7 @@ public class YamlParser extends Parser {
                 ParsedArray objectElement = ParsedArray.create();
 
                 arrayNode.elements().forEachRemaining((JsonNode subNode) -> {
-                    elementify(objectElement, "root", subNode);
+                    toElements(objectElement, "root", subNode);
                 });
 
                 return objectElement;
@@ -55,18 +55,18 @@ public class YamlParser extends Parser {
         return null;
     }
 
-    public static String stringify(ParsedElement element) {
+    public static String toString(ParsedElement element) {
         if (element == null) {
             throw new NullPointerException("\"element\" can not be null");
         }
 
         try {
             if (element instanceof ParsedObject) {
-                ParsedObject objectElement = element.asJsonObject();
+                ParsedObject objectElement = element.asObject();
 
                 ObjectNode tree = JsonNodeFactory.instance.objectNode();
                 for (String subKey : objectElement.getKeys()) {
-                    nodeify(tree, subKey, objectElement.get(subKey));
+                    toNodes(tree, subKey, objectElement.get(subKey));
                 }
 
                 PipedWriter writer = new PipedWriter();
@@ -86,11 +86,11 @@ public class YamlParser extends Parser {
 
                 return output.toString().trim();
             } else if (element instanceof ParsedArray) {
-                ParsedArray arrayElement = element.asJsonArray();
+                ParsedArray arrayElement = element.asArray();
 
                 ArrayNode tree = JsonNodeFactory.instance.arrayNode();
                 for (ParsedElement subElement : arrayElement.getValues()) {
-                    nodeify(tree, "root", subElement);
+                    toNodes(tree, "root", subElement);
                 }
 
                 PipedWriter writer = new PipedWriter();
@@ -110,7 +110,7 @@ public class YamlParser extends Parser {
 
                 return output.toString().trim();
             } else {
-                return element.asJsonPrimitive().asObject().toString().trim();
+                return element.asPrimitive().asObject().toString().trim();
             }
         } catch (IOException e) {
             e.printStackTrace();

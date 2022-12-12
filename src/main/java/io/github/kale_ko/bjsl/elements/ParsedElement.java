@@ -14,27 +14,27 @@ public class ParsedElement {
         this.primitive = primitive;
     }
 
-    public boolean isJsonObject() {
+    public boolean isObject() {
         return this.object != null;
     }
 
-    public boolean isJsonArray() {
+    public boolean isArray() {
         return this.array != null;
     }
 
-    public boolean isJsonPrimitive() {
+    public boolean isPrimitive() {
         return this.primitive != null;
     }
 
-    public ParsedObject asJsonObject() {
+    public ParsedObject asObject() {
         return ParsedObject.from(this.object);
     }
 
-    public ParsedArray asJsonArray() {
+    public ParsedArray asArray() {
         return ParsedArray.from(this.array);
     }
 
-    public ParsedPrimitive asJsonPrimitive() {
+    public ParsedPrimitive asPrimitive() {
         return ParsedPrimitive.fromObject(this.primitive);
     }
 }

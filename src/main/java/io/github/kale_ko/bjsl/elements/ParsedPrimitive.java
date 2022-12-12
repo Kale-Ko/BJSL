@@ -61,10 +61,6 @@ public class ParsedPrimitive extends ParsedElement {
         return this.primitiveType == PrimitiveType.NULL;
     }
 
-    public Object asObject() {
-        return this.primitive;
-    }
-
     public String asString() {
         if (this.primitiveType == PrimitiveType.STRING) {
             return (String) this.primitive;
