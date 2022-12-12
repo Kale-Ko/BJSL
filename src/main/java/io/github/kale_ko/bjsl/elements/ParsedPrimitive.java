@@ -61,6 +61,10 @@ public class ParsedPrimitive extends ParsedElement {
         return this.primitiveType == PrimitiveType.NULL;
     }
 
+    public Object get() {
+        return this.primitive;
+    }
+
     public String asString() {
         if (this.primitiveType == PrimitiveType.STRING) {
             return (String) this.primitive;
@@ -141,27 +145,31 @@ public class ParsedPrimitive extends ParsedElement {
         }
     }
 
-    public static ParsedPrimitive fromObject(Object value) {
-        if (value instanceof String) {
-            return fromString((String) value);
-        } else if (value instanceof Byte) {
-            return fromByte((Byte) value);
-        } else if (value instanceof Character) {
-            return fromChar((Character) value);
-        } else if (value instanceof Short) {
-            return fromShort((Short) value);
-        } else if (value instanceof Integer) {
-            return fromInteger((Integer) value);
-        } else if (value instanceof Long) {
-            return fromLong((Long) value);
-        } else if (value instanceof Float) {
-            return fromFloat((Float) value);
-        } else if (value instanceof Double) {
-            return fromDouble((Double) value);
-        } else if (value instanceof Boolean) {
-            return fromBoolean((Boolean) value);
-        } else if (value == null) {
+    public static ParsedPrimitive from(Object value) {
+        if (value == null) {
             return fromNull();
+        } else if (value instanceof String) {
+            return fromString((String) value);
+        } else if (value.getClass() == byte[].class) {
+            return fromString((byte[]) value);
+        } else if (value.getClass() == char[].class) {
+            return fromString((char[]) value);
+        } else if (value instanceof Byte || value.getClass() == byte.class) {
+            return fromByte((Byte) value);
+        } else if (value instanceof Character || value.getClass() == char.class) {
+            return fromChar((Character) value);
+        } else if (value instanceof Short || value.getClass() == short.class) {
+            return fromShort((Short) value);
+        } else if (value instanceof Integer || value.getClass() == int.class) {
+            return fromInteger((Integer) value);
+        } else if (value instanceof Long || value.getClass() == long.class) {
+            return fromLong((Long) value);
+        } else if (value instanceof Float || value.getClass() == float.class) {
+            return fromFloat((Float) value);
+        } else if (value instanceof Double || value.getClass() == double.class) {
+            return fromDouble((Double) value);
+        } else if (value instanceof Boolean || value.getClass() == boolean.class) {
+            return fromBoolean((Boolean) value);
         } else {
             throw new ClassCastException("\"value\" is not a primitive");
         }
@@ -173,6 +181,22 @@ public class ParsedPrimitive extends ParsedElement {
         }
 
         return new ParsedPrimitive(value, PrimitiveType.STRING);
+    }
+
+    public static ParsedPrimitive fromString(byte[] value) {
+        if (value == null) {
+            throw new NullPointerException("\"value\" must be a string");
+        }
+
+        return new ParsedPrimitive(new String(value), PrimitiveType.STRING);
+    }
+
+    public static ParsedPrimitive fromString(char[] value) {
+        if (value == null) {
+            throw new NullPointerException("\"value\" must be a string");
+        }
+
+        return new ParsedPrimitive(new String(value), PrimitiveType.STRING);
     }
 
     public static ParsedPrimitive fromByte(byte value) {

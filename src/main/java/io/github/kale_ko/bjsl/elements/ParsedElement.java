@@ -35,6 +35,6 @@ public class ParsedElement {
     }
 
     public ParsedPrimitive asPrimitive() {
-        return ParsedPrimitive.fromObject(this.primitive);
+        return ParsedPrimitive.from(this.primitive);
     }
 }
