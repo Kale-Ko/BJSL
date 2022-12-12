@@ -19,7 +19,7 @@ import io.github.kale_ko.bjsl.elements.ParsedObject;
 import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
 
 public abstract class Parser {
-    protected static void elementify(ParsedElement element, String key, JsonNode node) {
+    protected static void toElements(ParsedElement element, String key, JsonNode node) {
         if (node instanceof ObjectNode objectNode) {
             ParsedObject subElement = ParsedObject.create();
             if (element instanceof ParsedObject objectElement) {
@@ -29,7 +29,7 @@ public abstract class Parser {
             }
 
             objectNode.fieldNames().forEachRemaining((String subKey) -> {
-                elementify(subElement, subKey, objectNode.get(subKey));
+                toElements(subElement, subKey, objectNode.get(subKey));
             });
         } else if (node instanceof ArrayNode arrayNode) {
             ParsedArray subElement = ParsedArray.create();
@@ -40,7 +40,7 @@ public abstract class Parser {
             }
 
             arrayNode.elements().forEachRemaining((JsonNode subNode) -> {
-                elementify(subElement, key, subNode);
+                toElements(subElement, key, subNode);
             });
         } else if (node instanceof TextNode) {
             if (element instanceof ParsedObject objectElement) {
@@ -93,7 +93,7 @@ public abstract class Parser {
         }
     }
 
-    protected static void nodeify(TreeNode node, String key, ParsedElement element) {
+    protected static void toNodes(TreeNode node, String key, ParsedElement element) {
         if (element instanceof ParsedObject objectElement) {
             ObjectNode subNode = JsonNodeFactory.instance.objectNode();
             if (node instanceof ObjectNode objectNode) {
@@ -103,7 +103,7 @@ public abstract class Parser {
             }
 
             for (String subkey : objectElement.getKeys()) {
-                nodeify(subNode, subkey, objectElement.get(subkey));
+                toNodes(subNode, subkey, objectElement.get(subkey));
             }
         } else if (element instanceof ParsedArray arrayElement) {
             ArrayNode subNode = JsonNodeFactory.instance.arrayNode();
@@ -114,7 +114,7 @@ public abstract class Parser {
             }
 
             for (ParsedElement subElement : arrayElement.getValues()) {
-                nodeify(subNode, key, subElement);
+                toNodes(subNode, key, subElement);
             }
         } else if (element instanceof ParsedPrimitive primitiveElement) {
             if (primitiveElement.isString()) {
