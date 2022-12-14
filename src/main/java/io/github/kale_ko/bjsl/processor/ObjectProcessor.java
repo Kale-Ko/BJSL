@@ -16,7 +16,7 @@ import io.github.kale_ko.bjsl.processor.annotations.DoSerialize;
 import io.github.kale_ko.bjsl.processor.annotations.DontSerialize;
 
 public class ObjectProcessor {
-    public static <T> T toObject(ParsedElement element, Class<T> clazz) {
+    public <T> T toObject(ParsedElement element, Class<T> clazz) {
         if (element instanceof ParsedPrimitive) {
             if (clazz.isEnum()) {
                 if (element instanceof ParsedPrimitive && element.asPrimitive().isString()) {
@@ -108,7 +108,7 @@ public class ObjectProcessor {
         return null;
     }
 
-    public static <T> T[] toArray(ParsedElement element, Class<T[]> clazz) {
+    public <T> T[] toArray(ParsedElement element, Class<T[]> clazz) {
         if (element instanceof ParsedArray) {
             Object[] array = new Object[element.asArray().getSize()];
 
@@ -125,7 +125,7 @@ public class ObjectProcessor {
         }
     }
 
-    public static ParsedElement toElement(Object object) {
+    public ParsedElement toElement(Object object) {
         try {
             return ParsedPrimitive.from(object);
         } catch (ClassCastException e) {
