@@ -1,0 +1,30 @@
+name: Build Test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: adopt
+          server-id: ghp
+          settings-path: ${{ github.workspace }}
+
+      - name: Build All
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: buildAll
