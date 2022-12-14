@@ -1,7 +1,14 @@
 package io.github.kale_ko.bjsl.parsers;
 
+import java.io.IOException;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
@@ -19,7 +26,118 @@ import io.github.kale_ko.bjsl.elements.ParsedObject;
 import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
 
 public abstract class Parser {
-    protected static void toElements(ParsedElement element, String key, JsonNode node) {
+    private JsonFactory jsonFactory;
+    private ObjectCodec codec;
+
+    protected Parser(JsonFactory jsonFactory) {
+        this.jsonFactory = jsonFactory;
+        this.codec = new ObjectMapper();
+    }
+
+    public ParsedElement toElement(String data) {
+        if (data == null) {
+            throw new NullPointerException("\"data\" can not be null");
+        }
+
+        data = data.trim();
+
+        try {
+            com.fasterxml.jackson.core.JsonParser parser = this.jsonFactory.createParser(data);
+            parser.setCodec(this.codec);
+            TreeNode tree = parser.readValueAsTree();
+            parser.close();
+
+            if (tree instanceof ObjectNode objectNode) {
+                ParsedObject objectElement = ParsedObject.create();
+
+                objectNode.fieldNames().forEachRemaining((String subKey) -> {
+                    toElements(objectElement, subKey, objectNode.get(subKey));
+                });
+
+                return objectElement;
+            } else if (tree instanceof ArrayNode arrayNode) {
+                ParsedArray arrayElement = ParsedArray.create();
+
+                arrayNode.elements().forEachRemaining((JsonNode subNode) -> {
+                    toElements(arrayElement, "root", subNode);
+                });
+
+                return arrayElement;
+            } else {
+                throw new RuntimeException("\"data\" is not an object or array");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public String toString(ParsedElement element) {
+        if (element == null) {
+            throw new NullPointerException("\"element\" can not be null");
+        }
+
+        try {
+            if (element instanceof ParsedObject) {
+                ParsedObject objectElement = element.asObject();
+
+                ObjectNode tree = JsonNodeFactory.instance.objectNode();
+                for (String subKey : objectElement.getKeys()) {
+                    toNodes(tree, subKey, objectElement.get(subKey));
+                }
+
+                PipedOutputStream outputStream = new PipedOutputStream();
+                PipedInputStream inputStream = new PipedInputStream(outputStream);
+                JsonGenerator generator = this.jsonFactory.createGenerator(outputStream);
+                generator.setCodec(this.codec);
+                generator.writeTree(tree);
+                generator.close();
+
+                StringBuilder output = new StringBuilder();
+                int read = -1;
+                while ((read = inputStream.read()) != -1) {
+                    output.appendCodePoint(read);
+                }
+                outputStream.close();
+                inputStream.close();
+
+                return output.toString().trim();
+            } else if (element instanceof ParsedArray) {
+                ParsedArray arrayElement = element.asArray();
+
+                ArrayNode tree = JsonNodeFactory.instance.arrayNode();
+                for (ParsedElement subElement : arrayElement.getValues()) {
+                    toNodes(tree, "root", subElement);
+                }
+
+                PipedOutputStream outputStream = new PipedOutputStream();
+                PipedInputStream inputStream = new PipedInputStream(outputStream);
+                JsonGenerator generator = this.jsonFactory.createGenerator(outputStream);
+                generator.setCodec(this.codec);
+                generator.writeTree(tree);
+                generator.close();
+
+                StringBuilder output = new StringBuilder();
+                int read = -1;
+                while ((read = inputStream.read()) != -1) {
+                    output.appendCodePoint(read);
+                }
+                outputStream.close();
+                inputStream.close();
+
+                return output.toString().trim();
+            } else {
+                return element.asPrimitive().get().toString().trim();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private void toElements(ParsedElement element, String key, JsonNode node) {
         if (node instanceof ObjectNode objectNode) {
             ParsedObject subElement = ParsedObject.create();
             if (element instanceof ParsedObject objectElement) {
@@ -115,7 +233,7 @@ public abstract class Parser {
         }
     }
 
-    protected static void toNodes(TreeNode node, String key, ParsedElement element) {
+    private void toNodes(TreeNode node, String key, ParsedElement element) {
         if (element instanceof ParsedObject objectElement) {
             ObjectNode subNode = JsonNodeFactory.instance.objectNode();
             if (node instanceof ObjectNode objectNode) {
