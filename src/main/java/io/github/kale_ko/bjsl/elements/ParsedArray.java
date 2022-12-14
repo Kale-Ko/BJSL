@@ -16,7 +16,7 @@ public class ParsedArray extends ParsedElement {
         return this.array.size();
     }
 
-    public ArrayList<ParsedElement> getValues() {
+    public List<ParsedElement> getValues() {
         return new ArrayList<ParsedElement>(this.array);
     }
 
@@ -82,11 +82,11 @@ public class ParsedArray extends ParsedElement {
         return new ParsedArray();
     }
 
-    public static ParsedArray from(ArrayList<ParsedElement> array) {
+    public static ParsedArray from(List<ParsedElement> array) {
         if (array == null) {
             throw new NullPointerException("\"array\" can not be null");
         }
 
-        return new ParsedArray(array);
+        return new ParsedArray(new ArrayList<ParsedElement>(array));
     }
 }
