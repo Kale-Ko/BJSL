@@ -28,6 +28,7 @@ dependencies {
     dependency "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${project.jackson_version}"
     dependency "com.fasterxml.jackson.dataformat:jackson-dataformat-toml:${project.jackson_version}"
     dependency "com.fasterxml.jackson.dataformat:jackson-dataformat-properties:${project.jackson_version}"
+    dependency "com.fasterxml.jackson.dataformat:jackson-dataformat-smile:${project.jackson_version}"
 }
 
 tasks.withType(JavaCompile) {
