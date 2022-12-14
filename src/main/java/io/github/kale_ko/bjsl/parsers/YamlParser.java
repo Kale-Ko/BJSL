@@ -46,7 +46,7 @@ public class YamlParser extends Parser {
 
                 return objectElement;
             } else {
-                return null;
+                throw new RuntimeException("\"data\" is not an object or array");
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,14 +1,18 @@
 package io.github.kale_ko.bjsl.processor;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import io.github.kale_ko.bjsl.elements.ParsedArray;
 import io.github.kale_ko.bjsl.elements.ParsedElement;
 import io.github.kale_ko.bjsl.elements.ParsedObject;
 import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
+import io.github.kale_ko.bjsl.processor.annotations.DoSerialize;
 import io.github.kale_ko.bjsl.processor.annotations.DontSerialize;
 
 public class ObjectProcessor {
@@ -16,42 +20,52 @@ public class ObjectProcessor {
         return null;
     }
 
-    public static ParsedObject toElement(Object object) {
-        ParsedObject objectElement = ParsedObject.create();
+    public static ParsedElement toElement(Object object) {
+        try {
+            return ParsedPrimitive.from(object);
+        } catch (ClassCastException e) {
+            if (object instanceof Enum<?> anEnum) {
+                return ParsedPrimitive.fromString(anEnum.name());
+            } else if (object instanceof Object[]) {
+                ParsedArray arrayElement = ParsedArray.create();
 
-        List<Field> fields = getFields(object.getClass());
-
-        for (Field field : fields) {
-            try {
-                Boolean accessible = field.canAccess(object);
-
-                field.setAccessible(true);
-
-                Boolean shouldSerialize = true;
-
-                for (Annotation annotation : field.getDeclaredAnnotations()) {
-                    if (annotation.annotationType() == DontSerialize.class) {
-                        shouldSerialize = false;
-                    }
+                for (Object objects : (Object[]) object) {
+                    arrayElement.add(toElement(objects));
                 }
 
-                if (shouldSerialize) {
+                return arrayElement;
+            } else if (object instanceof Object) {
+                ParsedObject objectElement = ParsedObject.create();
+
+                List<Field> fields = getFields(object.getClass());
+
+                for (Field field : fields) {
                     try {
-                        objectElement.set(field.getName(), ParsedPrimitive.fromObject(field.get(object)));
-                    } catch (ClassCastException e) {
-                        if (Modifier.isStatic(field.get(object).getClass().getModifiers())) {
-                            objectElement.set(field.getName(), toElement(field.get(object)));
+                        if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
+                            Boolean shouldSerialize = !Modifier.isTransient(field.getModifiers());
+
+                            for (Annotation annotation : field.getDeclaredAnnotations()) {
+                                if (annotation.annotationType() == DoSerialize.class) {
+                                    shouldSerialize = true;
+                                } else if (annotation.annotationType() == DontSerialize.class) {
+                                    shouldSerialize = false;
+                                }
+                            }
+
+                            if (shouldSerialize) {
+                                objectElement.set(field.getName(), toElement(field.get(object)));
+                            }
                         }
+                    } catch (IllegalArgumentException | IllegalAccessException e2) {
+                        e2.printStackTrace();
                     }
                 }
 
-                field.setAccessible(accessible);
-            } catch (IllegalArgumentException | IllegalAccessException e) {
-                e.printStackTrace();
+                return objectElement;
+            } else {
+                throw new RuntimeException("\"object\" is not a serializable type");
             }
         }
-
-        return objectElement;
     }
 
     private static <T> List<Field> getFields(Class<T> clazz) {
