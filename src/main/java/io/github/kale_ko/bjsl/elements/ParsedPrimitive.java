@@ -62,7 +62,29 @@ public class ParsedPrimitive extends ParsedElement {
     }
 
     public Object get() {
-        return this.primitive;
+        if (this.primitiveType == PrimitiveType.STRING) {
+            return (String) this.primitive;
+        } else if (this.primitiveType == PrimitiveType.BYTE) {
+            return (byte) this.primitive;
+        } else if (this.primitiveType == PrimitiveType.CHAR) {
+            return (char) this.primitive;
+        } else if (this.primitiveType == PrimitiveType.SHORT) {
+            return (short) this.primitive;
+        } else if (this.primitiveType == PrimitiveType.INTEGER) {
+            return (int) this.primitive;
+        } else if (this.primitiveType == PrimitiveType.LONG) {
+            return (long) this.primitive;
+        } else if (this.primitiveType == PrimitiveType.FLOAT) {
+            return (float) this.primitive;
+        } else if (this.primitiveType == PrimitiveType.DOUBLE) {
+            return (double) this.primitive;
+        } else if (this.primitiveType == PrimitiveType.BOOLEAN) {
+            return (boolean) this.primitive;
+        } else if (this.primitiveType == PrimitiveType.NULL) {
+            return null;
+        } else {
+            throw new ClassCastException("\"value\" is not a primitive");
+        }
     }
 
     public String asString() {
@@ -139,7 +161,7 @@ public class ParsedPrimitive extends ParsedElement {
 
     public Object asNull() {
         if (this.primitiveType == PrimitiveType.NULL) {
-            return null;
+            return this.primitive;
         } else {
             throw new ClassCastException("\"value\" is not null");
         }
@@ -184,18 +206,10 @@ public class ParsedPrimitive extends ParsedElement {
     }
 
     public static ParsedPrimitive fromString(byte[] value) {
-        if (value == null) {
-            throw new NullPointerException("\"value\" must be a string");
-        }
-
         return new ParsedPrimitive(new String(value), PrimitiveType.STRING);
     }
 
     public static ParsedPrimitive fromString(char[] value) {
-        if (value == null) {
-            throw new NullPointerException("\"value\" must be a string");
-        }
-
         return new ParsedPrimitive(new String(value), PrimitiveType.STRING);
     }
 

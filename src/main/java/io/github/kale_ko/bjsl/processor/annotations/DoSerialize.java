@@ -6,4 +6,4 @@ import java.lang.annotation.RetentionPolicy;
 @java.lang.annotation.Target({ ElementType.FIELD })
 @java.lang.annotation.Retention(RetentionPolicy.RUNTIME)
 @java.lang.annotation.Inherited()
-public @interface DontSerialize {}
+public @interface DoSerialize {}
