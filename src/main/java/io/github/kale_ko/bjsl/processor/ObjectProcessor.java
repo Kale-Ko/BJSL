@@ -17,7 +17,112 @@ import io.github.kale_ko.bjsl.processor.annotations.DontSerialize;
 
 public class ObjectProcessor {
     public static <T> T toObject(ParsedElement element, Class<T> clazz) {
+        if (element instanceof ParsedPrimitive) {
+            if (clazz.isEnum()) {
+                if (element instanceof ParsedPrimitive && element.asPrimitive().isString()) {
+                    for (T value : clazz.getEnumConstants()) {
+                        if (value.toString().equals(element.asPrimitive().asString())) {
+                            return value;
+                        }
+                    }
+                } else {
+                    throw new RuntimeException("\"element\" is not a enum");
+                }
+            } else {
+                try {
+                    Object object = element.asPrimitive().get();
+
+                    if (clazz == String.class) {
+                        return clazz.cast((String) object);
+                    } else if (clazz == Byte.class || clazz == byte.class) {
+                        return (T) (Byte) (byte) (long) object;
+                    } else if (clazz == Character.class || clazz == char.class) {
+                        return (T) (Character) (char) (long) object;
+                    } else if (clazz == Short.class || clazz == short.class) {
+                        return (T) (Short) (short) (long) object;
+                    } else if (clazz == Integer.class || clazz == int.class) {
+                        return (T) (Integer) (int) (long) object;
+                    } else if (clazz == Long.class || clazz == long.class) {
+                        return (T) (Long) (long) object;
+                    } else if (clazz == Float.class || clazz == float.class) {
+                        return (T) (Float) (float) (double) object;
+                    } else if (clazz == Double.class || clazz == double.class) {
+                        return (T) (Double) (double) object;
+                    } else if (clazz == Boolean.class || clazz == boolean.class) {
+                        return (T) (Boolean) (boolean) object;
+                    } else {
+                        return clazz.cast(object);
+                    }
+                } catch (ClassCastException e) {
+                    throw new RuntimeException("\"element\" is not a primitive", e);
+                }
+            }
+        } else if (!clazz.isArray() && !clazz.isAnonymousClass() && !clazz.isInterface() && !clazz.isRecord() && !clazz.isAnnotation()) {
+            if (element instanceof ParsedObject) {
+                for (Constructor<T> constructor : (Constructor<T>[]) clazz.getConstructors()) {
+                    try {
+                        if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
+                            T object = constructor.newInstance();
+
+                            List<Field> fields = getFields(object.getClass());
+
+                            for (Field field : fields) {
+                                try {
+                                    if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
+                                        Boolean shouldSerialize = !Modifier.isTransient(field.getModifiers());
+
+                                        for (Annotation annotation : field.getDeclaredAnnotations()) {
+                                            if (annotation.annotationType() == DoSerialize.class) {
+                                                shouldSerialize = true;
+                                            } else if (annotation.annotationType() == DontSerialize.class) {
+                                                shouldSerialize = false;
+                                            }
+                                        }
+
+                                        if (shouldSerialize) {
+                                            if (element.asObject().has(field.getName())) {
+                                                field.set(object, toObject(element.asObject().get(field.getName()), field.getType()));
+                                            }
+                                        }
+                                    }
+                                } catch (IllegalArgumentException | IllegalAccessException e2) {
+                                    e2.printStackTrace();
+                                }
+                            }
+
+                            return object;
+                        }
+                    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                throw new RuntimeException("\"element\" is not an object");
+            }
+
+            throw new RuntimeException("No constructors for \"" + clazz.getSimpleName() + "\" found");
+        } else {
+            throw new RuntimeException("\"object\" is not a serializable type");
+        }
+
         return null;
+    }
+
+    public static <T> T[] toArray(ParsedElement element, Class<T[]> clazz) {
+        if (element instanceof ParsedArray) {
+            Object[] array = new Object[element.asArray().getSize()];
+
+            int i = 0;
+            for (ParsedElement subElement : element.asArray().getValues()) {
+                array[i] = toObject(subElement, clazz);
+
+                i++;
+            }
+
+            return (T[]) array;
+        } else {
+            throw new RuntimeException("\"element\" is not an array");
+        }
     }
 
     public static ParsedElement toElement(Object object) {
