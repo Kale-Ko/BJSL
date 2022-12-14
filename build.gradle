@@ -1,5 +1,6 @@
 plugins {
     id "java"
+    id "maven-publish"
 }
 
 sourceCompatibility = JavaVersion.toVersion(project.java_version)
@@ -44,4 +45,82 @@ tasks.register("buildFat", Jar) {
 
     from files(project.sourceSets.main.output)
     from files(project.configurations.dependency.collect { it.isDirectory() ? it : zipTree(it) })
+}
+
+tasks.register("buildSources", Jar) {
+    dependsOn tasks.build
+
+    sourceCompatibility = JavaVersion.toVersion(project.java_version)
+    targetCompatibility = JavaVersion.toVersion(project.java_version)
+
+    duplicatesStrategy = "exclude"
+    classifier = "sources"
+
+    from project.sourceSets.main.allJava
+}
+
+tasks.register("buildAll") {
+    dependsOn tasks.jar
+    dependsOn tasks.buildFat
+    dependsOn tasks.buildSources
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHub-Packages"
+            url = "https://maven.pkg.github.com/Kale-Ko/BJSL"
+
+            credentials {
+                username = System.getenv("GH_PACKAGES_USER")
+                password = System.getenv("GH_PACKAGES_TOKEN")
+            }
+        }
+    }
+
+    publications {
+        ghp(MavenPublication) {
+            groupId = project.group
+            artifactId = project.archivesBaseName
+            version = project.version
+
+            artifact tasks.jar
+            artifact tasks.buildFat
+            artifact tasks.buildSources
+
+            pom.withXml {
+                def node = asNode()
+
+                def packagingNode = node.appendNode("packaging", "jar")
+
+                def licenseNode = node.appendNode("licenses").appendNode("license")
+                licenseNode.appendNode("name", "MIT")
+                licenseNode.appendNode("url", "https://opensource.org/licenses/MIT")
+
+                def developerNode = node.appendNode("developers").appendNode("developer")
+                developerNode.appendNode("id", "kale-ko")
+                developerNode.appendNode("name", "Kale Ko")
+                developerNode.appendNode("url", "https://kaleko.ga/")
+                developerNode.appendNode("email", "contact@kaleko.ga")
+
+                def scmNode = node.appendNode("scm")
+                scmNode.appendNode("connection", "scm:git:git@github.com:Kale-Ko/BJSL.git")
+                scmNode.appendNode("developerConnection", "scm:git:git@github.com:Kale-Ko/BJSL.git")
+                scmNode.appendNode("tag", "master")
+                scmNode.appendNode("url", "https://github.com/Kale-Ko/BJSL")
+
+                def dependenciesNode = node.appendNode("dependencies")
+
+                def dependencyManagmentNode = node.appendNode("dependencyManagement")
+                def dependenciesManagmentNode = dependencyManagmentNode.appendNode("dependencies")
+
+                configurations.depencancy.resolvedConfiguration.getFirstLevelModuleDependencies().each {
+                    def dependencyNode = dependenciesNode.appendNode("dependency")
+                    dependencyNode.appendNode("groupId", it.moduleGroup)
+                    dependencyNode.appendNode("artifactId", it.moduleName)
+                    dependencyNode.appendNode("version", it.moduleVersion)
+                }
+            }
+        }
+    }
 }
