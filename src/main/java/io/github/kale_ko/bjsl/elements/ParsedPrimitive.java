@@ -177,21 +177,21 @@ public class ParsedPrimitive extends ParsedElement {
         } else if (value.getClass() == char[].class) {
             return fromString((char[]) value);
         } else if (value instanceof Byte || value.getClass() == byte.class) {
-            return fromByte((Byte) value);
+            return fromByte((byte) value);
         } else if (value instanceof Character || value.getClass() == char.class) {
-            return fromChar((Character) value);
+            return fromChar((char) value);
         } else if (value instanceof Short || value.getClass() == short.class) {
-            return fromShort((Short) value);
+            return fromShort((short) value);
         } else if (value instanceof Integer || value.getClass() == int.class) {
-            return fromInteger((Integer) value);
+            return fromInteger((int) value);
         } else if (value instanceof Long || value.getClass() == long.class) {
-            return fromLong((Long) value);
+            return fromLong((long) value);
         } else if (value instanceof Float || value.getClass() == float.class) {
-            return fromFloat((Float) value);
+            return fromFloat((float) value);
         } else if (value instanceof Double || value.getClass() == double.class) {
-            return fromDouble((Double) value);
+            return fromDouble((double) value);
         } else if (value instanceof Boolean || value.getClass() == boolean.class) {
-            return fromBoolean((Boolean) value);
+            return fromBoolean((boolean) value);
         } else {
             throw new ClassCastException("\"value\" is not a primitive");
         }
