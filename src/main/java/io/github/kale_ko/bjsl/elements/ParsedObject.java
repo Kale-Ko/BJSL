@@ -50,7 +50,6 @@ public class ParsedObject extends ParsedElement {
         if (key == null) {
             throw new NullPointerException("\"key\" can not be null");
         }
-
         if (value == null) {
             throw new NullPointerException("\"value\" can not be null");
         }
