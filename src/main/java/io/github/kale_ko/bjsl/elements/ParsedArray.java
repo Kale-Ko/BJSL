@@ -1,6 +1,7 @@
 package io.github.kale_ko.bjsl.elements;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ParsedArray extends ParsedElement {
     private ParsedArray() {
@@ -44,6 +45,16 @@ public class ParsedArray extends ParsedElement {
             this.array.add(index, value);
         } else {
             throw new IndexOutOfBoundsException("\"index\" is out of bounds for length \"" + this.array.size() + "\"");
+        }
+    }
+
+    public void addAll(List<ParsedElement> values) {
+        if (values == null) {
+            throw new NullPointerException("\"value\" can not be null");
+        }
+
+        for (ParsedElement value : values) {
+            add(value);
         }
     }
 
