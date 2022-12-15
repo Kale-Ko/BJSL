@@ -70,48 +70,58 @@ public class ObjectProcessor {
             }
         } else if (!clazz.isArray() && !clazz.isAnonymousClass() && !clazz.isInterface() && !clazz.isRecord() && !clazz.isAnnotation()) {
             if (element instanceof ParsedObject) {
-                for (Constructor<T> constructor : (Constructor<T>[]) clazz.getConstructors()) {
-                    try {
+                T object = null;
+
+                try {
+                    if (clazz.getConstructors().length == 0) {
+                        object = clazz.newInstance();
+                    }
+
+                    for (Constructor<T> constructor : (Constructor<T>[]) clazz.getConstructors()) {
                         if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
-                            T object = constructor.newInstance();
+                            object = constructor.newInstance();
 
-                            List<Field> fields = getFields(object.getClass());
+                            break;
+                        }
+                    }
+                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+                    e.printStackTrace();
+                }
 
-                            for (Field field : fields) {
-                                try {
-                                    if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
-                                        Boolean shouldSerialize = !Modifier.isTransient(field.getModifiers());
+                if (object != null) {
+                    List<Field> fields = getFields(object.getClass());
 
-                                        for (Annotation annotation : field.getDeclaredAnnotations()) {
-                                            if (annotation.annotationType() == DoSerialize.class) {
-                                                shouldSerialize = true;
-                                            } else if (annotation.annotationType() == DontSerialize.class) {
-                                                shouldSerialize = false;
-                                            }
-                                        }
+                    for (Field field : fields) {
+                        try {
+                            if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
+                                Boolean shouldSerialize = !Modifier.isTransient(field.getModifiers());
 
-                                        if (shouldSerialize) {
-                                            if (element.asObject().has(field.getName())) {
-                                                field.set(object, toObject(element.asObject().get(field.getName()), field.getType()));
-                                            }
-                                        }
+                                for (Annotation annotation : field.getDeclaredAnnotations()) {
+                                    if (annotation.annotationType() == DoSerialize.class) {
+                                        shouldSerialize = true;
+                                    } else if (annotation.annotationType() == DontSerialize.class) {
+                                        shouldSerialize = false;
                                     }
-                                } catch (IllegalArgumentException | IllegalAccessException e2) {
-                                    e2.printStackTrace();
+                                }
+
+                                if (shouldSerialize) {
+                                    if (element.asObject().has(field.getName())) {
+                                        field.set(object, toObject(element.asObject().get(field.getName()), field.getType()));
+                                    }
                                 }
                             }
-
-                            return object;
+                        } catch (IllegalArgumentException | IllegalAccessException e2) {
+                            e2.printStackTrace();
                         }
-                    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-                        e.printStackTrace();
                     }
+
+                    return object;
+                } else {
+                    throw new RuntimeException("No constructors for \"" + clazz.getSimpleName() + "\" found");
                 }
             } else {
                 throw new RuntimeException("\"element\" is not an object");
             }
-
-            throw new RuntimeException("No constructors for \"" + clazz.getSimpleName() + "\" found");
         } else {
             throw new RuntimeException("\"object\" is not a serializable type");
         }
