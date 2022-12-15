@@ -34,7 +34,7 @@ public class ObjectProcessor {
                 if (clazz.isEnum()) {
                     if (element instanceof ParsedPrimitive && element.asPrimitive().isString()) {
                         for (T value : clazz.getEnumConstants()) {
-                            if (value.toString().equals(element.asPrimitive().asString())) {
+                            if (value.equals(element.asPrimitive().asString())) {
                                 return value;
                             }
                         }
@@ -84,16 +84,23 @@ public class ObjectProcessor {
                         }
                     } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
                         if (BJSL.getLoggerEnabled()) {
-                            BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e.toString());
+                            BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e);
                         }
                     }
 
                     if (object == null) {
                         try {
-                            object = (T) sun.misc.Unsafe.getUnsafe().allocateInstance(clazz);
+                            try {
+                                Constructor<?> constructor = sun.misc.Unsafe.class.getConstructors()[0];
+                                constructor.setAccessible(true);
+                                sun.misc.Unsafe unsafe = (sun.misc.Unsafe) constructor.newInstance();
+                                object = (T) unsafe.allocateInstance(clazz);
+                            } catch (IllegalAccessException | InvocationTargetException e) {
+                                e.printStackTrace();
+                            }
                         } catch (InstantiationException e) {
                             if (BJSL.getLoggerEnabled()) {
-                                BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e.toString());
+                                BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e);
                             }
                         }
                     }
@@ -122,7 +129,7 @@ public class ObjectProcessor {
                                 }
                             } catch (IllegalArgumentException | IllegalAccessException e) {
                                 if (BJSL.getLoggerEnabled()) {
-                                    BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e.toString());
+                                    BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e);
                                 }
                             }
                         }
@@ -139,7 +146,7 @@ public class ObjectProcessor {
             }
         } catch (RuntimeException e) {
             if (BJSL.getLoggerEnabled()) {
-                BJSL.getLogger().severe("Error while parsing:\n" + e.toString());
+                BJSL.getLogger().severe("Error while parsing:\n" + e);
             }
 
             throw e;
@@ -167,7 +174,7 @@ public class ObjectProcessor {
             }
         } catch (RuntimeException e) {
             if (BJSL.getLoggerEnabled()) {
-                BJSL.getLogger().severe("Error while parsing:\n" + e.toString());
+                BJSL.getLogger().severe("Error while parsing:\n" + e);
             }
 
             throw e;
@@ -217,7 +224,7 @@ public class ObjectProcessor {
                             }
                         } catch (IllegalArgumentException | IllegalAccessException e2) {
                             if (BJSL.getLoggerEnabled()) {
-                                BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e.toString());
+                                BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e);
                             }
                         }
                     }
@@ -229,7 +236,7 @@ public class ObjectProcessor {
             }
         } catch (RuntimeException e) {
             if (BJSL.getLoggerEnabled()) {
-                BJSL.getLogger().severe("Error while parsing:\n" + e.toString());
+                BJSL.getLogger().severe("Error while parsing:\n" + e);
             }
 
             throw e;
