@@ -15,7 +15,6 @@ import io.github.kale_ko.bjsl.elements.ParsedObject;
 import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
 import io.github.kale_ko.bjsl.processor.annotations.DoSerialize;
 import io.github.kale_ko.bjsl.processor.annotations.DontSerialize;
-import sun.misc.Unsafe;
 
 public class ObjectProcessor {
     protected boolean ignoreNulls;
@@ -124,7 +123,11 @@ public class ObjectProcessor {
 
                                     if (shouldSerialize) {
                                         if (element.asObject().has(field.getName())) {
-                                            field.set(object, toObject(element.asObject().get(field.getName()), field.getType()));
+                                            try {
+                                                Object subObject = toObject(element.asObject().get(field.getName()), field.getType());
+                                                field.set(object, subObject);
+                                            } catch (RuntimeException e) {
+                                            }
                                         }
                                     }
                                 }
@@ -143,7 +146,7 @@ public class ObjectProcessor {
                     throw new RuntimeException("\"element\" is not an object");
                 }
             } else {
-                throw new RuntimeException("\"object\" is not a serializable type");
+                throw new RuntimeException("\"clazz\" is not a serializable type (" + clazz + ")");
             }
         } catch (RuntimeException e) {
             if (BJSL.getLoggerEnabled()) {
@@ -164,7 +167,10 @@ public class ObjectProcessor {
 
                 int i = 0;
                 for (ParsedElement subElement : element.asArray().getValues()) {
-                    array[i] = toObject(subElement, clazz);
+                    try {
+                        array[i] = toObject(subElement, clazz);
+                    } catch (RuntimeException e) {
+                    }
 
                     i++;
                 }
