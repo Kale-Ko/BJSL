@@ -15,6 +15,7 @@ import io.github.kale_ko.bjsl.elements.ParsedObject;
 import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
 import io.github.kale_ko.bjsl.processor.annotations.DoSerialize;
 import io.github.kale_ko.bjsl.processor.annotations.DontSerialize;
+import sun.misc.Unsafe;
 
 public class ObjectProcessor {
     protected boolean ignoreNulls;
@@ -91,11 +92,11 @@ public class ObjectProcessor {
                     if (object == null) {
                         try {
                             try {
-                                Constructor<?> constructor = sun.misc.Unsafe.class.getConstructors()[0];
-                                constructor.setAccessible(true);
-                                sun.misc.Unsafe unsafe = (sun.misc.Unsafe) constructor.newInstance();
+                                Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
+                                unsafeField.setAccessible(true);
+                                sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
                                 object = (T) unsafe.allocateInstance(clazz);
-                            } catch (IllegalAccessException | InvocationTargetException e) {
+                            } catch (IllegalAccessException | NoSuchFieldException e) {
                                 e.printStackTrace();
                             }
                         } catch (InstantiationException e) {
