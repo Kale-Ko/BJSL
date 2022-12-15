@@ -5,7 +5,7 @@ public class ParsedPrimitive extends ParsedElement {
         STRING, BYTE, CHAR, SHORT, INTEGER, LONG, FLOAT, DOUBLE, BOOLEAN, NULL
     }
 
-    protected PrimitiveType primitiveType;
+    private PrimitiveType primitiveType;
 
     private ParsedPrimitive(Object value, PrimitiveType type) {
         super(null, null, value);
