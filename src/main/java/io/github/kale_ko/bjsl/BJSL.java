@@ -9,7 +9,7 @@ import io.github.kale_ko.bjsl.parsers.YamlParser;
 import io.github.kale_ko.bjsl.processor.ObjectProcessor;
 
 public class BJSL {
-    private static ObjectProcessor objectProcessor = new ObjectProcessor();
+    private static ObjectProcessor objectProcessor = new ObjectProcessor(false);
 
     private static JsonParser jsonParser = new JsonParser();
     private static YamlParser yamlParser = new YamlParser();

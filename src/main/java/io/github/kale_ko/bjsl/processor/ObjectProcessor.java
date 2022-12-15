@@ -16,6 +16,17 @@ import io.github.kale_ko.bjsl.processor.annotations.DoSerialize;
 import io.github.kale_ko.bjsl.processor.annotations.DontSerialize;
 
 public class ObjectProcessor {
+    protected boolean ignoreNulls;
+
+    public ObjectProcessor() {
+        this(false);
+    }
+
+    public ObjectProcessor(boolean ignoreNulls) {
+        this.ignoreNulls = ignoreNulls;
+    }
+
+    @SuppressWarnings("unchecked")
     public <T> T toObject(ParsedElement element, Class<T> clazz) {
         if (element instanceof ParsedPrimitive) {
             if (clazz.isEnum()) {
@@ -108,6 +119,7 @@ public class ObjectProcessor {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T[] toArray(ParsedElement element, Class<T[]> clazz) {
         if (element instanceof ParsedArray) {
             Object[] array = new Object[element.asArray().getSize()];
@@ -157,6 +169,10 @@ public class ObjectProcessor {
                                 }
                             }
 
+                            if (ignoreNulls && field.get(object) == null) {
+                                shouldSerialize = false;
+                            }
+
                             if (shouldSerialize) {
                                 objectElement.set(field.getName(), toElement(field.get(object)));
                             }
@@ -173,7 +189,7 @@ public class ObjectProcessor {
         }
     }
 
-    private static <T> List<Field> getFields(Class<T> clazz) {
+    protected static <T> List<Field> getFields(Class<T> clazz) {
         List<Field> fields = new ArrayList<Field>();
 
         fields.addAll(Arrays.asList(clazz.getDeclaredFields()));

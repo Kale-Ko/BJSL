@@ -48,22 +48,9 @@ tasks.register("buildFat", Jar) {
     from files(project.configurations.dependency.collect { it.isDirectory() ? it : zipTree(it) })
 }
 
-tasks.register("buildSources", Jar) {
-    dependsOn tasks.build
-
-    sourceCompatibility = JavaVersion.toVersion(project.java_version)
-    targetCompatibility = JavaVersion.toVersion(project.java_version)
-
-    duplicatesStrategy = "exclude"
-    classifier = "sources"
-
-    from project.sourceSets.main.allJava
-}
-
 tasks.register("buildAll") {
     dependsOn tasks.jar
     dependsOn tasks.buildFat
-    dependsOn tasks.buildSources
 }
 
 publishing {
@@ -87,7 +74,6 @@ publishing {
 
             artifact tasks.jar
             artifact tasks.buildFat
-            artifact tasks.buildSources
 
             pom.withXml {
                 def node = asNode()
