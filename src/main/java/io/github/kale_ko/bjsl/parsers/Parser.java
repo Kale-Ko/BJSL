@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ShortNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import io.github.kale_ko.bjsl.BJSL;
 import io.github.kale_ko.bjsl.elements.ParsedArray;
 import io.github.kale_ko.bjsl.elements.ParsedElement;
 import io.github.kale_ko.bjsl.elements.ParsedObject;
@@ -39,7 +40,7 @@ public abstract class Parser {
         this.prettyPrinter = prettyPrinter;
     }
 
-    public ParsedElement toElement(String data) {
+    public ParsedElement toElement(String data) throws IOException {
         if (data == null) {
             throw new NullPointerException("\"data\" can not be null");
         }
@@ -69,16 +70,20 @@ public abstract class Parser {
 
                 return arrayElement;
             } else {
+                // TODO Return the primitive type
+
                 throw new RuntimeException("\"data\" is not an object or array");
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (RuntimeException | IOException e) {
+            if (BJSL.getLoggerEnabled()) {
+                BJSL.getLogger().severe("Error while parsing:\n" + e.toString());;
+            }
 
-        return null;
+            throw e;
+        }
     }
 
-    public String toString(ParsedElement element) {
+    public String toString(ParsedElement element) throws IOException {
         if (element == null) {
             throw new NullPointerException("\"element\" can not be null");
         }
@@ -137,11 +142,13 @@ public abstract class Parser {
             } else {
                 return element.asPrimitive().get().toString().trim();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (RuntimeException | IOException e) {
+            if (BJSL.getLoggerEnabled()) {
+                BJSL.getLogger().severe("Error while parsing:\n" + e.toString());;
+            }
 
-        return null;
+            throw e;
+        }
     }
 
     protected void toElements(ParsedElement element, String key, JsonNode node) {
@@ -236,7 +243,9 @@ public abstract class Parser {
                 throw new RuntimeException("\"element\" is not an object or array");
             }
         } else {
-            System.out.println("Node \"" + key + "\" is not a serializable type");
+            if (BJSL.getLoggerEnabled()) {
+                BJSL.getLogger().warning("Warning while parsing:\nNode \"" + key + "\" is not a serializable type (" + node.getClass().getSimpleName() + ")");;
+            }
         }
     }
 
@@ -349,10 +358,14 @@ public abstract class Parser {
                     throw new RuntimeException("\"node\" is not an object or array");
                 }
             } else {
-                System.out.println("Element \"" + key + "\" is not a serializable type");
+                if (BJSL.getLoggerEnabled()) {
+                    BJSL.getLogger().warning("Warning while parsing:\nElement \"" + key + "\" is not a serializable type (ParsedPrimitive." + primitiveElement.getType() + ")");
+                }
             }
         } else {
-            System.out.println("Element \"" + key + "\" is not a serializable type");
+            if (BJSL.getLoggerEnabled()) {
+                BJSL.getLogger().warning("Warning while parsing:\nElement \"" + key + "\" is not a serializable type (" + element.getClass().getSimpleName() + ")");
+            }
         }
     }
 }

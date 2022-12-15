@@ -1,5 +1,7 @@
 package io.github.kale_ko.bjsl;
 
+import java.io.IOException;
+import java.util.logging.Logger;
 import io.github.kale_ko.bjsl.parsers.BinaryParser;
 import io.github.kale_ko.bjsl.parsers.JsonParser;
 import io.github.kale_ko.bjsl.parsers.Parser;
@@ -17,6 +19,9 @@ public class BJSL {
     private static PropertiesParser propertiesParser = new PropertiesParser();
     private static BinaryParser binaryParser = new BinaryParser();
 
+    private static Logger logger = Logger.getLogger("BJSL");
+    private static boolean loggerEnabled = true;
+
     protected Parser parser;
     protected ObjectProcessor processor;
 
@@ -25,51 +30,63 @@ public class BJSL {
         this.processor = processor;
     }
 
-    public <T> T parse(String data, Class<T> clazz) {
+    public <T> T parse(String data, Class<T> clazz) throws IOException {
         return this.processor.toObject(this.parser.toElement(data), clazz);
     }
 
-    public String stringify(Object object) {
+    public String stringify(Object object) throws IOException {
         return this.parser.toString(this.processor.toElement(object));
     }
 
-    public static <T> T parseJson(String data, Class<T> clazz) {
+    public static Logger getLogger() {
+        return logger;
+    }
+
+    public static boolean getLoggerEnabled() {
+        return loggerEnabled;
+    }
+
+    public static void setLoggerEnabled(boolean flag) {
+        loggerEnabled = flag;
+    }
+
+    public static <T> T parseJson(String data, Class<T> clazz) throws IOException {
         return objectProcessor.toObject(jsonParser.toElement(data), clazz);
     }
 
-    public static String stringifyJson(Object object) {
+    public static String stringifyJson(Object object) throws IOException {
         return jsonParser.toString(objectProcessor.toElement(object));
     }
 
-    public static <T> T parseYaml(String data, Class<T> clazz) {
+    public static <T> T parseYaml(String data, Class<T> clazz) throws IOException {
         return objectProcessor.toObject(yamlParser.toElement(data), clazz);
     }
 
-    public static String stringifyYaml(Object object) {
+    public static String stringifyYaml(Object object) throws IOException {
         return yamlParser.toString(objectProcessor.toElement(object));
     }
 
-    public static <T> T parseToml(String data, Class<T> clazz) {
+    public static <T> T parseToml(String data, Class<T> clazz) throws IOException {
         return objectProcessor.toObject(tomlParser.toElement(data), clazz);
     }
 
-    public static String stringifyToml(Object object) {
+    public static String stringifyToml(Object object) throws IOException {
         return tomlParser.toString(objectProcessor.toElement(object));
     }
 
-    public static <T> T parseProperties(String data, Class<T> clazz) {
+    public static <T> T parseProperties(String data, Class<T> clazz) throws IOException {
         return objectProcessor.toObject(propertiesParser.toElement(data), clazz);
     }
 
-    public static String stringifyProperties(Object object) {
+    public static String stringifyProperties(Object object) throws IOException {
         return propertiesParser.toString(objectProcessor.toElement(object));
     }
 
-    public static <T> T parseBinary(String data, Class<T> clazz) {
+    public static <T> T parseBinary(String data, Class<T> clazz) throws IOException {
         return objectProcessor.toObject(binaryParser.toElement(data), clazz);
     }
 
-    public static String stringifyBinary(Object object) {
+    public static String stringifyBinary(Object object) throws IOException {
         return binaryParser.toString(objectProcessor.toElement(object));
     }
 }
