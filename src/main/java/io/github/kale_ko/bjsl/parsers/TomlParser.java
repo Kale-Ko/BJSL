@@ -4,6 +4,6 @@ import com.fasterxml.jackson.dataformat.toml.TomlFactory;
 
 public class TomlParser extends Parser {
     public TomlParser() {
-        super(TomlFactory.builder().build());
+        super(TomlFactory.builder().build(), null);
     }
 }

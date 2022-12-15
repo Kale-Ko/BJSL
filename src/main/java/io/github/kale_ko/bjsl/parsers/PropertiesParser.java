@@ -4,6 +4,6 @@ import com.fasterxml.jackson.dataformat.javaprop.JavaPropsFactory;
 
 public class PropertiesParser extends Parser {
     public PropertiesParser() {
-        super(JavaPropsFactory.builder().build());
+        super(JavaPropsFactory.builder().build(), null);
     }
 }

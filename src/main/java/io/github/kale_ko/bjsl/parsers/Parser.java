@@ -6,6 +6,7 @@ import java.io.PipedOutputStream;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.ObjectCodec;
+import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,12 +27,16 @@ import io.github.kale_ko.bjsl.elements.ParsedObject;
 import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
 
 public abstract class Parser {
-    private JsonFactory jsonFactory;
-    private ObjectCodec codec;
+    protected JsonFactory jsonFactory;
+    protected ObjectCodec codec;
 
-    protected Parser(JsonFactory jsonFactory) {
+    protected PrettyPrinter prettyPrinter;
+
+    protected Parser(JsonFactory jsonFactory, PrettyPrinter prettyPrinter) {
         this.jsonFactory = jsonFactory;
         this.codec = new ObjectMapper();
+
+        this.prettyPrinter = prettyPrinter;
     }
 
     public ParsedElement toElement(String data) {
@@ -90,6 +95,7 @@ public abstract class Parser {
                 PipedOutputStream outputStream = new PipedOutputStream();
                 PipedInputStream inputStream = new PipedInputStream(outputStream);
                 JsonGenerator generator = this.jsonFactory.createGenerator(outputStream);
+                generator = generator.setPrettyPrinter(this.prettyPrinter);
                 generator.setCodec(this.codec);
                 generator.writeTree(tree);
                 generator.close();
@@ -114,6 +120,7 @@ public abstract class Parser {
                 PipedOutputStream outputStream = new PipedOutputStream();
                 PipedInputStream inputStream = new PipedInputStream(outputStream);
                 JsonGenerator generator = this.jsonFactory.createGenerator(outputStream);
+                generator = generator.setPrettyPrinter(this.prettyPrinter);
                 generator.setCodec(this.codec);
                 generator.writeTree(tree);
                 generator.close();
@@ -137,7 +144,7 @@ public abstract class Parser {
         return null;
     }
 
-    private void toElements(ParsedElement element, String key, JsonNode node) {
+    protected void toElements(ParsedElement element, String key, JsonNode node) {
         if (node instanceof ObjectNode objectNode) {
             ParsedObject subElement = ParsedObject.create();
             if (element instanceof ParsedObject objectElement) {
@@ -233,7 +240,7 @@ public abstract class Parser {
         }
     }
 
-    private void toNodes(TreeNode node, String key, ParsedElement element) {
+    protected void toNodes(TreeNode node, String key, ParsedElement element) {
         if (element instanceof ParsedObject objectElement) {
             ObjectNode subNode = JsonNodeFactory.instance.objectNode();
             if (node instanceof ObjectNode objectNode) {
