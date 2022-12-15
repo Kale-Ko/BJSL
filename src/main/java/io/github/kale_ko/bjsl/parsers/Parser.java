@@ -76,7 +76,7 @@ public abstract class Parser {
             }
         } catch (RuntimeException | IOException e) {
             if (BJSL.getLoggerEnabled()) {
-                BJSL.getLogger().severe("Error while parsing:\n" + e.toString());;
+                BJSL.getLogger().severe("Error while parsing:\n" + e);;
             }
 
             throw e;
@@ -144,7 +144,7 @@ public abstract class Parser {
             }
         } catch (RuntimeException | IOException e) {
             if (BJSL.getLoggerEnabled()) {
-                BJSL.getLogger().severe("Error while parsing:\n" + e.toString());;
+                BJSL.getLogger().severe("Error while parsing:\n" + e);;
             }
 
             throw e;
