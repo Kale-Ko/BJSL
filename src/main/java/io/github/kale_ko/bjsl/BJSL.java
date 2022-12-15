@@ -17,6 +17,8 @@ public class BJSL {
     private static PropertiesParser propertiesParser = new PropertiesParser();
     private static BinaryParser binaryParser = new BinaryParser();
 
+    private BJSL() {}
+
     public static ParsedElement parseJson(String data) {
         return jsonParser.toElement(data);
     }
