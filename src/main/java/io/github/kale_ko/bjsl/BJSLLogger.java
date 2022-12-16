@@ -3,8 +3,7 @@ package io.github.kale_ko.bjsl;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.time.Instant;
-import java.time.temporal.ChronoField;
+import java.util.Calendar;
 
 public class BJSLLogger {
     public enum Level {
@@ -56,7 +55,7 @@ public class BJSLLogger {
             return;
         }
 
-        this.printWriter.println(this.format.replace("{message}", level.format + message).replace("{prefix}", this.prefix).replace("{PREFIX}", this.prefix.toUpperCase()).replace("{level}", level.name().toLowerCase()).replace("{LEVEL}", level.name().toUpperCase()).replace("{time}", Instant.now().get(ChronoField.HOUR_OF_DAY) + ":" + Instant.now().get(ChronoField.MINUTE_OF_HOUR) + ":" + Instant.now().get(ChronoField.SECOND_OF_MINUTE)).replace("{time12}", Instant.now().get(ChronoField.HOUR_OF_AMPM) + ":" + Instant.now().get(ChronoField.MINUTE_OF_HOUR) + ":" + Instant.now().get(ChronoField.SECOND_OF_MINUTE)).replace("{time24}", Instant.now().get(ChronoField.HOUR_OF_DAY) + ":" + Instant.now().get(ChronoField.MINUTE_OF_HOUR) + ":" + Instant.now().get(ChronoField.SECOND_OF_MINUTE)));
+        this.printWriter.println(this.format.replace("{message}", level.format + message).replace("{prefix}", this.prefix).replace("{PREFIX}", this.prefix.toUpperCase()).replace("{level}", level.name().toLowerCase()).replace("{LEVEL}", level.name().toUpperCase()).replace("{time}", Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + ":" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + Calendar.getInstance().get(Calendar.SECOND)).replace("{time12}", Calendar.getInstance().get(Calendar.HOUR) + ":" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + Calendar.getInstance().get(Calendar.SECOND)).replace("{time24}", Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + ":" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + Calendar.getInstance().get(Calendar.SECOND)));
     }
 
     public void log(Level level, Exception exception) {
