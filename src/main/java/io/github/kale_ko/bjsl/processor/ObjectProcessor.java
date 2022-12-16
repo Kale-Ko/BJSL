@@ -72,9 +72,9 @@ public class ObjectProcessor {
                         throw new RuntimeException("\"element\" could not be cast to \"" + clazz.getName() + "\"", e);
                     }
                 }
-            } else if (!clazz.isArray() && !clazz.isAnonymousClass() && !clazz.isInterface() && !clazz.isRecord() && !clazz.isAnnotation()) {
+            } else if (!clazz.isAnonymousClass() && !clazz.isInterface() && !clazz.isRecord() && !clazz.isAnnotation()) {
                 if (element instanceof ParsedObject) {
-                    if (clazz.isAssignableFrom(Map.class)) {
+                    if (Map.class.isAssignableFrom(clazz)) {
                         Map<String, Object> object = null;
 
                         try {
@@ -87,7 +87,7 @@ public class ObjectProcessor {
                             }
                         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
                             if (BJSL.getLoggerEnabled()) {
-                                BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e);
+                                BJSL.getLogger().warning("Nonfatal error while parsing: " + e);
                             }
                         }
 
@@ -103,7 +103,7 @@ public class ObjectProcessor {
                                 }
                             } catch (InstantiationException e) {
                                 if (BJSL.getLoggerEnabled()) {
-                                    BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e);
+                                    BJSL.getLogger().warning("Nonfatal error while parsing: " + e);
                                 }
                             }
                         }
@@ -111,11 +111,13 @@ public class ObjectProcessor {
                         if (object != null) {
                             for (Map.Entry<String, ParsedElement> entry : element.asObject().getEntries()) {
                                 try {
-                                    Object subObject = toObject(entry.getValue(), null);
-                                    object.put(entry.getKey().toString(), subObject);
+                                    Object subObject = toObject(entry.getValue(), Object.class);
+                                    object.put(entry.getKey(), subObject);
                                 } catch (RuntimeException e) {
                                 }
                             }
+
+                            return (T) object;
                         } else {
                             throw new RuntimeException("No constructors for \"" + clazz.getSimpleName() + "\" found and unsafe initialization failed");
                         }
@@ -132,7 +134,7 @@ public class ObjectProcessor {
                             }
                         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
                             if (BJSL.getLoggerEnabled()) {
-                                BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e);
+                                BJSL.getLogger().warning("Nonfatal error while parsing: " + e);
                             }
                         }
 
@@ -148,7 +150,7 @@ public class ObjectProcessor {
                                 }
                             } catch (InstantiationException e) {
                                 if (BJSL.getLoggerEnabled()) {
-                                    BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e);
+                                    BJSL.getLogger().warning("Nonfatal error while parsing: " + e);
                                 }
                             }
                         }
@@ -181,7 +183,7 @@ public class ObjectProcessor {
                                     }
                                 } catch (IllegalArgumentException | IllegalAccessException e) {
                                     if (BJSL.getLoggerEnabled()) {
-                                        BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e);
+                                        BJSL.getLogger().warning("Nonfatal error while parsing: " + e);
                                     }
                                 }
                             }
@@ -192,7 +194,7 @@ public class ObjectProcessor {
                         }
                     }
                 } else if (element instanceof ParsedArray) {
-                    if (clazz.isAssignableFrom(Collection.class)) {
+                    if (Collection.class.isAssignableFrom(clazz)) {
                         Collection<Object> object = null;
 
                         try {
@@ -205,7 +207,7 @@ public class ObjectProcessor {
                             }
                         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
                             if (BJSL.getLoggerEnabled()) {
-                                BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e);
+                                BJSL.getLogger().warning("Nonfatal error while parsing: " + e);
                             }
                         }
 
@@ -221,7 +223,7 @@ public class ObjectProcessor {
                                 }
                             } catch (InstantiationException e) {
                                 if (BJSL.getLoggerEnabled()) {
-                                    BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e);
+                                    BJSL.getLogger().warning("Nonfatal error while parsing: " + e);
                                 }
                             }
                         }
@@ -229,7 +231,7 @@ public class ObjectProcessor {
                         if (object != null) {
                             for (ParsedElement subElement : element.asArray().getValues()) {
                                 try {
-                                    object.add(toObject(subElement, clazz));
+                                    object.add(toObject(subElement, Object.class));
                                 } catch (RuntimeException e) {
                                 }
                             }
@@ -261,7 +263,7 @@ public class ObjectProcessor {
             }
         } catch (RuntimeException e) {
             if (BJSL.getLoggerEnabled()) {
-                BJSL.getLogger().severe("Error while parsing:\n" + e);
+                BJSL.getLogger().severe("Error while parsing: " + e);
             }
 
             throw e;
@@ -329,7 +331,7 @@ public class ObjectProcessor {
                             }
                         } catch (IllegalArgumentException | IllegalAccessException e2) {
                             if (BJSL.getLoggerEnabled()) {
-                                BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e);
+                                BJSL.getLogger().warning("Nonfatal error while parsing: " + e);
                             }
                         }
                     }
@@ -341,7 +343,7 @@ public class ObjectProcessor {
             }
         } catch (RuntimeException e) {
             if (BJSL.getLoggerEnabled()) {
-                BJSL.getLogger().severe("Error while parsing:\n" + e);
+                BJSL.getLogger().severe("Error while parsing: " + e);
             }
 
             throw e;
