@@ -107,7 +107,13 @@ public class ObjectProcessor {
                             }
                         } else {
                             try {
-                                object = (Map<String, Object>) LinkedHashMap.class.getConstructors()[0].newInstance();
+                                for (Constructor<?> constructor : LinkedHashMap.class.getConstructors()) {
+                                    if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
+                                        object = (Map<String, Object>) constructor.newInstance();
+
+                                        break;
+                                    }
+                                }
                             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                                 if (BJSL.getLoggerEnabled()) {
                                     BJSL.getLogger().warning("Nonfatal error while parsing: " + e);
@@ -252,7 +258,13 @@ public class ObjectProcessor {
                             }
                         } else {
                             try {
-                                object = (Collection<Object>) ArrayList.class.getConstructors()[0].newInstance();
+                                for (Constructor<?> constructor : ArrayList.class.getConstructors()) {
+                                    if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
+                                        object = (Collection<Object>) constructor.newInstance();
+
+                                        break;
+                                    }
+                                }
                             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                                 if (BJSL.getLoggerEnabled()) {
                                     BJSL.getLogger().warning("Nonfatal error while parsing: " + e);
