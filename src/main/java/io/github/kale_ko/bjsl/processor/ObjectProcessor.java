@@ -8,6 +8,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import io.github.kale_ko.bjsl.BJSL;
@@ -77,17 +78,40 @@ public class ObjectProcessor {
                     if (Map.class.isAssignableFrom(clazz)) {
                         Map<String, Object> object = null;
 
-                        try {
-                            for (Constructor<T> constructor : (Constructor<T>[]) clazz.getConstructors()) {
-                                if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
-                                    object = (Map<String, Object>) constructor.newInstance();
+                        if (!clazz.isInterface()) {
+                            try {
+                                for (Constructor<T> constructor : (Constructor<T>[]) clazz.getConstructors()) {
+                                    if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
+                                        object = (Map<String, Object>) constructor.newInstance();
 
-                                    break;
+                                        break;
+                                    }
+                                }
+                            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+                                if (BJSL.getLoggerEnabled()) {
+                                    BJSL.getLogger().warning("Nonfatal error while parsing: " + e);
                                 }
                             }
-                        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-                            if (BJSL.getLoggerEnabled()) {
-                                BJSL.getLogger().warning("Nonfatal error while parsing: " + e);
+
+                            if (object == null) {
+                                try {
+                                    Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
+                                    unsafeField.setAccessible(true);
+                                    sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
+                                    object = (Map<String, Object>) unsafe.allocateInstance(clazz);
+                                } catch (InstantiationException | IllegalAccessException | NoSuchFieldException e) {
+                                    if (BJSL.getLoggerEnabled()) {
+                                        BJSL.getLogger().warning("Nonfatal error while parsing: " + e);
+                                    }
+                                }
+                            }
+                        } else {
+                            try {
+                                object = (Map<String, Object>) LinkedHashMap.class.getConstructors()[0].newInstance();
+                            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                                if (BJSL.getLoggerEnabled()) {
+                                    BJSL.getLogger().warning("Nonfatal error while parsing: " + e);
+                                }
                             }
                         }
 
@@ -197,31 +221,37 @@ public class ObjectProcessor {
                     if (Collection.class.isAssignableFrom(clazz)) {
                         Collection<Object> object = null;
 
-                        try {
-                            for (Constructor<T> constructor : (Constructor<T>[]) clazz.getConstructors()) {
-                                if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
-                                    object = (Collection<Object>) constructor.newInstance();
+                        if (!clazz.isInterface()) {
+                            try {
+                                for (Constructor<T> constructor : (Constructor<T>[]) clazz.getConstructors()) {
+                                    if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
+                                        object = (Collection<Object>) constructor.newInstance();
 
-                                    break;
+                                        break;
+                                    }
+                                }
+                            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+                                if (BJSL.getLoggerEnabled()) {
+                                    BJSL.getLogger().warning("Nonfatal error while parsing: " + e);
                                 }
                             }
-                        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-                            if (BJSL.getLoggerEnabled()) {
-                                BJSL.getLogger().warning("Nonfatal error while parsing: " + e);
-                            }
-                        }
 
-                        if (object == null) {
-                            try {
+                            if (object == null) {
                                 try {
                                     Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
                                     unsafeField.setAccessible(true);
                                     sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
                                     object = (Collection<Object>) unsafe.allocateInstance(clazz);
-                                } catch (IllegalAccessException | NoSuchFieldException e) {
-                                    e.printStackTrace();
+                                } catch (InstantiationException | IllegalAccessException | NoSuchFieldException e) {
+                                    if (BJSL.getLoggerEnabled()) {
+                                        BJSL.getLogger().warning("Nonfatal error while parsing: " + e);
+                                    }
                                 }
-                            } catch (InstantiationException e) {
+                            }
+                        } else {
+                            try {
+                                object = (Collection<Object>) ArrayList.class.getConstructors()[0].newInstance();
+                            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                                 if (BJSL.getLoggerEnabled()) {
                                     BJSL.getLogger().warning("Nonfatal error while parsing: " + e);
                                 }
