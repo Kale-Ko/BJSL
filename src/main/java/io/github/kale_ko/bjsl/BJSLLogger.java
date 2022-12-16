@@ -28,7 +28,7 @@ public class BJSLLogger {
     }
 
     public BJSLLogger(String prefix, String format) {
-        this(prefix, format, System.console().writer());
+        this(prefix, format, System.out);
     }
 
     public BJSLLogger(String prefix, PrintStream printWriter) {

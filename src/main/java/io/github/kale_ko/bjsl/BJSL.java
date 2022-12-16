@@ -19,7 +19,7 @@ public class BJSL {
     private static PropertiesParser propertiesParser = new PropertiesParser();
     private static BinaryParser binaryParser = new BinaryParser();
 
-    private static BJSLLogger logger = new BJSLLogger("[BJSL]");
+    private static BJSLLogger logger = new BJSLLogger("BJSL");
 
     protected Parser parser;
     protected ObjectProcessor processor;
