@@ -73,7 +73,7 @@ public class ObjectProcessor {
                         throw new RuntimeException("\"element\" could not be cast to \"" + clazz.getName() + "\"", e);
                     }
                 }
-            } else if (!clazz.isAnonymousClass() && !clazz.isInterface() && !clazz.isRecord() && !clazz.isAnnotation()) {
+            } else if (!clazz.isAnonymousClass() && !clazz.isRecord() && !clazz.isAnnotation()) {
                 if (element instanceof ParsedObject) {
                     if (Map.class.isAssignableFrom(clazz)) {
                         Map<String, Object> object = null;
@@ -145,7 +145,7 @@ public class ObjectProcessor {
                         } else {
                             throw new RuntimeException("No constructors for \"" + clazz.getSimpleName() + "\" found and unsafe initialization failed");
                         }
-                    } else {
+                    } else if (!clazz.isInterface()) {
                         T object = null;
 
                         try {
@@ -216,6 +216,8 @@ public class ObjectProcessor {
                         } else {
                             throw new RuntimeException("No constructors for \"" + clazz.getSimpleName() + "\" found and unsafe initialization failed");
                         }
+                    } else {
+                        throw new RuntimeException("\"clazz\" is not a serializable type (" + clazz + ")");
                     }
                 } else if (element instanceof ParsedArray) {
                     if (Collection.class.isAssignableFrom(clazz)) {
@@ -270,7 +272,7 @@ public class ObjectProcessor {
                         } else {
                             throw new RuntimeException("No constructors for \"" + clazz.getSimpleName() + "\" found and unsafe initialization failed");
                         }
-                    } else {
+                    } else if (!clazz.isInterface()) {
                         Object[] array = new Object[element.asArray().getSize()];
 
                         int i = 0;
@@ -284,6 +286,8 @@ public class ObjectProcessor {
                         }
 
                         return (T) array;
+                    } else {
+                        throw new RuntimeException("\"clazz\" is not a serializable type (" + clazz + ")");
                     }
                 } else {
                     throw new RuntimeException("\"element\" is not an object or array");
