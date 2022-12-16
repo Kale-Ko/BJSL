@@ -18,6 +18,10 @@ public class ParsedObject extends ParsedElement {
         return this.object.size();
     }
 
+    public List<Map.Entry<String, ParsedElement>> getEntries() {
+        return new ArrayList<Map.Entry<String, ParsedElement>>(this.object.entrySet());
+    }
+
     public List<String> getKeys() {
         return new ArrayList<String>(this.object.keySet());
     }

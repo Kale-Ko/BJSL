@@ -7,7 +7,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import io.github.kale_ko.bjsl.BJSL;
 import io.github.kale_ko.bjsl.elements.ParsedArray;
 import io.github.kale_ko.bjsl.elements.ParsedElement;
@@ -72,78 +74,187 @@ public class ObjectProcessor {
                 }
             } else if (!clazz.isArray() && !clazz.isAnonymousClass() && !clazz.isInterface() && !clazz.isRecord() && !clazz.isAnnotation()) {
                 if (element instanceof ParsedObject) {
-                    T object = null;
+                    if (clazz.isAssignableFrom(Map.class)) {
+                        Map<String, Object> object = null;
 
-                    try {
-                        for (Constructor<T> constructor : (Constructor<T>[]) clazz.getConstructors()) {
-                            if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
-                                object = constructor.newInstance();
-
-                                break;
-                            }
-                        }
-                    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-                        if (BJSL.getLoggerEnabled()) {
-                            BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e);
-                        }
-                    }
-
-                    if (object == null) {
                         try {
-                            try {
-                                Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
-                                unsafeField.setAccessible(true);
-                                sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
-                                object = (T) unsafe.allocateInstance(clazz);
-                            } catch (IllegalAccessException | NoSuchFieldException e) {
-                                e.printStackTrace();
+                            for (Constructor<T> constructor : (Constructor<T>[]) clazz.getConstructors()) {
+                                if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
+                                    object = (Map<String, Object>) constructor.newInstance();
+
+                                    break;
+                                }
                             }
-                        } catch (InstantiationException e) {
+                        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
                             if (BJSL.getLoggerEnabled()) {
                                 BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e);
                             }
                         }
-                    }
 
-                    if (object != null) {
-                        List<Field> fields = getFields(object.getClass());
-
-                        for (Field field : fields) {
+                        if (object == null) {
                             try {
-                                if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
-                                    Boolean shouldSerialize = !Modifier.isTransient(field.getModifiers());
-
-                                    for (Annotation annotation : field.getDeclaredAnnotations()) {
-                                        if (annotation.annotationType() == DoSerialize.class) {
-                                            shouldSerialize = true;
-                                        } else if (annotation.annotationType() == DontSerialize.class) {
-                                            shouldSerialize = false;
-                                        }
-                                    }
-
-                                    if (shouldSerialize) {
-                                        if (element.asObject().has(field.getName())) {
-                                            try {
-                                                Object subObject = toObject(element.asObject().get(field.getName()), field.getType());
-                                                field.set(object, subObject);
-                                            } catch (RuntimeException e) {
-                                            }
-                                        }
-                                    }
+                                try {
+                                    Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
+                                    unsafeField.setAccessible(true);
+                                    sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
+                                    object = (Map<String, Object>) unsafe.allocateInstance(clazz);
+                                } catch (IllegalAccessException | NoSuchFieldException e) {
+                                    e.printStackTrace();
                                 }
-                            } catch (IllegalArgumentException | IllegalAccessException e) {
+                            } catch (InstantiationException e) {
                                 if (BJSL.getLoggerEnabled()) {
                                     BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e);
                                 }
                             }
                         }
 
-                        return object;
+                        if (object != null) {
+                            for (Map.Entry<String, ParsedElement> entry : element.asObject().getEntries()) {
+                                try {
+                                    Object subObject = toObject(entry.getValue(), null);
+                                    object.put(entry.getKey().toString(), subObject);
+                                } catch (RuntimeException e) {
+                                }
+                            }
+                        } else {
+                            throw new RuntimeException("No constructors for \"" + clazz.getSimpleName() + "\" found and unsafe initialization failed");
+                        }
                     } else {
-                        throw new RuntimeException("No constructors for \"" + clazz.getSimpleName() + "\" found and unsafe initialization failed");
+                        T object = null;
+
+                        try {
+                            for (Constructor<T> constructor : (Constructor<T>[]) clazz.getConstructors()) {
+                                if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
+                                    object = constructor.newInstance();
+
+                                    break;
+                                }
+                            }
+                        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+                            if (BJSL.getLoggerEnabled()) {
+                                BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e);
+                            }
+                        }
+
+                        if (object == null) {
+                            try {
+                                try {
+                                    Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
+                                    unsafeField.setAccessible(true);
+                                    sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
+                                    object = (T) unsafe.allocateInstance(clazz);
+                                } catch (IllegalAccessException | NoSuchFieldException e) {
+                                    e.printStackTrace();
+                                }
+                            } catch (InstantiationException e) {
+                                if (BJSL.getLoggerEnabled()) {
+                                    BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e);
+                                }
+                            }
+                        }
+
+                        if (object != null) {
+                            List<Field> fields = getFields(object.getClass());
+
+                            for (Field field : fields) {
+                                try {
+                                    if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
+                                        Boolean shouldSerialize = !Modifier.isTransient(field.getModifiers());
+
+                                        for (Annotation annotation : field.getDeclaredAnnotations()) {
+                                            if (annotation.annotationType() == DoSerialize.class) {
+                                                shouldSerialize = true;
+                                            } else if (annotation.annotationType() == DontSerialize.class) {
+                                                shouldSerialize = false;
+                                            }
+                                        }
+
+                                        if (shouldSerialize) {
+                                            if (element.asObject().has(field.getName())) {
+                                                try {
+                                                    Object subObject = toObject(element.asObject().get(field.getName()), field.getType());
+                                                    field.set(object, subObject);
+                                                } catch (RuntimeException e) {
+                                                }
+                                            }
+                                        }
+                                    }
+                                } catch (IllegalArgumentException | IllegalAccessException e) {
+                                    if (BJSL.getLoggerEnabled()) {
+                                        BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e);
+                                    }
+                                }
+                            }
+
+                            return object;
+                        } else {
+                            throw new RuntimeException("No constructors for \"" + clazz.getSimpleName() + "\" found and unsafe initialization failed");
+                        }
+                    }
+                } else if (element instanceof ParsedArray) {
+                    if (clazz.isAssignableFrom(Collection.class)) {
+                        Collection<Object> object = null;
+
+                        try {
+                            for (Constructor<T> constructor : (Constructor<T>[]) clazz.getConstructors()) {
+                                if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
+                                    object = (Collection<Object>) constructor.newInstance();
+
+                                    break;
+                                }
+                            }
+                        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+                            if (BJSL.getLoggerEnabled()) {
+                                BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e);
+                            }
+                        }
+
+                        if (object == null) {
+                            try {
+                                try {
+                                    Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
+                                    unsafeField.setAccessible(true);
+                                    sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
+                                    object = (Collection<Object>) unsafe.allocateInstance(clazz);
+                                } catch (IllegalAccessException | NoSuchFieldException e) {
+                                    e.printStackTrace();
+                                }
+                            } catch (InstantiationException e) {
+                                if (BJSL.getLoggerEnabled()) {
+                                    BJSL.getLogger().warning("Nonfatal error while parsing:\n" + e);
+                                }
+                            }
+                        }
+
+                        if (object != null) {
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                try {
+                                    object.add(toObject(subElement, clazz));
+                                } catch (RuntimeException e) {
+                                }
+                            }
+
+                            return (T) object;
+                        } else {
+                            throw new RuntimeException("No constructors for \"" + clazz.getSimpleName() + "\" found and unsafe initialization failed");
+                        }
+                    } else {
+                        Object[] array = new Object[element.asArray().getSize()];
+
+                        int i = 0;
+                        for (ParsedElement subElement : element.asArray().getValues()) {
+                            try {
+                                array[i] = toObject(subElement, clazz);
+                            } catch (RuntimeException e) {
+                            }
+
+                            i++;
+                        }
+
+                        return (T) array;
                     }
                 } else {
-                    throw new RuntimeException("\"element\" is not an object");
+                    throw new RuntimeException("\"element\" is not an object or array");
                 }
             } else {
                 throw new RuntimeException("\"clazz\" is not a serializable type (" + clazz + ")");
@@ -159,35 +270,6 @@ public class ObjectProcessor {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> T[] toArray(ParsedElement element, Class<T[]> clazz) {
-        try {
-            if (element instanceof ParsedArray) {
-                Object[] array = new Object[element.asArray().getSize()];
-
-                int i = 0;
-                for (ParsedElement subElement : element.asArray().getValues()) {
-                    try {
-                        array[i] = toObject(subElement, clazz);
-                    } catch (RuntimeException e) {
-                    }
-
-                    i++;
-                }
-
-                return (T[]) array;
-            } else {
-                throw new RuntimeException("\"element\" is not an array");
-            }
-        } catch (RuntimeException e) {
-            if (BJSL.getLoggerEnabled()) {
-                BJSL.getLogger().severe("Error while parsing:\n" + e);
-            }
-
-            throw e;
-        }
-    }
-
     public ParsedElement toElement(Object object) {
         try {
             try {
@@ -195,6 +277,14 @@ public class ObjectProcessor {
             } catch (ClassCastException e) {
                 if (object instanceof Enum<?> anEnum) {
                     return ParsedPrimitive.fromString(anEnum.name());
+                } else if (object instanceof Collection<?> list) {
+                    ParsedArray arrayElement = ParsedArray.create();
+
+                    for (Object item : list) {
+                        arrayElement.add(toElement(item));
+                    }
+
+                    return arrayElement;
                 } else if (object instanceof Object[]) {
                     ParsedArray arrayElement = ParsedArray.create();
 
@@ -203,6 +293,14 @@ public class ObjectProcessor {
                     }
 
                     return arrayElement;
+                } else if (object instanceof Map<?, ?> map) {
+                    ParsedObject objectElement = ParsedObject.create();
+
+                    for (Map.Entry<?, ?> entry : map.entrySet()) {
+                        objectElement.set(entry.getKey().toString(), toElement(entry.getValue()));
+                    }
+
+                    return objectElement;
                 } else if (object instanceof Object) {
                     ParsedObject objectElement = ParsedObject.create();
 
