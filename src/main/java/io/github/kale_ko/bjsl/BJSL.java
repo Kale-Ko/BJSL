@@ -1,7 +1,6 @@
 package io.github.kale_ko.bjsl;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 import io.github.kale_ko.bjsl.elements.ParsedElement;
 import io.github.kale_ko.bjsl.parsers.BinaryParser;
 import io.github.kale_ko.bjsl.parsers.JsonParser;
@@ -20,8 +19,7 @@ public class BJSL {
     private static PropertiesParser propertiesParser = new PropertiesParser();
     private static BinaryParser binaryParser = new BinaryParser();
 
-    private static Logger logger = Logger.getLogger("BJSL");
-    private static boolean loggerEnabled = true;
+    private static BJSLLogger logger = new BJSLLogger("[BJSL] ");
 
     protected Parser parser;
     protected ObjectProcessor processor;
@@ -47,16 +45,8 @@ public class BJSL {
         return this.parser.toString(this.processor.toElement(object));
     }
 
-    public static Logger getLogger() {
+    public static BJSLLogger getLogger() {
         return logger;
-    }
-
-    public static boolean getLoggerEnabled() {
-        return loggerEnabled;
-    }
-
-    public static void setLoggerEnabled(boolean flag) {
-        loggerEnabled = flag;
     }
 
     public static ParsedElement parseJson(String data) throws IOException {
