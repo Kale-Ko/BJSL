@@ -76,7 +76,7 @@ public abstract class Parser {
             }
         } catch (RuntimeException | IOException e) {
             if (BJSL.getLoggerEnabled()) {
-                BJSL.getLogger().severe("Error while parsing:\n" + e);;
+                BJSL.getLogger().severe("Error while parsing: " + e);
             }
 
             throw e;
@@ -139,12 +139,18 @@ public abstract class Parser {
                 inputStream.close();
 
                 return output.toString().trim();
+            } else if (element instanceof ParsedPrimitive) {
+                if (element.asPrimitive().get() != null) {
+                    return element.asPrimitive().get().toString().trim();
+                } else {
+                    return "null";
+                }
             } else {
-                return element.asPrimitive().get().toString().trim();
+                throw new RuntimeException("\"element\" is not a parsable type");
             }
         } catch (RuntimeException | IOException e) {
             if (BJSL.getLoggerEnabled()) {
-                BJSL.getLogger().severe("Error while parsing:\n" + e);;
+                BJSL.getLogger().severe("Error while parsing: " + e);
             }
 
             throw e;
@@ -244,7 +250,7 @@ public abstract class Parser {
             }
         } else {
             if (BJSL.getLoggerEnabled()) {
-                BJSL.getLogger().warning("Warning while parsing:\nNode \"" + key + "\" is not a serializable type (" + node.getClass().getSimpleName() + ")");;
+                BJSL.getLogger().warning("Warning while parsing: Node \"" + key + "\" is not a serializable type (" + node.getClass().getSimpleName() + ")");
             }
         }
     }
@@ -359,12 +365,12 @@ public abstract class Parser {
                 }
             } else {
                 if (BJSL.getLoggerEnabled()) {
-                    BJSL.getLogger().warning("Warning while parsing:\nElement \"" + key + "\" is not a serializable type (ParsedPrimitive." + primitiveElement.getType() + ")");
+                    BJSL.getLogger().warning("Warning while parsing: Element \"" + key + "\" is not a serializable type (ParsedPrimitive." + primitiveElement.getType() + ")");
                 }
             }
         } else {
             if (BJSL.getLoggerEnabled()) {
-                BJSL.getLogger().warning("Warning while parsing:\nElement \"" + key + "\" is not a serializable type (" + element.getClass().getSimpleName() + ")");
+                BJSL.getLogger().warning("Warning while parsing: Element \"" + key + "\" is not a serializable type (" + element.getClass().getSimpleName() + ")");
             }
         }
     }
