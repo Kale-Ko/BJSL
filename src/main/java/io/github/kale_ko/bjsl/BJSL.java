@@ -19,7 +19,7 @@ public class BJSL {
     private static PropertiesParser propertiesParser = new PropertiesParser();
     private static BinaryParser binaryParser = new BinaryParser();
 
-    private static BJSLLogger logger = new BJSLLogger("[BJSL] ");
+    private static BJSLLogger logger = new BJSLLogger("[BJSL]");
 
     protected Parser parser;
     protected ObjectProcessor processor;
@@ -43,10 +43,6 @@ public class BJSL {
 
     public String stringify(Object object) throws IOException {
         return this.parser.toString(this.processor.toElement(object));
-    }
-
-    public static BJSLLogger getLogger() {
-        return logger;
     }
 
     public static ParsedElement parseJson(String data) throws IOException {
@@ -127,5 +123,13 @@ public class BJSL {
 
     public static String stringifyBinary(Object object) throws IOException {
         return binaryParser.toString(objectProcessor.toElement(object));
+    }
+
+    public static BJSLLogger getLogger() {
+        return BJSL.logger;
+    }
+
+    public static void setLogger(BJSLLogger value) {
+        BJSL.logger = value;
     }
 }
