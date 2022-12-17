@@ -32,7 +32,7 @@ public class ParsedObject extends ParsedElement {
 
     public Boolean has(String key) {
         if (key == null) {
-            throw new NullPointerException("\"key\" can not be null");
+            throw new NullPointerException("Key can not be null");
         }
 
         return this.object.containsKey(key);
@@ -40,22 +40,22 @@ public class ParsedObject extends ParsedElement {
 
     public ParsedElement get(String key) {
         if (key == null) {
-            throw new NullPointerException("\"key\" can not be null");
+            throw new NullPointerException("Key can not be null");
         }
 
         if (this.object.containsKey(key)) {
             return this.object.get(key);
         } else {
-            throw new NullPointerException("\"key\" does not exist on this object");
+            throw new NullPointerException("Key does not exist on this object");
         }
     }
 
     public void set(String key, ParsedElement value) {
         if (key == null) {
-            throw new NullPointerException("\"key\" can not be null");
+            throw new NullPointerException("Key can not be null");
         }
         if (value == null) {
-            throw new NullPointerException("\"value\" can not be null");
+            throw new NullPointerException("Value can not be null");
         }
 
         if (this.object.containsKey(key)) {
@@ -66,13 +66,13 @@ public class ParsedObject extends ParsedElement {
 
     public void remove(String key) {
         if (key == null) {
-            throw new NullPointerException("\"key\" can not be null");
+            throw new NullPointerException("Key can not be null");
         }
 
         if (this.object.containsKey(key)) {
             this.object.remove(key);
         } else {
-            throw new NullPointerException("\"key\" does not exist on this object");
+            throw new NullPointerException("Key does not exist on this object");
         }
     }
 
@@ -82,7 +82,7 @@ public class ParsedObject extends ParsedElement {
 
     public static ParsedObject from(Map<String, ParsedElement> object) {
         if (object == null) {
-            throw new NullPointerException("\"object\" can not be null");
+            throw new NullPointerException("Object can not be null");
         }
 
         return new ParsedObject(new LinkedHashMap<String, ParsedElement>(object));
