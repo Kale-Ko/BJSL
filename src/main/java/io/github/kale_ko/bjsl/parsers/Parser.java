@@ -44,7 +44,7 @@ public abstract class Parser {
 
     public ParsedElement toElement(String data) throws IOException {
         if (data == null) {
-            throw new NullPointerException("\"data\" can not be null");
+            throw new NullPointerException("Data can not be null");
         }
 
         data = data.trim();
@@ -74,7 +74,7 @@ public abstract class Parser {
             } else {
                 // TODO Return the primitive type
 
-                throw new RuntimeException("\"data\" is not an object or array");
+                throw new RuntimeException("Data is not an object or array");
             }
         } catch (RuntimeException | IOException e) {
             StringWriter writer = new StringWriter();
@@ -87,7 +87,7 @@ public abstract class Parser {
 
     public String toString(ParsedElement element) throws IOException {
         if (element == null) {
-            throw new NullPointerException("\"element\" can not be null");
+            throw new NullPointerException("Element can not be null");
         }
 
         try {
@@ -148,7 +148,7 @@ public abstract class Parser {
                     return "null";
                 }
             } else {
-                throw new RuntimeException("\"element\" is not a parsable type");
+                throw new RuntimeException("Element is not a parsable type");
             }
         } catch (RuntimeException | IOException e) {
             StringWriter writer = new StringWriter();
@@ -167,7 +167,7 @@ public abstract class Parser {
             } else if (element instanceof ParsedArray arrayElement) {
                 arrayElement.add(subElement);
             } else {
-                throw new RuntimeException("\"element\" is not an object or array");
+                throw new RuntimeException("Element is not an object or array");
             }
 
             objectNode.fieldNames().forEachRemaining((String subKey) -> {
@@ -180,7 +180,7 @@ public abstract class Parser {
             } else if (element instanceof ParsedArray arrayElement) {
                 arrayElement.add(subElement);
             } else {
-                throw new RuntimeException("\"element\" is not an object or array");
+                throw new RuntimeException("Element is not an object or array");
             }
 
             arrayNode.elements().forEachRemaining((JsonNode subNode) -> {
@@ -192,7 +192,7 @@ public abstract class Parser {
             } else if (element instanceof ParsedArray arrayElement) {
                 arrayElement.add(ParsedPrimitive.fromString(node.asText()));
             } else {
-                throw new RuntimeException("\"element\" is not an object or array");
+                throw new RuntimeException("Element is not an object or array");
             }
         } else if (node instanceof ShortNode) {
             if (element instanceof ParsedObject objectElement) {
@@ -200,7 +200,7 @@ public abstract class Parser {
             } else if (element instanceof ParsedArray arrayElement) {
                 arrayElement.add(ParsedPrimitive.fromShort((short) node.asInt()));
             } else {
-                throw new RuntimeException("\"element\" is not an object or array");
+                throw new RuntimeException("Element is not an object or array");
             }
         } else if (node instanceof IntNode) {
             if (element instanceof ParsedObject objectElement) {
@@ -208,7 +208,7 @@ public abstract class Parser {
             } else if (element instanceof ParsedArray arrayElement) {
                 arrayElement.add(ParsedPrimitive.fromInteger(node.asInt()));
             } else {
-                throw new RuntimeException("\"element\" is not an object or array");
+                throw new RuntimeException("Element is not an object or array");
             }
         } else if (node instanceof LongNode) {
             if (element instanceof ParsedObject objectElement) {
@@ -216,7 +216,7 @@ public abstract class Parser {
             } else if (element instanceof ParsedArray arrayElement) {
                 arrayElement.add(ParsedPrimitive.fromLong(node.asLong()));
             } else {
-                throw new RuntimeException("\"element\" is not an object or array");
+                throw new RuntimeException("Element is not an object or array");
             }
         } else if (node instanceof FloatNode) {
             if (element instanceof ParsedObject objectElement) {
@@ -224,7 +224,7 @@ public abstract class Parser {
             } else if (element instanceof ParsedArray arrayElement) {
                 arrayElement.add(ParsedPrimitive.fromFloat((float) node.asDouble()));
             } else {
-                throw new RuntimeException("\"element\" is not an object or array");
+                throw new RuntimeException("Element is not an object or array");
             }
         } else if (node instanceof DoubleNode) {
             if (element instanceof ParsedObject objectElement) {
@@ -232,7 +232,7 @@ public abstract class Parser {
             } else if (element instanceof ParsedArray arrayElement) {
                 arrayElement.add(ParsedPrimitive.fromDouble(node.asDouble()));
             } else {
-                throw new RuntimeException("\"element\" is not an object or array");
+                throw new RuntimeException("Element is not an object or array");
             }
         } else if (node instanceof BooleanNode) {
             if (element instanceof ParsedObject objectElement) {
@@ -240,7 +240,7 @@ public abstract class Parser {
             } else if (element instanceof ParsedArray arrayElement) {
                 arrayElement.add(ParsedPrimitive.fromBoolean(node.asBoolean()));
             } else {
-                throw new RuntimeException("\"element\" is not an object or array");
+                throw new RuntimeException("Element is not an object or array");
             }
         } else if (node instanceof NullNode) {
             if (element instanceof ParsedObject objectElement) {
@@ -248,7 +248,7 @@ public abstract class Parser {
             } else if (element instanceof ParsedArray arrayElement) {
                 arrayElement.add(ParsedPrimitive.fromNull());
             } else {
-                throw new RuntimeException("\"element\" is not an object or array");
+                throw new RuntimeException("Element is not an object or array");
             }
         } else {
             BJSL.getLogger().warning("Warning while parsing: Node \"" + key + "\" is not a serializable type (" + node.getClass().getSimpleName() + ")");
@@ -263,7 +263,7 @@ public abstract class Parser {
             } else if (node instanceof ArrayNode arrayNode) {
                 arrayNode.add(subNode);
             } else {
-                throw new RuntimeException("\"node\" is not an object or array");
+                throw new RuntimeException("Node is not an object or array");
             }
 
             for (String subkey : objectElement.getKeys()) {
@@ -276,7 +276,7 @@ public abstract class Parser {
             } else if (node instanceof ArrayNode objectNode) {
                 objectNode.add(subNode);
             } else {
-                throw new RuntimeException("\"node\" is not an object or array");
+                throw new RuntimeException("Node is not an object or array");
             }
 
             for (ParsedElement subElement : arrayElement.getValues()) {
@@ -289,7 +289,7 @@ public abstract class Parser {
                 } else if (node instanceof ArrayNode objectNode) {
                     objectNode.add(primitiveElement.asString());
                 } else {
-                    throw new RuntimeException("\"node\" is not an object or array");
+                    throw new RuntimeException("Node is not an object or array");
                 }
             } else if (primitiveElement.isByte()) {
                 if (node instanceof ObjectNode objectNode) {
@@ -297,7 +297,7 @@ public abstract class Parser {
                 } else if (node instanceof ArrayNode objectNode) {
                     objectNode.add(primitiveElement.asByte());
                 } else {
-                    throw new RuntimeException("\"node\" is not an object or array");
+                    throw new RuntimeException("Node is not an object or array");
                 }
             } else if (primitiveElement.isChar()) {
                 if (node instanceof ObjectNode objectNode) {
@@ -305,7 +305,7 @@ public abstract class Parser {
                 } else if (node instanceof ArrayNode objectNode) {
                     objectNode.add(primitiveElement.asChar());
                 } else {
-                    throw new RuntimeException("\"node\" is not an object or array");
+                    throw new RuntimeException("Node is not an object or array");
                 }
             } else if (primitiveElement.isShort()) {
                 if (node instanceof ObjectNode objectNode) {
@@ -313,7 +313,7 @@ public abstract class Parser {
                 } else if (node instanceof ArrayNode objectNode) {
                     objectNode.add(primitiveElement.asShort());
                 } else {
-                    throw new RuntimeException("\"node\" is not an object or array");
+                    throw new RuntimeException("Node is not an object or array");
                 }
             } else if (primitiveElement.isInteger()) {
                 if (node instanceof ObjectNode objectNode) {
@@ -321,7 +321,7 @@ public abstract class Parser {
                 } else if (node instanceof ArrayNode objectNode) {
                     objectNode.add(primitiveElement.asInteger());
                 } else {
-                    throw new RuntimeException("\"node\" is not an object or array");
+                    throw new RuntimeException("Node is not an object or array");
                 }
             } else if (primitiveElement.isLong()) {
                 if (node instanceof ObjectNode objectNode) {
@@ -329,7 +329,7 @@ public abstract class Parser {
                 } else if (node instanceof ArrayNode objectNode) {
                     objectNode.add(primitiveElement.asLong());
                 } else {
-                    throw new RuntimeException("\"node\" is not an object or array");
+                    throw new RuntimeException("Node is not an object or array");
                 }
             } else if (primitiveElement.isFloat()) {
                 if (node instanceof ObjectNode objectNode) {
@@ -337,7 +337,7 @@ public abstract class Parser {
                 } else if (node instanceof ArrayNode objectNode) {
                     objectNode.add(primitiveElement.asFloat());
                 } else {
-                    throw new RuntimeException("\"node\" is not an object or array");
+                    throw new RuntimeException("Node is not an object or array");
                 }
             } else if (primitiveElement.isDouble()) {
                 if (node instanceof ObjectNode objectNode) {
@@ -345,7 +345,7 @@ public abstract class Parser {
                 } else if (node instanceof ArrayNode objectNode) {
                     objectNode.add(primitiveElement.asDouble());
                 } else {
-                    throw new RuntimeException("\"node\" is not an object or array");
+                    throw new RuntimeException("Node is not an object or array");
                 }
             } else if (primitiveElement.isBoolean()) {
                 if (node instanceof ObjectNode objectNode) {
@@ -353,7 +353,7 @@ public abstract class Parser {
                 } else if (node instanceof ArrayNode objectNode) {
                     objectNode.add(primitiveElement.asBoolean());
                 } else {
-                    throw new RuntimeException("\"node\" is not an object or array");
+                    throw new RuntimeException("Node is not an object or array");
                 }
             } else if (primitiveElement.isNull()) {
                 if (node instanceof ObjectNode objectNode) {
@@ -361,7 +361,7 @@ public abstract class Parser {
                 } else if (node instanceof ArrayNode objectNode) {
                     objectNode.addNull();
                 } else {
-                    throw new RuntimeException("\"node\" is not an object or array");
+                    throw new RuntimeException("Node is not an object or array");
                 }
             } else {
                 BJSL.getLogger().warning("Warning while parsing: Element \"" + key + "\" is not a serializable type (ParsedPrimitive." + primitiveElement.getType() + ")");
