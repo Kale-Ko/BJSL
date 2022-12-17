@@ -3,6 +3,8 @@ package io.github.kale_ko.bjsl.parsers;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.ObjectCodec;
@@ -75,7 +77,9 @@ public abstract class Parser {
                 throw new RuntimeException("\"data\" is not an object or array");
             }
         } catch (RuntimeException | IOException e) {
-            BJSL.getLogger().error(new RuntimeException("Error while parsing:", e));
+            StringWriter writer = new StringWriter();
+            new RuntimeException("Error while parsing:", e).printStackTrace(new PrintWriter(writer));
+            BJSL.getLogger().severe(writer.toString());
 
             throw e;
         }
@@ -147,7 +151,9 @@ public abstract class Parser {
                 throw new RuntimeException("\"element\" is not a parsable type");
             }
         } catch (RuntimeException | IOException e) {
-            BJSL.getLogger().error(new RuntimeException("Error while parsing:", e));
+            StringWriter writer = new StringWriter();
+            new RuntimeException("Error while parsing:", e).printStackTrace(new PrintWriter(writer));
+            BJSL.getLogger().severe(writer.toString());
 
             throw e;
         }
