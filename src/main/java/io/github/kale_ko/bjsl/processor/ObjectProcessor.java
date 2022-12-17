@@ -1,5 +1,7 @@
 package io.github.kale_ko.bjsl.processor;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -88,7 +90,9 @@ public class ObjectProcessor {
                                     }
                                 }
                             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-                                BJSL.getLogger().warning(new RuntimeException("Nonfatal error while parsing:", e));
+                                StringWriter writer = new StringWriter();
+                                new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
+                                BJSL.getLogger().warning(writer.toString());
                             }
 
                             if (object == null) {
@@ -98,7 +102,9 @@ public class ObjectProcessor {
                                     sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
                                     object = (Map<String, Object>) unsafe.allocateInstance(clazz);
                                 } catch (InstantiationException | IllegalAccessException | NoSuchFieldException e) {
-                                    BJSL.getLogger().warning(new RuntimeException("Nonfatal error while parsing:", e));
+                                    StringWriter writer = new StringWriter();
+                                    new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
+                                    BJSL.getLogger().warning(writer.toString());
                                 }
                             }
                         } else {
@@ -111,7 +117,9 @@ public class ObjectProcessor {
                                     }
                                 }
                             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                                BJSL.getLogger().warning(new RuntimeException("Nonfatal error while parsing:", e));
+                                StringWriter writer = new StringWriter();
+                                new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
+                                BJSL.getLogger().warning(writer.toString());
                             }
                         }
 
@@ -122,7 +130,9 @@ public class ObjectProcessor {
                                 sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
                                 object = (Map<String, Object>) unsafe.allocateInstance(clazz);
                             } catch (InstantiationException | IllegalAccessException | NoSuchFieldException e) {
-                                BJSL.getLogger().warning(new RuntimeException("Nonfatal error while parsing:", e));
+                                StringWriter writer = new StringWriter();
+                                new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
+                                BJSL.getLogger().warning(writer.toString());
                             }
                         }
 
@@ -148,7 +158,9 @@ public class ObjectProcessor {
                                 }
                             }
                         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-                            BJSL.getLogger().warning(new RuntimeException("Nonfatal error while parsing:", e));
+                            StringWriter writer = new StringWriter();
+                            new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
+                            BJSL.getLogger().warning(writer.toString());
                         }
 
                         if (object == null) {
@@ -158,7 +170,9 @@ public class ObjectProcessor {
                                 sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
                                 object = (T) unsafe.allocateInstance(clazz);
                             } catch (InstantiationException | IllegalAccessException | NoSuchFieldException e) {
-                                BJSL.getLogger().warning(new RuntimeException("Nonfatal error while parsing:", e));
+                                StringWriter writer = new StringWriter();
+                                new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
+                                BJSL.getLogger().warning(writer.toString());
                             }
                         }
 
@@ -186,7 +200,9 @@ public class ObjectProcessor {
                                         }
                                     }
                                 } catch (IllegalArgumentException | IllegalAccessException e) {
-                                    BJSL.getLogger().warning(new RuntimeException("Nonfatal error while parsing:", e));
+                                    StringWriter writer = new StringWriter();
+                                    new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
+                                    BJSL.getLogger().warning(writer.toString());
                                 }
                             }
 
@@ -211,7 +227,9 @@ public class ObjectProcessor {
                                     }
                                 }
                             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-                                BJSL.getLogger().warning(new RuntimeException("Nonfatal error while parsing:", e));
+                                StringWriter writer = new StringWriter();
+                                new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
+                                BJSL.getLogger().warning(writer.toString());
                             }
 
                             if (object == null) {
@@ -221,7 +239,9 @@ public class ObjectProcessor {
                                     sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
                                     object = (Collection<Object>) unsafe.allocateInstance(clazz);
                                 } catch (InstantiationException | IllegalAccessException | NoSuchFieldException e) {
-                                    BJSL.getLogger().warning(new RuntimeException("Nonfatal error while parsing:", e));
+                                    StringWriter writer = new StringWriter();
+                                    new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
+                                    BJSL.getLogger().warning(writer.toString());
                                 }
                             }
                         } else {
@@ -234,7 +254,9 @@ public class ObjectProcessor {
                                     }
                                 }
                             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                                BJSL.getLogger().warning(new RuntimeException("Nonfatal error while parsing:", e));
+                                StringWriter writer = new StringWriter();
+                                new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
+                                BJSL.getLogger().warning(writer.toString());
                             }
                         }
 
@@ -268,7 +290,9 @@ public class ObjectProcessor {
                 throw new RuntimeException("\"clazz\" is not a serializable type (" + clazz + ")");
             }
         } catch (RuntimeException e) {
-            BJSL.getLogger().error(new RuntimeException("Error while parsing:", e));
+            StringWriter writer = new StringWriter();
+            new RuntimeException("Error while parsing:", e).printStackTrace(new PrintWriter(writer));
+            BJSL.getLogger().severe(writer.toString());
 
             throw e;
         }
@@ -334,7 +358,9 @@ public class ObjectProcessor {
                                 }
                             }
                         } catch (IllegalArgumentException | IllegalAccessException e2) {
-                            BJSL.getLogger().warning(new RuntimeException("Nonfatal error while parsing:", e2));
+                            StringWriter writer = new StringWriter();
+                            new RuntimeException("Nonfatal error while parsing:", e2).printStackTrace(new PrintWriter(writer));
+                            BJSL.getLogger().warning(writer.toString());
                         }
                     }
 
@@ -344,7 +370,9 @@ public class ObjectProcessor {
                 }
             }
         } catch (RuntimeException e) {
-            BJSL.getLogger().error(new RuntimeException("Error while parsing:", e));
+            StringWriter writer = new StringWriter();
+            new RuntimeException("Error while parsing:", e).printStackTrace(new PrintWriter(writer));
+            BJSL.getLogger().severe(writer.toString());
 
             throw e;
         }
