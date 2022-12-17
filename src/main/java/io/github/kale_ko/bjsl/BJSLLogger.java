@@ -7,7 +7,7 @@ import java.util.Calendar;
 
 public class BJSLLogger {
     public enum Level {
-        INFO("\\e[0;37m"), WARNING("\\e[0;33m"), ERROR("\\e[0;31m");
+        INFO("\033[0;37m"), WARNING("\033[0;33m"), ERROR("\033[0;31m");
 
         private String format;
 
@@ -55,7 +55,7 @@ public class BJSLLogger {
             return;
         }
 
-        this.printWriter.println(this.format.replace("{message}", level.format + message).replace("{prefix}", this.prefix).replace("{PREFIX}", this.prefix.toUpperCase()).replace("{level}", level.name().toLowerCase()).replace("{LEVEL}", level.name().toUpperCase()).replace("{time}", Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + ":" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + Calendar.getInstance().get(Calendar.SECOND)).replace("{time12}", Calendar.getInstance().get(Calendar.HOUR) + ":" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + Calendar.getInstance().get(Calendar.SECOND)).replace("{time24}", Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + ":" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + Calendar.getInstance().get(Calendar.SECOND)) + "\\e[0m");
+        this.printWriter.println(level.format + this.format.replace("{message}", message).replace("{prefix}", this.prefix).replace("{PREFIX}", this.prefix.toUpperCase()).replace("{level}", level.name().toLowerCase()).replace("{LEVEL}", level.name().toUpperCase()).replace("{time}", Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + ":" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + Calendar.getInstance().get(Calendar.SECOND)).replace("{time12}", Calendar.getInstance().get(Calendar.HOUR) + ":" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + Calendar.getInstance().get(Calendar.SECOND)).replace("{time24}", Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + ":" + Calendar.getInstance().get(Calendar.MINUTE) + ":" + Calendar.getInstance().get(Calendar.SECOND)) + "\033[0m");
     }
 
     public void log(Level level, Exception exception) {
