@@ -24,13 +24,13 @@ public class ParsedArray extends ParsedElement {
         if (index < this.array.size()) {
             return this.array.get(index);
         } else {
-            throw new IndexOutOfBoundsException("\"index\" is out of bounds for length \"" + this.array.size() + "\"");
+            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds for length " + this.array.size());
         }
     }
 
     public void add(ParsedElement value) {
         if (value == null) {
-            throw new NullPointerException("\"value\" can not be null");
+            throw new NullPointerException("Value can not be null");
         }
 
         this.array.add(value);
@@ -38,19 +38,19 @@ public class ParsedArray extends ParsedElement {
 
     public void addAt(int index, ParsedElement value) {
         if (value == null) {
-            throw new NullPointerException("\"value\" can not be null");
+            throw new NullPointerException("Value can not be null");
         }
 
         if (index <= this.array.size()) {
             this.array.add(index, value);
         } else {
-            throw new IndexOutOfBoundsException("\"index\" is out of bounds for length \"" + this.array.size() + "\"");
+            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds for length " + this.array.size());
         }
     }
 
     public void addAll(List<ParsedElement> values) {
         if (values == null) {
-            throw new NullPointerException("\"value\" can not be null");
+            throw new NullPointerException("Values can not be null");
         }
 
         for (ParsedElement value : values) {
@@ -60,13 +60,13 @@ public class ParsedArray extends ParsedElement {
 
     public void set(int index, ParsedElement value) {
         if (value == null) {
-            throw new NullPointerException("\"value\" can not be null");
+            throw new NullPointerException("Value can not be null");
         }
 
         if (index < this.array.size()) {
             this.array.set(index, value);
         } else {
-            throw new IndexOutOfBoundsException("\"index\" is out of bounds for length \"" + this.array.size() + "\"");
+            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds for length " + this.array.size());
         }
     }
 
@@ -74,7 +74,7 @@ public class ParsedArray extends ParsedElement {
         if (index < this.array.size()) {
             this.array.remove(index);
         } else {
-            throw new IndexOutOfBoundsException("\"index\" is out of bounds for length \"" + this.array.size() + "\"");
+            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds for length " + this.array.size());
         }
     }
 
@@ -84,7 +84,7 @@ public class ParsedArray extends ParsedElement {
 
     public static ParsedArray from(List<ParsedElement> array) {
         if (array == null) {
-            throw new NullPointerException("\"array\" can not be null");
+            throw new NullPointerException("Array can not be null");
         }
 
         return new ParsedArray(new ArrayList<ParsedElement>(array));
