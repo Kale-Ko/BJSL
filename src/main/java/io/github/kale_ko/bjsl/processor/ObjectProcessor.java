@@ -44,7 +44,7 @@ public class ObjectProcessor {
                             }
                         }
                     } else {
-                        throw new RuntimeException("\"element\" is not a enum");
+                        throw new RuntimeException("Element is not a enum");
                     }
                 } else {
                     try {
@@ -72,7 +72,7 @@ public class ObjectProcessor {
                             return clazz.cast(object);
                         }
                     } catch (ClassCastException e) {
-                        throw new RuntimeException("\"element\" could not be cast to \"" + clazz.getName() + "\"", e);
+                        throw new RuntimeException("Element could not be cast to \"" + clazz.getName() + "\"", e);
                     }
                 }
             } else if (!clazz.isAnonymousClass() && !clazz.isRecord() && !clazz.isAnnotation()) {
@@ -211,7 +211,7 @@ public class ObjectProcessor {
                             throw new RuntimeException("No constructors for \"" + clazz.getSimpleName() + "\" found and unsafe initialization failed");
                         }
                     } else {
-                        throw new RuntimeException("\"clazz\" is not a serializable type (" + clazz + ")");
+                        throw new RuntimeException("clazz is not a serializable type (" + clazz + ")");
                     }
                 } else if (element instanceof ParsedArray) {
                     if (Collection.class.isAssignableFrom(clazz)) {
@@ -281,13 +281,13 @@ public class ObjectProcessor {
 
                         return (T) array;
                     } else {
-                        throw new RuntimeException("\"clazz\" is not a serializable type (" + clazz + ")");
+                        throw new RuntimeException("clazz is not a serializable type (" + clazz + ")");
                     }
                 } else {
-                    throw new RuntimeException("\"element\" is not an object or array");
+                    throw new RuntimeException("Element is not an object or array");
                 }
             } else {
-                throw new RuntimeException("\"clazz\" is not a serializable type (" + clazz + ")");
+                throw new RuntimeException("clazz is not a serializable type (" + clazz + ")");
             }
         } catch (RuntimeException e) {
             StringWriter writer = new StringWriter();
@@ -366,7 +366,7 @@ public class ObjectProcessor {
 
                     return objectElement;
                 } else {
-                    throw new RuntimeException("\"object\" is not a serializable type");
+                    throw new RuntimeException("Object is not a serializable type");
                 }
             }
         } catch (RuntimeException e) {

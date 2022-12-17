@@ -11,7 +11,7 @@ public class ParsedPrimitive extends ParsedElement {
         super(null, null, value);
 
         if (type == null) {
-            throw new NullPointerException("\"type\" can not be null");
+            throw new NullPointerException("Type can not be null");
         }
 
         this.primitiveType = type;
@@ -83,7 +83,7 @@ public class ParsedPrimitive extends ParsedElement {
         } else if (this.primitiveType == PrimitiveType.NULL) {
             return null;
         } else {
-            throw new ClassCastException("\"value\" is not a primitive");
+            throw new ClassCastException("Value is not a primitive");
         }
     }
 
@@ -91,7 +91,7 @@ public class ParsedPrimitive extends ParsedElement {
         if (this.primitiveType == PrimitiveType.STRING) {
             return (String) this.primitive;
         } else {
-            throw new ClassCastException("\"value\" is not a string");
+            throw new ClassCastException("Value is not a string");
         }
     }
 
@@ -99,7 +99,7 @@ public class ParsedPrimitive extends ParsedElement {
         if (this.primitiveType == PrimitiveType.BYTE) {
             return (byte) (long) this.primitive;
         } else {
-            throw new ClassCastException("\"value\" is not a byte");
+            throw new ClassCastException("Value is not a byte");
         }
     }
 
@@ -107,7 +107,7 @@ public class ParsedPrimitive extends ParsedElement {
         if (this.primitiveType == PrimitiveType.CHAR) {
             return (char) (long) this.primitive;
         } else {
-            throw new ClassCastException("\"value\" is not a char");
+            throw new ClassCastException("Value is not a char");
         }
     }
 
@@ -115,7 +115,7 @@ public class ParsedPrimitive extends ParsedElement {
         if (this.primitiveType == PrimitiveType.SHORT) {
             return (short) (long) this.primitive;
         } else {
-            throw new ClassCastException("\"value\" is not a short");
+            throw new ClassCastException("Value is not a short");
         }
     }
 
@@ -123,7 +123,7 @@ public class ParsedPrimitive extends ParsedElement {
         if (this.primitiveType == PrimitiveType.INTEGER) {
             return (int) (long) this.primitive;
         } else {
-            throw new ClassCastException("\"value\" is not a integer");
+            throw new ClassCastException("Value is not a integer");
         }
     }
 
@@ -131,7 +131,7 @@ public class ParsedPrimitive extends ParsedElement {
         if (this.primitiveType == PrimitiveType.LONG) {
             return (long) this.primitive;
         } else {
-            throw new ClassCastException("\"value\" is not a long");
+            throw new ClassCastException("Value is not a long");
         }
     }
 
@@ -139,7 +139,7 @@ public class ParsedPrimitive extends ParsedElement {
         if (this.primitiveType == PrimitiveType.FLOAT) {
             return (float) (double) this.primitive;
         } else {
-            throw new ClassCastException("\"value\" is not a float");
+            throw new ClassCastException("Value is not a float");
         }
     }
 
@@ -147,7 +147,7 @@ public class ParsedPrimitive extends ParsedElement {
         if (this.primitiveType == PrimitiveType.DOUBLE) {
             return (double) this.primitive;
         } else {
-            throw new ClassCastException("\"value\" is not a double");
+            throw new ClassCastException("Value is not a double");
         }
     }
 
@@ -155,7 +155,7 @@ public class ParsedPrimitive extends ParsedElement {
         if (this.primitiveType == PrimitiveType.BOOLEAN) {
             return (boolean) this.primitive;
         } else {
-            throw new ClassCastException("\"value\" is not a boolean");
+            throw new ClassCastException("Value is not a boolean");
         }
     }
 
@@ -163,7 +163,7 @@ public class ParsedPrimitive extends ParsedElement {
         if (this.primitiveType == PrimitiveType.NULL) {
             return this.primitive;
         } else {
-            throw new ClassCastException("\"value\" is not null");
+            throw new ClassCastException("Value is not null");
         }
     }
 
@@ -193,13 +193,13 @@ public class ParsedPrimitive extends ParsedElement {
         } else if (value instanceof Boolean || value.getClass() == boolean.class) {
             return fromBoolean((boolean) value);
         } else {
-            throw new ClassCastException("\"value\" is not a primitive");
+            throw new ClassCastException("Value is not a primitive");
         }
     }
 
     public static ParsedPrimitive fromString(String value) {
         if (value == null) {
-            throw new NullPointerException("\"value\" must be a string");
+            throw new NullPointerException("Value must be a string");
         }
 
         return new ParsedPrimitive(value, PrimitiveType.STRING);
