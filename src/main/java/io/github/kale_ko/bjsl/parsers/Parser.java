@@ -42,7 +42,7 @@ public abstract class Parser {
         this.prettyPrinter = prettyPrinter;
     }
 
-    public ParsedElement toElement(String data) throws IOException {
+    public ParsedElement toElement(String data) {
         if (data == null) {
             throw new NullPointerException("Data can not be null");
         }
@@ -81,11 +81,11 @@ public abstract class Parser {
             new RuntimeException("Error while parsing:", e).printStackTrace(new PrintWriter(writer));
             BJSL.getLogger().severe(writer.toString());
 
-            throw e;
+            throw new RuntimeException("Error while parsing:", e);
         }
     }
 
-    public String toString(ParsedElement element) throws IOException {
+    public String toString(ParsedElement element) {
         if (element == null) {
             throw new NullPointerException("Element can not be null");
         }
@@ -155,7 +155,7 @@ public abstract class Parser {
             new RuntimeException("Error while parsing:", e).printStackTrace(new PrintWriter(writer));
             BJSL.getLogger().severe(writer.toString());
 
-            throw e;
+            throw new RuntimeException("Error while parsing:", e);
         }
     }
 
