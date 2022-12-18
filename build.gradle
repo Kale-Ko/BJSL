@@ -48,9 +48,24 @@ tasks.register("buildFat", Jar) {
     from files(project.configurations.dependency.collect { it.isDirectory() ? it : zipTree(it) })
 }
 
+tasks.register("buildTests", Jar) {
+    dependsOn tasks.build
+
+    sourceCompatibility = JavaVersion.toVersion(project.java_version)
+    targetCompatibility = JavaVersion.toVersion(project.java_version)
+
+    duplicatesStrategy = "exclude"
+    classifier = "test"
+
+    from files(project.sourceSets.main.output)
+    from files(project.sourceSets.test.output)
+    from files(project.configurations.dependency.collect { it.isDirectory() ? it : zipTree(it) })
+}
+
 tasks.register("buildAll") {
     dependsOn tasks.jar
     dependsOn tasks.buildFat
+    dependsOn tasks.buildTests
 }
 
 publishing {
