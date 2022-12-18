@@ -7,7 +7,7 @@ import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
 
 public class Test1 extends Test {
     public Test1() {
-        super("1 layer element to string");
+        super("Single layer element to string");
     }
 
     @Override
