@@ -14,7 +14,7 @@ public class Test3 extends Test {
     }
 
     public Test3() {
-        super("1 layer static object to string");
+        super("Single layer static object to string");
     }
 
     @Override
