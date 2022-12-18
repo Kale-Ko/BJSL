@@ -192,6 +192,10 @@ public class ObjectProcessor {
                                             }
                                         }
 
+                                        if (field.getName().startsWith("this$")) {
+                                            shouldSerialize = false;
+                                        }
+
                                         if (shouldSerialize) {
                                             if (element.asObject().has(field.getName())) {
                                                 Object subObject = toObject(element.asObject().get(field.getName()), field.getType());
@@ -347,6 +351,10 @@ public class ObjectProcessor {
                                     } else if (annotation.annotationType() == DontSerialize.class) {
                                         shouldSerialize = false;
                                     }
+                                }
+
+                                if (field.getName().startsWith("this$")) {
+                                    shouldSerialize = false;
                                 }
 
                                 if (ignoreNulls && field.get(object) == null) {
