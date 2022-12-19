@@ -12,6 +12,8 @@ public class TestSuite {
         List<String> succeeded = new ArrayList<String>();
         List<String> failed = new ArrayList<String>();
 
+        BJSL.setLogger(null);
+
         int i = 1;
         while (i > 0) {
             try {
@@ -58,7 +60,7 @@ public class TestSuite {
 
                 if (result instanceof Exception e) {
                     StringWriter writer = new StringWriter();
-                    e.printStackTrace(new PrintWriter(new StringWriter()));
+                    e.printStackTrace(new PrintWriter(writer));
                     System.out.println(test.getName() + ": Failed with exception:\n" + writer.toString());
                 } else if (!result.equals(false)) {
                     System.out.println(test.getName() + ": Failed with result:\n" + result.toString());
