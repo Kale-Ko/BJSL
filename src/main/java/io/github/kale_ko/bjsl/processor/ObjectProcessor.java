@@ -3,6 +3,7 @@ package io.github.kale_ko.bjsl.processor;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -13,6 +14,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.management.RuntimeErrorException;
 import io.github.kale_ko.bjsl.BJSL;
 import io.github.kale_ko.bjsl.elements.ParsedArray;
 import io.github.kale_ko.bjsl.elements.ParsedElement;
@@ -294,16 +296,20 @@ public class ObjectProcessor {
                             throw new RuntimeException("No constructors for \"" + clazz.getSimpleName() + "\" found and unsafe initialization failed");
                         }
                     } else if (!clazz.isInterface()) {
-                        Object[] array = new Object[element.asArray().getSize()];
+                        try {
+                            T[] array = (T[]) Array.newInstance(clazz.componentType(), element.asArray().getSize());
 
-                        int i = 0;
-                        for (ParsedElement subElement : element.asArray().getValues()) {
-                            array[i] = toObject(subElement, clazz);
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                array[i] = (T) toObject(subElement, clazz.componentType());
 
-                            i++;
+                                i++;
+                            }
+
+                            return (T) array;
+                        } catch (NegativeArraySizeException e) {
+                            throw new RuntimeException("Error while parsing: ", e);
                         }
-
-                        return (T) array;
                     } else {
                         throw new RuntimeException("clazz is not a serializable type (" + clazz + ")");
                     }
