@@ -16,7 +16,7 @@ public class Test6 extends Test {
         if (result.has("pubString") && result.get("pubString").isPrimitive() && result.get("pubString").asPrimitive().isString() && result.get("pubString").asPrimitive().asString().equals("aCoolString") && result.has("privString") && result.get("privString").isPrimitive() && result.get("privString").asPrimitive().isString() && result.get("privString").asPrimitive().asString().equals("aCoolerString") && result.has("anInt") && result.get("anInt").isPrimitive() && result.get("anInt").asPrimitive().isLong() && result.get("anInt").asPrimitive().asLong() == 57 && result.has("aLong") && result.get("aLong").isPrimitive() && result.get("aLong").asPrimitive().isLong() && result.get("aLong").asPrimitive().asLong() == 38689269265279L && result.has("subObject") && result.get("subObject").isObject() && result.get("subObject").asObject().has("subFloat") && result.get("subObject").asObject().get("subFloat").isPrimitive() && result.get("subObject").asObject().get("subFloat").asPrimitive().asDouble() == 31.5) {
             return true;
         } else {
-            return false;
+            return result;
         }
     }
 }
