@@ -5,7 +5,7 @@ import io.github.kale_ko.bjsl.Test;
 
 public class Test3 extends Test {
     @SuppressWarnings("unused")
-    protected static class TestClass {
+    public static class TestClass {
         public String pubString = "aCoolString";
         private String privString = "aCoolerString";
 

@@ -9,9 +9,9 @@ import io.github.kale_ko.bjsl.Test;
 
 public class Test7 extends Test {
     @SuppressWarnings("unused")
-    protected class TestClass {
-        protected class SubTestClass {
-            protected class SubSubTestClass {
+    public static class TestClass {
+        public static class SubTestClass {
+            public static class SubSubTestClass {
                 public int x = 5;
 
                 public SubSubTestClass(int x) {
