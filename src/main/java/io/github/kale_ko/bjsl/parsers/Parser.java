@@ -77,9 +77,11 @@ public abstract class Parser {
                 throw new RuntimeException("Data is not an object or array");
             }
         } catch (RuntimeException | IOException e) {
-            StringWriter writer = new StringWriter();
-            new RuntimeException("Error while parsing:", e).printStackTrace(new PrintWriter(writer));
-            BJSL.getLogger().severe(writer.toString());
+            if (BJSL.getLogger() != null) {
+                StringWriter writer = new StringWriter();
+                new RuntimeException("Error while parsing:", e).printStackTrace(new PrintWriter(writer));
+                BJSL.getLogger().severe(writer.toString());
+            }
 
             throw new RuntimeException("Error while parsing:", e);
         }
@@ -151,9 +153,11 @@ public abstract class Parser {
                 throw new RuntimeException("Element is not a parsable type");
             }
         } catch (RuntimeException | IOException e) {
-            StringWriter writer = new StringWriter();
-            new RuntimeException("Error while parsing:", e).printStackTrace(new PrintWriter(writer));
-            BJSL.getLogger().severe(writer.toString());
+            if (BJSL.getLogger() != null) {
+                StringWriter writer = new StringWriter();
+                new RuntimeException("Error while parsing:", e).printStackTrace(new PrintWriter(writer));
+                BJSL.getLogger().severe(writer.toString());
+            }
 
             throw new RuntimeException("Error while parsing:", e);
         }
@@ -251,7 +255,9 @@ public abstract class Parser {
                 throw new RuntimeException("Element is not an object or array");
             }
         } else {
-            BJSL.getLogger().warning("Warning while parsing: Node \"" + key + "\" is not a serializable type (" + node.getClass().getSimpleName() + ")");
+            if (BJSL.getLogger() != null) {
+                BJSL.getLogger().warning("Warning while parsing: Node \"" + key + "\" is not a serializable type (" + node.getClass().getSimpleName() + ")");
+            }
         }
     }
 
@@ -364,10 +370,14 @@ public abstract class Parser {
                     throw new RuntimeException("Node is not an object or array");
                 }
             } else {
-                BJSL.getLogger().warning("Warning while parsing: Element \"" + key + "\" is not a serializable type (ParsedPrimitive." + primitiveElement.getType() + ")");
+                if (BJSL.getLogger() != null) {
+                    BJSL.getLogger().warning("Warning while parsing: Element \"" + key + "\" is not a serializable type (ParsedPrimitive." + primitiveElement.getType() + ")");
+                }
             }
         } else {
-            BJSL.getLogger().warning("Warning while parsing: Element \"" + key + "\" is not a serializable type (" + element.getClass().getSimpleName() + ")");
+            if (BJSL.getLogger() != null) {
+                BJSL.getLogger().warning("Warning while parsing: Element \"" + key + "\" is not a serializable type (" + element.getClass().getSimpleName() + ")");
+            }
         }
     }
 }
