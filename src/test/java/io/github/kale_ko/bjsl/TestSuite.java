@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import io.github.kale_ko.bjsl.elements.ParsedElement;
 
 public class TestSuite {
     public static void main(String[] args) {
@@ -62,8 +63,10 @@ public class TestSuite {
                     StringWriter writer = new StringWriter();
                     e.printStackTrace(new PrintWriter(writer));
                     System.out.println(test.getName() + ": Failed with exception:\n" + writer.toString());
+                } else if (result instanceof ParsedElement element) {
+                    System.out.println(test.getName() + ": Failed with result:\n" + BJSL.stringifyJson(element));
                 } else if (!result.equals(false)) {
-                    System.out.println(test.getName() + ": Failed with result:\n" + result.toString());
+                    System.out.println(test.getName() + ": Failed with result:\n" + BJSL.stringifyJson(result));
                 } else {
                     System.out.println(test.getName() + ": Failed");
                 }
