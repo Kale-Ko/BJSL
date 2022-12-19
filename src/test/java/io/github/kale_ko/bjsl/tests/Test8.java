@@ -4,12 +4,12 @@ import io.github.kale_ko.bjsl.BJSL;
 import io.github.kale_ko.bjsl.Test;
 
 public class Test8 extends Test {
-    protected static class TestClass {
-        public String pubString = "aCoolString";
-        private String privString = "aCoolerString";
+    public static class TestClass {
+        public String pubString = "anEpicString";
+        private String privString = "aMoreEpicString";
 
-        public int anInt = 57;
-        public Long aLong = 38689269265279L;
+        public int anInt = 35;
+        public Long aLong = 486295979489289L;
     }
 
     public Test8() {
@@ -23,7 +23,7 @@ public class Test8 extends Test {
         if (result != null && result.pubString.equals("aCoolString") && result.privString.equals("aCoolerString") && result.anInt == 57 && result.aLong == 38689269265279L) {
             return true;
         } else {
-            return false;
+            return result;
         }
     }
 }
