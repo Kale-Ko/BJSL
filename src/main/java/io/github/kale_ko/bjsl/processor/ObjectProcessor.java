@@ -54,7 +54,6 @@ public class ObjectProcessor {
             if (element instanceof ParsedPrimitive) {
                 if (type.getRawClass().isEnum()) {
                     if (element instanceof ParsedPrimitive && element.asPrimitive().isString()) {
-                        // TODO Figure something better out for enums
                         for (Object value : type.getRawClass().getEnumConstants()) {
                             if (value.toString().equals(element.asPrimitive().asString())) {
                                 return value;
@@ -209,6 +208,10 @@ public class ObjectProcessor {
                                         }
 
                                         if (field.getName().startsWith("this$")) {
+                                            shouldSerialize = false;
+                                        }
+
+                                        if (ignoreNulls && field.get(object) == null) {
                                             shouldSerialize = false;
                                         }
 
