@@ -13,14 +13,14 @@ public class Test8 extends Test {
     }
 
     public Test8() {
-        super("Single layer string to object");
+        super("Object initialization");
     }
 
     @Override
     public Object run() {
-        TestClass result = BJSL.parseJson("{\n  \"pubString\" : \"aCoolString\",\n  \"privString\" : \"aCoolerString\",\n  \"anInt\" : 57,\n  \"aLong\" : 38689269265279\n}", TestClass.class);
+        TestClass result = BJSL.parseJson("{ }", TestClass.class);
 
-        if (result != null && result.pubString.equals("aCoolString") && result.privString.equals("aCoolerString") && result.anInt == 57 && result.aLong == 38689269265279L) {
+        if (result != null && result.pubString.equals("anEpicString") && result.privString.equals("aMoreEpicString") && result.anInt == 35 && result.aLong == 486295979489289L) {
             return true;
         } else {
             return result;
