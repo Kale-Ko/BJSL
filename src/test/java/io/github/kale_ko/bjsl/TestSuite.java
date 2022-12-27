@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import io.github.kale_ko.bjsl.elements.ParsedElement;
 
 public class TestSuite {
@@ -13,7 +14,7 @@ public class TestSuite {
         List<String> succeeded = new ArrayList<String>();
         List<String> failed = new ArrayList<String>();
 
-        BJSL.setLogger(null);
+        BJSL.getLogger().setLevel(Level.WARNING);
 
         int i = 1;
         while (i > 0) {
