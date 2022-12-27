@@ -191,6 +191,8 @@ public class ObjectProcessor {
                             }
                         }
 
+                        System.out.println("e");
+
                         if (object != null) {
                             List<Field> fields = getFields(object.getClass());
 
@@ -211,12 +213,8 @@ public class ObjectProcessor {
                                             shouldSerialize = false;
                                         }
 
-                                        System.out.println(field.getName() + ": " + shouldSerialize);
-
                                         if (shouldSerialize) {
-                                            System.out.println(field.getName() + ": is");
                                             Object subObject = toObject(element.asObject().get(field.getName()), field.getGenericType());
-                                            System.out.println(field.getName() + ": " + subObject);
                                             field.set(object, subObject);
                                         }
                                     }
@@ -228,6 +226,8 @@ public class ObjectProcessor {
                                     }
                                 }
                             }
+
+                            System.out.println("a");
 
                             return object;
                         } else {
