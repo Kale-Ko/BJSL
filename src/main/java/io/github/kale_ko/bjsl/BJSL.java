@@ -1,11 +1,12 @@
 package io.github.kale_ko.bjsl;
 
 import java.util.logging.Logger;
+import com.fasterxml.jackson.databind.JavaType;
 import io.github.kale_ko.bjsl.elements.ParsedElement;
-import io.github.kale_ko.bjsl.parsers.BinaryParser;
 import io.github.kale_ko.bjsl.parsers.JsonParser;
 import io.github.kale_ko.bjsl.parsers.Parser;
 import io.github.kale_ko.bjsl.parsers.PropertiesParser;
+import io.github.kale_ko.bjsl.parsers.SmileParser;
 import io.github.kale_ko.bjsl.parsers.TomlParser;
 import io.github.kale_ko.bjsl.parsers.YamlParser;
 import io.github.kale_ko.bjsl.processor.ObjectProcessor;
@@ -17,12 +18,16 @@ public class BJSL {
     private static YamlParser yamlParser = new YamlParser();
     private static TomlParser tomlParser = new TomlParser();
     private static PropertiesParser propertiesParser = new PropertiesParser();
-    private static BinaryParser binaryParser = new BinaryParser();
+    private static SmileParser smileParser = new SmileParser();
 
     private static Logger logger = Logger.getLogger("BJSL");
 
     protected Parser parser;
     protected ObjectProcessor processor;
+
+    public BJSL(Parser parser) {
+        this(parser, new ObjectProcessor());
+    }
 
     public BJSL(Parser parser, ObjectProcessor processor) {
         this.parser = parser;
@@ -34,6 +39,10 @@ public class BJSL {
     }
 
     public <T> T parse(String data, Class<T> clazz) {
+        return this.processor.toObject(this.parser.toElement(data), clazz);
+    }
+
+    public Object parse(String data, JavaType clazz) {
         return this.processor.toObject(this.parser.toElement(data), clazz);
     }
 
@@ -53,6 +62,10 @@ public class BJSL {
         return objectProcessor.toObject(jsonParser.toElement(data), clazz);
     }
 
+    public static Object parseJson(String data, JavaType clazz) {
+        return objectProcessor.toObject(jsonParser.toElement(data), clazz);
+    }
+
     public static String stringifyJson(ParsedElement element) {
         return jsonParser.toString(element);
     }
@@ -66,6 +79,10 @@ public class BJSL {
     }
 
     public static <T> T parseYaml(String data, Class<T> clazz) {
+        return objectProcessor.toObject(yamlParser.toElement(data), clazz);
+    }
+
+    public static Object parseYaml(String data, JavaType clazz) {
         return objectProcessor.toObject(yamlParser.toElement(data), clazz);
     }
 
@@ -85,6 +102,10 @@ public class BJSL {
         return objectProcessor.toObject(tomlParser.toElement(data), clazz);
     }
 
+    public static Object parseToml(String data, JavaType clazz) {
+        return objectProcessor.toObject(tomlParser.toElement(data), clazz);
+    }
+
     public static String stringifyToml(ParsedElement element) {
         return tomlParser.toString(element);
     }
@@ -101,6 +122,10 @@ public class BJSL {
         return objectProcessor.toObject(propertiesParser.toElement(data), clazz);
     }
 
+    public static Object parseProperties(String data, JavaType clazz) {
+        return objectProcessor.toObject(propertiesParser.toElement(data), clazz);
+    }
+
     public static String stringifyProperties(ParsedElement element) {
         return propertiesParser.toString(element);
     }
@@ -109,20 +134,24 @@ public class BJSL {
         return propertiesParser.toString(objectProcessor.toElement(object));
     }
 
-    public static ParsedElement parseBinary(String data) {
-        return binaryParser.toElement(data);
+    public static ParsedElement parseSmile(String data) {
+        return smileParser.toElement(data);
     }
 
-    public static <T> T parseBinary(String data, Class<T> clazz) {
-        return objectProcessor.toObject(binaryParser.toElement(data), clazz);
+    public static <T> T parseSmile(String data, Class<T> clazz) {
+        return objectProcessor.toObject(smileParser.toElement(data), clazz);
     }
 
-    public static String stringifyBinary(ParsedElement element) {
-        return binaryParser.toString(element);
+    public static Object parseSmile(String data, JavaType clazz) {
+        return objectProcessor.toObject(smileParser.toElement(data), clazz);
     }
 
-    public static String stringifyBinary(Object object) {
-        return binaryParser.toString(objectProcessor.toElement(object));
+    public static String stringifySmile(ParsedElement element) {
+        return smileParser.toString(element);
+    }
+
+    public static String stringifySmile(Object object) {
+        return smileParser.toString(objectProcessor.toElement(object));
     }
 
     public static Logger getLogger() {
