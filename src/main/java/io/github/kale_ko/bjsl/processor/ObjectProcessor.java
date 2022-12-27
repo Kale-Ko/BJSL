@@ -195,6 +195,7 @@ public class ObjectProcessor {
                             List<Field> fields = getFields(object.getClass());
 
                             for (Field field : fields) {
+                                System.out.println(field.getName());
                                 try {
                                     if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
                                         Boolean shouldSerialize = element.asObject().has(field.getName()) && !Modifier.isTransient(field.getModifiers());
