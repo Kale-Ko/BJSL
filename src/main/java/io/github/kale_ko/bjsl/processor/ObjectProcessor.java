@@ -191,8 +191,6 @@ public class ObjectProcessor {
                             }
                         }
 
-                        System.out.println("e");
-
                         if (object != null) {
                             List<Field> fields = getFields(object.getClass());
 
@@ -226,8 +224,6 @@ public class ObjectProcessor {
                                     }
                                 }
                             }
-
-                            System.out.println("a");
 
                             return object;
                         } else {
