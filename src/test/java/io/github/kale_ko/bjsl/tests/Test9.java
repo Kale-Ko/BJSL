@@ -24,7 +24,7 @@ public class Test9 extends Test {
 
             public List<Long> longList = Arrays.asList(16466L, 164L, 164802642L, 18649826982895L);
 
-            public List<SubSubTestClass> subSubObjectList = Arrays.asList(new SubSubTestClass(7), new SubSubTestClass(17), new SubSubTestClass(28));
+            public List<SubSubTestClass> subSubObjectList = Arrays.asList(new SubSubTestClass(7), new SubSubTestClass(17), new SubSubTestClass(32));
 
             public Map<String, Boolean> booleanMap = new LinkedHashMap<String, Boolean>();
 
@@ -38,8 +38,8 @@ public class Test9 extends Test {
 
                 this.subSubObjectMap.put("element1", new SubSubTestClass(19));
                 this.subSubObjectMap.put("element2", new SubSubTestClass(21));
-                this.subSubObjectMap.put("element4", new SubSubTestClass(35));
-                this.subSubObjectMap.put("element3", new SubSubTestClass(83));
+                this.subSubObjectMap.put("element3", new SubSubTestClass(35));
+                this.subSubObjectMap.put("element4", new SubSubTestClass(83));
             }
         }
 
@@ -69,8 +69,8 @@ public class Test9 extends Test {
         LinkedHashMap<String, TestClass.SubTestClass.SubSubTestClass> subSubObjectMap = new LinkedHashMap<String, TestClass.SubTestClass.SubSubTestClass>();
         subSubObjectMap.put("element1", new TestClass.SubTestClass.SubSubTestClass(13));
         subSubObjectMap.put("element2", new TestClass.SubTestClass.SubSubTestClass(27));
-        subSubObjectMap.put("element4", new TestClass.SubTestClass.SubSubTestClass(82));
-        subSubObjectMap.put("element3", new TestClass.SubTestClass.SubSubTestClass(97));
+        subSubObjectMap.put("element3", new TestClass.SubTestClass.SubSubTestClass(82));
+        subSubObjectMap.put("element4", new TestClass.SubTestClass.SubSubTestClass(97));
 
         if (result != null && result.pubString.equals("aCoolString") && result.privString.equals("aCoolerString") && result.anInt == 57 && result.aLong == 38689269265279L && result.subObject != null && result.subObject.subFloat == 31.5f && Arrays.equals(result.subObject.stringArray, new String[] { "element 1", "element 2", "element 3", "element 4" }) && result.subObject.longList.equals(Arrays.asList(25153L, 351L, 36886942642L, 293579269246L, 3926426L)) && result.subObject.subSubObjectList.equals(Arrays.asList(new TestClass.SubTestClass.SubSubTestClass(5), new TestClass.SubTestClass.SubSubTestClass(13), new TestClass.SubTestClass.SubSubTestClass(24))) && result.subObject.booleanMap.equals(booleanMap) && result.subObject.subSubObjectMap.equals(subSubObjectMap)) {
             return true;
