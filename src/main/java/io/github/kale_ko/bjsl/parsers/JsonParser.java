@@ -10,6 +10,10 @@ public class JsonParser extends Parser {
     }
 
     public JsonParser(boolean prettyPrint) {
-        super(JsonFactory.builder().build(), (prettyPrint ? new DefaultPrettyPrinter().withObjectIndenter(new DefaultIndenter().withIndent("  ").withLinefeed("\n")).withArrayIndenter(new DefaultIndenter().withIndent("  ").withLinefeed("\n")).withSpacesInObjectEntries() : null));
+        this(prettyPrint, 2);
+    }
+
+    public JsonParser(boolean prettyPrint, int indent) {
+        super(JsonFactory.builder().build(), (prettyPrint ? new DefaultPrettyPrinter().withObjectIndenter(new DefaultIndenter().withIndent(" ".repeat(indent)).withLinefeed("\n")).withArrayIndenter(new DefaultIndenter().withIndent(" ".repeat(indent)).withLinefeed("\n")).withSpacesInObjectEntries() : null));
     }
 }
