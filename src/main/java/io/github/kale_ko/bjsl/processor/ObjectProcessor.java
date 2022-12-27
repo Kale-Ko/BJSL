@@ -31,12 +31,20 @@ import io.github.kale_ko.bjsl.processor.annotations.DontSerialize;
 public class ObjectProcessor {
     protected boolean ignoreNulls;
 
+    protected boolean caseSensitiveEnums;
+
     public ObjectProcessor() {
         this(false);
     }
 
     public ObjectProcessor(boolean ignoreNulls) {
+        this(ignoreNulls, false);
+    }
+
+    public ObjectProcessor(boolean ignoreNulls, boolean caseSensitiveEnums) {
         this.ignoreNulls = ignoreNulls;
+
+        this.caseSensitiveEnums = caseSensitiveEnums;
     }
 
     @SuppressWarnings("unchecked")
@@ -55,7 +63,7 @@ public class ObjectProcessor {
                 if (type.getRawClass().isEnum()) {
                     if (element instanceof ParsedPrimitive && element.asPrimitive().isString()) {
                         for (Object value : type.getRawClass().getEnumConstants()) {
-                            if (value.toString().equals(element.asPrimitive().asString())) {
+                            if ((caseSensitiveEnums && ((Enum<?>) value).name().equals(element.asPrimitive().asString())) || (!caseSensitiveEnums && ((Enum<?>) value).name().equalsIgnoreCase(element.asPrimitive().asString()))) {
                                 return value;
                             }
                         }
@@ -100,7 +108,7 @@ public class ObjectProcessor {
 
                         if (!type.getRawClass().isInterface()) {
                             try {
-                                for (Constructor<?> constructor : (Constructor<?>[]) type.getRawClass().getConstructors()) {
+                                for (Constructor<?> constructor : type.getRawClass().getConstructors()) {
                                     if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
                                         object = (Map<String, Object>) constructor.newInstance();
 
@@ -150,7 +158,9 @@ public class ObjectProcessor {
                         if (object != null) {
                             for (Map.Entry<String, ParsedElement> entry : element.asObject().getEntries()) {
                                 Object subObject = toObject(entry.getValue(), ((MapType) type).getContentType());
-                                object.put(entry.getKey(), subObject);
+                                if (!(ignoreNulls && subObject == null)) {
+                                    object.put(entry.getKey(), subObject);
+                                }
                             }
 
                             return object;
@@ -242,7 +252,7 @@ public class ObjectProcessor {
 
                         if (!type.getRawClass().isInterface()) {
                             try {
-                                for (Constructor<?> constructor : (Constructor<?>[]) type.getRawClass().getConstructors()) {
+                                for (Constructor<?> constructor : type.getRawClass().getConstructors()) {
                                     if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
                                         object = (Collection<Object>) constructor.newInstance();
 
@@ -291,7 +301,10 @@ public class ObjectProcessor {
 
                         if (object != null) {
                             for (ParsedElement subElement : element.asArray().getValues()) {
-                                object.add(toObject(subElement, ((CollectionType) type).getContentType()));
+                                Object subObject = toObject(subElement, ((CollectionType) type).getContentType());
+                                if (!(ignoreNulls && subObject == null)) {
+                                    object.add(subObject);
+                                }
                             }
 
                             return object;
@@ -300,13 +313,29 @@ public class ObjectProcessor {
                         }
                     } else if (type instanceof ArrayType) {
                         try {
-                            Object[] array = (Object[]) Array.newInstance(((ArrayType) type).getContentType().getRawClass(), element.asArray().getSize());
+                            int nonNull = element.asArray().getSize();
+
+                            if (ignoreNulls) {
+                                nonNull = 0;
+
+                                for (ParsedElement subElement : element.asArray().getValues()) {
+                                    Object subObject = toObject(subElement, type.getRawClass().componentType());
+                                    if (subObject != null) {
+                                        nonNull++;
+                                    }
+                                }
+                            }
+
+                            Object[] array = (Object[]) Array.newInstance(((ArrayType) type).getContentType().getRawClass(), nonNull);
 
                             int i = 0;
                             for (ParsedElement subElement : element.asArray().getValues()) {
-                                array[i] = toObject(subElement, type.getRawClass().componentType());
+                                Object subObject = toObject(subElement, type.getRawClass().componentType());
+                                if (!(ignoreNulls && subObject == null)) {
+                                    array[i] = subObject;
 
-                                i++;
+                                    i++;
+                                }
                             }
 
                             return array;
@@ -315,13 +344,29 @@ public class ObjectProcessor {
                         }
                     } else if (!type.getRawClass().isInterface()) {
                         try {
-                            Object[] array = (Object[]) Array.newInstance(type.getRawClass().componentType(), element.asArray().getSize());
+                            int nonNull = element.asArray().getSize();
+
+                            if (ignoreNulls) {
+                                nonNull = 0;
+
+                                for (ParsedElement subElement : element.asArray().getValues()) {
+                                    Object subObject = toObject(subElement, type.getRawClass().componentType());
+                                    if (subObject != null) {
+                                        nonNull++;
+                                    }
+                                }
+                            }
+
+                            Object[] array = (Object[]) Array.newInstance(type.getRawClass().componentType(), nonNull);
 
                             int i = 0;
                             for (ParsedElement subElement : element.asArray().getValues()) {
-                                array[i] = toObject(subElement, type.getRawClass().componentType());
+                                Object subObject = toObject(subElement, type.getRawClass().componentType());
+                                if (!(ignoreNulls && subObject == null)) {
+                                    array[i] = subObject;
 
-                                i++;
+                                    i++;
+                                }
                             }
 
                             return array;
@@ -361,15 +406,21 @@ public class ObjectProcessor {
                     ParsedArray arrayElement = ParsedArray.create();
 
                     for (Object item : list) {
-                        arrayElement.add(toElement(item));
+                        ParsedElement subElement = toElement(item);
+                        if (!(subElement.isPrimitive() && subElement.asPrimitive().isNull())) {
+                            arrayElement.add(subElement);
+                        }
                     }
 
                     return arrayElement;
                 } else if (object instanceof Object[]) {
                     ParsedArray arrayElement = ParsedArray.create();
 
-                    for (Object objects : (Object[]) object) {
-                        arrayElement.add(toElement(objects));
+                    for (Object item : (Object[]) object) {
+                        ParsedElement subElement = toElement(item);
+                        if (!(subElement.isPrimitive() && subElement.asPrimitive().isNull())) {
+                            arrayElement.add(subElement);
+                        }
                     }
 
                     return arrayElement;
@@ -377,11 +428,14 @@ public class ObjectProcessor {
                     ParsedObject objectElement = ParsedObject.create();
 
                     for (Map.Entry<?, ?> entry : map.entrySet()) {
-                        objectElement.set(entry.getKey().toString(), toElement(entry.getValue()));
+                        ParsedElement subElement = toElement(entry.getValue());
+                        if (!(subElement.isPrimitive() && subElement.asPrimitive().isNull())) {
+                            objectElement.set(entry.getKey().toString(), subElement);
+                        }
                     }
 
                     return objectElement;
-                } else if (object instanceof Object) {
+                } else {
                     ParsedObject objectElement = ParsedObject.create();
 
                     List<Field> fields = getFields(object.getClass());
@@ -408,7 +462,10 @@ public class ObjectProcessor {
                                 }
 
                                 if (shouldSerialize) {
-                                    objectElement.set(field.getName(), toElement(field.get(object)));
+                                    ParsedElement subElement = toElement(field.get(object));
+                                    if (!(subElement.isPrimitive() && subElement.asPrimitive().isNull())) {
+                                        objectElement.set(field.getName(), subElement);
+                                    }
                                 }
                             }
                         } catch (IllegalArgumentException | IllegalAccessException e2) {
@@ -421,8 +478,6 @@ public class ObjectProcessor {
                     }
 
                     return objectElement;
-                } else {
-                    throw new RuntimeException("Object is not a serializable type");
                 }
             }
         } catch (RuntimeException e) {
