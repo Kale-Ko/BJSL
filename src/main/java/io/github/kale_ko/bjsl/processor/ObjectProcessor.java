@@ -195,7 +195,6 @@ public class ObjectProcessor {
                             List<Field> fields = getFields(object.getClass());
 
                             for (Field field : fields) {
-                                System.out.println(field.getName());
                                 try {
                                     if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
                                         Boolean shouldSerialize = element.asObject().has(field.getName()) && !Modifier.isTransient(field.getModifiers());
@@ -212,8 +211,12 @@ public class ObjectProcessor {
                                             shouldSerialize = false;
                                         }
 
+                                        System.out.println(field.getName() + ": " + shouldSerialize);
+
                                         if (shouldSerialize) {
+                                            System.out.println(field.getName() + ": is");
                                             Object subObject = toObject(element.asObject().get(field.getName()), field.getGenericType());
+                                            System.out.println(field.getName() + ": " + subObject);
                                             field.set(object, subObject);
                                         }
                                     }
