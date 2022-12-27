@@ -16,6 +16,11 @@ public class Test10 extends Test {
                 public SubSubTestClass(int x) {
                     this.x = x;
                 }
+
+                @Override
+                public boolean equals(Object y) {
+                    return y instanceof SubSubTestClass z && this.x == z.x;
+                }
             }
 
             public float subFloat = 85.275f;
