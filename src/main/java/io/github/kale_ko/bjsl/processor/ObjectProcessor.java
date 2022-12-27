@@ -67,24 +67,26 @@ public class ObjectProcessor {
                     try {
                         Object object = element.asPrimitive().get();
 
-                        if (type.getRawClass() == String.class) {
+                        if (object == null) {
+                            return object;
+                        } else if (type.getRawClass() == String.class) {
                             return (String) object;
                         } else if (type.getRawClass() == Byte.class || type.getRawClass() == byte.class) {
-                            return (Byte) (byte) (long) object;
+                            return (byte) (long) object;
                         } else if (type.getRawClass() == Character.class || type.getRawClass() == char.class) {
-                            return (Character) (char) (long) object;
+                            return (char) (long) object;
                         } else if (type.getRawClass() == Short.class || type.getRawClass() == short.class) {
-                            return (Short) (short) (long) object;
+                            return (short) (long) object;
                         } else if (type.getRawClass() == Integer.class || type.getRawClass() == int.class) {
-                            return (Integer) (int) (long) object;
+                            return (int) (long) object;
                         } else if (type.getRawClass() == Long.class || type.getRawClass() == long.class) {
-                            return (Long) (long) object;
+                            return (long) object;
                         } else if (type.getRawClass() == Float.class || type.getRawClass() == float.class) {
-                            return (Float) (float) (double) object;
+                            return (float) (double) object;
                         } else if (type.getRawClass() == Double.class || type.getRawClass() == double.class) {
-                            return (Double) (double) object;
+                            return (double) object;
                         } else if (type.getRawClass() == Boolean.class || type.getRawClass() == boolean.class) {
-                            return (Boolean) (boolean) object;
+                            return (boolean) object;
                         } else {
                             return type.getRawClass().cast(object);
                         }
