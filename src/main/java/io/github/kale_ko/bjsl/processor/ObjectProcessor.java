@@ -15,7 +15,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.type.TypeBase;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import io.github.kale_ko.bjsl.BJSL;
 import io.github.kale_ko.bjsl.elements.ParsedArray;
@@ -87,12 +86,12 @@ public class ObjectProcessor {
                 }
             } else if (!type.getRawClass().isAnonymousClass() && !type.getRawClass().isRecord() && !type.getRawClass().isAnnotation()) {
                 if (element instanceof ParsedObject) {
-                    if (Map.class.isAssignableFrom(clazz)) {
+                    if (Map.class.isAssignableFrom(type.getRawClass())) {
                         Map<String, Object> object = null;
 
-                        if (!clazz.isInterface()) {
+                        if (!type.getRawClass().isInterface()) {
                             try {
-                                for (Constructor<T> constructor : (Constructor<T>[]) clazz.getConstructors()) {
+                                for (Constructor<?> constructor : (Constructor<?>[]) type.getRawClass().getConstructors()) {
                                     if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
                                         object = (Map<String, Object>) constructor.newInstance();
 
@@ -112,7 +111,7 @@ public class ObjectProcessor {
                                     Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
                                     unsafeField.setAccessible(true);
                                     sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
-                                    object = (Map<String, Object>) unsafe.allocateInstance(clazz);
+                                    object = (Map<String, Object>) unsafe.allocateInstance(type.getRawClass());
                                 } catch (InstantiationException | IllegalAccessException | NoSuchFieldException e) {
                                     if (BJSL.getLogger() != null) {
                                         StringWriter writer = new StringWriter();
@@ -144,7 +143,7 @@ public class ObjectProcessor {
                                 Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
                                 unsafeField.setAccessible(true);
                                 sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
-                                object = (Map<String, Object>) unsafe.allocateInstance(clazz);
+                                object = (Map<String, Object>) unsafe.allocateInstance(type.getRawClass());
                             } catch (InstantiationException | IllegalAccessException | NoSuchFieldException e) {
                                 if (BJSL.getLogger() != null) {
                                     StringWriter writer = new StringWriter();
@@ -160,9 +159,9 @@ public class ObjectProcessor {
                                 object.put(entry.getKey(), subObject);
                             }
 
-                            return (T) object;
+                            return object;
                         } else {
-                            throw new RuntimeException("No constructors for \"" + clazz.getSimpleName() + "\" found and unsafe initialization failed");
+                            throw new RuntimeException("No constructors for \"" + type.getTypeName() + "\" found and unsafe initialization failed");
                         }
                     } else if (!type.getRawClass().isInterface()) {
                         Object object = null;
@@ -242,14 +241,14 @@ public class ObjectProcessor {
                         throw new RuntimeException("clazz is not a serializable type (" + type.getTypeName() + ")");
                     }
                 } else if (element instanceof ParsedArray) {
-                    if (Collection.class.isAssignableFrom(clazz)) {
-                        Collection object = null;
+                    if (Collection.class.isAssignableFrom(type.getRawClass())) {
+                        Collection<Object> object = null;
 
-                        if (!clazz.isInterface()) {
+                        if (!type.getRawClass().isInterface()) {
                             try {
-                                for (Constructor<T> constructor : (Constructor<T>[]) clazz.getConstructors()) {
+                                for (Constructor<?> constructor : (Constructor<?>[]) type.getRawClass().getConstructors()) {
                                     if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
-                                        object = (Collection) constructor.newInstance();
+                                        object = (Collection<Object>) constructor.newInstance();
 
                                         break;
                                     }
@@ -267,7 +266,7 @@ public class ObjectProcessor {
                                     Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
                                     unsafeField.setAccessible(true);
                                     sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
-                                    object = (Collection) unsafe.allocateInstance(clazz);
+                                    object = (Collection<Object>) unsafe.allocateInstance(type.getRawClass());
                                 } catch (InstantiationException | IllegalAccessException | NoSuchFieldException e) {
                                     if (BJSL.getLogger() != null) {
                                         StringWriter writer = new StringWriter();
@@ -280,7 +279,7 @@ public class ObjectProcessor {
                             try {
                                 for (Constructor<?> constructor : ArrayList.class.getConstructors()) {
                                     if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
-                                        object = (Collection) constructor.newInstance();
+                                        object = (Collection<Object>) constructor.newInstance();
 
                                         break;
                                     }
@@ -299,22 +298,22 @@ public class ObjectProcessor {
                                 object.add(toObject(subElement, Object.class));
                             }
 
-                            return (T) object;
+                            return object;
                         } else {
-                            throw new RuntimeException("No constructors for \"" + clazz.getSimpleName() + "\" found and unsafe initialization failed");
+                            throw new RuntimeException("No constructors for \"" + type.getTypeName() + "\" found and unsafe initialization failed");
                         }
                     } else if (!type.getRawClass().isInterface()) {
                         try {
-                            T[] array = (T[]) Array.newInstance(clazz.componentType(), element.asArray().getSize());
+                            Object[] array = (Object[]) Array.newInstance(type.getRawClass().componentType(), element.asArray().getSize());
 
                             int i = 0;
                             for (ParsedElement subElement : element.asArray().getValues()) {
-                                array[i] = (T) toObject(subElement, clazz.componentType());
+                                array[i] = toObject(subElement, type.getRawClass().componentType());
 
                                 i++;
                             }
 
-                            return (T) array;
+                            return array;
                         } catch (NegativeArraySizeException e) {
                             throw new RuntimeException("Error while parsing: ", e);
                         }
