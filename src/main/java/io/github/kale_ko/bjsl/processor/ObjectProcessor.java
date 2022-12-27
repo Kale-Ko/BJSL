@@ -14,6 +14,9 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.type.TypeBase;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import io.github.kale_ko.bjsl.BJSL;
 import io.github.kale_ko.bjsl.elements.ParsedArray;
 import io.github.kale_ko.bjsl.elements.ParsedElement;
@@ -35,12 +38,18 @@ public class ObjectProcessor {
 
     @SuppressWarnings("unchecked")
     public <T> T toObject(ParsedElement element, Class<T> clazz) {
+        return (T) toObject(element, TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] {}));
+    }
+
+    @SuppressWarnings("unchecked")
+    public Object toObject(ParsedElement element, JavaType type) {
         try {
             if (element instanceof ParsedPrimitive) {
-                if (clazz.isEnum()) {
+                if (type.getRawClass().isEnum()) {
                     if (element instanceof ParsedPrimitive && element.asPrimitive().isString()) {
-                        for (T value : clazz.getEnumConstants()) {
-                            if (value.equals(element.asPrimitive().asString())) {
+                        // TODO Figure something better out for enums
+                        for (Object value : type.getRawClass().getEnumConstants()) {
+                            if (value.toString().equals(element.asPrimitive().asString())) {
                                 return value;
                             }
                         }
@@ -51,32 +60,32 @@ public class ObjectProcessor {
                     try {
                         Object object = element.asPrimitive().get();
 
-                        if (clazz == String.class) {
-                            return clazz.cast((String) object);
-                        } else if (clazz == Byte.class || clazz == byte.class) {
-                            return (T) (Byte) (byte) (long) object;
-                        } else if (clazz == Character.class || clazz == char.class) {
-                            return (T) (Character) (char) (long) object;
-                        } else if (clazz == Short.class || clazz == short.class) {
-                            return (T) (Short) (short) (long) object;
-                        } else if (clazz == Integer.class || clazz == int.class) {
-                            return (T) (Integer) (int) (long) object;
-                        } else if (clazz == Long.class || clazz == long.class) {
-                            return (T) (Long) (long) object;
-                        } else if (clazz == Float.class || clazz == float.class) {
-                            return (T) (Float) (float) (double) object;
-                        } else if (clazz == Double.class || clazz == double.class) {
-                            return (T) (Double) (double) object;
-                        } else if (clazz == Boolean.class || clazz == boolean.class) {
-                            return (T) (Boolean) (boolean) object;
+                        if (type.getRawClass() == String.class) {
+                            return (String) object;
+                        } else if (type.getRawClass() == Byte.class || type.getRawClass() == byte.class) {
+                            return (Byte) (byte) (long) object;
+                        } else if (type.getRawClass() == Character.class || type.getRawClass() == char.class) {
+                            return (Character) (char) (long) object;
+                        } else if (type.getRawClass() == Short.class || type.getRawClass() == short.class) {
+                            return (Short) (short) (long) object;
+                        } else if (type.getRawClass() == Integer.class || type.getRawClass() == int.class) {
+                            return (Integer) (int) (long) object;
+                        } else if (type.getRawClass() == Long.class || type.getRawClass() == long.class) {
+                            return (Long) (long) object;
+                        } else if (type.getRawClass() == Float.class || type.getRawClass() == float.class) {
+                            return (Float) (float) (double) object;
+                        } else if (type.getRawClass() == Double.class || type.getRawClass() == double.class) {
+                            return (Double) (double) object;
+                        } else if (type.getRawClass() == Boolean.class || type.getRawClass() == boolean.class) {
+                            return (Boolean) (boolean) object;
                         } else {
-                            return clazz.cast(object);
+                            return type.getRawClass().cast(object);
                         }
                     } catch (ClassCastException e) {
-                        throw new RuntimeException("Element could not be cast to \"" + clazz.getName() + "\"", e);
+                        throw new RuntimeException("Element could not be cast to \"" + type.getTypeName() + "\"", e);
                     }
                 }
-            } else if (!clazz.isAnonymousClass() && !clazz.isRecord() && !clazz.isAnnotation()) {
+            } else if (!type.getRawClass().isAnonymousClass() && !type.getRawClass().isRecord() && !type.getRawClass().isAnnotation()) {
                 if (element instanceof ParsedObject) {
                     if (Map.class.isAssignableFrom(clazz)) {
                         Map<String, Object> object = null;
@@ -155,11 +164,11 @@ public class ObjectProcessor {
                         } else {
                             throw new RuntimeException("No constructors for \"" + clazz.getSimpleName() + "\" found and unsafe initialization failed");
                         }
-                    } else if (!clazz.isInterface()) {
-                        T object = null;
+                    } else if (!type.getRawClass().isInterface()) {
+                        Object object = null;
 
                         try {
-                            for (Constructor<T> constructor : (Constructor<T>[]) clazz.getConstructors()) {
+                            for (Constructor<Object> constructor : (Constructor<Object>[]) type.getRawClass().getConstructors()) {
                                 if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
                                     object = constructor.newInstance();
 
@@ -179,7 +188,7 @@ public class ObjectProcessor {
                                 Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
                                 unsafeField.setAccessible(true);
                                 sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
-                                object = (T) unsafe.allocateInstance(clazz);
+                                object = unsafe.allocateInstance(type.getRawClass());
                             } catch (InstantiationException | IllegalAccessException | NoSuchFieldException e) {
                                 if (BJSL.getLogger() != null) {
                                     StringWriter writer = new StringWriter();
@@ -227,20 +236,20 @@ public class ObjectProcessor {
 
                             return object;
                         } else {
-                            throw new RuntimeException("No constructors for \"" + clazz.getSimpleName() + "\" found and unsafe initialization failed");
+                            throw new RuntimeException("No constructors for \"" + type.getTypeName() + "\" found and unsafe initialization failed");
                         }
                     } else {
-                        throw new RuntimeException("clazz is not a serializable type (" + clazz + ")");
+                        throw new RuntimeException("clazz is not a serializable type (" + type.getTypeName() + ")");
                     }
                 } else if (element instanceof ParsedArray) {
                     if (Collection.class.isAssignableFrom(clazz)) {
-                        Collection<Object> object = null;
+                        Collection object = null;
 
                         if (!clazz.isInterface()) {
                             try {
                                 for (Constructor<T> constructor : (Constructor<T>[]) clazz.getConstructors()) {
                                     if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
-                                        object = (Collection<Object>) constructor.newInstance();
+                                        object = (Collection) constructor.newInstance();
 
                                         break;
                                     }
@@ -258,7 +267,7 @@ public class ObjectProcessor {
                                     Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
                                     unsafeField.setAccessible(true);
                                     sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
-                                    object = (Collection<Object>) unsafe.allocateInstance(clazz);
+                                    object = (Collection) unsafe.allocateInstance(clazz);
                                 } catch (InstantiationException | IllegalAccessException | NoSuchFieldException e) {
                                     if (BJSL.getLogger() != null) {
                                         StringWriter writer = new StringWriter();
@@ -271,7 +280,7 @@ public class ObjectProcessor {
                             try {
                                 for (Constructor<?> constructor : ArrayList.class.getConstructors()) {
                                     if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
-                                        object = (Collection<Object>) constructor.newInstance();
+                                        object = (Collection) constructor.newInstance();
 
                                         break;
                                     }
@@ -294,7 +303,7 @@ public class ObjectProcessor {
                         } else {
                             throw new RuntimeException("No constructors for \"" + clazz.getSimpleName() + "\" found and unsafe initialization failed");
                         }
-                    } else if (!clazz.isInterface()) {
+                    } else if (!type.getRawClass().isInterface()) {
                         try {
                             T[] array = (T[]) Array.newInstance(clazz.componentType(), element.asArray().getSize());
 
@@ -310,13 +319,13 @@ public class ObjectProcessor {
                             throw new RuntimeException("Error while parsing: ", e);
                         }
                     } else {
-                        throw new RuntimeException("clazz is not a serializable type (" + clazz + ")");
+                        throw new RuntimeException("clazz is not a serializable type (" + type.getTypeName() + ")");
                     }
                 } else {
                     throw new RuntimeException("Element is not an object or array");
                 }
             } else {
-                throw new RuntimeException("clazz is not a serializable type (" + clazz + ")");
+                throw new RuntimeException("clazz is not a serializable type (" + type.getTypeName() + ")");
             }
         } catch (RuntimeException e) {
             if (BJSL.getLogger() != null) {
