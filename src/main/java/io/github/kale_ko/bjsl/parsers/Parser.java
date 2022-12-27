@@ -244,8 +244,6 @@ public abstract class Parser {
     }
 
     protected void toNodes(TreeNode node, String key, ParsedElement element) {
-        System.out.println(key + ": " + element.getClass().getSimpleName());
-
         if (element instanceof ParsedObject objectElement) {
             ObjectNode subNode = JsonNodeFactory.instance.objectNode();
             if (node instanceof ObjectNode objectNode) {
