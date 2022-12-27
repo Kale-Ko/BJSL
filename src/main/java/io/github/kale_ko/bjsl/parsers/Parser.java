@@ -1,8 +1,6 @@
 package io.github.kale_ko.bjsl.parsers;
 
 import java.io.IOException;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import com.fasterxml.jackson.core.JsonFactory;
@@ -101,23 +99,15 @@ public abstract class Parser {
                     toNodes(tree, subKey, objectElement.get(subKey));
                 }
 
-                PipedOutputStream outputStream = new PipedOutputStream();
-                PipedInputStream inputStream = new PipedInputStream(outputStream);
-                JsonGenerator generator = this.jsonFactory.createGenerator(outputStream);
+                StringWriter writer = new StringWriter();
+                JsonGenerator generator = this.jsonFactory.createGenerator(writer);
                 generator = generator.setPrettyPrinter(this.prettyPrinter);
                 generator.setCodec(this.codec);
                 generator.writeTree(tree);
                 generator.close();
+                writer.close();
 
-                StringBuilder output = new StringBuilder();
-                int read = -1;
-                while ((read = inputStream.read()) != -1) {
-                    output.appendCodePoint(read);
-                }
-                outputStream.close();
-                inputStream.close();
-
-                return output.toString().trim();
+                return writer.toString().trim();
             } else if (element instanceof ParsedArray) {
                 ParsedArray arrayElement = element.asArray();
 
@@ -126,25 +116,17 @@ public abstract class Parser {
                     toNodes(tree, "root", subElement);
                 }
 
-                PipedOutputStream outputStream = new PipedOutputStream();
-                PipedInputStream inputStream = new PipedInputStream(outputStream);
-                JsonGenerator generator = this.jsonFactory.createGenerator(outputStream);
+                StringWriter writer = new StringWriter();
+                JsonGenerator generator = this.jsonFactory.createGenerator(writer);
                 generator = generator.setPrettyPrinter(this.prettyPrinter);
                 generator.setCodec(this.codec);
                 generator.writeTree(tree);
                 generator.close();
+                writer.close();
 
-                StringBuilder output = new StringBuilder();
-                int read = -1;
-                while ((read = inputStream.read()) != -1) {
-                    output.appendCodePoint(read);
-                }
-                outputStream.close();
-                inputStream.close();
-
-                return output.toString().trim();
+                return writer.toString().trim();
             } else if (element instanceof ParsedPrimitive) {
-                if (element.asPrimitive().get() != null) {
+                if (!element.asPrimitive().isNull()) {
                     return element.asPrimitive().get().toString().trim();
                 } else {
                     return "null";
@@ -262,6 +244,8 @@ public abstract class Parser {
     }
 
     protected void toNodes(TreeNode node, String key, ParsedElement element) {
+        System.out.println(key + ": " + element.getClass().getSimpleName());
+
         if (element instanceof ParsedObject objectElement) {
             ObjectNode subNode = JsonNodeFactory.instance.objectNode();
             if (node instanceof ObjectNode objectNode) {
