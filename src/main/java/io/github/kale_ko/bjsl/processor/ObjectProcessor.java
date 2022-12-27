@@ -51,6 +51,7 @@ public class ObjectProcessor {
     @SuppressWarnings("unchecked")
     public Object toObject(ParsedElement element, JavaType type) {
         try {
+            System.out.println(type.getRawClass());
             if (element instanceof ParsedPrimitive) {
                 if (type.getRawClass().isEnum()) {
                     if (element instanceof ParsedPrimitive && element.asPrimitive().isString()) {
