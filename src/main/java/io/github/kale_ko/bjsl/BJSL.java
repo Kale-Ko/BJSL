@@ -1,5 +1,8 @@
 package io.github.kale_ko.bjsl;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import com.fasterxml.jackson.databind.JavaType;
 import io.github.kale_ko.bjsl.elements.ParsedElement;
@@ -12,13 +15,22 @@ import io.github.kale_ko.bjsl.parsers.YamlParser;
 import io.github.kale_ko.bjsl.processor.ObjectProcessor;
 
 public class BJSL {
-    private static ObjectProcessor objectProcessor = new ObjectProcessor(false);
+    private static ObjectProcessor objectProcessor = new ObjectProcessor(false, false);
 
-    private static JsonParser jsonParser = new JsonParser();
+    private static JsonParser jsonParser = new JsonParser(false);
+    private static JsonParser prettyJsonParser = new JsonParser(true, 2);
     private static YamlParser yamlParser = new YamlParser();
     private static TomlParser tomlParser = new TomlParser();
     private static PropertiesParser propertiesParser = new PropertiesParser();
     private static SmileParser smileParser = new SmileParser();
+
+    static {
+        try {
+            LogManager.getLogManager().readConfiguration(new ByteArrayInputStream("handlers=java.util.logging.ConsoleHandler\njava.util.logging.ConsoleHandler.formatter=java.util.logging.SimpleFormatter\njava.util.logging.SimpleFormatter.format=[%1$tT %4$s]: [%3$s] %5$s %n".getBytes()));
+        } catch (IOException | SecurityException e) {
+            e.printStackTrace();
+        }
+    }
 
     private static Logger logger = Logger.getLogger("BJSL");
 
@@ -39,11 +51,11 @@ public class BJSL {
     }
 
     public <T> T parse(String data, Class<T> clazz) {
-        return this.processor.toObject(this.parser.toElement(data), clazz);
+        return this.processor.toObject(this.parse(data), clazz);
     }
 
-    public Object parse(String data, JavaType clazz) {
-        return this.processor.toObject(this.parser.toElement(data), clazz);
+    public Object parse(String data, JavaType type) {
+        return this.processor.toObject(this.parse(data), type);
     }
 
     public String stringify(ParsedElement element) {
@@ -51,7 +63,7 @@ public class BJSL {
     }
 
     public String stringify(Object object) {
-        return this.parser.toString(this.processor.toElement(object));
+        return this.stringify(this.processor.toElement(object));
     }
 
     public static ParsedElement parseJson(String data) {
@@ -59,19 +71,31 @@ public class BJSL {
     }
 
     public static <T> T parseJson(String data, Class<T> clazz) {
-        return objectProcessor.toObject(jsonParser.toElement(data), clazz);
+        return objectProcessor.toObject(parseJson(data), clazz);
     }
 
-    public static Object parseJson(String data, JavaType clazz) {
-        return objectProcessor.toObject(jsonParser.toElement(data), clazz);
+    public static Object parseJson(String data, JavaType type) {
+        return objectProcessor.toObject(parseJson(data), type);
     }
 
     public static String stringifyJson(ParsedElement element) {
-        return jsonParser.toString(element);
+        return stringifyJson(element, true);
+    }
+
+    public static String stringifyJson(ParsedElement element, Boolean pretty) {
+        if (pretty) {
+            return prettyJsonParser.toString(element);
+        } else {
+            return jsonParser.toString(element);
+        }
     }
 
     public static String stringifyJson(Object object) {
-        return jsonParser.toString(objectProcessor.toElement(object));
+        return stringifyJson(object, true);
+    }
+
+    public static String stringifyJson(Object object, Boolean pretty) {
+        return stringifyJson(objectProcessor.toElement(object), pretty);
     }
 
     public static ParsedElement parseYaml(String data) {
@@ -79,11 +103,11 @@ public class BJSL {
     }
 
     public static <T> T parseYaml(String data, Class<T> clazz) {
-        return objectProcessor.toObject(yamlParser.toElement(data), clazz);
+        return objectProcessor.toObject(parseYaml(data), clazz);
     }
 
-    public static Object parseYaml(String data, JavaType clazz) {
-        return objectProcessor.toObject(yamlParser.toElement(data), clazz);
+    public static Object parseYaml(String data, JavaType type) {
+        return objectProcessor.toObject(parseYaml(data), type);
     }
 
     public static String stringifyYaml(ParsedElement element) {
@@ -91,7 +115,7 @@ public class BJSL {
     }
 
     public static String stringifyYaml(Object object) {
-        return yamlParser.toString(objectProcessor.toElement(object));
+        return stringifyYaml(objectProcessor.toElement(object));
     }
 
     public static ParsedElement parseToml(String data) {
@@ -99,11 +123,11 @@ public class BJSL {
     }
 
     public static <T> T parseToml(String data, Class<T> clazz) {
-        return objectProcessor.toObject(tomlParser.toElement(data), clazz);
+        return objectProcessor.toObject(parseToml(data), clazz);
     }
 
-    public static Object parseToml(String data, JavaType clazz) {
-        return objectProcessor.toObject(tomlParser.toElement(data), clazz);
+    public static Object parseToml(String data, JavaType type) {
+        return objectProcessor.toObject(parseToml(data), type);
     }
 
     public static String stringifyToml(ParsedElement element) {
@@ -111,7 +135,7 @@ public class BJSL {
     }
 
     public static String stringifyToml(Object object) {
-        return tomlParser.toString(objectProcessor.toElement(object));
+        return stringifyToml(objectProcessor.toElement(object));
     }
 
     public static ParsedElement parseProperties(String data) {
@@ -119,11 +143,11 @@ public class BJSL {
     }
 
     public static <T> T parseProperties(String data, Class<T> clazz) {
-        return objectProcessor.toObject(propertiesParser.toElement(data), clazz);
+        return objectProcessor.toObject(parseProperties(data), clazz);
     }
 
-    public static Object parseProperties(String data, JavaType clazz) {
-        return objectProcessor.toObject(propertiesParser.toElement(data), clazz);
+    public static Object parseProperties(String data, JavaType type) {
+        return objectProcessor.toObject(parseProperties(data), type);
     }
 
     public static String stringifyProperties(ParsedElement element) {
@@ -131,7 +155,7 @@ public class BJSL {
     }
 
     public static String stringifyProperties(Object object) {
-        return propertiesParser.toString(objectProcessor.toElement(object));
+        return stringifyProperties(objectProcessor.toElement(object));
     }
 
     public static ParsedElement parseSmile(String data) {
@@ -139,11 +163,11 @@ public class BJSL {
     }
 
     public static <T> T parseSmile(String data, Class<T> clazz) {
-        return objectProcessor.toObject(smileParser.toElement(data), clazz);
+        return objectProcessor.toObject(parseSmile(data), clazz);
     }
 
-    public static Object parseSmile(String data, JavaType clazz) {
-        return objectProcessor.toObject(smileParser.toElement(data), clazz);
+    public static Object parseSmile(String data, JavaType type) {
+        return objectProcessor.toObject(parseSmile(data), type);
     }
 
     public static String stringifySmile(ParsedElement element) {
@@ -151,14 +175,14 @@ public class BJSL {
     }
 
     public static String stringifySmile(Object object) {
-        return smileParser.toString(objectProcessor.toElement(object));
+        return stringifySmile(objectProcessor.toElement(object));
     }
 
     public static Logger getLogger() {
-        return BJSL.logger;
+        return logger;
     }
 
     public static void setLogger(Logger value) {
-        BJSL.logger = value;
+        logger = value;
     }
 }

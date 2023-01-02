@@ -2,6 +2,7 @@ package io.github.kale_ko.bjsl.tests;
 
 import io.github.kale_ko.bjsl.BJSL;
 import io.github.kale_ko.bjsl.Test;
+import io.github.kale_ko.bjsl.TestResult;
 import io.github.kale_ko.bjsl.elements.ParsedObject;
 import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
 
@@ -11,7 +12,7 @@ public class Test1 extends Test {
     }
 
     @Override
-    public Object run() {
+    public TestResult run() {
         ParsedObject element = ParsedObject.create();
         element.set("pubString", ParsedPrimitive.fromString("aCoolString"));
         element.set("privString", ParsedPrimitive.from("aCoolerString"));
@@ -21,9 +22,9 @@ public class Test1 extends Test {
         String result = BJSL.stringifyJson(element);
 
         if (result.equals("{\n  \"pubString\" : \"aCoolString\",\n  \"privString\" : \"aCoolerString\",\n  \"anInt\" : 57,\n  \"aLong\" : 38689269265279\n}")) {
-            return true;
+            return new TestResult(TestResult.Status.SUCCEEDED, result);
         } else {
-            return result;
+            return new TestResult(TestResult.Status.FAILED, result);
         }
     }
 }

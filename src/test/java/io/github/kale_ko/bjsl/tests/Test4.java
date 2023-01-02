@@ -2,6 +2,7 @@ package io.github.kale_ko.bjsl.tests;
 
 import io.github.kale_ko.bjsl.BJSL;
 import io.github.kale_ko.bjsl.Test;
+import io.github.kale_ko.bjsl.TestResult;
 
 public class Test4 extends Test {
     @SuppressWarnings("unused")
@@ -18,13 +19,13 @@ public class Test4 extends Test {
     }
 
     @Override
-    public Object run() {
+    public TestResult run() {
         String result = BJSL.stringifyJson(new TestClass());
 
         if (result.equals("{\n  \"pubString\" : \"aCoolString\",\n  \"privString\" : \"aCoolerString\",\n  \"anInt\" : 57,\n  \"aLong\" : 38689269265279\n}")) {
-            return true;
+            return new TestResult(TestResult.Status.SUCCEEDED, result);
         } else {
-            return result;
+            return new TestResult(TestResult.Status.FAILED, result);
         }
     }
 }

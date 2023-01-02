@@ -2,6 +2,7 @@ package io.github.kale_ko.bjsl.tests;
 
 import io.github.kale_ko.bjsl.BJSL;
 import io.github.kale_ko.bjsl.Test;
+import io.github.kale_ko.bjsl.TestResult;
 import io.github.kale_ko.bjsl.elements.ParsedArray;
 import io.github.kale_ko.bjsl.elements.ParsedObject;
 import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
@@ -12,7 +13,7 @@ public class Test5 extends Test {
     }
 
     @Override
-    public Object run() {
+    public TestResult run() {
         ParsedObject element = ParsedObject.create();
         element.set("pubString", ParsedPrimitive.fromString("aCoolString"));
         element.set("privString", ParsedPrimitive.from("aCoolerString"));
@@ -69,9 +70,9 @@ public class Test5 extends Test {
         String result = BJSL.stringifyJson(element);
 
         if (result.equals("{\n  \"pubString\" : \"aCoolString\",\n  \"privString\" : \"aCoolerString\",\n  \"anInt\" : 57,\n  \"aLong\" : 38689269265279,\n  \"subObject\" : {\n    \"subFloat\" : 31.5,\n    \"stringArray\" : [\n      \"element 1\",\n      \"element 2\",\n      \"element 3\",\n      \"element 4\"\n    ],\n    \"longList\" : [\n      25153,\n      351,\n      36886942642,\n      293579269246,\n      3926426\n    ],\n    \"subSubObjectList\" : [\n      {\n        \"x\" : 5\n      },\n      {\n        \"x\" : 13\n      },\n      {\n        \"x\" : 24\n      }\n    ],\n    \"booleanMap\" : {\n      \"element1\" : false,\n      \"element2\" : true,\n      \"element3\" : true,\n      \"element4\" : true\n    },\n    \"subSubObjectMap\" : {\n      \"element1\" : {\n        \"x\" : 13\n      },\n      \"element2\" : {\n        \"x\" : 27\n      },\n      \"element3\" : {\n        \"x\" : 82\n      },\n      \"element4\" : {\n        \"x\" : 97\n      }\n    }\n  }\n}")) {
-            return true;
+            return new TestResult(TestResult.Status.SUCCEEDED, result);
         } else {
-            return result;
+            return new TestResult(TestResult.Status.FAILED, result);
         }
     }
 }

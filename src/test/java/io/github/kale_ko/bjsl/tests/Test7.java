@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import io.github.kale_ko.bjsl.BJSL;
 import io.github.kale_ko.bjsl.Test;
+import io.github.kale_ko.bjsl.TestResult;
 
 public class Test7 extends Test {
     @SuppressWarnings("unused")
@@ -58,13 +59,13 @@ public class Test7 extends Test {
     }
 
     @Override
-    public Object run() {
+    public TestResult run() {
         String result = BJSL.stringifyJson(new TestClass());
 
         if (result.equals("{\n  \"pubString\" : \"aCoolString\",\n  \"privString\" : \"aCoolerString\",\n  \"anInt\" : 57,\n  \"aLong\" : 38689269265279,\n  \"subObject\" : {\n    \"subFloat\" : 31.5,\n    \"stringArray\" : [\n      \"element 1\",\n      \"element 2\",\n      \"element 3\",\n      \"element 4\"\n    ],\n    \"longList\" : [\n      25153,\n      351,\n      36886942642,\n      293579269246,\n      3926426\n    ],\n    \"subSubObjectList\" : [\n      {\n        \"x\" : 5\n      },\n      {\n        \"x\" : 13\n      },\n      {\n        \"x\" : 24\n      }\n    ],\n    \"booleanMap\" : {\n      \"element1\" : false,\n      \"element2\" : true,\n      \"element3\" : true,\n      \"element4\" : true\n    },\n    \"subSubObjectMap\" : {\n      \"element1\" : {\n        \"x\" : 13\n      },\n      \"element2\" : {\n        \"x\" : 27\n      },\n      \"element3\" : {\n        \"x\" : 82\n      },\n      \"element4\" : {\n        \"x\" : 97\n      }\n    }\n  }\n}")) {
-            return true;
+            return new TestResult(TestResult.Status.SUCCEEDED, result);
         } else {
-            return result;
+            return new TestResult(TestResult.Status.FAILED, result);
         }
     }
 }
