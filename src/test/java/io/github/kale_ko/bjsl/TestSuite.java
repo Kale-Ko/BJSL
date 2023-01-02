@@ -68,7 +68,7 @@ public class TestSuite {
                     e.printStackTrace(new PrintWriter(writer));
                     logger.warning(test.getName() + ": Failed with exception:\n" + writer.toString());
                 } else if (result.getResult() instanceof ParsedElement element) {
-                    logger.warning(test.getName() + ": Failed with result:\n" + BJSL.stringifyJson(element));
+                    logger.warning(test.getName() + ": Failed with result:\n" + BJSL.stringifyJson(element, false));
                 } else if (!result.getResult().equals(false)) {
                     logger.warning(test.getName() + ": Failed with result:\n" + result.getResult());
                 } else {
