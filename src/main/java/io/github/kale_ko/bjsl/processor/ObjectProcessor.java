@@ -67,8 +67,12 @@ public class ObjectProcessor {
                                 return value;
                             }
                         }
+
+                        BJSL.getLogger().warning("Unknown enum value \"" + element.asPrimitive().asString() + "\" for type \"" + type.getTypeName() + "\"");
+
+                        return null;
                     } else {
-                        throw new RuntimeException("Element is not a enum");
+                        throw new RuntimeException("Element for type \"" + type.getTypeName() + "\" is not a enum");
                     }
                 } else {
                     try {
@@ -98,7 +102,7 @@ public class ObjectProcessor {
                             return type.getRawClass().cast(object);
                         }
                     } catch (ClassCastException e) {
-                        throw new RuntimeException("Element could not be cast to \"" + type.getTypeName() + "\"", e);
+                        throw new RuntimeException("Element could not be cast to \"" + type.getTypeName() + "\"");
                     }
                 }
             } else if (!type.getRawClass().isAnonymousClass() && !type.getRawClass().isRecord() && !type.getRawClass().isAnnotation()) {
@@ -244,7 +248,7 @@ public class ObjectProcessor {
                             throw new RuntimeException("No constructors for \"" + type.getTypeName() + "\" found and unsafe initialization failed");
                         }
                     } else {
-                        throw new RuntimeException("clazz is not a serializable type (" + type.getTypeName() + ")");
+                        throw new RuntimeException("Type \"" + type.getTypeName() + "\" is not serializable");
                     }
                 } else if (element instanceof ParsedArray) {
                     if (type instanceof CollectionType) {
@@ -374,13 +378,13 @@ public class ObjectProcessor {
                             throw new RuntimeException("Error while parsing: ", e);
                         }
                     } else {
-                        throw new RuntimeException("clazz is not a serializable type (" + type.getTypeName() + ")");
+                        throw new RuntimeException("Type \"" + type.getTypeName() + "\" is not serializable");
                     }
                 } else {
                     throw new RuntimeException("Element is not an object or array");
                 }
             } else {
-                throw new RuntimeException("clazz is not a serializable type (" + type.getTypeName() + ")");
+                throw new RuntimeException("Type \"" + type.getTypeName() + "\" is not serializable");
             }
         } catch (RuntimeException e) {
             if (BJSL.getLogger() != null) {
@@ -391,8 +395,6 @@ public class ObjectProcessor {
 
             throw e;
         }
-
-        throw new RuntimeException("Something went horribly wrong while parsing");
     }
 
     public ParsedElement toElement(Object object) {
