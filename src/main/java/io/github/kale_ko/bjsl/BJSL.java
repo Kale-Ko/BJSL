@@ -1,8 +1,5 @@
 package io.github.kale_ko.bjsl;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import com.fasterxml.jackson.databind.JavaType;
 import io.github.kale_ko.bjsl.elements.ParsedElement;
@@ -23,14 +20,6 @@ public class BJSL {
     private static TomlParser tomlParser = new TomlParser();
     private static PropertiesParser propertiesParser = new PropertiesParser();
     private static SmileParser smileParser = new SmileParser();
-
-    static {
-        try {
-            LogManager.getLogManager().readConfiguration(new ByteArrayInputStream("handlers=java.util.logging.ConsoleHandler\njava.util.logging.ConsoleHandler.formatter=java.util.logging.SimpleFormatter\njava.util.logging.SimpleFormatter.format=[%1$tT %4$s]: [%3$s] %5$s %n".getBytes()));
-        } catch (IOException | SecurityException e) {
-            e.printStackTrace();
-        }
-    }
 
     private static Logger logger = Logger.getLogger("BJSL");
 
