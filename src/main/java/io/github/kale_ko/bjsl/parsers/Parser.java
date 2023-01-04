@@ -238,7 +238,7 @@ public abstract class Parser {
             }
         } else {
             if (BJSL.getLogger() != null) {
-                BJSL.getLogger().warning("Warning while parsing: Node \"" + key + "\" is not a serializable type (" + node.getClass().getSimpleName() + ")");
+                BJSL.getLogger().warning("Warning while parsing: Node \"" + key + "\" of type \"" + node.getClass().getSimpleName() + "\" is not serializable");
             }
         }
     }
@@ -353,12 +353,12 @@ public abstract class Parser {
                 }
             } else {
                 if (BJSL.getLogger() != null) {
-                    BJSL.getLogger().warning("Warning while parsing: Element \"" + key + "\" is not a serializable type (ParsedPrimitive." + primitiveElement.getType() + ")");
+                    BJSL.getLogger().warning("Warning while parsing: Element \"" + key + "\" of type \"" + primitiveElement.getType() + "\" is not serializable");
                 }
             }
         } else {
             if (BJSL.getLogger() != null) {
-                BJSL.getLogger().warning("Warning while parsing: Element \"" + key + "\" is not a serializable type (" + element.getClass().getSimpleName() + ")");
+                BJSL.getLogger().warning("Warning while parsing: Element \"" + key + "\" of type \"" + element.getClass().getSimpleName() + "\" is not serializable");
             }
         }
     }
