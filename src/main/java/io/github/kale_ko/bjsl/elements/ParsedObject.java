@@ -6,12 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 public class ParsedObject extends ParsedElement {
-    private ParsedObject() {
+    protected LinkedHashMap<String, ParsedElement> object;
+
+    protected ParsedObject() {
         this(new LinkedHashMap<String, ParsedElement>());
     }
 
-    private ParsedObject(LinkedHashMap<String, ParsedElement> object) {
-        super(object, null, null);
+    protected ParsedObject(LinkedHashMap<String, ParsedElement> object) {
+        this.object = object;
     }
 
     public int getSize() {
