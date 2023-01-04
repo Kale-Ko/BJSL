@@ -15,7 +15,7 @@ import io.github.kale_ko.bjsl.elements.ParsedElement;
 public class TestSuite {
     static {
         try {
-            LogManager.getLogManager().readConfiguration(new ByteArrayInputStream("handlers=java.util.logging.ConsoleHandler\njava.util.logging.ConsoleHandler.formatter=java.util.logging.SimpleFormatter\njava.util.logging.SimpleFormatter.format=[%1$tT %4$s]: [%3$s] %5$s %n".getBytes()));
+            LogManager.getLogManager().readConfiguration(new ByteArrayInputStream("handlers=java.util.logging.ConsoleHandler\njava.util.logging.ConsoleHandler.formatter=java.util.logging.SimpleFormatter\njava.util.logging.SimpleFormatter.format=[%3$s] %5$s %n".getBytes()));
         } catch (IOException | SecurityException e) {
             e.printStackTrace();
         }
