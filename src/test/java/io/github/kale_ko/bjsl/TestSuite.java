@@ -45,6 +45,17 @@ public class TestSuite {
             }
         }
 
+        try {
+            Class<?> clazz = Class.forName(TestSuite.class.getPackageName() + ".tests.Test999");
+
+            try {
+                tests.add((Test) clazz.getDeclaredConstructors()[0].newInstance());
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+                e.printStackTrace();
+            }
+        } catch (ClassNotFoundException e) {
+        }
+
         logger.info("----Running tests----");
 
         for (Test test : tests) {
@@ -70,7 +81,7 @@ public class TestSuite {
                 } else if (result.getResult() instanceof ParsedElement element) {
                     logger.warning(test.getName() + ": Failed with result:\n" + BJSL.stringifyJson(element, false));
                 } else if (!result.getResult().equals(false)) {
-                    logger.warning(test.getName() + ": Failed with result:\n" + result.getResult());
+                    logger.warning(test.getName() + ": Failed with result:\n" + result.getResult() + "\n" + BJSL.stringifyJson(result.getResult(), false));
                 } else {
                     logger.warning(test.getName() + ": Failed");
                 }
