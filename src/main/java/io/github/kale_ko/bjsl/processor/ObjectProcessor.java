@@ -68,11 +68,11 @@ public class ObjectProcessor {
                             }
                         }
 
-                        BJSL.getLogger().warning("Unknown enum value \"" + element.asPrimitive().asString() + "\" for type \"" + type.getTypeName() + "\"");
+                        BJSL.getLogger().warning("Unknown enum value \"" + element.asPrimitive().asString() + "\" for type \"" + type.getRawClass().getSimpleName() + "\"");
 
                         return null;
                     } else {
-                        throw new RuntimeException("Element for type \"" + type.getTypeName() + "\" is not a enum");
+                        throw new RuntimeException("Element for type \"" + type.getRawClass().getSimpleName() + "\" is not a enum");
                     }
                 } else {
                     try {
@@ -102,7 +102,7 @@ public class ObjectProcessor {
                             return type.getRawClass().cast(object);
                         }
                     } catch (ClassCastException e) {
-                        throw new RuntimeException("Element could not be cast to \"" + type.getTypeName() + "\"");
+                        throw new RuntimeException("Element could not be cast to \"" + type.getRawClass().getSimpleName() + "\"");
                     }
                 }
             } else if (!type.getRawClass().isAnonymousClass() && !type.getRawClass().isRecord() && !type.getRawClass().isAnnotation()) {
@@ -169,7 +169,7 @@ public class ObjectProcessor {
 
                             return object;
                         } else {
-                            throw new RuntimeException("No constructors for \"" + type.getTypeName() + "\" found and unsafe initialization failed");
+                            throw new RuntimeException("No constructors for \"" + type.getRawClass().getSimpleName() + "\" found and unsafe initialization failed");
                         }
                     } else if (!type.getRawClass().isInterface()) {
                         Object object = null;
@@ -245,10 +245,10 @@ public class ObjectProcessor {
 
                             return object;
                         } else {
-                            throw new RuntimeException("No constructors for \"" + type.getTypeName() + "\" found and unsafe initialization failed");
+                            throw new RuntimeException("No constructors for \"" + type.getRawClass().getSimpleName() + "\" found and unsafe initialization failed");
                         }
                     } else {
-                        throw new RuntimeException("Type \"" + type.getTypeName() + "\" is not serializable");
+                        throw new RuntimeException("Type \"" + type.getRawClass().getSimpleName() + "\" is not serializable");
                     }
                 } else if (element instanceof ParsedArray) {
                     if (type instanceof CollectionType) {
@@ -313,7 +313,7 @@ public class ObjectProcessor {
 
                             return object;
                         } else {
-                            throw new RuntimeException("No constructors for \"" + type.getTypeName() + "\" found and unsafe initialization failed");
+                            throw new RuntimeException("No constructors for \"" + type.getRawClass().getSimpleName() + "\" found and unsafe initialization failed");
                         }
                     } else if (type instanceof ArrayType) {
                         try {
@@ -378,13 +378,13 @@ public class ObjectProcessor {
                             throw new RuntimeException("Error while parsing: ", e);
                         }
                     } else {
-                        throw new RuntimeException("Type \"" + type.getTypeName() + "\" is not serializable");
+                        throw new RuntimeException("Type \"" + type.getRawClass().getSimpleName() + "\" is not serializable");
                     }
                 } else {
                     throw new RuntimeException("Element is not an object or array");
                 }
             } else {
-                throw new RuntimeException("Type \"" + type.getTypeName() + "\" is not serializable");
+                throw new RuntimeException("Type \"" + type.getRawClass().getSimpleName() + "\" is not serializable");
             }
         } catch (RuntimeException e) {
             if (BJSL.getLogger() != null) {
