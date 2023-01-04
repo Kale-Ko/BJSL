@@ -61,18 +61,22 @@ public class ObjectProcessor {
         try {
             if (element instanceof ParsedPrimitive) {
                 if (type.getRawClass().isEnum()) {
-                    if (element instanceof ParsedPrimitive && (element.asPrimitive().isString() || element.asPrimitive().isNull())) {
-                        for (Object value : type.getRawClass().getEnumConstants()) {
-                            if ((caseSensitiveEnums && ((Enum<?>) value).name().equals(element.asPrimitive().asString())) || (!caseSensitiveEnums && ((Enum<?>) value).name().equalsIgnoreCase(element.asPrimitive().asString()))) {
-                                return value;
+                    if (element instanceof ParsedPrimitive) {
+                        if (element.asPrimitive().isString()) {
+                            for (Object value : type.getRawClass().getEnumConstants()) {
+                                if ((caseSensitiveEnums && ((Enum<?>) value).name().equals(element.asPrimitive().asString())) || (!caseSensitiveEnums && ((Enum<?>) value).name().equalsIgnoreCase(element.asPrimitive().asString()))) {
+                                    return value;
+                                }
                             }
-                        }
 
-                        if (!element.asPrimitive().isNull()) {
                             BJSL.getLogger().warning("Unknown enum value \"" + element.asPrimitive().asString() + "\" for type \"" + type.getRawClass().getSimpleName() + "\"");
-                        }
 
-                        return null;
+                            return null;
+                        } else if (element.asPrimitive().isNull()) {
+                            return null;
+                        } else {
+                            throw new RuntimeException("Element for type \"" + type.getRawClass().getSimpleName() + "\" is not a enum");
+                        }
                     } else {
                         throw new RuntimeException("Element for type \"" + type.getRawClass().getSimpleName() + "\" is not a enum");
                     }
