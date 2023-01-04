@@ -65,17 +65,17 @@ public class ParsedPrimitive extends ParsedElement {
         if (this.primitiveType == PrimitiveType.STRING) {
             return (String) this.primitive;
         } else if (this.primitiveType == PrimitiveType.BYTE) {
-            return (byte) this.primitive;
+            return (byte) (long) this.primitive;
         } else if (this.primitiveType == PrimitiveType.CHAR) {
-            return (char) this.primitive;
+            return (char) (long) this.primitive;
         } else if (this.primitiveType == PrimitiveType.SHORT) {
-            return (short) this.primitive;
+            return (short) (long) this.primitive;
         } else if (this.primitiveType == PrimitiveType.INTEGER) {
-            return (int) this.primitive;
+            return (int) (long) this.primitive;
         } else if (this.primitiveType == PrimitiveType.LONG) {
             return (long) this.primitive;
         } else if (this.primitiveType == PrimitiveType.FLOAT) {
-            return (float) this.primitive;
+            return (float) (double) this.primitive;
         } else if (this.primitiveType == PrimitiveType.DOUBLE) {
             return (double) this.primitive;
         } else if (this.primitiveType == PrimitiveType.BOOLEAN) {
