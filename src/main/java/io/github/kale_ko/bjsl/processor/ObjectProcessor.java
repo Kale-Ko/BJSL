@@ -108,7 +108,7 @@ public class ObjectProcessor {
                             return type.getRawClass().cast(object);
                         }
                     } catch (ClassCastException e) {
-                        throw new RuntimeException("Element could not be cast to \"" + type.getRawClass().getSimpleName() + "\"");
+                        throw new RuntimeException("Element could not be cast to \"" + type.getRawClass().getSimpleName() + "\"", e);
                     }
                 }
             } else if (!type.getRawClass().isAnonymousClass() && !type.getRawClass().isRecord() && !type.getRawClass().isAnnotation()) {
