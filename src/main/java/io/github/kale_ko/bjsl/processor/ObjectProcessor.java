@@ -523,7 +523,6 @@ public class ObjectProcessor {
 
                                 if (shouldSerialize) {
                                     ParsedElement subElement = toElement(field.get(object));
-                                    System.out.println(field.getName() + ", " + subElement.getClass().getSimpleName() + ", " + (subElement.isPrimitive() ? subElement.asPrimitive().getType() : "unknown"));
                                     if (!(ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull())) {
                                         objectElement.set(field.getName(), subElement);
                                     }
