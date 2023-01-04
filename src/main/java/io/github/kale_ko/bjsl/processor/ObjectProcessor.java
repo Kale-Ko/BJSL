@@ -72,6 +72,9 @@ public class ObjectProcessor {
 
                         return null;
                     } else {
+                        System.out.println(element.getClass().getSimpleName());
+                        System.out.println(element.asPrimitive().getType());
+
                         throw new RuntimeException("Element for type \"" + type.getRawClass().getSimpleName() + "\" is not a enum");
                     }
                 } else {
