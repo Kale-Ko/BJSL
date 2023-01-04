@@ -61,20 +61,19 @@ public class ObjectProcessor {
         try {
             if (element instanceof ParsedPrimitive) {
                 if (type.getRawClass().isEnum()) {
-                    if (element instanceof ParsedPrimitive && element.asPrimitive().isString()) {
+                    if (element instanceof ParsedPrimitive && (element.asPrimitive().isString() || element.asPrimitive().isNull())) {
                         for (Object value : type.getRawClass().getEnumConstants()) {
                             if ((caseSensitiveEnums && ((Enum<?>) value).name().equals(element.asPrimitive().asString())) || (!caseSensitiveEnums && ((Enum<?>) value).name().equalsIgnoreCase(element.asPrimitive().asString()))) {
                                 return value;
                             }
                         }
 
-                        BJSL.getLogger().warning("Unknown enum value \"" + element.asPrimitive().asString() + "\" for type \"" + type.getRawClass().getSimpleName() + "\"");
+                        if (!element.asPrimitive().isNull()) {
+                            BJSL.getLogger().warning("Unknown enum value \"" + element.asPrimitive().asString() + "\" for type \"" + type.getRawClass().getSimpleName() + "\"");
+                        }
 
                         return null;
                     } else {
-                        System.out.println(element.getClass().getSimpleName());
-                        System.out.println(element.asPrimitive().getType());
-
                         throw new RuntimeException("Element for type \"" + type.getRawClass().getSimpleName() + "\" is not a enum");
                     }
                 } else {
