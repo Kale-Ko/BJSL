@@ -30,6 +30,7 @@ import io.github.kale_ko.bjsl.processor.annotations.DontSerialize;
 
 public class ObjectProcessor {
     protected boolean ignoreNulls;
+    protected boolean ignoreEmptyObjects;
 
     protected boolean caseSensitiveEnums;
 
@@ -41,8 +42,13 @@ public class ObjectProcessor {
         this(ignoreNulls, false);
     }
 
-    public ObjectProcessor(boolean ignoreNulls, boolean caseSensitiveEnums) {
+    public ObjectProcessor(boolean ignoreNulls, boolean ignoreEmptyObjects) {
+        this(ignoreNulls, ignoreEmptyObjects, false);
+    }
+
+    public ObjectProcessor(boolean ignoreNulls, boolean ignoreEmptyObjects, boolean caseSensitiveEnums) {
         this.ignoreNulls = ignoreNulls;
+        this.ignoreEmptyObjects = ignoreEmptyObjects;
 
         this.caseSensitiveEnums = caseSensitiveEnums;
     }
@@ -226,7 +232,7 @@ public class ObjectProcessor {
                         if (object != null) {
                             for (Map.Entry<String, ParsedElement> entry : element.asObject().getEntries()) {
                                 Object subObject = toObject(entry.getValue(), ((MapType) type).getContentType());
-                                if (!(ignoreNulls && subObject == null)) {
+                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).size() == 0) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
                                     object.put(entry.getKey(), subObject);
                                 }
                             }
@@ -291,7 +297,7 @@ public class ObjectProcessor {
 
                                         if (shouldSerialize) {
                                             Object subObject = toObject(element.asObject().get(field.getName()), field.getGenericType());
-                                            if (!(ignoreNulls && subObject == null)) {
+                                            if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).size() == 0) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
                                                 field.set(object, subObject);
                                             }
                                         }
@@ -368,7 +374,7 @@ public class ObjectProcessor {
                         if (object != null) {
                             for (ParsedElement subElement : element.asArray().getValues()) {
                                 Object subObject = toObject(subElement, ((CollectionType) type).getContentType());
-                                if (!(ignoreNulls && subObject == null)) {
+                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).size() == 0) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
                                     object.add(subObject);
                                 }
                             }
@@ -381,12 +387,12 @@ public class ObjectProcessor {
                         try {
                             int nonNull = element.asArray().getSize();
 
-                            if (ignoreNulls) {
+                            if (ignoreNulls || ignoreEmptyObjects) {
                                 nonNull = 0;
 
                                 for (ParsedElement subElement : element.asArray().getValues()) {
                                     Object subObject = toObject(subElement, type.getRawClass().componentType());
-                                    if (subObject != null) {
+                                    if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).size() == 0) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
                                         nonNull++;
                                     }
                                 }
@@ -397,7 +403,7 @@ public class ObjectProcessor {
                             int i = 0;
                             for (ParsedElement subElement : element.asArray().getValues()) {
                                 Object subObject = toObject(subElement, type.getRawClass().componentType());
-                                if (!(ignoreNulls && subObject == null)) {
+                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).size() == 0) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
                                     array[i] = subObject;
 
                                     i++;
@@ -412,12 +418,12 @@ public class ObjectProcessor {
                         try {
                             int nonNull = element.asArray().getSize();
 
-                            if (ignoreNulls) {
+                            if (ignoreNulls || ignoreEmptyObjects) {
                                 nonNull = 0;
 
                                 for (ParsedElement subElement : element.asArray().getValues()) {
                                     Object subObject = toObject(subElement, type.getRawClass().componentType());
-                                    if (subObject != null) {
+                                    if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).size() == 0) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
                                         nonNull++;
                                     }
                                 }
@@ -428,7 +434,7 @@ public class ObjectProcessor {
                             int i = 0;
                             for (ParsedElement subElement : element.asArray().getValues()) {
                                 Object subObject = toObject(subElement, type.getRawClass().componentType());
-                                if (!(ignoreNulls && subObject == null)) {
+                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).size() == 0) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
                                     array[i] = subObject;
 
                                     i++;
@@ -471,7 +477,7 @@ public class ObjectProcessor {
 
                     for (Object item : list) {
                         ParsedElement subElement = toElement(item);
-                        if (!(ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull())) {
+                        if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
                             arrayElement.add(subElement);
                         }
                     }
@@ -482,7 +488,7 @@ public class ObjectProcessor {
 
                     for (Object item : (Object[]) object) {
                         ParsedElement subElement = toElement(item);
-                        if (!(ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull())) {
+                        if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
                             arrayElement.add(subElement);
                         }
                     }
@@ -493,7 +499,7 @@ public class ObjectProcessor {
 
                     for (Map.Entry<?, ?> entry : map.entrySet()) {
                         ParsedElement subElement = toElement(entry.getValue());
-                        if (!(ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull())) {
+                        if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
                             objectElement.set(entry.getKey().toString(), subElement);
                         }
                     }
@@ -523,7 +529,7 @@ public class ObjectProcessor {
 
                                 if (shouldSerialize) {
                                     ParsedElement subElement = toElement(field.get(object));
-                                    if (!(ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull())) {
+                                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
                                         objectElement.set(field.getName(), subElement);
                                     }
                                 }
