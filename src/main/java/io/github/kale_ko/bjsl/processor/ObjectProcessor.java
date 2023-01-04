@@ -413,7 +413,7 @@ public class ObjectProcessor {
 
                     for (Object item : list) {
                         ParsedElement subElement = toElement(item);
-                        if (!(subElement.isPrimitive() && subElement.asPrimitive().isNull())) {
+                        if (!(ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull())) {
                             arrayElement.add(subElement);
                         }
                     }
@@ -424,7 +424,7 @@ public class ObjectProcessor {
 
                     for (Object item : (Object[]) object) {
                         ParsedElement subElement = toElement(item);
-                        if (!(subElement.isPrimitive() && subElement.asPrimitive().isNull())) {
+                        if (!(ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull())) {
                             arrayElement.add(subElement);
                         }
                     }
@@ -435,7 +435,7 @@ public class ObjectProcessor {
 
                     for (Map.Entry<?, ?> entry : map.entrySet()) {
                         ParsedElement subElement = toElement(entry.getValue());
-                        if (!(subElement.isPrimitive() && subElement.asPrimitive().isNull())) {
+                        if (!(ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull())) {
                             objectElement.set(entry.getKey().toString(), subElement);
                         }
                     }
@@ -465,6 +465,7 @@ public class ObjectProcessor {
 
                                 if (shouldSerialize) {
                                     ParsedElement subElement = toElement(field.get(object));
+                                    System.out.println(field.getName() + ", " + subElement.getClass().getSimpleName() + ", " + (subElement.isPrimitive() ? subElement.asPrimitive().getType() : "unknown"));
                                     if (!(ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull())) {
                                         objectElement.set(field.getName(), subElement);
                                     }
