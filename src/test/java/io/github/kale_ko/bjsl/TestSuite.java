@@ -7,6 +7,7 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import io.github.kale_ko.bjsl.TestResult.Status;
@@ -24,9 +25,11 @@ public class TestSuite {
     private static Logger logger = Logger.getLogger("Test Suite");
 
     public static void main(String[] args) {
+        BJSL.getLogger().setLevel(Level.OFF);
+
+        logger.info("----- Finding tests -----");
+
         List<Test> tests = new ArrayList<Test>();
-        List<String> succeeded = new ArrayList<String>();
-        List<String> failed = new ArrayList<String>();
 
         int i = 1;
         while (i > 0) {
@@ -45,18 +48,12 @@ public class TestSuite {
             }
         }
 
-        try {
-            Class<?> clazz = Class.forName(TestSuite.class.getPackageName() + ".tests.Test999");
+        logger.info("Found: " + tests.size());
 
-            try {
-                tests.add((Test) clazz.getDeclaredConstructors()[0].newInstance());
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-                e.printStackTrace();
-            }
-        } catch (ClassNotFoundException e) {
-        }
+        logger.info("----- Running tests -----");
 
-        logger.info("----Running tests----");
+        List<Test> succeeded = new ArrayList<Test>();
+        List<Test> failed = new ArrayList<Test>();
 
         for (Test test : tests) {
             TestResult result = null;
@@ -68,30 +65,30 @@ public class TestSuite {
             }
 
             if (result.status == Status.SUCCEEDED) {
-                succeeded.add(test.getName());
+                succeeded.add(test);
 
-                logger.info(test.getName() + ": Succeeded");
+                logger.info(test.getName() + " (" + test.getClass().getSimpleName() + "): Succeeded");
             } else {
-                failed.add(test.getName());
+                failed.add(test);
 
                 if (result.getResult() instanceof Exception e) {
                     StringWriter writer = new StringWriter();
                     e.printStackTrace(new PrintWriter(writer));
-                    logger.warning(test.getName() + ": Failed with exception:\n" + writer.toString());
+                    logger.warning(test.getName() + " (" + test.getClass().getSimpleName() + "): Failed with exception:\n" + writer.toString());
                 } else if (result.getResult() instanceof ParsedElement element) {
-                    logger.warning(test.getName() + ": Failed with result:\n" + BJSL.stringifyJson(element, false));
+                    logger.warning(test.getName() + " (" + test.getClass().getSimpleName() + "): Failed with result:\n" + BJSL.stringifyJson(element, false));
                 } else if (!result.getResult().equals(false)) {
-                    logger.warning(test.getName() + ": Failed with result:\n" + result.getResult() + "\n" + BJSL.stringifyJson(result.getResult(), false));
+                    logger.warning(test.getName() + " (" + test.getClass().getSimpleName() + "): Failed with result:\n" + result.getResult() + "\n" + BJSL.stringifyJson(result.getResult(), false));
                 } else {
-                    logger.warning(test.getName() + ": Failed");
+                    logger.warning(test.getName() + " (" + test.getClass().getSimpleName() + "): Failed");
                 }
             }
         }
 
-        logger.info("------Finished-------");
+        logger.info("------- Finished --------");
         logger.info("Total: " + tests.size());
         logger.info("Succeeded: " + succeeded.size());
         logger.info("Failed: " + failed.size());
-        logger.info("---------------------");
+        logger.info("-------------------------");
     }
 }
