@@ -231,13 +231,11 @@ public class ObjectProcessor {
                                             shouldSerialize = false;
                                         }
 
-                                        if (ignoreNulls && field.get(object) == null) {
-                                            shouldSerialize = false;
-                                        }
-
                                         if (shouldSerialize) {
                                             Object subObject = toObject(element.asObject().get(field.getName()), field.getGenericType());
-                                            field.set(object, subObject);
+                                            if (!(ignoreNulls && subObject == null)) {
+                                                field.set(object, subObject);
+                                            }
                                         }
                                     }
                                 } catch (IllegalArgumentException | IllegalAccessException e) {
@@ -465,13 +463,9 @@ public class ObjectProcessor {
                                     shouldSerialize = false;
                                 }
 
-                                if (ignoreNulls && field.get(object) == null) {
-                                    shouldSerialize = false;
-                                }
-
                                 if (shouldSerialize) {
                                     ParsedElement subElement = toElement(field.get(object));
-                                    if (!(subElement.isPrimitive() && subElement.asPrimitive().isNull())) {
+                                    if (!(ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull())) {
                                         objectElement.set(field.getName(), subElement);
                                     }
                                 }
