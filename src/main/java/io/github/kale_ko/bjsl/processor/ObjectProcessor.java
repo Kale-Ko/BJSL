@@ -89,19 +89,77 @@ public class ObjectProcessor {
                         } else if (type.getRawClass() == String.class) {
                             return (String) object;
                         } else if (type.getRawClass() == Byte.class || type.getRawClass() == byte.class) {
-                            return (byte) (long) object;
+                            if (object.getClass() == Character.class) {
+                                return (byte) (char) object;
+                            } else if (object.getClass() == Short.class) {
+                                return (byte) (short) object;
+                            } else if (object.getClass() == Integer.class) {
+                                return (byte) (int) object;
+                            } else if (object.getClass() == Long.class) {
+                                return (byte) (long) object;
+                            } else {
+                                return (byte) object;
+                            }
                         } else if (type.getRawClass() == Character.class || type.getRawClass() == char.class) {
-                            return (char) (long) object;
+                            if (object.getClass() == Byte.class) {
+                                return (char) (byte) object;
+                            } else if (object.getClass() == Short.class) {
+                                return (char) (short) object;
+                            } else if (object.getClass() == Integer.class) {
+                                return (char) (int) object;
+                            } else if (object.getClass() == Long.class) {
+                                return (char) (long) object;
+                            } else {
+                                return (char) object;
+                            }
                         } else if (type.getRawClass() == Short.class || type.getRawClass() == short.class) {
-                            return (short) (long) object;
+                            if (object.getClass() == Byte.class) {
+                                return (short) (byte) object;
+                            } else if (object.getClass() == Character.class) {
+                                return (short) (char) object;
+                            } else if (object.getClass() == Integer.class) {
+                                return (short) (int) object;
+                            } else if (object.getClass() == Long.class) {
+                                return (short) (long) object;
+                            } else {
+                                return (short) object;
+                            }
                         } else if (type.getRawClass() == Integer.class || type.getRawClass() == int.class) {
-                            return (int) (long) object;
+                            if (object.getClass() == Byte.class) {
+                                return (int) (byte) object;
+                            } else if (object.getClass() == Character.class) {
+                                return (int) (char) object;
+                            } else if (object.getClass() == Short.class) {
+                                return (int) (short) object;
+                            } else if (object.getClass() == Long.class) {
+                                return (int) (long) object;
+                            } else {
+                                return (int) object;
+                            }
                         } else if (type.getRawClass() == Long.class || type.getRawClass() == long.class) {
-                            return (long) object;
+                            if (object.getClass() == Byte.class) {
+                                return (long) (byte) object;
+                            } else if (object.getClass() == Character.class) {
+                                return (long) (char) object;
+                            } else if (object.getClass() == Short.class) {
+                                return (long) (short) object;
+                            } else if (object.getClass() == Integer.class) {
+                                return (long) (int) object;
+                            } else {
+                                return (long) object;
+                            }
                         } else if (type.getRawClass() == Float.class || type.getRawClass() == float.class) {
-                            return (float) (double) object;
+                            if (object.getClass() == Double.class) {
+                                return (float) (double) object;
+                            } else {
+                                return (float) object;
+                            }
                         } else if (type.getRawClass() == Double.class || type.getRawClass() == double.class) {
-                            return (double) object;
+                            if (object.getClass() == Float.class) {
+                                return (double) (float) object;
+                            } else {
+                                return (double) object;
+                            }
                         } else if (type.getRawClass() == Boolean.class || type.getRawClass() == boolean.class) {
                             return (boolean) object;
                         } else {
