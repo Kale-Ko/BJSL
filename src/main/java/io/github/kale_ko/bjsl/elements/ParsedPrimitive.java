@@ -5,15 +5,15 @@ public class ParsedPrimitive extends ParsedElement {
         STRING, BYTE, CHAR, SHORT, INTEGER, LONG, FLOAT, DOUBLE, BOOLEAN, NULL
     }
 
-    private PrimitiveType primitiveType;
+    protected Object primitive;
+    protected PrimitiveType primitiveType;
 
-    private ParsedPrimitive(Object value, PrimitiveType type) {
-        super(null, null, value);
-
+    protected ParsedPrimitive(Object value, PrimitiveType type) {
         if (type == null) {
             throw new NullPointerException("Type can not be null");
         }
 
+        this.primitive = value;
         this.primitiveType = type;
     }
 

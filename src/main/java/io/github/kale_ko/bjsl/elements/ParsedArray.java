@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ParsedArray extends ParsedElement {
-    private ParsedArray() {
+    protected ArrayList<ParsedElement> array;
+
+    protected ParsedArray() {
         this(new ArrayList<ParsedElement>());
     }
 
-    private ParsedArray(ArrayList<ParsedElement> array) {
-        super(null, array, null);
+    protected ParsedArray(ArrayList<ParsedElement> array) {
+        this.array = array;
     }
 
     public int getSize() {

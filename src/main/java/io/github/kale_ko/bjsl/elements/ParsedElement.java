@@ -1,40 +1,27 @@
 package io.github.kale_ko.bjsl.elements;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-
-public class ParsedElement {
-    protected LinkedHashMap<String, ParsedElement> object;
-    protected ArrayList<ParsedElement> array;
-    protected Object primitive;
-
-    protected ParsedElement(LinkedHashMap<String, ParsedElement> map, ArrayList<ParsedElement> array, Object primitive) {
-        this.object = map;
-        this.array = array;
-        this.primitive = primitive;
-    }
-
+public abstract class ParsedElement {
     public boolean isObject() {
-        return this.object != null;
+        return this instanceof ParsedObject;
     }
 
     public boolean isArray() {
-        return this.array != null;
+        return this instanceof ParsedArray;
     }
 
     public boolean isPrimitive() {
-        return this.primitive != null;
+        return this instanceof ParsedPrimitive;
     }
 
     public ParsedObject asObject() {
-        return ParsedObject.from(this.object);
+        return (ParsedObject) this;
     }
 
     public ParsedArray asArray() {
-        return ParsedArray.from(this.array);
+        return (ParsedArray) this;
     }
 
     public ParsedPrimitive asPrimitive() {
-        return ParsedPrimitive.from(this.primitive);
+        return (ParsedPrimitive) this;
     }
 }
