@@ -17,9 +17,9 @@ public class PropertiesParser extends Parser {
 
         public PropertiesParser build() {
             JavaPropsFactoryBuilder factoryBuilder = (JavaPropsFactoryBuilder) JavaPropsFactory.builder();
-            factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
-            factoryBuilder.configure(StreamWriteFeature.USE_FAST_DOUBLE_WRITER, true);
-            factoryBuilder.configure(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN, true);
+            factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
+            factoryBuilder = factoryBuilder.configure(StreamWriteFeature.USE_FAST_DOUBLE_WRITER, true);
+            factoryBuilder = factoryBuilder.configure(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN, true);
 
             JavaPropsFactory factory = factoryBuilder.build();
 
