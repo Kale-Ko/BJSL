@@ -25,7 +25,7 @@ import io.github.kale_ko.bjsl.elements.ParsedArray;
 import io.github.kale_ko.bjsl.elements.ParsedElement;
 import io.github.kale_ko.bjsl.elements.ParsedObject;
 import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
-import io.github.kale_ko.bjsl.processor.annotations.DoSerialize;
+import io.github.kale_ko.bjsl.processor.annotations.AlwaysSerialize;
 import io.github.kale_ko.bjsl.processor.annotations.DontSerialize;
 
 public class ObjectProcessor {
@@ -34,23 +34,54 @@ public class ObjectProcessor {
 
     protected boolean caseSensitiveEnums;
 
-    public ObjectProcessor() {
-        this(false);
-    }
-
-    public ObjectProcessor(boolean ignoreNulls) {
-        this(ignoreNulls, false);
-    }
-
-    public ObjectProcessor(boolean ignoreNulls, boolean ignoreEmptyObjects) {
-        this(ignoreNulls, ignoreEmptyObjects, false);
-    }
-
-    public ObjectProcessor(boolean ignoreNulls, boolean ignoreEmptyObjects, boolean caseSensitiveEnums) {
+    protected ObjectProcessor(boolean ignoreNulls, boolean ignoreEmptyObjects, boolean caseSensitiveEnums) {
         this.ignoreNulls = ignoreNulls;
         this.ignoreEmptyObjects = ignoreEmptyObjects;
 
         this.caseSensitiveEnums = caseSensitiveEnums;
+    }
+
+    public static class Builder {
+        protected boolean ignoreNulls = false;
+        protected boolean ignoreEmptyObjects = false;
+
+        protected boolean caseSensitiveEnums = false;
+
+        public Builder() {}
+
+        public boolean getIgnoreNulls() {
+            return this.ignoreNulls;
+        }
+
+        public Builder setIgnoreNulls(boolean value) {
+            this.ignoreNulls = value;
+
+            return this;
+        }
+
+        public boolean getIgnoreEmptyObjects() {
+            return this.ignoreEmptyObjects;
+        }
+
+        public Builder setIgnoreEmptyObjects(boolean value) {
+            this.ignoreEmptyObjects = value;
+
+            return this;
+        }
+
+        public boolean getCaseSensitiveEnums() {
+            return this.caseSensitiveEnums;
+        }
+
+        public Builder setCaseSensitiveEnums(boolean value) {
+            this.caseSensitiveEnums = value;
+
+            return this;
+        }
+
+        public ObjectProcessor build() {
+            return new ObjectProcessor(this.ignoreNulls, this.ignoreEmptyObjects, this.caseSensitiveEnums);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -284,7 +315,7 @@ public class ObjectProcessor {
                                         Boolean shouldSerialize = element.asObject().has(field.getName()) && !Modifier.isTransient(field.getModifiers());
 
                                         for (Annotation annotation : field.getDeclaredAnnotations()) {
-                                            if (annotation.annotationType() == DoSerialize.class) {
+                                            if (annotation.annotationType() == AlwaysSerialize.class) {
                                                 shouldSerialize = true;
                                             } else if (annotation.annotationType() == DontSerialize.class) {
                                                 shouldSerialize = false;
@@ -516,7 +547,7 @@ public class ObjectProcessor {
                                 Boolean shouldSerialize = !Modifier.isTransient(field.getModifiers());
 
                                 for (Annotation annotation : field.getDeclaredAnnotations()) {
-                                    if (annotation.annotationType() == DoSerialize.class) {
+                                    if (annotation.annotationType() == AlwaysSerialize.class) {
                                         shouldSerialize = true;
                                     } else if (annotation.annotationType() == DontSerialize.class) {
                                         shouldSerialize = false;
