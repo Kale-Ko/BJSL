@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.core.TreeNode;
@@ -28,14 +27,14 @@ import io.github.kale_ko.bjsl.elements.ParsedObject;
 import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
 
 public abstract class Parser {
-    protected JsonFactory jsonFactory;
+    protected JsonFactory factory;
     protected ObjectCodec codec;
 
     protected PrettyPrinter prettyPrinter;
 
-    protected Parser(JsonFactory jsonFactory, PrettyPrinter prettyPrinter) {
-        this.jsonFactory = jsonFactory;
-        this.codec = new ObjectMapper();
+    protected Parser(JsonFactory factory, ObjectMapper codec, PrettyPrinter prettyPrinter) {
+        this.factory = factory;
+        this.codec = codec;
 
         this.prettyPrinter = prettyPrinter;
     }
@@ -48,7 +47,7 @@ public abstract class Parser {
         data = data.trim();
 
         try {
-            com.fasterxml.jackson.core.JsonParser parser = this.jsonFactory.createParser(data);
+            com.fasterxml.jackson.core.JsonParser parser = this.factory.createParser(data);
             parser.setCodec(this.codec);
             TreeNode tree = parser.readValueAsTree();
             parser.close();
@@ -100,7 +99,7 @@ public abstract class Parser {
                 }
 
                 StringWriter writer = new StringWriter();
-                JsonGenerator generator = this.jsonFactory.createGenerator(writer);
+                com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(writer);
                 generator = generator.setPrettyPrinter(this.prettyPrinter);
                 generator.setCodec(this.codec);
                 generator.writeTree(tree);
@@ -117,7 +116,7 @@ public abstract class Parser {
                 }
 
                 StringWriter writer = new StringWriter();
-                JsonGenerator generator = this.jsonFactory.createGenerator(writer);
+                com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(writer);
                 generator = generator.setPrettyPrinter(this.prettyPrinter);
                 generator.setCodec(this.codec);
                 generator.writeTree(tree);
