@@ -43,17 +43,17 @@ public class TomlParser extends Parser {
 
         public TomlParser build() {
             TomlFactoryBuilder factoryBuilder = (TomlFactoryBuilder) TomlFactory.builder();
-            factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
-            factoryBuilder.configure(StreamWriteFeature.USE_FAST_DOUBLE_WRITER, true);
-            factoryBuilder.configure(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN, true);
+            factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
+            factoryBuilder = factoryBuilder.configure(StreamWriteFeature.USE_FAST_DOUBLE_WRITER, true);
+            factoryBuilder = factoryBuilder.configure(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN, true);
 
             TomlFactory factory = factoryBuilder.build();
 
             DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
 
             DefaultIndenter indenter = new DefaultIndenter();
-            indenter.withIndent(" ".repeat(this.indentLevel));
-            indenter.withLinefeed(this.crlf ? "\r\n" : "\n");
+            indenter = indenter.withIndent(" ".repeat(this.indentLevel));
+            indenter = indenter.withLinefeed(this.crlf ? "\r\n" : "\n");
 
             prettyPrinter = prettyPrinter.withObjectIndenter(indenter).withArrayIndenter(indenter).withSpacesInObjectEntries();
 

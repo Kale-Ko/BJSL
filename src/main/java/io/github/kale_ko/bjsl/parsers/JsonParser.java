@@ -56,19 +56,19 @@ public class JsonParser extends Parser {
 
         public JsonParser build() {
             JsonFactoryBuilder factoryBuilder = (JsonFactoryBuilder) JsonFactory.builder();
-            factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
-            factoryBuilder.configure(StreamWriteFeature.USE_FAST_DOUBLE_WRITER, true);
-            factoryBuilder.configure(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN, true);
-            factoryBuilder.configure(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER, true);
-            factoryBuilder.configure(JsonReadFeature.ALLOW_LEADING_DECIMAL_POINT_FOR_NUMBERS, true);
-            factoryBuilder.configure(JsonReadFeature.ALLOW_LEADING_PLUS_SIGN_FOR_NUMBERS, true);
-            factoryBuilder.configure(JsonReadFeature.ALLOW_LEADING_ZEROS_FOR_NUMBERS, true);
-            factoryBuilder.configure(JsonReadFeature.ALLOW_NON_NUMERIC_NUMBERS, true);
-            factoryBuilder.configure(JsonReadFeature.ALLOW_SINGLE_QUOTES, true);
-            factoryBuilder.configure(JsonReadFeature.ALLOW_TRAILING_COMMA, true);
-            factoryBuilder.configure(JsonReadFeature.ALLOW_TRAILING_DECIMAL_POINT_FOR_NUMBERS, true);
-            factoryBuilder.configure(JsonWriteFeature.ESCAPE_NON_ASCII, true);
-            factoryBuilder.configure(JsonWriteFeature.WRITE_HEX_UPPER_CASE, true);
+            factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
+            factoryBuilder = factoryBuilder.configure(StreamWriteFeature.USE_FAST_DOUBLE_WRITER, true);
+            factoryBuilder = factoryBuilder.configure(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN, true);
+            factoryBuilder = factoryBuilder.configure(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER, true);
+            factoryBuilder = factoryBuilder.configure(JsonReadFeature.ALLOW_LEADING_DECIMAL_POINT_FOR_NUMBERS, true);
+            factoryBuilder = factoryBuilder.configure(JsonReadFeature.ALLOW_LEADING_PLUS_SIGN_FOR_NUMBERS, true);
+            factoryBuilder = factoryBuilder.configure(JsonReadFeature.ALLOW_LEADING_ZEROS_FOR_NUMBERS, true);
+            factoryBuilder = factoryBuilder.configure(JsonReadFeature.ALLOW_NON_NUMERIC_NUMBERS, true);
+            factoryBuilder = factoryBuilder.configure(JsonReadFeature.ALLOW_SINGLE_QUOTES, true);
+            factoryBuilder = factoryBuilder.configure(JsonReadFeature.ALLOW_TRAILING_COMMA, true);
+            factoryBuilder = factoryBuilder.configure(JsonReadFeature.ALLOW_TRAILING_DECIMAL_POINT_FOR_NUMBERS, true);
+            factoryBuilder = factoryBuilder.configure(JsonWriteFeature.ESCAPE_NON_ASCII, true);
+            factoryBuilder = factoryBuilder.configure(JsonWriteFeature.WRITE_HEX_UPPER_CASE, true);
 
             JsonFactory factory = factoryBuilder.build();
 
@@ -78,8 +78,8 @@ public class JsonParser extends Parser {
                 prettyPrinter = new DefaultPrettyPrinter();
 
                 DefaultIndenter indenter = new DefaultIndenter();
-                indenter.withIndent(" ".repeat(this.indentLevel));
-                indenter.withLinefeed(this.crlf ? "\r\n" : "\n");
+                indenter = indenter.withIndent(" ".repeat(this.indentLevel));
+                indenter = indenter.withLinefeed(this.crlf ? "\r\n" : "\n");
 
                 prettyPrinter = prettyPrinter.withObjectIndenter(indenter).withArrayIndenter(indenter).withSpacesInObjectEntries();
             }
