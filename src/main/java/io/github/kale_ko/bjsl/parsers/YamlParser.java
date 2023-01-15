@@ -44,19 +44,19 @@ public class YamlParser extends Parser {
 
         public YamlParser build() {
             YAMLFactoryBuilder factoryBuilder = (YAMLFactoryBuilder) YAMLFactory.builder();
-            factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
-            factoryBuilder.configure(StreamWriteFeature.USE_FAST_DOUBLE_WRITER, true);
-            factoryBuilder.configure(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN, true);
-            factoryBuilder.configure(YAMLGenerator.Feature.SPLIT_LINES, false);
-            factoryBuilder.configure(YAMLGenerator.Feature.USE_PLATFORM_LINE_BREAKS, this.crlf);
+            factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
+            factoryBuilder = factoryBuilder.configure(StreamWriteFeature.USE_FAST_DOUBLE_WRITER, true);
+            factoryBuilder = factoryBuilder.configure(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN, true);
+            factoryBuilder = factoryBuilder.configure(YAMLGenerator.Feature.SPLIT_LINES, false);
+            factoryBuilder = factoryBuilder.configure(YAMLGenerator.Feature.USE_PLATFORM_LINE_BREAKS, this.crlf);
 
             YAMLFactory factory = factoryBuilder.build();
 
             DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
 
             DefaultIndenter indenter = new DefaultIndenter();
-            indenter.withIndent(" ".repeat(this.indentLevel));
-            indenter.withLinefeed(this.crlf ? "\r\n" : "\n");
+            indenter = indenter.withIndent(" ".repeat(this.indentLevel));
+            indenter = indenter.withLinefeed(this.crlf ? "\r\n" : "\n");
 
             prettyPrinter = prettyPrinter.withObjectIndenter(indenter).withArrayIndenter(indenter).withSpacesInObjectEntries();
 
