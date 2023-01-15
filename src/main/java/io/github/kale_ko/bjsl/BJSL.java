@@ -12,14 +12,14 @@ import io.github.kale_ko.bjsl.parsers.YamlParser;
 import io.github.kale_ko.bjsl.processor.ObjectProcessor;
 
 public class BJSL {
-    private static ObjectProcessor objectProcessor = new ObjectProcessor(false, false, false);
+    private static ObjectProcessor objectProcessor = new ObjectProcessor.Builder().build();
 
-    private static JsonParser jsonParser = new JsonParser(false);
-    private static JsonParser prettyJsonParser = new JsonParser(true, 2);
-    private static YamlParser yamlParser = new YamlParser();
-    private static TomlParser tomlParser = new TomlParser();
-    private static PropertiesParser propertiesParser = new PropertiesParser();
-    private static SmileParser smileParser = new SmileParser();
+    private static JsonParser jsonParser = new JsonParser.Builder().setPrettyPrint(false).build();
+    private static JsonParser prettyJsonParser = new JsonParser.Builder().setPrettyPrint(true).build();
+    private static YamlParser yamlParser = new YamlParser.Builder().build();
+    private static TomlParser tomlParser = new TomlParser.Builder().build();
+    private static PropertiesParser propertiesParser = new PropertiesParser.Builder().build();
+    private static SmileParser smileParser = new SmileParser.Builder().build();
 
     private static Logger logger = Logger.getLogger("BJSL");
 
@@ -27,7 +27,7 @@ public class BJSL {
     protected ObjectProcessor processor;
 
     public BJSL(Parser parser) {
-        this(parser, new ObjectProcessor());
+        this(parser, new ObjectProcessor.Builder().build());
     }
 
     public BJSL(Parser parser, ObjectProcessor processor) {
