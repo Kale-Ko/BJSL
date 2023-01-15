@@ -78,7 +78,7 @@ public class TestSuite {
                 } else if (result.getResult() instanceof ParsedElement element) {
                     logger.warning(test.getName() + " (" + test.getClass().getSimpleName() + "): Failed with result:\n" + BJSL.stringifyJson(element, false));
                 } else if (!result.getResult().equals(false)) {
-                    logger.warning(test.getName() + " (" + test.getClass().getSimpleName() + "): Failed with result:\n" + result.getResult() + "\n" + BJSL.stringifyJson(result.getResult(), false));
+                    logger.warning(test.getName() + " (" + test.getClass().getSimpleName() + "): Failed with result:\n" + result.getResult());
                 } else {
                     logger.warning(test.getName() + " (" + test.getClass().getSimpleName() + "): Failed");
                 }
