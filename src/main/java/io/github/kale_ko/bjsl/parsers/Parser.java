@@ -44,10 +44,8 @@ public abstract class Parser {
             throw new NullPointerException("Data can not be null");
         }
 
-        data = data.trim();
-
         try {
-            com.fasterxml.jackson.core.JsonParser parser = this.factory.createParser(data);
+            com.fasterxml.jackson.core.JsonParser parser = this.factory.createParser(data.getBytes());
             parser.setCodec(this.codec);
             TreeNode tree = parser.readValueAsTree();
             parser.close();
@@ -99,9 +97,7 @@ public abstract class Parser {
                 }
 
                 StringWriter writer = new StringWriter();
-                com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(writer);
-                generator = generator.setPrettyPrinter(this.prettyPrinter);
-                generator.setCodec(this.codec);
+                com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(writer).setPrettyPrinter(this.prettyPrinter).setCodec(this.codec);
                 generator.writeTree(tree);
                 generator.close();
                 writer.close();
@@ -116,9 +112,7 @@ public abstract class Parser {
                 }
 
                 StringWriter writer = new StringWriter();
-                com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(writer);
-                generator = generator.setPrettyPrinter(this.prettyPrinter);
-                generator.setCodec(this.codec);
+                com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(writer).setPrettyPrinter(this.prettyPrinter).setCodec(this.codec);
                 generator.writeTree(tree);
                 generator.close();
                 writer.close();
