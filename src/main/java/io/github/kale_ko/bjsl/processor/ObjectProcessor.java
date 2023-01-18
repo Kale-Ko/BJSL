@@ -290,7 +290,7 @@ public class ObjectProcessor {
                         Object object = null;
 
                         try {
-                            for (Constructor<?> constructor : (Constructor<?>[]) type.getRawClass().getConstructors()) {
+                            for (Constructor<?> constructor : type.getRawClass().getConstructors()) {
                                 if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
                                     object = constructor.newInstance();
 
@@ -557,7 +557,7 @@ public class ObjectProcessor {
 
                     if (ignoreDefaults) {
                         try {
-                            for (Constructor<?> constructor : (Constructor<?>[]) object.getClass().getConstructors()) {
+                            for (Constructor<?> constructor : object.getClass().getConstructors()) {
                                 if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
                                     defaultObject = constructor.newInstance();
 
