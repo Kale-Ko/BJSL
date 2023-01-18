@@ -500,13 +500,13 @@ public class ObjectProcessor {
         try {
             try {
                 return ParsedPrimitive.from(object);
-            } catch (ClassCastException e) {
+            } catch (ClassCastException e2) {
                 if (object instanceof Enum<?> anEnum) {
                     return ParsedPrimitive.fromString(anEnum.name());
-                } else if (object instanceof Collection<?> list) {
+                } else if (object instanceof Object[]) {
                     ParsedArray arrayElement = ParsedArray.create();
 
-                    for (Object item : list) {
+                    for (Object item : (Object[]) object) {
                         ParsedElement subElement = toElement(item);
                         if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
                             arrayElement.add(subElement);
@@ -514,10 +514,10 @@ public class ObjectProcessor {
                     }
 
                     return arrayElement;
-                } else if (object instanceof Object[]) {
+                } else if (object instanceof Collection<?> list) {
                     ParsedArray arrayElement = ParsedArray.create();
 
-                    for (Object item : (Object[]) object) {
+                    for (Object item : list) {
                         ParsedElement subElement = toElement(item);
                         if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
                             arrayElement.add(subElement);
@@ -546,6 +546,16 @@ public class ObjectProcessor {
                             if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
                                 Boolean shouldSerialize = !Modifier.isTransient(field.getModifiers());
 
+                                ParsedElement subElement = toElement(field.get(object));
+
+                                if (ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) {
+                                    shouldSerialize = false;
+                                }
+
+                                if (ignoreEmptyObjects && ((subElement.isArray() && subElement.asArray().getSize() == 0) || (subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                                    shouldSerialize = false;
+                                }
+
                                 for (Annotation annotation : field.getDeclaredAnnotations()) {
                                     if (annotation.annotationType() == AlwaysSerialize.class) {
                                         shouldSerialize = true;
@@ -559,16 +569,13 @@ public class ObjectProcessor {
                                 }
 
                                 if (shouldSerialize) {
-                                    ParsedElement subElement = toElement(field.get(object));
-                                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
-                                        objectElement.set(field.getName(), subElement);
-                                    }
+                                    objectElement.set(field.getName(), subElement);
                                 }
                             }
-                        } catch (IllegalArgumentException | IllegalAccessException e2) {
+                        } catch (IllegalArgumentException | IllegalAccessException e) {
                             if (BJSL.getLogger() != null) {
                                 StringWriter writer = new StringWriter();
-                                new RuntimeException("Nonfatal error while parsing:", e2).printStackTrace(new PrintWriter(writer));
+                                new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
                                 BJSL.getLogger().warning(writer.toString());
                             }
                         }
