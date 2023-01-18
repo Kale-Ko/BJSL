@@ -290,7 +290,7 @@ public class ObjectProcessor {
                         Object object = null;
 
                         try {
-                            for (Constructor<Object> constructor : (Constructor<Object>[]) type.getRawClass().getConstructors()) {
+                            for (Constructor<?> constructor : (Constructor<?>[]) type.getRawClass().getConstructors()) {
                                 if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
                                     object = constructor.newInstance();
 
@@ -510,7 +510,6 @@ public class ObjectProcessor {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public ParsedElement toElement(Object object) {
         try {
             try {
@@ -558,9 +557,9 @@ public class ObjectProcessor {
 
                     if (ignoreDefaults) {
                         try {
-                            for (Constructor<?> constructor : object.getClass().getConstructors()) {
+                            for (Constructor<?> constructor : (Constructor<?>[]) object.getClass().getConstructors()) {
                                 if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
-                                    defaultObject = (Collection<Object>) constructor.newInstance();
+                                    defaultObject = constructor.newInstance();
 
                                     break;
                                 }
@@ -578,7 +577,7 @@ public class ObjectProcessor {
                                 Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
                                 unsafeField.setAccessible(true);
                                 sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
-                                defaultObject = (Collection<Object>) unsafe.allocateInstance(object.getClass());
+                                defaultObject = unsafe.allocateInstance(object.getClass());
                             } catch (InstantiationException | IllegalAccessException | NoSuchFieldException e) {
                                 if (BJSL.getLogger() != null) {
                                     StringWriter writer = new StringWriter();
@@ -620,7 +619,43 @@ public class ObjectProcessor {
                                     } else if (annotation.annotationType() == DontSerialize.class) {
                                         shouldSerialize = false;
                                     } else if (annotation.annotationType() == Default.class) {
-                                        
+                                        Default defaultAnnotation = (Default) annotation;
+
+                                        if (ignoreDefaults && subElement.isPrimitive()) {
+                                            if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.STRING && !defaultAnnotation.stringValue().equals("")) {
+                                                if (field.get(object).equals(defaultAnnotation.stringValue())) {
+                                                    shouldSerialize = false;
+                                                }
+                                            } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.BYTE && defaultAnnotation.byteValue() != Byte.MIN_VALUE) {
+                                                if (field.get(object).equals(defaultAnnotation.byteValue())) {
+                                                    shouldSerialize = false;
+                                                }
+                                            } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.CHAR && defaultAnnotation.charValue() != Character.MIN_VALUE) {
+                                                if (field.get(object).equals(defaultAnnotation.charValue())) {
+                                                    shouldSerialize = false;
+                                                }
+                                            } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.SHORT && defaultAnnotation.shortValue() != Short.MIN_VALUE) {
+                                                if (field.get(object).equals(defaultAnnotation.shortValue())) {
+                                                    shouldSerialize = false;
+                                                }
+                                            } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.INTEGER && defaultAnnotation.intValue() != Integer.MIN_VALUE) {
+                                                if (field.get(object).equals(defaultAnnotation.intValue())) {
+                                                    shouldSerialize = false;
+                                                }
+                                            } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.LONG && defaultAnnotation.longValue() != Long.MIN_VALUE) {
+                                                if (field.get(object).equals(defaultAnnotation.longValue())) {
+                                                    shouldSerialize = false;
+                                                }
+                                            } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.DOUBLE && defaultAnnotation.doubleValue() != Double.MIN_VALUE) {
+                                                if (field.get(object).equals(defaultAnnotation.doubleValue())) {
+                                                    shouldSerialize = false;
+                                                }
+                                            } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.FLOAT && defaultAnnotation.floatValue() != Float.MIN_VALUE) {
+                                                if (field.get(object).equals(defaultAnnotation.floatValue())) {
+                                                    shouldSerialize = false;
+                                                }
+                                            }
+                                        }
                                     }
                                 }
 
