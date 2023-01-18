@@ -26,17 +26,20 @@ import io.github.kale_ko.bjsl.elements.ParsedElement;
 import io.github.kale_ko.bjsl.elements.ParsedObject;
 import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
 import io.github.kale_ko.bjsl.processor.annotations.AlwaysSerialize;
+import io.github.kale_ko.bjsl.processor.annotations.Default;
 import io.github.kale_ko.bjsl.processor.annotations.DontSerialize;
 
 public class ObjectProcessor {
     protected boolean ignoreNulls;
     protected boolean ignoreEmptyObjects;
+    protected boolean ignoreDefaults;
 
     protected boolean caseSensitiveEnums;
 
-    protected ObjectProcessor(boolean ignoreNulls, boolean ignoreEmptyObjects, boolean caseSensitiveEnums) {
+    protected ObjectProcessor(boolean ignoreNulls, boolean ignoreEmptyObjects, boolean ignoreDefaults, boolean caseSensitiveEnums) {
         this.ignoreNulls = ignoreNulls;
         this.ignoreEmptyObjects = ignoreEmptyObjects;
+        this.ignoreDefaults = ignoreDefaults;
 
         this.caseSensitiveEnums = caseSensitiveEnums;
     }
@@ -44,6 +47,7 @@ public class ObjectProcessor {
     public static class Builder {
         protected boolean ignoreNulls = false;
         protected boolean ignoreEmptyObjects = false;
+        protected boolean ignoreDefaults = false;
 
         protected boolean caseSensitiveEnums = false;
 
@@ -69,6 +73,16 @@ public class ObjectProcessor {
             return this;
         }
 
+        public boolean getIgnoreDefaults() {
+            return this.ignoreDefaults;
+        }
+
+        public Builder setIgnoreDefaults(boolean value) {
+            this.ignoreDefaults = value;
+
+            return this;
+        }
+
         public boolean getCaseSensitiveEnums() {
             return this.caseSensitiveEnums;
         }
@@ -80,7 +94,7 @@ public class ObjectProcessor {
         }
 
         public ObjectProcessor build() {
-            return new ObjectProcessor(this.ignoreNulls, this.ignoreEmptyObjects, this.caseSensitiveEnums);
+            return new ObjectProcessor(this.ignoreNulls, this.ignoreEmptyObjects, this.ignoreDefaults, this.caseSensitiveEnums);
         }
     }
 
@@ -496,6 +510,7 @@ public class ObjectProcessor {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public ParsedElement toElement(Object object) {
         try {
             try {
@@ -539,6 +554,45 @@ public class ObjectProcessor {
                 } else {
                     ParsedObject objectElement = ParsedObject.create();
 
+                    Object defaultObject = null;
+
+                    if (ignoreDefaults) {
+                        try {
+                            for (Constructor<?> constructor : object.getClass().getConstructors()) {
+                                if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
+                                    defaultObject = (Collection<Object>) constructor.newInstance();
+
+                                    break;
+                                }
+                            }
+                        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+                            if (BJSL.getLogger() != null) {
+                                StringWriter writer = new StringWriter();
+                                new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
+                                BJSL.getLogger().warning(writer.toString());
+                            }
+                        }
+
+                        if (defaultObject == null) {
+                            try {
+                                Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
+                                unsafeField.setAccessible(true);
+                                sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
+                                defaultObject = (Collection<Object>) unsafe.allocateInstance(object.getClass());
+                            } catch (InstantiationException | IllegalAccessException | NoSuchFieldException e) {
+                                if (BJSL.getLogger() != null) {
+                                    StringWriter writer = new StringWriter();
+                                    new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
+                                    BJSL.getLogger().warning(writer.toString());
+                                }
+                            }
+                        }
+
+                        if (defaultObject == null) {
+                            BJSL.getLogger().warning("No constructors for \"" + object.getClass().getSimpleName() + "\" found and unsafe initialization failed, defaults will not be ignored");
+                        }
+                    }
+
                     List<Field> fields = getFields(object.getClass());
 
                     for (Field field : fields) {
@@ -556,11 +610,17 @@ public class ObjectProcessor {
                                     shouldSerialize = false;
                                 }
 
+                                if (ignoreDefaults && (subElement.isPrimitive() && subElement.asPrimitive().get().equals(field.get(defaultObject)))) {
+                                    shouldSerialize = false;
+                                }
+
                                 for (Annotation annotation : field.getDeclaredAnnotations()) {
                                     if (annotation.annotationType() == AlwaysSerialize.class) {
                                         shouldSerialize = true;
                                     } else if (annotation.annotationType() == DontSerialize.class) {
                                         shouldSerialize = false;
+                                    } else if (annotation.annotationType() == Default.class) {
+                                        
                                     }
                                 }
 
