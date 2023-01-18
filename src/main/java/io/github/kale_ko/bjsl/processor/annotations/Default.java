@@ -10,37 +10,17 @@ import java.lang.annotation.Target;
 public @interface Default {
     public String stringValue() default "";
 
-    public String[] stringArrayValue() default "";
+    public byte byteValue() default Byte.MIN_VALUE;
 
-    public byte byteValue() default 0;
+    public char charValue() default Character.MIN_VALUE;
 
-    public byte[] byteArrayValue() default 0;
+    public short shortValue() default Short.MIN_VALUE;
 
-    public char charValue() default 0;
+    public int intValue() default Integer.MIN_VALUE;
 
-    public char[] charArrayValue() default 0;
+    public long longValue() default Long.MIN_VALUE;
 
-    public short shortValue() default 0;
+    public float floatValue() default Float.MIN_VALUE;
 
-    public short[] shortArrayValue() default 0;
-
-    public int intValue() default 0;
-
-    public int[] intArrayValue() default 0;
-
-    public long longValue() default 0;
-
-    public long[] longArrayValue() default 0;
-
-    public float floatValue() default 0;
-
-    public float[] floatArrayValue() default 0;
-
-    public double doubleValue() default 0;
-
-    public double[] doubleArrayValue() default 0;
-
-    public boolean booleanValue() default false;
-
-    public boolean[] booleanArrayValue() default false;
+    public double doubleValue() default Double.MIN_VALUE;
 }
