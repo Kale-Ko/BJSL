@@ -1,5 +1,6 @@
 package io.github.kale_ko.bjsl.parsers;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -96,13 +97,13 @@ public abstract class Parser {
                     toNodes(tree, subKey, objectElement.get(subKey));
                 }
 
-                StringWriter writer = new StringWriter();
-                com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(writer).setPrettyPrinter(this.prettyPrinter).setCodec(this.codec);
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter).setCodec(this.codec);
                 generator.writeTree(tree);
                 generator.close();
-                writer.close();
+                outputStream.close();
 
-                return writer.toString().trim();
+                return outputStream.toString().trim();
             } else if (element instanceof ParsedArray) {
                 ParsedArray arrayElement = element.asArray();
 
@@ -111,13 +112,13 @@ public abstract class Parser {
                     toNodes(tree, "root", subElement);
                 }
 
-                StringWriter writer = new StringWriter();
-                com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(writer).setPrettyPrinter(this.prettyPrinter).setCodec(this.codec);
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter).setCodec(this.codec);
                 generator.writeTree(tree);
                 generator.close();
-                writer.close();
+                outputStream.close();
 
-                return writer.toString().trim();
+                return outputStream.toString().trim();
             } else if (element instanceof ParsedPrimitive) {
                 if (!element.asPrimitive().isNull()) {
                     return element.asPrimitive().get().toString().trim();
