@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -29,7 +28,7 @@ import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
 
 public abstract class Parser {
     protected JsonFactory factory;
-    protected ObjectCodec codec;
+    protected ObjectMapper codec;
 
     protected PrettyPrinter prettyPrinter;
 
@@ -41,12 +40,16 @@ public abstract class Parser {
     }
 
     public ParsedElement toElement(String data) {
+        return toElement(data.getBytes());
+    }
+
+    public ParsedElement toElement(byte[] data) {
         if (data == null) {
             throw new NullPointerException("Data can not be null");
         }
 
         try {
-            com.fasterxml.jackson.core.JsonParser parser = this.factory.createParser(data.getBytes());
+            com.fasterxml.jackson.core.JsonParser parser = this.factory.createParser(data);
             parser.setCodec(this.codec);
             TreeNode tree = parser.readValueAsTree();
             parser.close();
@@ -84,6 +87,10 @@ public abstract class Parser {
     }
 
     public String toString(ParsedElement element) {
+        return new String(toBytes(element));
+    }
+
+    public byte[] toBytes(ParsedElement element) {
         if (element == null) {
             throw new NullPointerException("Element can not be null");
         }
@@ -103,7 +110,7 @@ public abstract class Parser {
                 generator.close();
                 outputStream.close();
 
-                return outputStream.toString().trim();
+                return outputStream.toByteArray();
             } else if (element instanceof ParsedArray) {
                 ParsedArray arrayElement = element.asArray();
 
@@ -118,12 +125,12 @@ public abstract class Parser {
                 generator.close();
                 outputStream.close();
 
-                return outputStream.toString().trim();
+                return outputStream.toByteArray();
             } else if (element instanceof ParsedPrimitive) {
                 if (!element.asPrimitive().isNull()) {
-                    return element.asPrimitive().get().toString().trim();
+                    return element.asPrimitive().get().toString().getBytes();
                 } else {
-                    return "null";
+                    return "null".getBytes();
                 }
             } else {
                 throw new RuntimeException("Element is not a parsable type");
