@@ -649,7 +649,7 @@ public class ObjectProcessor {
                                     shouldSerialize = false;
                                 }
 
-                                if (ignoreDefaults && (subElement.isPrimitive() && subElement.asPrimitive().get().equals(field.get(defaultObject)))) {
+                                if (ignoreDefaults && (subElement.isPrimitive() && !subElement.asPrimitive().isNull() && subElement.asPrimitive().get().equals(field.get(defaultObject)))) {
                                     shouldSerialize = false;
                                 }
 
@@ -663,35 +663,35 @@ public class ObjectProcessor {
 
                                         if (ignoreDefaults && subElement.isPrimitive()) {
                                             if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.STRING && !defaultAnnotation.stringValue().equals("")) {
-                                                if (field.get(object).equals(defaultAnnotation.stringValue())) {
+                                                if (field.get(object) != null && field.get(object).equals(defaultAnnotation.stringValue())) {
                                                     shouldSerialize = false;
                                                 }
                                             } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.BYTE && defaultAnnotation.byteValue() != Byte.MIN_VALUE) {
-                                                if (field.get(object).equals(defaultAnnotation.byteValue())) {
+                                                if (field.get(object) != null && field.get(object).equals(defaultAnnotation.byteValue())) {
                                                     shouldSerialize = false;
                                                 }
                                             } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.CHAR && defaultAnnotation.charValue() != Character.MIN_VALUE) {
-                                                if (field.get(object).equals(defaultAnnotation.charValue())) {
+                                                if (field.get(object) != null && field.get(object).equals(defaultAnnotation.charValue())) {
                                                     shouldSerialize = false;
                                                 }
                                             } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.SHORT && defaultAnnotation.shortValue() != Short.MIN_VALUE) {
-                                                if (field.get(object).equals(defaultAnnotation.shortValue())) {
+                                                if (field.get(object) != null && field.get(object).equals(defaultAnnotation.shortValue())) {
                                                     shouldSerialize = false;
                                                 }
                                             } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.INTEGER && defaultAnnotation.intValue() != Integer.MIN_VALUE) {
-                                                if (field.get(object).equals(defaultAnnotation.intValue())) {
+                                                if (field.get(object) != null && field.get(object).equals(defaultAnnotation.intValue())) {
                                                     shouldSerialize = false;
                                                 }
                                             } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.LONG && defaultAnnotation.longValue() != Long.MIN_VALUE) {
-                                                if (field.get(object).equals(defaultAnnotation.longValue())) {
+                                                if (field.get(object) != null && field.get(object).equals(defaultAnnotation.longValue())) {
                                                     shouldSerialize = false;
                                                 }
                                             } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.DOUBLE && defaultAnnotation.doubleValue() != Double.MIN_VALUE) {
-                                                if (field.get(object).equals(defaultAnnotation.doubleValue())) {
+                                                if (field.get(object) != null && field.get(object).equals(defaultAnnotation.doubleValue())) {
                                                     shouldSerialize = false;
                                                 }
                                             } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.FLOAT && defaultAnnotation.floatValue() != Float.MIN_VALUE) {
-                                                if (field.get(object).equals(defaultAnnotation.floatValue())) {
+                                                if (field.get(object) != null && field.get(object).equals(defaultAnnotation.floatValue())) {
                                                     shouldSerialize = false;
                                                 }
                                             }
