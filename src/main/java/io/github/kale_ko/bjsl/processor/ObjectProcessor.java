@@ -12,6 +12,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,12 +37,16 @@ public class ObjectProcessor {
 
     protected boolean caseSensitiveEnums;
 
-    protected ObjectProcessor(boolean ignoreNulls, boolean ignoreEmptyObjects, boolean ignoreDefaults, boolean caseSensitiveEnums) {
+    protected Map<JavaType, TypeProcessor> typeProcessors;
+
+    protected ObjectProcessor(boolean ignoreNulls, boolean ignoreEmptyObjects, boolean ignoreDefaults, boolean caseSensitiveEnums, Map<JavaType, TypeProcessor> typeProcessors) {
         this.ignoreNulls = ignoreNulls;
         this.ignoreEmptyObjects = ignoreEmptyObjects;
         this.ignoreDefaults = ignoreDefaults;
 
         this.caseSensitiveEnums = caseSensitiveEnums;
+
+        this.typeProcessors = typeProcessors;
     }
 
     public static class Builder {
@@ -50,6 +55,8 @@ public class ObjectProcessor {
         protected boolean ignoreDefaults = false;
 
         protected boolean caseSensitiveEnums = false;
+
+        protected Map<JavaType, TypeProcessor> typeProcessors = new HashMap<JavaType, TypeProcessor>();
 
         public Builder() {}
 
@@ -93,8 +100,88 @@ public class ObjectProcessor {
             return this;
         }
 
+        public Map<JavaType, TypeProcessor> getTypeProcessors() {
+            return this.typeProcessors;
+        }
+
+        public boolean hasTypeProcessor(Class<?> clazz) {
+            return this.hasTypeProcessor(TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] {}));
+        }
+
+        public boolean hasTypeProcessor(Type type) {
+            return this.hasTypeProcessor(TypeFactory.defaultInstance().constructType(type));
+        }
+
+        public boolean hasTypeProcessor(JavaType type) {
+            for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
+                if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public TypeProcessor getTypeProcessor(Class<?> clazz) {
+            return this.getTypeProcessor(TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] {}));
+        }
+
+        public TypeProcessor getTypeProcessor(Type type) {
+            return this.getTypeProcessor(TypeFactory.defaultInstance().constructType(type));
+        }
+
+        public TypeProcessor getTypeProcessor(JavaType type) {
+            for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
+                if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
+                    return typeProcessor.getValue();
+                }
+            }
+
+            throw new RuntimeException("A type processor does not exists for class \"" + type.getRawClass().getSimpleName() + "\" or one of its superclasses");
+        }
+
+        public Builder createTypeProcessor(Class<?> clazz, TypeProcessor value) {
+            return this.createTypeProcessor(TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] {}), value);
+        }
+
+        public Builder createTypeProcessor(Type type, TypeProcessor value) {
+            return this.createTypeProcessor(TypeFactory.defaultInstance().constructType(type), value);
+        }
+
+        public Builder createTypeProcessor(JavaType type, TypeProcessor value) {
+            for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
+                if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
+                    throw new RuntimeException("A type processor already exists for class \"" + type.getRawClass().getSimpleName() + "\" or one of its superclasses");
+                }
+            }
+
+            this.typeProcessors.put(type, value);
+
+            return this;
+        }
+
+        public Builder removeTypeProcessor(Class<?> clazz) {
+            return this.removeTypeProcessor(TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] {}));
+        }
+
+        public Builder removeTypeProcessor(Type type) {
+            return this.removeTypeProcessor(TypeFactory.defaultInstance().constructType(type));
+        }
+
+        public Builder removeTypeProcessor(JavaType type) {
+            for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
+                if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
+                    typeProcessors.remove(typeProcessor.getKey());
+
+                    return this;
+                }
+            }
+
+            throw new RuntimeException("A type processor does not exists for class \"" + type.getRawClass().getSimpleName() + "\" or one of its superclasses");
+        }
+
         public ObjectProcessor build() {
-            return new ObjectProcessor(this.ignoreNulls, this.ignoreEmptyObjects, this.ignoreDefaults, this.caseSensitiveEnums);
+            return new ObjectProcessor(this.ignoreNulls, this.ignoreEmptyObjects, this.ignoreDefaults, this.caseSensitiveEnums, this.typeProcessors);
         }
     }
 
@@ -110,6 +197,12 @@ public class ObjectProcessor {
     @SuppressWarnings("unchecked")
     public Object toObject(ParsedElement element, JavaType type) {
         try {
+            for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
+                if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
+                    return typeProcessor.getValue().toObject(element);
+                }
+            }
+
             if (element instanceof ParsedPrimitive) {
                 if (type.getRawClass().isEnum()) {
                     if (element instanceof ParsedPrimitive) {
@@ -552,6 +645,16 @@ public class ObjectProcessor {
 
     public ParsedElement toElement(Object object) {
         try {
+            if (object.getClass().getTypeParameters().length == 0) {
+                JavaType type = TypeFactory.defaultInstance().constructSimpleType(object.getClass(), new JavaType[] {});
+
+                for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
+                    if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
+                        return typeProcessor.getValue().toElement(object);
+                    }
+                }
+            }
+
             try {
                 return ParsedPrimitive.from(object);
             } catch (ClassCastException e2) {
