@@ -25,7 +25,7 @@ public class TestSuite {
     private static Logger logger = Logger.getLogger("Test Suite");
 
     public static void main(String[] args) {
-        BJSL.getLogger().setLevel(Level.OFF);
+        BJSL.getLogger().setLevel(Level.ALL);
 
         logger.info("----- Finding tests -----");
 
