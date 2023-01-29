@@ -30,15 +30,67 @@ import io.github.kale_ko.bjsl.processor.annotations.AlwaysSerialize;
 import io.github.kale_ko.bjsl.processor.annotations.Default;
 import io.github.kale_ko.bjsl.processor.annotations.DontSerialize;
 
+/**
+ * An Object processor for mapping elements to objects and objects to elements
+ * <p>
+ * Also has options for reducing the amount of output keys
+ *
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 public class ObjectProcessor {
+    /**
+     * Weather null values should be ignored when serializing
+     *
+     * @since 1.0.0
+     */
     protected boolean ignoreNulls;
+
+    /**
+     * Weather empty objects (Objects with a size of 0) should be ignored when serializing
+     *
+     * @since 1.0.0
+     */
     protected boolean ignoreEmptyObjects;
+
+    /**
+     * Weather default values should be ignored when serializing
+     * <p>
+     * These can either be gotten from @{@link Default} annotations or the value in a new instance of the object
+     *
+     * @since 1.0.0
+     */
     protected boolean ignoreDefaults;
 
+    /**
+     * Weather checks for enum names should be case sensitive
+     *
+     * @since 1.0.0
+     */
     protected boolean caseSensitiveEnums;
 
+    /**
+     * A map of object types to type processors
+     *
+     * @since 1.0.0
+     */
     protected Map<JavaType, TypeProcessor> typeProcessors;
 
+    /**
+     * Create a new Parser using certain factories
+     *
+     * @param ignoreNulls
+     *        Weather null values should be ignored when serializing
+     * @param ignoreEmptyObjects
+     *        Weather empty objects (Objects with a size of 0) should be ignored when serializing
+     * @param ignoreDefaults
+     *        Weather default values should be ignored when serializing
+     * @param caseSensitiveEnums
+     *        Weather checks for enum names should be case sensitive
+     * @param typeProcessors
+     *        A map of object types to type processors
+     * @since 1.0.0
+     */
     protected ObjectProcessor(boolean ignoreNulls, boolean ignoreEmptyObjects, boolean ignoreDefaults, boolean caseSensitiveEnums, Map<JavaType, TypeProcessor> typeProcessors) {
         this.ignoreNulls = ignoreNulls;
         this.ignoreEmptyObjects = ignoreEmptyObjects;
@@ -49,69 +101,229 @@ public class ObjectProcessor {
         this.typeProcessors = typeProcessors;
     }
 
+    /**
+     * A builder class for creating new {@link ObjectProcessor}s
+     *
+     * @version 1.0.0
+     * @since 1.0.0
+     */
     public static class Builder {
+        /**
+         * Weather or not null values should be ignored when serializing
+         * <p>
+         * Default is false
+         *
+         * @since 1.0.0
+         */
         protected boolean ignoreNulls = false;
+
+        /**
+         * Weather or not empty objects (Objects with a size of 0) should be ignored when serializing
+         * <p>
+         * Default is false
+         *
+         * @since 1.0.0
+         */
         protected boolean ignoreEmptyObjects = false;
+
+        /**
+         * Weather or not default values should be ignored when serializing
+         * <p>
+         * These can either be gotten from @{@link Default} annotations or the value in a new instance of the object
+         * <p>
+         * Default is false
+         *
+         * @since 1.0.0
+         */
         protected boolean ignoreDefaults = false;
 
+        /**
+         * Weather checks for enum names should be case sensitive
+         * <p>
+         * Default is false
+         *
+         * @since 1.0.0
+         */
         protected boolean caseSensitiveEnums = false;
 
+        /**
+         * A map of object types to type processors
+         *
+         * @since 1.0.0
+         */
         protected Map<JavaType, TypeProcessor> typeProcessors = new HashMap<JavaType, TypeProcessor>();
 
+        /**
+         * Create a new {@link ObjectProcessor} builder
+         *
+         * @since 1.0.0
+         */
         public Builder() {}
 
+        /**
+         * Get weather or not null values should be ignored when serializing
+         * <p>
+         * Default is false
+         *
+         * @return Weather or not null values should be ignored when serializing
+         * @since 1.0.0
+         */
         public boolean getIgnoreNulls() {
             return this.ignoreNulls;
         }
 
+        /**
+         * Set weather or not null values should be ignored when serializing
+         * <p>
+         * Default is false
+         *
+         * @param value
+         *        Weather or not null values should be ignored when serializing
+         * @return Self for chaining
+         * @since 1.0.0
+         */
         public Builder setIgnoreNulls(boolean value) {
             this.ignoreNulls = value;
 
             return this;
         }
 
+        /**
+         * Get weather or not empty objects (Objects with a size of 0) should be ignored when serializing
+         * <p>
+         * Default is false
+         *
+         * @return Weather or not empty objects (Objects with a size of 0) should be ignored when serializing
+         * @since 1.0.0
+         */
         public boolean getIgnoreEmptyObjects() {
             return this.ignoreEmptyObjects;
         }
 
+        /**
+         * Set weather or not empty objects (Objects with a size of 0) should be ignored when serializing
+         * <p>
+         * Default is false
+         *
+         * @param value
+         *        Weather or not empty objects (Objects with a size of 0) should be ignored when serializing
+         * @return Self for chaining
+         * @since 1.0.0
+         */
         public Builder setIgnoreEmptyObjects(boolean value) {
             this.ignoreEmptyObjects = value;
 
             return this;
         }
 
+        /**
+         * Get weather or not default values should be ignored when serializing
+         * <p>
+         * These can either be gotten from @{@link Default} annotations or the value in a new instance of the object
+         * <p>
+         * Default is false
+         *
+         * @return Weather or not default values should be ignored when serializing
+         * @since 1.0.0
+         */
         public boolean getIgnoreDefaults() {
             return this.ignoreDefaults;
         }
 
+        /**
+         * Set weather or not default values should be ignored when serializing
+         * <p>
+         * These can either be gotten from @{@link Default} annotations or the value in a new instance of the object
+         * <p>
+         * Default is false
+         *
+         * @param value
+         *        Weather or not default values should be ignored when serializing
+         * @return Self for chaining
+         * @since 1.0.0
+         */
         public Builder setIgnoreDefaults(boolean value) {
             this.ignoreDefaults = value;
 
             return this;
         }
 
+        /**
+         * Get weather checks for enum names should be case sensitive
+         * <p>
+         * Default is false
+         *
+         * @return Weather checks for enum names should be case sensitive
+         * @since 1.0.0
+         */
         public boolean getCaseSensitiveEnums() {
             return this.caseSensitiveEnums;
         }
 
+        /**
+         * Set weather checks for enum names should be case sensitive
+         * <p>
+         * Default is false
+         *
+         * @param value
+         *        Weather checks for enum names should be case sensitive
+         * @return Self for chaining
+         * @since 1.0.0
+         */
         public Builder setCaseSensitiveEnums(boolean value) {
             this.caseSensitiveEnums = value;
 
             return this;
         }
 
+        /**
+         * Get all the type processors created
+         *
+         * @return All the type processors created
+         * @since 1.0.0
+         */
         public Map<JavaType, TypeProcessor> getTypeProcessors() {
             return this.typeProcessors;
         }
 
+        /**
+         * Check if a type processor exists
+         * <p>
+         * Calls {@link #hasTypeProcessor(JavaType)}
+         *
+         * @param clazz
+         *        The class to check for
+         * @return If a type processor for clazz exists
+         * @since 1.0.0
+         */
         public boolean hasTypeProcessor(Class<?> clazz) {
             return this.hasTypeProcessor(TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] {}));
         }
 
+        /**
+         * Check if a type processor exists
+         * <p>
+         * Calls {@link #hasTypeProcessor(JavaType)}
+         *
+         * @param type
+         *        The type to check for
+         * @return If a type processor for type exists
+         * @since 1.0.0
+         */
         public boolean hasTypeProcessor(Type type) {
             return this.hasTypeProcessor(TypeFactory.defaultInstance().constructType(type));
         }
 
+        /**
+         * Check if a type processor exists
+         * <p>
+         * Note: This method also checks for superclasses
+         *
+         * @param type
+         *        The type to check for
+         * @return If a type processor for type exists
+         * @since 1.0.0
+         */
         public boolean hasTypeProcessor(JavaType type) {
             for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
                 if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
@@ -122,14 +334,44 @@ public class ObjectProcessor {
             return false;
         }
 
+        /**
+         * Get a type processor
+         * <p>
+         * Calls {@link #getTypeProcessor(JavaType)}
+         *
+         * @param clazz
+         *        The class to get
+         * @return The type processor for class
+         * @since 1.0.0
+         */
         public TypeProcessor getTypeProcessor(Class<?> clazz) {
             return this.getTypeProcessor(TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] {}));
         }
 
+        /**
+         * Get a type processor
+         * <p>
+         * Calls {@link #getTypeProcessor(JavaType)}
+         *
+         * @param type
+         *        The type to get
+         * @return The type processor for type
+         * @since 1.0.0
+         */
         public TypeProcessor getTypeProcessor(Type type) {
             return this.getTypeProcessor(TypeFactory.defaultInstance().constructType(type));
         }
 
+        /**
+         * Get a type processor
+         * <p>
+         * Note: This method also checks for superclasses
+         *
+         * @param type
+         *        The type to get
+         * @return The type processor for type
+         * @since 1.0.0
+         */
         public TypeProcessor getTypeProcessor(JavaType type) {
             for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
                 if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
@@ -140,14 +382,48 @@ public class ObjectProcessor {
             throw new RuntimeException("A type processor does not exists for class \"" + type.getRawClass().getSimpleName() + "\" or one of its superclasses");
         }
 
+        /**
+         * Create a type processor
+         * <p>
+         * Calls {@link #createTypeProcessor(JavaType, TypeProcessor)}
+         *
+         * @param clazz
+         *        The class to create
+         * @param value
+         *        The type processor to use
+         * @return Self for chaining
+         * @since 1.0.0
+         */
         public Builder createTypeProcessor(Class<?> clazz, TypeProcessor value) {
             return this.createTypeProcessor(TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] {}), value);
         }
 
+        /**
+         * Create a type processor
+         * <p>
+         * Calls {@link #createTypeProcessor(JavaType, TypeProcessor)}
+         *
+         * @param type
+         *        The type to create
+         * @param value
+         *        The type processor to use
+         * @return Self for chaining
+         * @since 1.0.0
+         */
         public Builder createTypeProcessor(Type type, TypeProcessor value) {
             return this.createTypeProcessor(TypeFactory.defaultInstance().constructType(type), value);
         }
 
+        /**
+         * Create a type processor
+         *
+         * @param type
+         *        The type to create
+         * @param value
+         *        The type processor to use
+         * @return Self for chaining
+         * @since 1.0.0
+         */
         public Builder createTypeProcessor(JavaType type, TypeProcessor value) {
             for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
                 if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
@@ -160,14 +436,44 @@ public class ObjectProcessor {
             return this;
         }
 
+        /**
+         * Remove a type processor
+         * <p>
+         * Calls {@link #removeTypeProcessor(JavaType)}
+         *
+         * @param clazz
+         *        The class to remove
+         * @return Self for chaining
+         * @since 1.0.0
+         */
         public Builder removeTypeProcessor(Class<?> clazz) {
             return this.removeTypeProcessor(TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] {}));
         }
 
+        /**
+         * Remove a type processor
+         * <p>
+         * Calls {@link #removeTypeProcessor(JavaType)}
+         *
+         * @param type
+         *        The type to remove
+         * @return Self for chaining
+         * @since 1.0.0
+         */
         public Builder removeTypeProcessor(Type type) {
             return this.removeTypeProcessor(TypeFactory.defaultInstance().constructType(type));
         }
 
+        /**
+         * Remove a type processor
+         * <p>
+         * Note: This method also checks for superclasses
+         *
+         * @param type
+         *        The type to remove
+         * @return Self for chaining
+         * @since 1.0.0
+         */
         public Builder removeTypeProcessor(JavaType type) {
             for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
                 if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
@@ -180,20 +486,62 @@ public class ObjectProcessor {
             throw new RuntimeException("A type processor does not exists for class \"" + type.getRawClass().getSimpleName() + "\" or one of its superclasses");
         }
 
+        /**
+         * Uses the current settings to build a new {@link ObjectProcessor}
+         *
+         * @return A new {@link ObjectProcessor} instance
+         * @since 1.0.0
+         */
         public ObjectProcessor build() {
             return new ObjectProcessor(this.ignoreNulls, this.ignoreEmptyObjects, this.ignoreDefaults, this.caseSensitiveEnums, this.typeProcessors);
         }
     }
 
+    /**
+     * Maps this element into an Object
+     * <p>
+     * Calls {@link #toObject(ParsedElement, JavaType)}
+     *
+     * @param element
+     *        The element to map
+     * @param clazz
+     *        The object type to map to
+     * @param <T>
+     *        The object type to map to
+     * @return A new Object of type clazz with the values of element
+     * @since 1.0.0
+     */
     @SuppressWarnings("unchecked")
     public <T> T toObject(ParsedElement element, Class<T> clazz) {
         return (T) toObject(element, TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] {}));
     }
 
+    /**
+     * Maps this element into an Object
+     * <p>
+     * Calls {@link #toObject(ParsedElement, JavaType)}
+     *
+     * @param element
+     *        The element to map
+     * @param type
+     *        The object type to map to
+     * @return A new Object of type type with the values of element
+     * @since 1.0.0
+     */
     public Object toObject(ParsedElement element, Type type) {
         return toObject(element, TypeFactory.defaultInstance().constructType(type));
     }
 
+    /**
+     * Maps this element into an Object
+     *
+     * @param element
+     *        The element to map
+     * @param type
+     *        The object type to map to
+     * @return A new Object of type type with the values of element
+     * @since 1.0.0
+     */
     @SuppressWarnings("unchecked")
     public Object toObject(ParsedElement element, JavaType type) {
         try {
@@ -643,6 +991,14 @@ public class ObjectProcessor {
         }
     }
 
+    /**
+     * Maps this Object into a {@link ParsedElement}
+     *
+     * @param object
+     *        The object to map
+     * @return A new {@link ParsedElement} with the values of object
+     * @since 1.0.0
+     */
     public ParsedElement toElement(Object object) {
         try {
             if (object.getClass().getTypeParameters().length == 0) {
@@ -833,6 +1189,16 @@ public class ObjectProcessor {
         }
     }
 
+    /**
+     * Get all the fields on a class and its superclasses
+     *
+     * @param clazz
+     *        The class to get the fields of
+     * @param <T>
+     *        The class to get the fields of
+     * @return All the fields on the class and its superclasses
+     * @since 1.0.0
+     */
     protected static <T> List<Field> getFields(Class<T> clazz) {
         List<Field> fields = new ArrayList<Field>();
 

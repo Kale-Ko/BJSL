@@ -35,6 +35,11 @@ tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
 
+jar {
+    sourceCompatibility = JavaVersion.toVersion(project.java_version)
+    targetCompatibility = JavaVersion.toVersion(project.java_version)
+}
+
 tasks.register("buildFat", Jar) {
     dependsOn tasks.build
 
@@ -48,24 +53,55 @@ tasks.register("buildFat", Jar) {
     from files(project.configurations.dependency.collect { it.isDirectory() ? it : zipTree(it) })
 }
 
-tasks.register("buildTests", Jar) {
+tasks.register("buildSources", Jar) {
     dependsOn tasks.build
 
     sourceCompatibility = JavaVersion.toVersion(project.java_version)
     targetCompatibility = JavaVersion.toVersion(project.java_version)
 
     duplicatesStrategy = "exclude"
-    classifier = "test"
+    classifier = "sources"
 
-    from files(project.sourceSets.main.output)
-    from files(project.sourceSets.test.output)
-    from files(project.configurations.dependency.collect { it.isDirectory() ? it : zipTree(it) })
+    from files(project.sourceSets.main.allJava)
+}
+
+tasks.register("genJavaDocs", Javadoc) {
+    dependsOn tasks.build
+
+    source = sourceSets.main.allJava
+    classpath = sourceSets.main.runtimeClasspath
+
+    title = project.name + " " + project.version
+
+    doFirst {
+        mkdir "./build/"
+        mkdir "./build/docs/"
+        file("./build/docs/overview.html").text = "<html><body><p class=\"overview\">" + project.project_description + "</p></body></html>"
+    }
+
+    options {
+        overview "build/docs/overview.html"
+        encoding "utf-8"
+    }
+}
+
+tasks.register("buildJavaDocs", Jar) {
+    dependsOn tasks.genJavaDocs
+
+    sourceCompatibility = JavaVersion.toVersion(project.java_version)
+    targetCompatibility = JavaVersion.toVersion(project.java_version)
+
+    duplicatesStrategy = "exclude"
+    classifier = "javadoc"
+
+    from tasks.genJavaDocs
 }
 
 tasks.register("buildAll") {
     dependsOn tasks.jar
     dependsOn tasks.buildFat
-    dependsOn tasks.buildTests
+    dependsOn tasks.buildSources
+    dependsOn tasks.buildJavaDocs
 }
 
 publishing {
@@ -89,6 +125,8 @@ publishing {
 
             artifact tasks.jar
             artifact tasks.buildFat
+            artifact tasks.buildJavaDocs
+            artifact tasks.buildSources
 
             pom.withXml {
                 def node = asNode()
