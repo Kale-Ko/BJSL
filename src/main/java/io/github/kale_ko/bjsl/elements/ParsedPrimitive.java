@@ -1,5 +1,8 @@
 package io.github.kale_ko.bjsl.elements;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 /**
  * A wrapper for a primitive object used to represent String/int/float/etc values
  * <p>
@@ -16,7 +19,7 @@ public class ParsedPrimitive extends ParsedElement {
      * @version 1.0.0
      * @since 1.0.0
      */
-    public static enum PrimitiveType { // TODO Add BigInt support
+    public static enum PrimitiveType {
         /**
          * Represents a {@link String}
          *
@@ -53,6 +56,13 @@ public class ParsedPrimitive extends ParsedElement {
         INTEGER,
 
         /**
+         * Represents a {@link BigInteger}
+         *
+         * @since 1.0.0
+         */
+        BIGINTEGER,
+
+        /**
          * Represents a {@link Long}
          *
          * @since 1.0.0
@@ -72,6 +82,13 @@ public class ParsedPrimitive extends ParsedElement {
          * @since 1.0.0
          */
         DOUBLE,
+
+        /**
+         * Represents a {@link BigDecimal}
+         *
+         * @since 1.0.0
+         */
+        BIGDECIMAL,
 
         /**
          * Represents a {@link Boolean}
@@ -183,6 +200,16 @@ public class ParsedPrimitive extends ParsedElement {
     }
 
     /**
+     * Get if the type of this primitive is a big integer
+     *
+     * @return If the type of this primitive is a big integer
+     * @since 1.0.0
+     */
+    public boolean isBigInteger() {
+        return this.primitiveType == PrimitiveType.BIGINTEGER;
+    }
+
+    /**
      * Get if the type of this primitive is a long
      *
      * @return If the type of this primitive is a long
@@ -210,6 +237,16 @@ public class ParsedPrimitive extends ParsedElement {
      */
     public boolean isDouble() {
         return this.primitiveType == PrimitiveType.DOUBLE;
+    }
+
+    /**
+     * Get if the type of this primitive is a big decimal
+     *
+     * @return If the type of this primitive is a big decimal
+     * @since 1.0.0
+     */
+    public boolean isBigDecimal() {
+        return this.primitiveType == PrimitiveType.BIGDECIMAL;
     }
 
     /**
@@ -249,12 +286,16 @@ public class ParsedPrimitive extends ParsedElement {
             return (short) (long) this.primitive;
         } else if (this.primitiveType == PrimitiveType.INTEGER) {
             return (int) (long) this.primitive;
+        } else if (this.primitiveType == PrimitiveType.BIGINTEGER) {
+            return (BigInteger) this.primitive;
         } else if (this.primitiveType == PrimitiveType.LONG) {
             return (long) this.primitive;
         } else if (this.primitiveType == PrimitiveType.FLOAT) {
             return (float) (double) this.primitive;
         } else if (this.primitiveType == PrimitiveType.DOUBLE) {
             return (double) this.primitive;
+        } else if (this.primitiveType == PrimitiveType.BIGDECIMAL) {
+            return (BigDecimal) this.primitive;
         } else if (this.primitiveType == PrimitiveType.BOOLEAN) {
             return (boolean) this.primitive;
         } else if (this.primitiveType == PrimitiveType.NULL) {
@@ -345,6 +386,22 @@ public class ParsedPrimitive extends ParsedElement {
     }
 
     /**
+     * Get the value of this primitive as a big integer
+     * <p>
+     * Note: Does not catch casting errors
+     *
+     * @return The value of this primitive as a big integer
+     * @since 1.0.0
+     */
+    public BigInteger asBigInteger() {
+        if (this.primitiveType == PrimitiveType.BIGINTEGER) {
+            return (BigInteger) this.primitive;
+        } else {
+            throw new ClassCastException("Value is not a big integer");
+        }
+    }
+
+    /**
      * Get the value of this primitive as a long
      * <p>
      * Note: Does not catch casting errors
@@ -389,6 +446,22 @@ public class ParsedPrimitive extends ParsedElement {
             return (double) this.primitive;
         } else {
             throw new ClassCastException("Value is not a double");
+        }
+    }
+
+    /**
+     * Get the value of this primitive as a big decimal
+     * <p>
+     * Note: Does not catch casting errors
+     *
+     * @return The value of this primitive as a big decimal
+     * @since 1.0.0
+     */
+    public BigDecimal asBigDecimal() {
+        if (this.primitiveType == PrimitiveType.BIGDECIMAL) {
+            return (BigDecimal) this.primitive;
+        } else {
+            throw new ClassCastException("Value is not a big decimal");
         }
     }
 
@@ -523,6 +596,18 @@ public class ParsedPrimitive extends ParsedElement {
     }
 
     /**
+     * Create a new {@link ParsedPrimitive} with the passed big integer
+     *
+     * @param value
+     *        The big integer to use
+     * @return A new {@link ParsedPrimitive} with the passed big integer
+     * @since 1.0.0
+     */
+    public static ParsedPrimitive fromBigInteger(BigInteger value) {
+        return new ParsedPrimitive(value, PrimitiveType.BIGINTEGER);
+    }
+
+    /**
      * Create a new {@link ParsedPrimitive} with the passed long
      *
      * @param value
@@ -556,6 +641,18 @@ public class ParsedPrimitive extends ParsedElement {
      */
     public static ParsedPrimitive fromDouble(double value) {
         return new ParsedPrimitive(value, PrimitiveType.DOUBLE);
+    }
+
+    /**
+     * Create a new {@link ParsedPrimitive} with the passed big decimal
+     *
+     * @param value
+     *        The big decimal to use
+     * @return A new {@link ParsedPrimitive} with the passed big decimal
+     * @since 1.0.0
+     */
+    public static ParsedPrimitive fromBigDecimal(BigDecimal value) {
+        return new ParsedPrimitive(value, PrimitiveType.BIGDECIMAL);
     }
 
     /**
