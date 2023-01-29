@@ -1,0 +1,47 @@
+name: Publish
+
+on:
+  push:
+    tags: ["*.*.*"]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: adopt
+          server-id: ghp
+          settings-path: ${{ github.workspace }}
+
+      - name: Build All
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: buildAll
+
+      - name: Publish to GitHub Packages
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: publish
+        env:
+          GH_PACKAGES_USER: Kale-Ko
+          GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+
+      - name: Publish to Github Pages
+        uses: jamesives/github-pages-deploy-action@v4.3.3
+        with:
+          git-config-name: github-actions[bot]
+          git-config-email: 41898282+github-actions[bot]@users.noreply.github.com
+          commit-message: Update JavaDocs
+          folder: build/docs/javadoc
+          branch: pages
+          target-folder: docs
+          clean: true
