@@ -26,12 +26,49 @@ import io.github.kale_ko.bjsl.elements.ParsedElement;
 import io.github.kale_ko.bjsl.elements.ParsedObject;
 import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
 
+/**
+ * An abstract class that all parsers extend from
+ * <p>
+ * Contains all the logic for parsing, factories are just passed for values
+ * <p>
+ * Basically just a wrapper for Jackson parsers
+ *
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 public abstract class Parser {
+    /**
+     * The factory used for converting to/from trees/strings
+     *
+     * @since 1.0.0
+     */
     protected JsonFactory factory;
+
+    /**
+     * The codec used for converting to/from trees/strings
+     *
+     * @since 1.0.0
+     */
     protected ObjectMapper codec;
 
+    /**
+     * The prettyPrinter used for converting to strings
+     *
+     * @since 1.0.0
+     */
     protected PrettyPrinter prettyPrinter;
 
+    /**
+     * Create a new Parser using certain factories
+     *
+     * @param factory
+     *        The factory used for converting to/from trees/strings
+     * @param codec
+     *        The codec used for converting to/from trees/strings
+     * @param prettyPrinter
+     *        The prettyPrinter used for converting to strings
+     * @since 1.0.0
+     */
     protected Parser(JsonFactory factory, ObjectMapper codec, PrettyPrinter prettyPrinter) {
         this.factory = factory;
         this.codec = codec;
@@ -39,10 +76,30 @@ public abstract class Parser {
         this.prettyPrinter = prettyPrinter;
     }
 
+    /**
+     * Parse this string into a {@link ParsedElement}
+     * <p>
+     * Calls {@link #toElement(byte[])} with the bytes of the passed string ({@link String#getBytes()})
+     *
+     * @param data
+     *        The string to parse
+     * @return The string passed parsed to a {@link ParsedElement}
+     * @since 1.0.0
+     */
     public ParsedElement toElement(String data) {
         return toElement(data.getBytes());
     }
 
+    /**
+     * Parse these bytes into a {@link ParsedElement}
+     * <p>
+     * Calls Jackson functions to get a parsed tree and then converts it into BJSL's format
+     *
+     * @param data
+     *        The bytes to parse
+     * @return The bytes passed parsed to a {@link ParsedElement}
+     * @since 1.0.0
+     */
     public ParsedElement toElement(byte[] data) {
         if (data == null) {
             throw new NullPointerException("Data can not be null");
@@ -86,10 +143,30 @@ public abstract class Parser {
         }
     }
 
+    /**
+     * Serializes this element into a String
+     * <p>
+     * Calls {@link #toString(ParsedElement)} and uses {@link String#String(byte[])} to create a string from that
+     *
+     * @param element
+     *        The element to serialize
+     * @return The element passed serialized to a String
+     * @since 1.0.0
+     */
     public String toString(ParsedElement element) {
         return new String(toBytes(element));
     }
 
+    /**
+     * Serializes this element into bytes
+     * <p>
+     * Converts it from BJSL's format and calls Jackson functions to get bytes
+     *
+     * @param element
+     *        The element to serialize
+     * @return The element passed serialized to bytes
+     * @since 1.0.0
+     */
     public byte[] toBytes(ParsedElement element) {
         if (element == null) {
             throw new NullPointerException("Element can not be null");
@@ -146,6 +223,17 @@ public abstract class Parser {
         }
     }
 
+    /**
+     * Converts Jackson's format to BJSL's format
+     *
+     * @param element
+     *        The element to add too
+     * @param key
+     *        The key of the element
+     * @param node
+     *        The node to convert
+     * @since 1.0.0
+     */
     protected void toElements(ParsedElement element, String key, JsonNode node) {
         if (node instanceof ObjectNode objectNode) {
             ParsedObject subElement = ParsedObject.create();
@@ -244,6 +332,17 @@ public abstract class Parser {
         }
     }
 
+    /**
+     * Converts BJSL's format to Jackson's format
+     *
+     * @param element
+     *        The element to add too
+     * @param key
+     *        The key of the element
+     * @param node
+     *        The node to convert
+     * @since 1.0.0
+     */
     protected void toNodes(TreeNode node, String key, ParsedElement element) {
         if (element instanceof ParsedObject objectElement) {
             ObjectNode subNode = JsonNodeFactory.instance.objectNode();

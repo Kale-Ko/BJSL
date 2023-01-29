@@ -11,49 +11,161 @@ import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
+/**
+ * A parser for interfacing with JSON
+ * <p>
+ * Uses the default Jackson json parser
+ *
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 public class JsonParser extends Parser {
+    /**
+     * Create a new Parser using certain factories
+     *
+     * @param factory
+     *        The factory used for converting to/from trees/strings
+     * @param mapper
+     *        The mapper used for converting to/from trees/strings
+     * @param prettyPrinter
+     *        The prettyPrinter used for converting to strings
+     * @since 1.0.0
+     */
     protected JsonParser(JsonFactory factory, JsonMapper mapper, PrettyPrinter prettyPrinter) {
         super(factory, mapper, prettyPrinter);
     }
 
+    /**
+     * A builder class for creating new {@link JsonParser}s
+     *
+     * @version 1.0.0
+     * @since 1.0.0
+     */
     public static class Builder {
+        /**
+         * Weather pretty printing should be enabled or not
+         * <p>
+         * Default is false
+         *
+         * @since 1.0.0
+         */
         protected boolean prettyPrint = false;
+
+        /**
+         * The indent level (in spaces) to use when pretty printing
+         * <p>
+         * Default is 2
+         *
+         * @since 1.0.0
+         */
         protected int indentLevel = 2;
 
+        /**
+         * Weather to use crlf or lf line endings
+         * <p>
+         * Default is lf
+         *
+         * @since 1.0.0
+         */
         protected boolean crlf = false;
 
+        /**
+         * Create a new {@link JsonParser} builder
+         *
+         * @since 1.0.0
+         */
         public Builder() {}
 
+        /**
+         * Get weather pretty printing should be enabled or not
+         * <p>
+         * Default is false
+         *
+         * @return Weather pretty printing should be enabled or not
+         * @since 1.0.0
+         */
         public boolean getPrettyPrint() {
             return this.prettyPrint;
         }
 
+        /**
+         * Set weather pretty printing should be enabled or not
+         * <p>
+         * Default is false
+         *
+         * @param value
+         *        Weather pretty printing should be enabled or not
+         * @return Self for chaining
+         * @since 1.0.0
+         */
         public Builder setPrettyPrint(boolean value) {
             this.prettyPrint = value;
 
             return this;
         }
 
+        /**
+         * Get the indent level (in spaces) to use when pretty printing
+         * <p>
+         * Default is 2
+         *
+         * @return The indent level (in spaces) to use when pretty printing
+         * @since 1.0.0
+         */
         public int getIndentLevel() {
             return this.indentLevel;
         }
 
+        /**
+         * Set the indent level (in spaces) to use when pretty printing
+         * <p>
+         * Default is 2
+         *
+         * @param value
+         *        The indent level (in spaces) to use when pretty printing
+         * @return Self for chaining
+         * @since 1.0.0
+         */
         public Builder setIndentLevel(int value) {
             this.indentLevel = value;
 
             return this;
         }
 
+        /**
+         * Get weather to use crlf or lf line endings
+         * <p>
+         * Default is lf
+         *
+         * @return Weather to use crlf or lf line endings
+         * @since 1.0.0
+         */
         public boolean getCrlf() {
             return this.crlf;
         }
 
+        /**
+         * Set weather to use crlf or lf line endings
+         * <p>
+         * Default is lf
+         *
+         * @param value
+         *        Weather to use crlf or lf line endings
+         * @return Self for chaining
+         * @since 1.0.0
+         */
         public Builder setCrlf(boolean value) {
             this.crlf = value;
 
             return this;
         }
 
+        /**
+         * Uses the current settings to build a new {@link JsonParser}
+         *
+         * @return A new {@link JsonParser} instance
+         * @since 1.0.0
+         */
         public JsonParser build() {
             JsonFactoryBuilder factoryBuilder = (JsonFactoryBuilder) JsonFactory.builder();
             factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
