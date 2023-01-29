@@ -10,7 +10,9 @@ import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.BigIntegerNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
+import com.fasterxml.jackson.databind.node.DecimalNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.fasterxml.jackson.databind.node.FloatNode;
 import com.fasterxml.jackson.databind.node.IntNode;
@@ -128,8 +130,6 @@ public abstract class Parser {
 
                 return arrayElement;
             } else {
-                // TODO Return the primitive type
-
                 throw new RuntimeException("Data is not an object or array");
             }
         } catch (RuntimeException | IOException e) {
@@ -285,6 +285,14 @@ public abstract class Parser {
             } else {
                 throw new RuntimeException("Element is not an object or array");
             }
+        } else if (node instanceof BigIntegerNode) {
+            if (element instanceof ParsedObject objectElement) {
+                objectElement.set(key, ParsedPrimitive.fromBigInteger(node.bigIntegerValue()));
+            } else if (element instanceof ParsedArray arrayElement) {
+                arrayElement.add(ParsedPrimitive.fromBigInteger(node.bigIntegerValue()));
+            } else {
+                throw new RuntimeException("Element is not an object or array");
+            }
         } else if (node instanceof LongNode) {
             if (element instanceof ParsedObject objectElement) {
                 objectElement.set(key, ParsedPrimitive.fromLong(node.asLong()));
@@ -306,6 +314,14 @@ public abstract class Parser {
                 objectElement.set(key, ParsedPrimitive.fromDouble(node.asDouble()));
             } else if (element instanceof ParsedArray arrayElement) {
                 arrayElement.add(ParsedPrimitive.fromDouble(node.asDouble()));
+            } else {
+                throw new RuntimeException("Element is not an object or array");
+            }
+        } else if (node instanceof DecimalNode) {
+            if (element instanceof ParsedObject objectElement) {
+                objectElement.set(key, ParsedPrimitive.fromBigDecimal(node.decimalValue()));
+            } else if (element instanceof ParsedArray arrayElement) {
+                arrayElement.add(ParsedPrimitive.fromBigDecimal(node.decimalValue()));
             } else {
                 throw new RuntimeException("Element is not an object or array");
             }
@@ -411,6 +427,14 @@ public abstract class Parser {
                 } else {
                     throw new RuntimeException("Node is not an object or array");
                 }
+            } else if (primitiveElement.isBigInteger()) {
+                if (node instanceof ObjectNode objectNode) {
+                    objectNode.put(key, primitiveElement.asBigInteger());
+                } else if (node instanceof ArrayNode objectNode) {
+                    objectNode.add(primitiveElement.asBigInteger());
+                } else {
+                    throw new RuntimeException("Node is not an object or array");
+                }
             } else if (primitiveElement.isLong()) {
                 if (node instanceof ObjectNode objectNode) {
                     objectNode.put(key, primitiveElement.asLong());
@@ -432,6 +456,14 @@ public abstract class Parser {
                     objectNode.put(key, primitiveElement.asDouble());
                 } else if (node instanceof ArrayNode objectNode) {
                     objectNode.add(primitiveElement.asDouble());
+                } else {
+                    throw new RuntimeException("Node is not an object or array");
+                }
+            } else if (primitiveElement.isBigDecimal()) {
+                if (node instanceof ObjectNode objectNode) {
+                    objectNode.put(key, primitiveElement.asBigDecimal());
+                } else if (node instanceof ArrayNode objectNode) {
+                    objectNode.add(primitiveElement.asBigDecimal());
                 } else {
                     throw new RuntimeException("Node is not an object or array");
                 }
