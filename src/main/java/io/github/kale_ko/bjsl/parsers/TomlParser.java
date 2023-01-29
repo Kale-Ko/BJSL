@@ -9,38 +9,124 @@ import com.fasterxml.jackson.dataformat.toml.TomlFactory;
 import com.fasterxml.jackson.dataformat.toml.TomlFactoryBuilder;
 import com.fasterxml.jackson.dataformat.toml.TomlMapper;
 
+/**
+ * A parser for interfacing with TOML
+ * <p>
+ * Uses the Jackson-DataFormat toml parser
+ *
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 public class TomlParser extends Parser {
+    /**
+     * Create a new Parser using certain factories
+     *
+     * @param factory
+     *        The factory used for converting to/from trees/strings
+     * @param mapper
+     *        The mapper used for converting to/from trees/strings
+     * @param prettyPrinter
+     *        The prettyPrinter used for converting to strings
+     * @since 1.0.0
+     */
     protected TomlParser(TomlFactory factory, TomlMapper mapper, PrettyPrinter prettyPrinter) {
         super(factory, mapper, prettyPrinter);
     }
 
+    /**
+     * A builder class for creating new {@link TomlParser}s
+     *
+     * @version 1.0.0
+     * @since 1.0.0
+     */
     public static class Builder {
+        /**
+         * The indent level (in spaces) to use when pretty printing
+         * <p>
+         * Default is 2
+         *
+         * @since 1.0.0
+         */
         protected int indentLevel = 2;
 
+        /**
+         * Weather to use crlf or lf line endings
+         * <p>
+         * Default is lf
+         *
+         * @since 1.0.0
+         */
         protected boolean crlf = false;
 
+        /**
+         * Create a new {@link TomlParser} builder
+         *
+         * @since 1.0.0
+         */
         public Builder() {}
 
+        /**
+         * Get the indent level (in spaces) to use when pretty printing
+         * <p>
+         * Default is 2
+         *
+         * @return The indent level (in spaces) to use when pretty printing
+         * @since 1.0.0
+         */
         public int getIndentLevel() {
             return this.indentLevel;
         }
 
+        /**
+         * Set the indent level (in spaces) to use when pretty printing
+         * <p>
+         * Default is 2
+         *
+         * @param value
+         *        The indent level (in spaces) to use when pretty printing
+         * @return Self for chaining
+         * @since 1.0.0
+         */
         public Builder setIndentLevel(int value) {
             this.indentLevel = value;
 
             return this;
         }
 
+        /**
+         * Get weather to use crlf or lf line endings
+         * <p>
+         * Default is lf
+         *
+         * @return Weather to use crlf or lf line endings
+         * @since 1.0.0
+         */
         public boolean getCrlf() {
             return this.crlf;
         }
 
+        /**
+         * Set weather to use crlf or lf line endings
+         * <p>
+         * Default is lf
+         *
+         * @param value
+         *        Weather to use crlf or lf line endings
+         * @return Self for chaining
+         * @since 1.0.0
+         */
         public Builder setCrlf(boolean value) {
             this.crlf = value;
 
             return this;
         }
 
+        /**
+         * Uses the current settings to build a new {@link TomlParser}
+         *
+         * @return A new {@link TomlParser} instance
+         * @since 1.0.0
+         */
         public TomlParser build() {
             TomlFactoryBuilder factoryBuilder = (TomlFactoryBuilder) TomlFactory.builder();
             factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);

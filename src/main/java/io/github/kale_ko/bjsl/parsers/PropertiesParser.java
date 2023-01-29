@@ -7,14 +7,50 @@ import com.fasterxml.jackson.dataformat.javaprop.JavaPropsFactory;
 import com.fasterxml.jackson.dataformat.javaprop.JavaPropsFactoryBuilder;
 import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
 
+/**
+ * A parser for interfacing with Java properties
+ * <p>
+ * Uses the Jackson-DataFormat java properties parser
+ *
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 public class PropertiesParser extends Parser {
+    /**
+     * Create a new Parser using certain factories
+     *
+     * @param factory
+     *        The factory used for converting to/from trees/strings
+     * @param mapper
+     *        The mapper used for converting to/from trees/strings
+     * @param prettyPrinter
+     *        The prettyPrinter used for converting to strings
+     * @since 1.0.0
+     */
     protected PropertiesParser(JavaPropsFactory factory, JavaPropsMapper mapper, PrettyPrinter prettyPrinter) {
         super(factory, mapper, prettyPrinter);
     }
 
+    /**
+     * A builder class for creating new {@link PropertiesParser}s
+     *
+     * @version 1.0.0
+     * @since 1.0.0
+     */
     public static class Builder {
+        /**
+         * Create a new {@link PropertiesParser} builder
+         *
+         * @since 1.0.0
+         */
         public Builder() {}
 
+        /**
+         * Uses the current settings to build a new {@link PropertiesParser}
+         *
+         * @return A new {@link PropertiesParser} instance
+         * @since 1.0.0
+         */
         public PropertiesParser build() {
             JavaPropsFactoryBuilder factoryBuilder = (JavaPropsFactoryBuilder) JavaPropsFactory.builder();
             factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
