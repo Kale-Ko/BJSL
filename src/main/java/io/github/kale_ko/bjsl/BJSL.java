@@ -20,7 +20,7 @@ import io.github.kale_ko.bjsl.processor.ObjectProcessor;
  * @param <T>
  *        The the of the parser to use
  * @version 1.0.0
- * @since 1.0.0
+ * @since 1.1.0
  */
 public class BJSL<T extends Parser<?, ?>> {
     /**

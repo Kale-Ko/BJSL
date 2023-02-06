@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
  * <p>
  * Uses the default Jackson json parser
  *
- * @version 1.0.0
+ * @version 1.1.0
  * @since 1.0.0
  */
 public class JsonParser extends Parser<JsonFactory, JsonMapper> {
