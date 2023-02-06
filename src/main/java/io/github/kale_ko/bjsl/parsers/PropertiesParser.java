@@ -15,7 +15,7 @@ import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
  * @version 1.0.0
  * @since 1.0.0
  */
-public class PropertiesParser extends Parser {
+public class PropertiesParser extends Parser<JavaPropsFactory, JavaPropsMapper> {
     /**
      * Create a new Parser using certain factories
      *

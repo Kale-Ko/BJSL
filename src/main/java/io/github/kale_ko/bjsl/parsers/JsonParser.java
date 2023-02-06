@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
  * @version 1.0.0
  * @since 1.0.0
  */
-public class JsonParser extends Parser {
+public class JsonParser extends Parser<JsonFactory, JsonMapper> {
     /**
      * Create a new Parser using certain factories
      *

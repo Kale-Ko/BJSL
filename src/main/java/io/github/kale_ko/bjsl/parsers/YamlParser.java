@@ -18,7 +18,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
  * @version 1.0.0
  * @since 1.0.0
  */
-public class YamlParser extends Parser {
+public class YamlParser extends Parser<YAMLFactory, YAMLMapper> {
     /**
      * Create a new Parser using certain factories
      *

@@ -17,7 +17,7 @@ import com.fasterxml.jackson.dataformat.toml.TomlMapper;
  * @version 1.0.0
  * @since 1.0.0
  */
-public class TomlParser extends Parser {
+public class TomlParser extends Parser<TomlFactory, TomlMapper> {
     /**
      * Create a new Parser using certain factories
      *
