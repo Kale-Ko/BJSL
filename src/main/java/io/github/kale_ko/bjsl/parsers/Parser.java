@@ -4,11 +4,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.core.PrettyPrinter;
+import com.fasterxml.jackson.core.TokenStreamFactory;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BigIntegerNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
@@ -35,23 +35,27 @@ import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
  * <p>
  * Basically just a wrapper for Jackson parsers
  *
+ * @param <T>
+ *        The type of the factory used for converting to/from trees/strings
+ * @param <V>
+ *        The type of the codec used for converting to/from trees/strings
  * @version 1.0.0
  * @since 1.0.0
  */
-public abstract class Parser {
+public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec> {
     /**
      * The factory used for converting to/from trees/strings
      *
      * @since 1.0.0
      */
-    protected JsonFactory factory;
+    protected T factory;
 
     /**
      * The codec used for converting to/from trees/strings
      *
      * @since 1.0.0
      */
-    protected ObjectMapper codec;
+    protected V codec;
 
     /**
      * The prettyPrinter used for converting to strings
@@ -71,7 +75,7 @@ public abstract class Parser {
      *        The prettyPrinter used for converting to strings
      * @since 1.0.0
      */
-    protected Parser(JsonFactory factory, ObjectMapper codec, PrettyPrinter prettyPrinter) {
+    protected Parser(T factory, V codec, PrettyPrinter prettyPrinter) {
         this.factory = factory;
         this.codec = codec;
 

@@ -17,10 +17,12 @@ import io.github.kale_ko.bjsl.processor.ObjectProcessor;
  * <p>
  * Static calls use default instances of each parser and processor
  *
+ * @param <T>
+ *        The the of the parser to use
  * @version 1.0.0
  * @since 1.0.0
  */
-public class BJSL {
+public class BJSL<T extends Parser<?, ?>> {
     /**
      * The JSON parser used by static calls
      * <p>
@@ -98,7 +100,7 @@ public class BJSL {
      *
      * @since 1.0.0
      */
-    protected Parser parser;
+    protected T parser;
 
     /**
      * The object processor to use
@@ -114,7 +116,7 @@ public class BJSL {
      *        The parser to use
      * @since 1.0.0
      */
-    public BJSL(Parser parser) {
+    public BJSL(T parser) {
         this(parser, new ObjectProcessor.Builder().build());
     }
 
@@ -127,7 +129,7 @@ public class BJSL {
      *        The object processor to use
      * @since 1.0.0
      */
-    public BJSL(Parser parser, ObjectProcessor processor) {
+    public BJSL(T parser, ObjectProcessor processor) {
         this.parser = parser;
         this.processor = processor;
     }
@@ -138,7 +140,7 @@ public class BJSL {
      * @return The parser being used
      * @since 1.0.0
      */
-    public Parser getParser() {
+    public T getParser() {
         return this.parser;
     }
 
@@ -189,12 +191,12 @@ public class BJSL {
      *        The string to map
      * @param clazz
      *        The object type to map to
-     * @param <T>
+     * @param <V>
      *        The object type to map to
      * @return A new Object of type clazz with the values of data
      * @since 1.0.0
      */
-    public <T> T parse(String data, Class<T> clazz) {
+    public <V> V parse(String data, Class<V> clazz) {
         return this.processor.toObject(this.parse(data), clazz);
     }
 
@@ -207,12 +209,12 @@ public class BJSL {
      *        The bytes to map
      * @param clazz
      *        The object type to map to
-     * @param <T>
+     * @param <V>
      *        The object type to map to
      * @return A new Object of type clazz with the values of data
      * @since 1.0.0
      */
-    public <T> T parse(byte[] data, Class<T> clazz) {
+    public <V> V parse(byte[] data, Class<V> clazz) {
         return this.processor.toObject(this.parse(data), clazz);
     }
 
@@ -373,12 +375,12 @@ public class BJSL {
      *        The string to map
      * @param clazz
      *        The object type to map to
-     * @param <T>
+     * @param <V>
      *        The object type to map to
      * @return A new Object of type clazz with the values of data
      * @since 1.0.0
      */
-    public static <T> T parseJson(String data, Class<T> clazz) {
+    public static <V> V parseJson(String data, Class<V> clazz) {
         return objectProcessor.toObject(parseJson(data), clazz);
     }
 
@@ -391,12 +393,12 @@ public class BJSL {
      *        The bytes to map
      * @param clazz
      *        The object type to map to
-     * @param <T>
+     * @param <V>
      *        The object type to map to
      * @return A new Object of type clazz with the values of data
      * @since 1.0.0
      */
-    public static <T> T parseJson(byte[] data, Class<T> clazz) {
+    public static <V> V parseJson(byte[] data, Class<V> clazz) {
         return objectProcessor.toObject(parseJson(data), clazz);
     }
 
@@ -629,12 +631,12 @@ public class BJSL {
      *        The string to map
      * @param clazz
      *        The object type to map to
-     * @param <T>
+     * @param <V>
      *        The object type to map to
      * @return A new Object of type clazz with the values of data
      * @since 1.0.0
      */
-    public static <T> T parseYaml(String data, Class<T> clazz) {
+    public static <V> V parseYaml(String data, Class<V> clazz) {
         return objectProcessor.toObject(parseYaml(data), clazz);
     }
 
@@ -647,12 +649,12 @@ public class BJSL {
      *        The bytes to map
      * @param clazz
      *        The object type to map to
-     * @param <T>
+     * @param <V>
      *        The object type to map to
      * @return A new Object of type clazz with the values of data
      * @since 1.0.0
      */
-    public static <T> T parseYaml(byte[] data, Class<T> clazz) {
+    public static <V> V parseYaml(byte[] data, Class<V> clazz) {
         return objectProcessor.toObject(parseYaml(data), clazz);
     }
 
@@ -813,12 +815,12 @@ public class BJSL {
      *        The string to map
      * @param clazz
      *        The object type to map to
-     * @param <T>
+     * @param <V>
      *        The object type to map to
      * @return A new Object of type clazz with the values of data
      * @since 1.0.0
      */
-    public static <T> T parseToml(String data, Class<T> clazz) {
+    public static <V> V parseToml(String data, Class<V> clazz) {
         return objectProcessor.toObject(parseToml(data), clazz);
     }
 
@@ -831,12 +833,12 @@ public class BJSL {
      *        The bytes to map
      * @param clazz
      *        The object type to map to
-     * @param <T>
+     * @param <V>
      *        The object type to map to
      * @return A new Object of type clazz with the values of data
      * @since 1.0.0
      */
-    public static <T> T parseToml(byte[] data, Class<T> clazz) {
+    public static <V> V parseToml(byte[] data, Class<V> clazz) {
         return objectProcessor.toObject(parseToml(data), clazz);
     }
 
@@ -997,12 +999,12 @@ public class BJSL {
      *        The string to map
      * @param clazz
      *        The object type to map to
-     * @param <T>
+     * @param <V>
      *        The object type to map to
      * @return A new Object of type clazz with the values of data
      * @since 1.0.0
      */
-    public static <T> T parseProperties(String data, Class<T> clazz) {
+    public static <V> V parseProperties(String data, Class<V> clazz) {
         return objectProcessor.toObject(parseProperties(data), clazz);
     }
 
@@ -1015,12 +1017,12 @@ public class BJSL {
      *        The bytes to map
      * @param clazz
      *        The object type to map to
-     * @param <T>
+     * @param <V>
      *        The object type to map to
      * @return A new Object of type clazz with the values of data
      * @since 1.0.0
      */
-    public static <T> T parseProperties(byte[] data, Class<T> clazz) {
+    public static <V> V parseProperties(byte[] data, Class<V> clazz) {
         return objectProcessor.toObject(parseProperties(data), clazz);
     }
 
@@ -1167,12 +1169,12 @@ public class BJSL {
      *        The bytes to map
      * @param clazz
      *        The object type to map to
-     * @param <T>
+     * @param <V>
      *        The object type to map to
      * @return A new Object of type clazz with the values of data
      * @since 1.0.0
      */
-    public static <T> T parseSmile(byte[] data, Class<T> clazz) {
+    public static <V> V parseSmile(byte[] data, Class<V> clazz) {
         return objectProcessor.toObject(parseSmile(data), clazz);
     }
 
