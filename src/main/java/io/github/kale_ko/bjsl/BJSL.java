@@ -339,6 +339,26 @@ public class BJSL<T extends Parser<?, ?>> {
     }
 
     /**
+     * Serializes an empty element into a string
+     *
+     * @return A string for a new/empty object
+     * @since 1.3.0
+     */
+    public String emptyString() {
+        return this.parser.emptyString();
+    }
+
+    /**
+     * Serializes an empty element into bytes
+     *
+     * @return The bytes for a new/empty object
+     * @since 1.3.0
+     */
+    public byte[] emptyBytes() {
+        return this.parser.emptyBytes();
+    }
+
+    /**
      * Parse this string into a {@link ParsedElement}
      * <p>
      * Calls {@link Parser#toElement(String)}
@@ -595,6 +615,26 @@ public class BJSL<T extends Parser<?, ?>> {
     }
 
     /**
+     * Serializes an empty element into a string
+     *
+     * @return A string for a new/empty object
+     * @since 1.3.0
+     */
+    public static String emptyJsonString() {
+        return jsonParser.emptyString();
+    }
+
+    /**
+     * Serializes an empty element into bytes
+     *
+     * @return The bytes for a new/empty object
+     * @since 1.3.0
+     */
+    public static byte[] emptyJsonBytes() {
+        return jsonParser.emptyBytes();
+    }
+
+    /**
      * Parse this string into a {@link ParsedElement}
      * <p>
      * Calls {@link Parser#toElement(String)}
@@ -776,6 +816,26 @@ public class BJSL<T extends Parser<?, ?>> {
      */
     public static byte[] byteifyYaml(Object object) {
         return byteifyYaml(objectProcessor.toElement(object));
+    }
+
+    /**
+     * Serializes an empty element into a string
+     *
+     * @return A string for a new/empty object
+     * @since 1.3.0
+     */
+    public static String emptyYamlString() {
+        return yamlParser.emptyString();
+    }
+
+    /**
+     * Serializes an empty element into bytes
+     *
+     * @return The bytes for a new/empty object
+     * @since 1.3.0
+     */
+    public static byte[] emptyYamlBytes() {
+        return yamlParser.emptyBytes();
     }
 
     /**
@@ -963,6 +1023,26 @@ public class BJSL<T extends Parser<?, ?>> {
     }
 
     /**
+     * Serializes an empty element into a string
+     *
+     * @return A string for a new/empty object
+     * @since 1.3.0
+     */
+    public static String emptyTomlString() {
+        return tomlParser.emptyString();
+    }
+
+    /**
+     * Serializes an empty element into bytes
+     *
+     * @return The bytes for a new/empty object
+     * @since 1.3.0
+     */
+    public static byte[] emptyTomlBytes() {
+        return tomlParser.emptyBytes();
+    }
+
+    /**
      * Parse this string into a {@link ParsedElement}
      * <p>
      * Calls {@link Parser#toElement(String)}
@@ -1147,6 +1227,26 @@ public class BJSL<T extends Parser<?, ?>> {
     }
 
     /**
+     * Serializes an empty element into a string
+     *
+     * @return A string for a new/empty object
+     * @since 1.3.0
+     */
+    public static String emptyPropertiesString() {
+        return propertiesParser.emptyString();
+    }
+
+    /**
+     * Serializes an empty element into bytes
+     *
+     * @return The bytes for a new/empty object
+     * @since 1.3.0
+     */
+    public static byte[] emptyPropertiesBytes() {
+        return propertiesParser.emptyBytes();
+    }
+
+    /**
      * Parse these bytes into a {@link ParsedElement}
      * <p>
      * Calls {@link Parser#toElement(byte[])}
@@ -1236,6 +1336,16 @@ public class BJSL<T extends Parser<?, ?>> {
      */
     public static byte[] byteifySmile(Object object) {
         return byteifySmile(objectProcessor.toElement(object));
+    }
+
+    /**
+     * Serializes an empty element into bytes
+     *
+     * @return The bytes for a new/empty object
+     * @since 1.3.0
+     */
+    public static byte[] emptySmileBytes() {
+        return smileParser.emptyBytes();
     }
 
     /**

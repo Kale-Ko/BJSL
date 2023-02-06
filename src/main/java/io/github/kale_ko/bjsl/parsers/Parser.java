@@ -39,7 +39,7 @@ import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
  *        The type of the factory used for converting to/from trees/strings
  * @param <V>
  *        The type of the codec used for converting to/from trees/strings
- * @version 1.1.0
+ * @version 1.3.0
  * @since 1.0.0
  */
 public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec> {
@@ -216,6 +216,42 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
             } else {
                 throw new RuntimeException("Element is not a parsable type");
             }
+        } catch (RuntimeException | IOException e) {
+            if (BJSL.getLogger() != null) {
+                StringWriter writer = new StringWriter();
+                new RuntimeException("Error while parsing:", e).printStackTrace(new PrintWriter(writer));
+                BJSL.getLogger().severe(writer.toString());
+            }
+
+            throw new RuntimeException("Error while parsing:", e);
+        }
+    }
+
+    /**
+     * Serializes an empty element into a string
+     *
+     * @return A string for a new/empty object
+     * @since 1.3.0
+     */
+    public String emptyString() {
+        return new String(emptyBytes());
+    }
+
+    /**
+     * Serializes an empty element into bytes
+     *
+     * @return The bytes for a new/empty object
+     * @since 1.3.0
+     */
+    public byte[] emptyBytes() {
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter).setCodec(this.codec);
+            generator.writeTree(JsonNodeFactory.instance.objectNode());
+            generator.close();
+            outputStream.close();
+
+            return outputStream.toByteArray();
         } catch (RuntimeException | IOException e) {
             if (BJSL.getLogger() != null) {
                 StringWriter writer = new StringWriter();
