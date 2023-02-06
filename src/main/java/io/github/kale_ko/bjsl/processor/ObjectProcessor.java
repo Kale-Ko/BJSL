@@ -581,7 +581,9 @@ public class ObjectProcessor {
                         } else if (type.getRawClass() == String.class) {
                             return (String) object;
                         } else if (type.getRawClass() == Byte.class || type.getRawClass() == byte.class) {
-                            if (object.getClass() == Character.class) {
+                            if (object.getClass() == String.class) {
+                                return Byte.parseByte((String) object);
+                            } else if (object.getClass() == Character.class) {
                                 return (byte) (char) object;
                             } else if (object.getClass() == Short.class) {
                                 return (byte) (short) object;
@@ -597,7 +599,9 @@ public class ObjectProcessor {
                                 return (byte) object;
                             }
                         } else if (type.getRawClass() == Character.class || type.getRawClass() == char.class) {
-                            if (object.getClass() == Byte.class) {
+                            if (object.getClass() == String.class) {
+                                return ((String) object).charAt(0);
+                            } else if (object.getClass() == Byte.class) {
                                 return (char) (byte) object;
                             } else if (object.getClass() == Short.class) {
                                 return (char) (short) object;
@@ -613,7 +617,9 @@ public class ObjectProcessor {
                                 return (char) object;
                             }
                         } else if (type.getRawClass() == Short.class || type.getRawClass() == short.class) {
-                            if (object.getClass() == Byte.class) {
+                            if (object.getClass() == String.class) {
+                                return Short.parseShort((String) object);
+                            } else if (object.getClass() == Byte.class) {
                                 return (short) (byte) object;
                             } else if (object.getClass() == Character.class) {
                                 return (short) (char) object;
@@ -629,7 +635,9 @@ public class ObjectProcessor {
                                 return (short) object;
                             }
                         } else if (type.getRawClass() == Integer.class || type.getRawClass() == int.class) {
-                            if (object.getClass() == Byte.class) {
+                            if (object.getClass() == String.class) {
+                                return Integer.parseInt((String) object);
+                            } else if (object.getClass() == Byte.class) {
                                 return (int) (byte) object;
                             } else if (object.getClass() == Character.class) {
                                 return (int) (char) object;
@@ -645,7 +653,9 @@ public class ObjectProcessor {
                                 return (int) object;
                             }
                         } else if (type.getRawClass() == Long.class || type.getRawClass() == long.class) {
-                            if (object.getClass() == Byte.class) {
+                            if (object.getClass() == String.class) {
+                                return Long.parseLong((String) object);
+                            } else if (object.getClass() == Byte.class) {
                                 return (long) (byte) object;
                             } else if (object.getClass() == Character.class) {
                                 return (long) (char) object;
@@ -661,7 +671,9 @@ public class ObjectProcessor {
                                 return (long) object;
                             }
                         } else if (type.getRawClass() == Float.class || type.getRawClass() == float.class) {
-                            if (object.getClass() == Byte.class) {
+                            if (object.getClass() == String.class) {
+                                return Float.parseFloat((String) object);
+                            } else if (object.getClass() == Byte.class) {
                                 return (float) (byte) object;
                             } else if (object.getClass() == Character.class) {
                                 return (float) (char) object;
@@ -677,7 +689,9 @@ public class ObjectProcessor {
                                 return (float) object;
                             }
                         } else if (type.getRawClass() == Double.class || type.getRawClass() == double.class) {
-                            if (object.getClass() == Byte.class) {
+                            if (object.getClass() == String.class) {
+                                return Double.parseDouble((String) object);
+                            } else if (object.getClass() == Byte.class) {
                                 return (double) (byte) object;
                             } else if (object.getClass() == Character.class) {
                                 return (double) (char) object;
@@ -693,7 +707,11 @@ public class ObjectProcessor {
                                 return (double) object;
                             }
                         } else if (type.getRawClass() == Boolean.class || type.getRawClass() == boolean.class) {
-                            return (boolean) object;
+                            if (object.getClass() == String.class) {
+                                return Boolean.parseBoolean((String) object);
+                            } else {
+                                return (boolean) object;
+                            }
                         } else {
                             return type.getRawClass().cast(object);
                         }
