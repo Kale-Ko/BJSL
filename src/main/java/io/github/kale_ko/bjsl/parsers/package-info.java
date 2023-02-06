@@ -3,6 +3,7 @@
  * <p>
  * All parsers extend {@link Parser}
  *
+ * @see Parser
  * @since 1.0.0
  */
 package io.github.kale_ko.bjsl.parsers;
