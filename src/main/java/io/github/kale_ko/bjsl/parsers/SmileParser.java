@@ -16,7 +16,7 @@ import com.fasterxml.jackson.dataformat.smile.databind.SmileMapper;
  * @version 1.0.0
  * @since 1.0.0
  */
-public class SmileParser extends Parser {
+public class SmileParser extends Parser<SmileFactory, SmileMapper> {
     /**
      * Create a new Parser using certain factories
      *
