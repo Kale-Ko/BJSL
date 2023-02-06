@@ -14,7 +14,7 @@ import com.fasterxml.jackson.dataformat.toml.TomlMapper;
  * <p>
  * Uses the Jackson-DataFormat toml parser
  *
- * @version 1.0.0
+ * @version 1.1.0
  * @since 1.0.0
  */
 public class TomlParser extends Parser<TomlFactory, TomlMapper> {

@@ -39,7 +39,7 @@ import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
  *        The type of the factory used for converting to/from trees/strings
  * @param <V>
  *        The type of the codec used for converting to/from trees/strings
- * @version 1.0.0
+ * @version 1.1.0
  * @since 1.0.0
  */
 public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec> {

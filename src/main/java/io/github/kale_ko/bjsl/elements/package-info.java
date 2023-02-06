@@ -3,6 +3,7 @@
  * <p>
  * All elements extend {@link ParsedElement}
  *
+ * @see ParsedElement
  * @since 1.0.0
  */
 package io.github.kale_ko.bjsl.elements;
