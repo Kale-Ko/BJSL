@@ -1034,6 +1034,94 @@ public class ObjectProcessor {
             } catch (ClassCastException e2) {
                 if (object instanceof Enum<?> anEnum) {
                     return ParsedPrimitive.fromString(anEnum.name());
+                } else if (object instanceof byte[]) {
+                    ParsedArray arrayElement = ParsedArray.create();
+
+                    for (byte item : (byte[]) object) {
+                        ParsedElement subElement = toElement(item);
+                        if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                            arrayElement.add(subElement);
+                        }
+                    }
+
+                    return arrayElement;
+                } else if (object instanceof char[]) {
+                    ParsedArray arrayElement = ParsedArray.create();
+
+                    for (char item : (char[]) object) {
+                        ParsedElement subElement = toElement(item);
+                        if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                            arrayElement.add(subElement);
+                        }
+                    }
+
+                    return arrayElement;
+                } else if (object instanceof short[]) {
+                    ParsedArray arrayElement = ParsedArray.create();
+
+                    for (short item : (short[]) object) {
+                        ParsedElement subElement = toElement(item);
+                        if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                            arrayElement.add(subElement);
+                        }
+                    }
+
+                    return arrayElement;
+                } else if (object instanceof int[]) {
+                    ParsedArray arrayElement = ParsedArray.create();
+
+                    for (int item : (int[]) object) {
+                        ParsedElement subElement = toElement(item);
+                        if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                            arrayElement.add(subElement);
+                        }
+                    }
+
+                    return arrayElement;
+                } else if (object instanceof long[]) {
+                    ParsedArray arrayElement = ParsedArray.create();
+
+                    for (long item : (long[]) object) {
+                        ParsedElement subElement = toElement(item);
+                        if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                            arrayElement.add(subElement);
+                        }
+                    }
+
+                    return arrayElement;
+                } else if (object instanceof float[]) {
+                    ParsedArray arrayElement = ParsedArray.create();
+
+                    for (float item : (float[]) object) {
+                        ParsedElement subElement = toElement(item);
+                        if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                            arrayElement.add(subElement);
+                        }
+                    }
+
+                    return arrayElement;
+                } else if (object instanceof double[]) {
+                    ParsedArray arrayElement = ParsedArray.create();
+
+                    for (double item : (double[]) object) {
+                        ParsedElement subElement = toElement(item);
+                        if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                            arrayElement.add(subElement);
+                        }
+                    }
+
+                    return arrayElement;
+                } else if (object instanceof boolean[]) {
+                    ParsedArray arrayElement = ParsedArray.create();
+
+                    for (boolean item : (boolean[]) object) {
+                        ParsedElement subElement = toElement(item);
+                        if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                            arrayElement.add(subElement);
+                        }
+                    }
+
+                    return arrayElement;
                 } else if (object instanceof Object[]) {
                     ParsedArray arrayElement = ParsedArray.create();
 
