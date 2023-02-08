@@ -140,8 +140,8 @@ publishing {
                 def developerNode = node.appendNode("developers").appendNode("developer")
                 developerNode.appendNode("id", "kale-ko")
                 developerNode.appendNode("name", "Kale Ko")
-                developerNode.appendNode("url", "https://kaleko.ga/")
-                developerNode.appendNode("email", "contact@kaleko.ga")
+                developerNode.appendNode("url", "https://kaleko.dev/")
+                developerNode.appendNode("email", "contact@kaleko.dev")
 
                 def scmNode = node.appendNode("scm")
                 scmNode.appendNode("connection", "scm:git:git@github.com:Kale-Ko/BJSL.git")
