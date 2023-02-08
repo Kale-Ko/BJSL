@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"io.github.kale_ko.bjsl"},{"l":"io.github.kale_ko.bjsl.elements"},{"l":"io.github.kale_ko.bjsl.parsers"},{"l":"io.github.kale_ko.bjsl.processor"},{"l":"io.github.kale_ko.bjsl.processor.annotations"}];updateSearchResults();
