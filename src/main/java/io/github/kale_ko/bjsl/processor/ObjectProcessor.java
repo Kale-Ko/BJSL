@@ -942,19 +942,113 @@ public class ObjectProcessor {
                                 }
                             }
 
-                            Object[] array = (Object[]) Array.newInstance(((ArrayType) type).getContentType().getRawClass(), nonNull);
+                            Object result;
 
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                Object subObject = toObject(subElement, type.getRawClass().componentType());
-                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).size() == 0) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
-                                    array[i] = subObject;
+                            if (type.getRawClass() == byte.class) {
+                                byte[] array = (byte[]) Array.newInstance(type.getRawClass().componentType(), nonNull);
+
+                                int i = 0;
+                                for (ParsedElement subElement : element.asArray().getValues()) {
+                                    array[i] = (byte) toObject(subElement, type.getRawClass().componentType());
 
                                     i++;
                                 }
+
+                                result = array;
+                            } else if (type.getRawClass() == char.class) {
+                                char[] array = (char[]) Array.newInstance(type.getRawClass().componentType(), nonNull);
+
+                                int i = 0;
+                                for (ParsedElement subElement : element.asArray().getValues()) {
+                                    array[i] = (char) toObject(subElement, type.getRawClass().componentType());
+
+                                    i++;
+                                }
+
+                                result = array;
+                            } else if (type.getRawClass() == short.class) {
+                                short[] array = (short[]) Array.newInstance(type.getRawClass().componentType(), nonNull);
+
+                                int i = 0;
+                                for (ParsedElement subElement : element.asArray().getValues()) {
+                                    array[i] = (short) toObject(subElement, type.getRawClass().componentType());
+
+                                    i++;
+                                }
+
+                                result = array;
+                            } else if (type.getRawClass() == int.class) {
+                                int[] array = (int[]) Array.newInstance(type.getRawClass().componentType(), nonNull);
+
+                                int i = 0;
+                                for (ParsedElement subElement : element.asArray().getValues()) {
+                                    array[i] = (int) toObject(subElement, type.getRawClass().componentType());
+
+                                    i++;
+                                }
+
+                                result = array;
+                            } else if (type.getRawClass() == long.class) {
+                                long[] array = (long[]) Array.newInstance(type.getRawClass().componentType(), nonNull);
+
+                                int i = 0;
+                                for (ParsedElement subElement : element.asArray().getValues()) {
+                                    array[i] = (long) toObject(subElement, type.getRawClass().componentType());
+
+                                    i++;
+                                }
+
+                                result = array;
+                            } else if (type.getRawClass() == float.class) {
+                                float[] array = (float[]) Array.newInstance(type.getRawClass().componentType(), nonNull);
+
+                                int i = 0;
+                                for (ParsedElement subElement : element.asArray().getValues()) {
+                                    array[i] = (float) toObject(subElement, type.getRawClass().componentType());
+
+                                    i++;
+                                }
+
+                                result = array;
+                            } else if (type.getRawClass() == double.class) {
+                                double[] array = (double[]) Array.newInstance(type.getRawClass().componentType(), nonNull);
+
+                                int i = 0;
+                                for (ParsedElement subElement : element.asArray().getValues()) {
+                                    array[i] = (double) toObject(subElement, type.getRawClass().componentType());
+
+                                    i++;
+                                }
+
+                                result = array;
+                            } else if (type.getRawClass() == boolean.class) {
+                                boolean[] array = (boolean[]) Array.newInstance(type.getRawClass().componentType(), nonNull);
+
+                                int i = 0;
+                                for (ParsedElement subElement : element.asArray().getValues()) {
+                                    array[i] = (boolean) toObject(subElement, type.getRawClass().componentType());
+
+                                    i++;
+                                }
+
+                                result = array;
+                            } else {
+                                Object[] array = (Object[]) Array.newInstance(type.getRawClass().componentType(), nonNull);
+
+                                int i = 0;
+                                for (ParsedElement subElement : element.asArray().getValues()) {
+                                    Object subObject = toObject(subElement, type.getRawClass().componentType());
+                                    if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).size() == 0) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
+                                        array[i] = subObject;
+
+                                        i++;
+                                    }
+                                }
+
+                                result = array;
                             }
 
-                            return array;
+                            return result;
                         } catch (NegativeArraySizeException e) {
                             throw new RuntimeException("Error while parsing: ", e);
                         }
