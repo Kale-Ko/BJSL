@@ -68,7 +68,7 @@ public class ParsedArray extends ParsedElement {
      * @since 1.0.0
      */
     public ParsedElement get(int index) {
-        if (index < this.array.size()) {
+        if (index >= 0 && index < this.array.size()) {
             return this.array.get(index);
         } else {
             throw new IndexOutOfBoundsException("Index " + index + " is out of bounds for length " + this.array.size());
@@ -104,7 +104,7 @@ public class ParsedArray extends ParsedElement {
             throw new NullPointerException("Value can not be null");
         }
 
-        if (index <= this.array.size()) {
+        if (index >= 0 && index <= this.array.size()) {
             this.array.add(index, value);
         } else {
             throw new IndexOutOfBoundsException("Index " + index + " is out of bounds for length " + this.array.size());
@@ -142,7 +142,7 @@ public class ParsedArray extends ParsedElement {
             throw new NullPointerException("Value can not be null");
         }
 
-        if (index < this.array.size()) {
+        if (index >= 0 && index < this.array.size()) {
             this.array.set(index, value);
         } else {
             throw new IndexOutOfBoundsException("Index " + index + " is out of bounds for length " + this.array.size());
@@ -157,7 +157,7 @@ public class ParsedArray extends ParsedElement {
      * @since 1.0.0
      */
     public void remove(int index) {
-        if (index < this.array.size()) {
+        if (index >= 0 && index < this.array.size()) {
             this.array.remove(index);
         } else {
             throw new IndexOutOfBoundsException("Index " + index + " is out of bounds for length " + this.array.size());

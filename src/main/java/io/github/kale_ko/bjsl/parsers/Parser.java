@@ -93,6 +93,10 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      * @since 1.0.0
      */
     public ParsedElement toElement(String data) {
+        if (data == null) {
+            throw new NullPointerException("Data can not be null");
+        }
+
         return toElement(data.getBytes());
     }
 
@@ -158,6 +162,10 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      * @since 1.0.0
      */
     public String toString(ParsedElement element) {
+        if (element == null) {
+            throw new NullPointerException("Element can not be null");
+        }
+
         return new String(toBytes(element));
     }
 

@@ -1366,6 +1366,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * @since 1.0.0
      */
     public static void setLogger(Logger value) {
+        if (value == null) {
+            throw new NullPointerException("Value can not be null");
+        }
+
         logger = value;
     }
 }
