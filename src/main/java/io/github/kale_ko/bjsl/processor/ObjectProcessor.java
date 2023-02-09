@@ -513,6 +513,10 @@ public class ObjectProcessor {
      */
     @SuppressWarnings("unchecked")
     public <T> T toObject(ParsedElement element, Class<T> clazz) {
+        if (clazz == null) {
+            throw new NullPointerException("Clazz can not be null");
+        }
+
         return (T) toObject(element, TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] {}));
     }
 
@@ -529,6 +533,10 @@ public class ObjectProcessor {
      * @since 1.0.0
      */
     public Object toObject(ParsedElement element, Type type) {
+        if (type == null) {
+            throw new NullPointerException("Type can not be null");
+        }
+
         return toObject(element, TypeFactory.defaultInstance().constructType(type));
     }
 
@@ -544,7 +552,15 @@ public class ObjectProcessor {
      */
     @SuppressWarnings("unchecked")
     public Object toObject(ParsedElement element, JavaType type) {
+        if (type == null) {
+            throw new NullPointerException("Type can not be null");
+        }
+
         try {
+            if (element.isPrimitive() && element.asPrimitive().isNull()) {
+                return null;
+            }
+
             for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
                 if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
                     return typeProcessor.getValue().toObject(element);
@@ -1207,6 +1223,10 @@ public class ObjectProcessor {
      */
     public ParsedElement toElement(Object object) {
         try {
+            if (object == null) {
+                return ParsedPrimitive.fromNull();
+            }
+
             if (object.getClass().getTypeParameters().length == 0) {
                 JavaType type = TypeFactory.defaultInstance().constructSimpleType(object.getClass(), new JavaType[] {});
 
