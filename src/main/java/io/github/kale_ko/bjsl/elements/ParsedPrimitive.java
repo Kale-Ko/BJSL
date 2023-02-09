@@ -130,10 +130,6 @@ public class ParsedPrimitive extends ParsedElement {
      * @since 1.0.0
      */
     protected ParsedPrimitive(Object value, PrimitiveType type) {
-        if (type == null) {
-            throw new NullPointerException("Type can not be null");
-        }
-
         this.primitive = value;
         this.primitiveType = type;
     }
@@ -604,6 +600,10 @@ public class ParsedPrimitive extends ParsedElement {
      * @since 1.0.0
      */
     public static ParsedPrimitive fromBigInteger(BigInteger value) {
+        if (value == null) {
+            throw new NullPointerException("Value can not be null");
+        }
+
         return new ParsedPrimitive(value, PrimitiveType.BIGINTEGER);
     }
 
@@ -652,6 +652,10 @@ public class ParsedPrimitive extends ParsedElement {
      * @since 1.0.0
      */
     public static ParsedPrimitive fromBigDecimal(BigDecimal value) {
+        if (value == null) {
+            throw new NullPointerException("Value can not be null");
+        }
+
         return new ParsedPrimitive(value, PrimitiveType.BIGDECIMAL);
     }
 
