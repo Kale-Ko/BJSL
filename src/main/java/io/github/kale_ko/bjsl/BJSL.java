@@ -359,6 +359,70 @@ public class BJSL<T extends Parser<?, ?>> {
     }
 
     /**
+     * Parses and maps this element into an Object
+     * <p>
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)}
+     *
+     * @param element
+     *        The element to map
+     * @param clazz
+     *        The object type to map to
+     * @param <V>
+     *        The object type to map to
+     * @return A new Object of type clazz with the values of element
+     * @since 1.0.0
+     */
+    public static <V> V parse(ParsedElement element, Class<V> clazz) {
+        return objectProcessor.toObject(element, clazz);
+    }
+
+    /**
+     * Parses and maps this element into an Object
+     * <p>
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)}
+     *
+     * @param element
+     *        The element to map
+     * @param type
+     *        The object type to map to
+     * @return A new Object of type type with the values of element
+     * @since 1.0.0
+     */
+    public static Object parse(ParsedElement element, Type type) {
+        return objectProcessor.toObject(element, type);
+    }
+
+    /**
+     * Parses and maps this element into an Object
+     * <p>
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)}
+     *
+     * @param element
+     *        The element to map
+     * @param type
+     *        The object type to map to
+     * @return A new Object of type type with the values of element
+     * @since 1.0.0
+     */
+    public static Object parse(ParsedElement element, JavaType type) {
+        return objectProcessor.toObject(element, type);
+    }
+
+    /**
+     * Serializes this object into a {@link ParsedElement}
+     * <p>
+     * Calls {@link ObjectProcessor#toElement(Object)}
+     *
+     * @param object
+     *        The object to serialize
+     * @return The object passed serialized to a {@link ParsedElement}
+     * @since 1.0.0
+     */
+    public static ParsedElement elementify(Object object) {
+        return objectProcessor.toElement(object);
+    }
+
+    /**
      * Parse this string into a {@link ParsedElement}
      * <p>
      * Calls {@link Parser#toElement(String)}
