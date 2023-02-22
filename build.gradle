@@ -10,25 +10,21 @@ archivesBaseName = "bjsl"
 group = "io.github.kale_ko"
 version = project.project_version
 
-configurations {
-    dependency
-    dependency.canBeResolved = true
-
-    implementation {
-        extendsFrom dependency
-    }
-}
-
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    dependency "com.fasterxml.jackson.core:jackson-core:${project.jackson_version}"
-    dependency "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${project.jackson_version}"
-    dependency "com.fasterxml.jackson.dataformat:jackson-dataformat-toml:${project.jackson_version}"
-    dependency "com.fasterxml.jackson.dataformat:jackson-dataformat-properties:${project.jackson_version}"
-    dependency "com.fasterxml.jackson.dataformat:jackson-dataformat-smile:${project.jackson_version}"
+    implementation "com.fasterxml.jackson.core:jackson-core:${project.jackson_version}"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${project.jackson_version}"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-toml:${project.jackson_version}"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-properties:${project.jackson_version}"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-smile:${project.jackson_version}"
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
 }
 
 tasks.withType(JavaCompile) {
@@ -38,39 +34,23 @@ tasks.withType(JavaCompile) {
 jar {
     sourceCompatibility = JavaVersion.toVersion(project.java_version)
     targetCompatibility = JavaVersion.toVersion(project.java_version)
+
+    manifest {
+        attributes "Class-Path": configurations.runtimeClasspath.collect { it.getName() }.join(" "),
+            "Name": "io/github/kale_ko/bjsl/",
+            "Specification-Title": "BJSL",
+            "Specification-Version": project.version,
+            "Specification-Vendor": "Kale-Ko",
+            "Implementation-Title": "io.github.kale_ko.bjsl",
+            "Implementation-Version": project.version,
+            "Implementation-Vendor": "Kale-Ko",
+            "Sealed": true
+    }
+
+    from(configurations.runtimeClasspath.collect { it })
 }
 
-tasks.register("buildFat", Jar) {
-    dependsOn tasks.build
-
-    sourceCompatibility = JavaVersion.toVersion(project.java_version)
-    targetCompatibility = JavaVersion.toVersion(project.java_version)
-
-    duplicatesStrategy = "exclude"
-    classifier = "fat"
-
-    from files(project.sourceSets.main.output)
-    from files(project.configurations.dependency.collect { it.isDirectory() ? it : zipTree(it) })
-}
-
-tasks.register("buildSources", Jar) {
-    dependsOn tasks.build
-
-    sourceCompatibility = JavaVersion.toVersion(project.java_version)
-    targetCompatibility = JavaVersion.toVersion(project.java_version)
-
-    duplicatesStrategy = "exclude"
-    classifier = "sources"
-
-    from files(project.sourceSets.main.allJava)
-}
-
-tasks.register("genJavaDocs", Javadoc) {
-    dependsOn tasks.build
-
-    source = sourceSets.main.allJava
-    classpath = sourceSets.main.runtimeClasspath
-
+javadoc {
     title = project.name + " " + project.version
 
     doFirst {
@@ -81,27 +61,7 @@ tasks.register("genJavaDocs", Javadoc) {
 
     options {
         overview "build/docs/overview.html"
-        encoding "utf-8"
     }
-}
-
-tasks.register("buildJavaDocs", Jar) {
-    dependsOn tasks.genJavaDocs
-
-    sourceCompatibility = JavaVersion.toVersion(project.java_version)
-    targetCompatibility = JavaVersion.toVersion(project.java_version)
-
-    duplicatesStrategy = "exclude"
-    classifier = "javadoc"
-
-    from tasks.genJavaDocs
-}
-
-tasks.register("buildAll") {
-    dependsOn tasks.jar
-    dependsOn tasks.buildFat
-    dependsOn tasks.buildSources
-    dependsOn tasks.buildJavaDocs
 }
 
 publishing {
@@ -124,9 +84,8 @@ publishing {
             version = project.version
 
             artifact tasks.jar
-            artifact tasks.buildFat
-            artifact tasks.buildJavaDocs
-            artifact tasks.buildSources
+            artifact tasks.sourcesJar
+            artifact tasks.javadocJar
 
             pom.withXml {
                 def node = asNode()
