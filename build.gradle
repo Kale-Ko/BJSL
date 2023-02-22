@@ -113,7 +113,14 @@ publishing {
                 def dependencyManagmentNode = node.appendNode("dependencyManagement")
                 def dependenciesManagmentNode = dependencyManagmentNode.appendNode("dependencies")
 
-                configurations.dependency.resolvedConfiguration.getFirstLevelModuleDependencies().each {
+                configurations.runtimeClasspath.resolvedConfiguration.getFirstLevelModuleDependencies().each {
+                    def dependencyNode = dependenciesNode.appendNode("dependency")
+                    dependencyNode.appendNode("groupId", it.moduleGroup)
+                    dependencyNode.appendNode("artifactId", it.moduleName)
+                    dependencyNode.appendNode("version", it.moduleVersion)
+                }
+
+                configurations.compileClasspath.resolvedConfiguration.getFirstLevelModuleDependencies().each {
                     def dependencyNode = dependenciesNode.appendNode("dependency")
                     dependencyNode.appendNode("groupId", it.moduleGroup)
                     dependencyNode.appendNode("artifactId", it.moduleName)
