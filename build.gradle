@@ -46,7 +46,7 @@ jar {
             "Sealed": true
     }
 
-    duplicatesStrategy = "warn"
+    duplicatesStrategy = "exclude"
     from(configurations.runtimeClasspath.collect { it.isDirectory() ? null : zipTree(it).matching { exclude "META-INF/**" } })
 }
 
