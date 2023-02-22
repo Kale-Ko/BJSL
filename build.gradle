@@ -36,8 +36,7 @@ jar {
     targetCompatibility = JavaVersion.toVersion(project.java_version)
 
     manifest {
-        attributes "Class-Path": configurations.runtimeClasspath.collect { it.getName() }.join(" "),
-            "Name": "io/github/kale_ko/bjsl/",
+        attributes "Name": "io/github/kale_ko/bjsl/",
             "Specification-Title": "BJSL",
             "Specification-Version": project.version,
             "Specification-Vendor": "Kale-Ko",
@@ -47,7 +46,8 @@ jar {
             "Sealed": true
     }
 
-    from(configurations.runtimeClasspath.collect { it })
+    duplicatesStrategy = "warn"
+    from(configurations.runtimeClasspath.collect { it.isDirectory() ? null : zipTree(it).matching { exclude "META-INF/**" } })
 }
 
 javadoc {
