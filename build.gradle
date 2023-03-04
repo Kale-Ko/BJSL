@@ -18,6 +18,7 @@ dependencies {
     implementation "com.fasterxml.jackson.core:jackson-core:${project.jackson_version}"
     implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${project.jackson_version}"
     implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-toml:${project.jackson_version}"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${project.jackson_version}"
     implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-properties:${project.jackson_version}"
     implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-smile:${project.jackson_version}"
 }
