@@ -9,6 +9,7 @@ import io.github.kale_ko.bjsl.parsers.Parser;
 import io.github.kale_ko.bjsl.parsers.PropertiesParser;
 import io.github.kale_ko.bjsl.parsers.SmileParser;
 import io.github.kale_ko.bjsl.parsers.TomlParser;
+import io.github.kale_ko.bjsl.parsers.XmlParser;
 import io.github.kale_ko.bjsl.parsers.YamlParser;
 import io.github.kale_ko.bjsl.processor.ObjectProcessor;
 
@@ -58,6 +59,24 @@ public class BJSL<T extends Parser<?, ?>> {
      * @since 1.0.0
      */
     private static TomlParser tomlParser = new TomlParser.Builder().build();
+
+    /**
+     * The XML parser used by static calls
+     * <p>
+     * Just uses a default builder
+     *
+     * @since 1.4.0
+     */
+    private static XmlParser xmlParser = new XmlParser.Builder().setPrettyPrint(false).build();
+
+    /**
+     * The pretty XML parser used by static calls
+     * <p>
+     * Just uses a default builder with pretty printing
+     *
+     * @since 1.4.0
+     */
+    private static XmlParser prettyXmlParser = new XmlParser.Builder().setPrettyPrint(true).build();
 
     /**
      * The java properties parser used by static calls
@@ -1104,6 +1123,282 @@ public class BJSL<T extends Parser<?, ?>> {
      */
     public static byte[] emptyTomlBytes() {
         return tomlParser.emptyBytes();
+    }
+
+    /**
+     * Parse this string into a {@link ParsedElement}
+     * <p>
+     * Calls {@link Parser#toElement(String)}
+     *
+     * @param data
+     *        The string to parse
+     * @return The string passed parsed to a {@link ParsedElement}
+     * @since 1.4.0
+     */
+    public static ParsedElement parseXml(String data) {
+        return xmlParser.toElement(data);
+    }
+
+    /**
+     * Parse these bytes into a {@link ParsedElement}
+     * <p>
+     * Calls {@link Parser#toElement(byte[])}
+     *
+     * @param data
+     *        The bytes to parse
+     * @return The bytes passed parsed to a {@link ParsedElement}
+     * @since 1.4.0
+     */
+    public static ParsedElement parseXml(byte[] data) {
+        return xmlParser.toElement(data);
+    }
+
+    /**
+     * Parses and maps this string into an Object
+     * <p>
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(String)}
+     *
+     * @param data
+     *        The string to map
+     * @param clazz
+     *        The object type to map to
+     * @param <V>
+     *        The object type to map to
+     * @return A new Object of type clazz with the values of data
+     * @since 1.4.0
+     */
+    public static <V> V parseXml(String data, Class<V> clazz) {
+        return objectProcessor.toObject(parseXml(data), clazz);
+    }
+
+    /**
+     * Parses and maps these bytes into an Object
+     * <p>
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(byte[])}
+     *
+     * @param data
+     *        The bytes to map
+     * @param clazz
+     *        The object type to map to
+     * @param <V>
+     *        The object type to map to
+     * @return A new Object of type clazz with the values of data
+     * @since 1.4.0
+     */
+    public static <V> V parseXml(byte[] data, Class<V> clazz) {
+        return objectProcessor.toObject(parseXml(data), clazz);
+    }
+
+    /**
+     * Parses and maps this string into an Object
+     * <p>
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(String)}
+     *
+     * @param data
+     *        The string to map
+     * @param type
+     *        The object type to map to
+     * @return A new Object of type type with the values of data
+     * @since 1.4.0
+     */
+    public static Object parseXml(String data, Type type) {
+        return objectProcessor.toObject(parseXml(data), type);
+    }
+
+    /**
+     * Parses and maps these bytes into an Object
+     * <p>
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(byte[])}
+     *
+     * @param data
+     *        The bytes to map
+     * @param type
+     *        The object type to map to
+     * @return A new Object of type type with the values of data
+     * @since 1.4.0
+     */
+    public static Object parseXml(byte[] data, Type type) {
+        return objectProcessor.toObject(parseXml(data), type);
+    }
+
+    /**
+     * Parses and maps this string into an Object
+     * <p>
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(String)}
+     *
+     * @param data
+     *        The string to map
+     * @param type
+     *        The object type to map to
+     * @return A new Object of type type with the values of data
+     * @since 1.4.0
+     */
+    public static Object parseXml(String data, JavaType type) {
+        return objectProcessor.toObject(parseXml(data), type);
+    }
+
+    /**
+     * Parses and maps these bytes into an Object
+     * <p>
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(byte[])}
+     *
+     * @param data
+     *        The bytes to map
+     * @param type
+     *        The object type to map to
+     * @return A new Object of type type with the values of data
+     * @since 1.4.0
+     */
+    public static Object parseXml(byte[] data, JavaType type) {
+        return objectProcessor.toObject(parseXml(data), type);
+    }
+
+    /**
+     * Serializes this element into a String
+     * <p>
+     * Calls {@link Parser#toString(ParsedElement)}
+     *
+     * @param element
+     *        The element to serialize
+     * @return The element passed serialized to a String
+     * @since 1.4.0
+     */
+    public static String stringifyXml(ParsedElement element) {
+        return stringifyXml(element, false);
+    }
+
+    /**
+     * Serializes this element into a String
+     * <p>
+     * Calls {@link Parser#toString(ParsedElement)}
+     *
+     * @param element
+     *        The element to serialize
+     * @param pretty
+     *        Weather to pretty print the data
+     * @return The element passed serialized to a String
+     * @since 1.4.0
+     */
+    public static String stringifyXml(ParsedElement element, Boolean pretty) {
+        if (pretty) {
+            return prettyXmlParser.toString(element);
+        } else {
+            return xmlParser.toString(element);
+        }
+    }
+
+    /**
+     * Serializes this element into bytes
+     * <p>
+     * Calls {@link Parser#toBytes(ParsedElement)}
+     *
+     * @param element
+     *        The element to serialize
+     * @return The element passed serialized to bytes
+     * @since 1.4.0
+     */
+    public static byte[] byteifyXml(ParsedElement element) {
+        return byteifyXml(element, true);
+    }
+
+    /**
+     * Serializes this element into bytes
+     * <p>
+     * Calls {@link Parser#toBytes(ParsedElement)}
+     *
+     * @param element
+     *        The element to serialize
+     * @param pretty
+     *        Weather to pretty print the data
+     * @return The element passed serialized to bytes
+     * @since 1.4.0
+     */
+    public static byte[] byteifyXml(ParsedElement element, Boolean pretty) {
+        if (pretty) {
+            return prettyXmlParser.toBytes(element);
+        } else {
+            return xmlParser.toBytes(element);
+        }
+    }
+
+    /**
+     * Serializes this object into a String
+     * <p>
+     * Calls {@link Parser#toString(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
+     *
+     * @param object
+     *        The object to serialize
+     * @return The object passed serialized to a String
+     * @since 1.4.0
+     */
+    public static String stringifyXml(Object object) {
+        return stringifyXml(object, true);
+    }
+
+    /**
+     * Serializes this object into a String
+     * <p>
+     * Calls {@link Parser#toString(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
+     *
+     * @param object
+     *        The object to serialize
+     * @param pretty
+     *        Weather to pretty print the data
+     * @return The object passed serialized to a String
+     * @since 1.4.0
+     */
+    public static String stringifyXml(Object object, Boolean pretty) {
+        return stringifyXml(objectProcessor.toElement(object), pretty);
+    }
+
+    /**
+     * Serializes this object into bytes
+     * <p>
+     * Calls {@link Parser#toBytes(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
+     *
+     * @param object
+     *        The object to serialize
+     * @return The object passed serialized to bytes
+     * @since 1.4.0
+     */
+    public static byte[] byteifyXml(Object object) {
+        return byteifyXml(object, true);
+    }
+
+    /**
+     * Serializes this object into bytes
+     * <p>
+     * Calls {@link Parser#toBytes(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
+     *
+     * @param object
+     *        The object to serialize
+     * @param pretty
+     *        Weather to pretty print the data
+     * @return The object passed serialized to bytes
+     * @since 1.4.0
+     */
+    public static byte[] byteifyXml(Object object, Boolean pretty) {
+        return byteifyXml(objectProcessor.toElement(object), pretty);
+    }
+
+    /**
+     * Serializes an empty element into a string
+     *
+     * @return A string for a new/empty object
+     * @since 1.4.0
+     */
+    public static String emptyXmlString() {
+        return xmlParser.emptyString();
+    }
+
+    /**
+     * Serializes an empty element into bytes
+     *
+     * @return The bytes for a new/empty object
+     * @since 1.4.0
+     */
+    public static byte[] emptyXmlBytes() {
+        return xmlParser.emptyBytes();
     }
 
     /**
