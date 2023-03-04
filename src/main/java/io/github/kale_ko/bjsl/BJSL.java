@@ -561,7 +561,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * @since 1.0.0
      */
     public static String stringifyJson(ParsedElement element) {
-        return stringifyJson(element, true);
+        return stringifyJson(element, false);
     }
 
     /**

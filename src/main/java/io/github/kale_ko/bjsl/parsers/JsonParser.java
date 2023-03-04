@@ -1,5 +1,8 @@
 package io.github.kale_ko.bjsl.parsers;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.Field;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonFactoryBuilder;
 import com.fasterxml.jackson.core.PrettyPrinter;
@@ -10,6 +13,7 @@ import com.fasterxml.jackson.core.json.JsonWriteFeature;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import io.github.kale_ko.bjsl.BJSL;
 
 /**
  * A parser for interfacing with JSON
@@ -194,6 +198,26 @@ public class JsonParser extends Parser<JsonFactory, JsonMapper> {
                 indenter = indenter.withLinefeed(this.crlf ? "\r\n" : "\n");
 
                 prettyPrinter = prettyPrinter.withObjectIndenter(indenter).withArrayIndenter(indenter).withSpacesInObjectEntries();
+
+                try {
+                    Field separatorField = prettyPrinter.getClass().getDeclaredField("_objectFieldValueSeparatorWithSpaces");
+                    separatorField.setAccessible(true);
+                    separatorField.set(prettyPrinter, ": ");
+                } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+                    if (BJSL.getLogger() != null) {
+                        StringWriter writer = new StringWriter();
+                        new RuntimeException("Error while parsing:", e).printStackTrace(new PrintWriter(writer));
+                        BJSL.getLogger().severe(writer.toString());
+                    }
+                }
+            } else {
+                prettyPrinter = new DefaultPrettyPrinter();
+
+                DefaultIndenter indenter = new DefaultIndenter();
+                indenter = indenter.withIndent("");
+                indenter = indenter.withLinefeed("");
+
+                prettyPrinter = prettyPrinter.withObjectIndenter(indenter).withArrayIndenter(indenter).withoutSpacesInObjectEntries();
             }
 
             return new JsonParser(factory, new JsonMapper(factory), prettyPrinter);
