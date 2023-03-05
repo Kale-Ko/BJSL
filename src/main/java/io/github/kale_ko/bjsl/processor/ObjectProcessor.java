@@ -17,6 +17,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.time.Instant;
@@ -522,6 +523,8 @@ public class ObjectProcessor {
         /**
          * Set weather or not to enable the default type processors
          * <p>
+         * There are default type processors defined for {@link UUID}, {@link URI}, {@link URL}, {@link Path}, {@link File}, {@link InetAddress}, {@link InetSocketAddress}, {@link Calendar}, {@link Date}, and {@link Instant}
+         * <p>
          * Default is true
          *
          * @param value
@@ -610,6 +613,28 @@ public class ObjectProcessor {
                                 } catch (MalformedURLException e) {
                                     throw new RuntimeException(e);
                                 }
+                            } else {
+                                return null;
+                            }
+                        }
+                    });
+                }
+
+                if (!this.hasTypeProcessor(Path.class)) {
+                    this.createTypeProcessor(Path.class, new TypeProcessor() {
+                        @Override
+                        public ParsedElement toElement(Object object) {
+                            if (object != null && object instanceof Path path) {
+                                return ParsedPrimitive.fromString(path.toString());
+                            } else {
+                                return ParsedPrimitive.fromNull();
+                            }
+                        }
+
+                        @Override
+                        public Object toObject(ParsedElement element) {
+                            if (element.isPrimitive() && element.asPrimitive().isString()) {
+                                return Path.of(element.asPrimitive().asString());
                             } else {
                                 return null;
                             }
