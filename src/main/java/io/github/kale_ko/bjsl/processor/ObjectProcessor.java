@@ -1,5 +1,6 @@
 package io.github.kale_ko.bjsl.processor;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
@@ -9,13 +10,26 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.ArrayType;
 import com.fasterxml.jackson.databind.type.CollectionType;
@@ -152,6 +166,13 @@ public class ObjectProcessor {
          * @since 1.0.0
          */
         protected Map<JavaType, TypeProcessor> typeProcessors = new HashMap<JavaType, TypeProcessor>();
+
+        /**
+         * Weather or not to enable the default type processors
+         *
+         * @since 1.4.0
+         */
+        protected boolean enableDefaultTypeProcessors = true;
 
         /**
          * Create a new {@link ObjectProcessor} builder
@@ -487,12 +508,266 @@ public class ObjectProcessor {
         }
 
         /**
+         * Get weather or not to enable the default type processors
+         * <p>
+         * Default is true
+         *
+         * @return Weather or not to enable the default type processors
+         * @since 1.4.0
+         */
+        public boolean getEnableDefaultTypeProcessors() {
+            return this.enableDefaultTypeProcessors;
+        }
+
+        /**
+         * Set weather or not to enable the default type processors
+         * <p>
+         * Default is true
+         *
+         * @param value
+         *        Weather or not to enable the default type processors
+         * @return Self for chaining
+         * @since 1.4.0
+         */
+        public Builder setEnableDefaultTypeProcessors(boolean value) {
+            this.enableDefaultTypeProcessors = value;
+
+            return this;
+        }
+
+        /**
          * Uses the current settings to build a new {@link ObjectProcessor}
          *
          * @return A new {@link ObjectProcessor} instance
          * @since 1.0.0
          */
         public ObjectProcessor build() {
+            if (this.enableDefaultTypeProcessors) {
+                if (!this.hasTypeProcessor(UUID.class)) {
+                    this.createTypeProcessor(UUID.class, new TypeProcessor() {
+                        @Override
+                        public ParsedElement toElement(Object object) {
+                            if (object != null && object instanceof UUID uuid) {
+                                return ParsedPrimitive.fromString(uuid.toString());
+                            } else {
+                                return ParsedPrimitive.fromNull();
+                            }
+                        }
+
+                        @Override
+                        public Object toObject(ParsedElement element) {
+                            if (element.isPrimitive() && element.asPrimitive().isString()) {
+                                return UUID.fromString(element.asPrimitive().asString());
+                            } else {
+                                return null;
+                            }
+                        }
+                    });
+                }
+
+                if (!this.hasTypeProcessor(URI.class)) {
+                    this.createTypeProcessor(URI.class, new TypeProcessor() {
+                        @Override
+                        public ParsedElement toElement(Object object) {
+                            if (object != null && object instanceof URI uri) {
+                                return ParsedPrimitive.fromString(uri.toString());
+                            } else {
+                                return ParsedPrimitive.fromNull();
+                            }
+                        }
+
+                        @Override
+                        public Object toObject(ParsedElement element) {
+                            if (element.isPrimitive() && element.asPrimitive().isString()) {
+                                try {
+                                    return new URI(element.asPrimitive().asString());
+                                } catch (URISyntaxException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            } else {
+                                return null;
+                            }
+                        }
+                    });
+                }
+
+                if (!this.hasTypeProcessor(URL.class)) {
+                    this.createTypeProcessor(URL.class, new TypeProcessor() {
+                        @Override
+                        public ParsedElement toElement(Object object) {
+                            if (object != null && object instanceof URL url) {
+                                return ParsedPrimitive.fromString(url.toString());
+                            } else {
+                                return ParsedPrimitive.fromNull();
+                            }
+                        }
+
+                        @Override
+                        public Object toObject(ParsedElement element) {
+                            if (element.isPrimitive() && element.asPrimitive().isString()) {
+                                try {
+                                    return new URL(element.asPrimitive().asString());
+                                } catch (MalformedURLException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            } else {
+                                return null;
+                            }
+                        }
+                    });
+                }
+
+                if (!this.hasTypeProcessor(File.class)) {
+                    this.createTypeProcessor(File.class, new TypeProcessor() {
+                        @Override
+                        public ParsedElement toElement(Object object) {
+                            if (object != null && object instanceof File file) {
+                                return ParsedPrimitive.fromString(file.getPath());
+                            } else {
+                                return ParsedPrimitive.fromNull();
+                            }
+                        }
+
+                        @Override
+                        public Object toObject(ParsedElement element) {
+                            if (element.isPrimitive() && element.asPrimitive().isString()) {
+                                return new File(element.asPrimitive().asString());
+                            } else {
+                                return null;
+                            }
+                        }
+                    });
+                }
+
+                if (!this.hasTypeProcessor(InetAddress.class)) {
+                    this.createTypeProcessor(InetAddress.class, new TypeProcessor() {
+                        @Override
+                        public ParsedElement toElement(Object object) {
+                            if (object != null && object instanceof InetAddress inetAddress) {
+                                return ParsedPrimitive.fromString(inetAddress.getHostName());
+                            } else {
+                                return ParsedPrimitive.fromNull();
+                            }
+                        }
+
+                        @Override
+                        public Object toObject(ParsedElement element) {
+                            if (element.isPrimitive() && element.asPrimitive().isString()) {
+                                try {
+                                    return InetAddress.getByName(element.asPrimitive().asString());
+                                } catch (UnknownHostException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            } else {
+                                return null;
+                            }
+                        }
+                    });
+                }
+
+                if (!this.hasTypeProcessor(InetSocketAddress.class)) {
+                    this.createTypeProcessor(InetSocketAddress.class, new TypeProcessor() {
+                        @Override
+                        public ParsedElement toElement(Object object) {
+                            if (object != null && object instanceof InetSocketAddress inetSocketAddress) {
+                                return ParsedPrimitive.fromString(inetSocketAddress.getHostName() + ":" + inetSocketAddress.getPort());
+                            } else {
+                                return ParsedPrimitive.fromNull();
+                            }
+                        }
+
+                        @Override
+                        public Object toObject(ParsedElement element) {
+                            if (element.isPrimitive() && element.asPrimitive().isString()) {
+                                try {
+                                    return new InetSocketAddress(InetAddress.getByName(element.asPrimitive().asString().split(":")[0]), Integer.parseInt(element.asPrimitive().asString().split(":")[1]));
+                                } catch (UnknownHostException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            } else {
+                                return null;
+                            }
+                        }
+                    });
+                }
+
+                if (!this.hasTypeProcessor(Calendar.class)) {
+                    this.createTypeProcessor(Calendar.class, new TypeProcessor() {
+                        @Override
+                        public ParsedElement toElement(Object object) {
+                            if (object != null && object instanceof Calendar calendar) {
+                                return ParsedPrimitive.fromString(DateFormat.getDateInstance(DateFormat.DEFAULT).format(calendar.getTime()));
+                            } else {
+                                return ParsedPrimitive.fromNull();
+                            }
+                        }
+
+                        @Override
+                        public Object toObject(ParsedElement element) {
+                            if (element.isPrimitive() && element.asPrimitive().isString()) {
+                                try {
+                                    Calendar calendar = Calendar.getInstance();
+                                    calendar.setTime(DateFormat.getDateInstance(DateFormat.DEFAULT).parse(element.asPrimitive().asString()));
+                                    return calendar;
+                                } catch (ParseException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            } else {
+                                return null;
+                            }
+                        }
+                    });
+                }
+
+                if (!this.hasTypeProcessor(Date.class)) {
+                    this.createTypeProcessor(Date.class, new TypeProcessor() {
+                        @Override
+                        public ParsedElement toElement(Object object) {
+                            if (object != null && object instanceof Date date) {
+                                return ParsedPrimitive.fromString(DateFormat.getDateInstance(DateFormat.DEFAULT).format(date));
+                            } else {
+                                return ParsedPrimitive.fromNull();
+                            }
+                        }
+
+                        @Override
+                        public Object toObject(ParsedElement element) {
+                            if (element.isPrimitive() && element.asPrimitive().isString()) {
+                                try {
+                                    return DateFormat.getDateInstance(DateFormat.DEFAULT).parse(element.asPrimitive().asString());
+                                } catch (ParseException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            } else {
+                                return null;
+                            }
+                        }
+                    });
+                }
+
+                if (!this.hasTypeProcessor(Instant.class)) {
+                    this.createTypeProcessor(Instant.class, new TypeProcessor() {
+                        @Override
+                        public ParsedElement toElement(Object object) {
+                            if (object != null && object instanceof Instant instant) {
+                                return ParsedPrimitive.fromLong(instant.toEpochMilli());
+                            } else {
+                                return ParsedPrimitive.fromNull();
+                            }
+                        }
+
+                        @Override
+                        public Object toObject(ParsedElement element) {
+                            if (element.isPrimitive() && element.asPrimitive().isLong()) {
+                                return Instant.ofEpochMilli(element.asPrimitive().asLong());
+                            } else {
+                                return null;
+                            }
+                        }
+                    });
+                }
+            }
+
             return new ObjectProcessor(this.ignoreNulls, this.ignoreEmptyObjects, this.ignoreDefaults, this.caseSensitiveEnums, this.typeProcessors);
         }
     }
@@ -557,7 +832,7 @@ public class ObjectProcessor {
         }
 
         try {
-            if (element.isPrimitive() && element.asPrimitive().isNull()) {
+            if (element == null || (element.isPrimitive() && element.asPrimitive().isNull())) {
                 return null;
             }
 
@@ -1207,9 +1482,11 @@ public class ObjectProcessor {
                 StringWriter writer = new StringWriter();
                 new RuntimeException("Error while parsing:", e).printStackTrace(new PrintWriter(writer));
                 BJSL.getLogger().severe(writer.toString());
-            }
 
-            throw e;
+                return null;
+            } else {
+                throw new RuntimeException("Error while parsing:", e);
+            }
         }
     }
 
@@ -1497,9 +1774,11 @@ public class ObjectProcessor {
                 StringWriter writer = new StringWriter();
                 new RuntimeException("Error while parsing:", e).printStackTrace(new PrintWriter(writer));
                 BJSL.getLogger().severe(writer.toString());
-            }
 
-            throw e;
+                return null;
+            } else {
+                throw new RuntimeException("Error while parsing:", e);
+            }
         }
     }
 

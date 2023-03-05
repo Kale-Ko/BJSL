@@ -368,6 +368,16 @@ public class BJSL<T extends Parser<?, ?>> {
     }
 
     /**
+     * Serializes an empty element into a string
+     *
+     * @return A string for a new/empty array
+     * @since 1.4.0
+     */
+    public String emptyArrayString() {
+        return this.parser.emptyArrayString();
+    }
+
+    /**
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty object
@@ -375,6 +385,16 @@ public class BJSL<T extends Parser<?, ?>> {
      */
     public byte[] emptyBytes() {
         return this.parser.emptyBytes();
+    }
+
+    /**
+     * Serializes an empty element into bytes
+     *
+     * @return The bytes for a new/empty array
+     * @since 1.4.0
+     */
+    public byte[] emptyArrayBytes() {
+        return this.parser.emptyArrayBytes();
     }
 
     /**
@@ -708,6 +728,16 @@ public class BJSL<T extends Parser<?, ?>> {
     }
 
     /**
+     * Serializes an empty element into a string
+     *
+     * @return A string for a new/empty array
+     * @since 1.4.0
+     */
+    public static String emptyJsonArrayString() {
+        return jsonParser.emptyArrayString();
+    }
+
+    /**
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty object
@@ -715,6 +745,16 @@ public class BJSL<T extends Parser<?, ?>> {
      */
     public static byte[] emptyJsonBytes() {
         return jsonParser.emptyBytes();
+    }
+
+    /**
+     * Serializes an empty element into bytes
+     *
+     * @return The bytes for a new/empty array
+     * @since 1.4.0
+     */
+    public static byte[] emptyJsonArrayBytes() {
+        return jsonParser.emptyArrayBytes();
     }
 
     /**
@@ -912,6 +952,16 @@ public class BJSL<T extends Parser<?, ?>> {
     }
 
     /**
+     * Serializes an empty element into a string
+     *
+     * @return A string for a new/empty array
+     * @since 1.4.0
+     */
+    public static String emptyYamlArrayString() {
+        return yamlParser.emptyArrayString();
+    }
+
+    /**
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty object
@@ -919,6 +969,16 @@ public class BJSL<T extends Parser<?, ?>> {
      */
     public static byte[] emptyYamlBytes() {
         return yamlParser.emptyBytes();
+    }
+
+    /**
+     * Serializes an empty element into bytes
+     *
+     * @return The bytes for a new/empty array
+     * @since 1.4.0
+     */
+    public static byte[] emptyYamlArrayBytes() {
+        return yamlParser.emptyArrayBytes();
     }
 
     /**
@@ -1116,6 +1176,16 @@ public class BJSL<T extends Parser<?, ?>> {
     }
 
     /**
+     * Serializes an empty element into a string
+     *
+     * @return A string for a new/empty array
+     * @since 1.4.0
+     */
+    public static String emptyTomlArrayString() {
+        return tomlParser.emptyArrayString();
+    }
+
+    /**
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty object
@@ -1123,6 +1193,16 @@ public class BJSL<T extends Parser<?, ?>> {
      */
     public static byte[] emptyTomlBytes() {
         return tomlParser.emptyBytes();
+    }
+
+    /**
+     * Serializes an empty element into bytes
+     *
+     * @return The bytes for a new/empty array
+     * @since 1.4.0
+     */
+    public static byte[] emptyTomlArrayBytes() {
+        return tomlParser.emptyArrayBytes();
     }
 
     /**
@@ -1385,20 +1465,40 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into a string
      *
      * @return A string for a new/empty object
-     * @since 1.4.0
+     * @since 1.3.0
      */
     public static String emptyXmlString() {
         return xmlParser.emptyString();
     }
 
     /**
+     * Serializes an empty element into a string
+     *
+     * @return A string for a new/empty array
+     * @since 1.4.0
+     */
+    public static String emptyXmlArrayString() {
+        return xmlParser.emptyArrayString();
+    }
+
+    /**
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty object
-     * @since 1.4.0
+     * @since 1.3.0
      */
     public static byte[] emptyXmlBytes() {
         return xmlParser.emptyBytes();
+    }
+
+    /**
+     * Serializes an empty element into bytes
+     *
+     * @return The bytes for a new/empty array
+     * @since 1.4.0
+     */
+    public static byte[] emptyXmlArrayBytes() {
+        return xmlParser.emptyArrayBytes();
     }
 
     /**
@@ -1596,6 +1696,16 @@ public class BJSL<T extends Parser<?, ?>> {
     }
 
     /**
+     * Serializes an empty element into a string
+     *
+     * @return A string for a new/empty array
+     * @since 1.4.0
+     */
+    public static String emptyPropertiesArrayString() {
+        return propertiesParser.emptyArrayString();
+    }
+
+    /**
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty object
@@ -1603,6 +1713,16 @@ public class BJSL<T extends Parser<?, ?>> {
      */
     public static byte[] emptyPropertiesBytes() {
         return propertiesParser.emptyBytes();
+    }
+
+    /**
+     * Serializes an empty element into bytes
+     *
+     * @return The bytes for a new/empty array
+     * @since 1.4.0
+     */
+    public static byte[] emptyPropertiesArrayBytes() {
+        return propertiesParser.emptyArrayBytes();
     }
 
     /**
@@ -1705,6 +1825,16 @@ public class BJSL<T extends Parser<?, ?>> {
      */
     public static byte[] emptySmileBytes() {
         return smileParser.emptyBytes();
+    }
+
+    /**
+     * Serializes an empty element into bytes
+     *
+     * @return The bytes for a new/empty array
+     * @since 1.4.0
+     */
+    public static byte[] emptySmileArrayBytes() {
+        return smileParser.emptyArrayBytes();
     }
 
     /**
