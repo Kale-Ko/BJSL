@@ -69,7 +69,7 @@ tasks.register("fatJar", Jar) {
 
     duplicatesStrategy = "exclude"
     from(sourceSets.main.output)
-    from(configurations.runtimeClasspath.collect { it.isDirectory() ? null : zipTree(it).matching { exclude "META-INF/**" } })
+    from(configurations.runtimeClasspath.collect { it.isDirectory() ? null : zipTree(it) })
 }
 
 build {
