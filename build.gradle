@@ -23,12 +23,27 @@ dependencies {
     implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-smile:${project.jackson_version}"
 }
 
+sourceSets {
+    main {
+        java {
+            srcDir "src/model"
+        }
+
+        resources {
+            srcDir "src/resources"
+        }
+    }
+}
+
 java {
     withSourcesJar()
     withJavadocJar()
 }
 
 tasks.withType(JavaCompile) {
+    sourceCompatibility = JavaVersion.toVersion(project.java_version)
+    targetCompatibility = JavaVersion.toVersion(project.java_version)
+
     options.encoding = "UTF-8"
 }
 
@@ -46,9 +61,31 @@ jar {
             "Implementation-Vendor": "Kale-Ko",
             "Sealed": true
     }
+}
+
+tasks.register("fatJar", Jar) {
+    sourceCompatibility = JavaVersion.toVersion(project.java_version)
+    targetCompatibility = JavaVersion.toVersion(project.java_version)
+
+    archiveClassifier = "fat"
+    manifest {
+        attributes "Name": "io/github/kale_ko/bjsl/",
+            "Specification-Title": "BJSL",
+            "Specification-Version": project.version,
+            "Specification-Vendor": "Kale-Ko",
+            "Implementation-Title": "io.github.kale_ko.bjsl",
+            "Implementation-Version": project.version,
+            "Implementation-Vendor": "Kale-Ko",
+            "Sealed": true
+    }
 
     duplicatesStrategy = "exclude"
+    from(sourceSets.main.output)
     from(configurations.runtimeClasspath.collect { it.isDirectory() ? null : zipTree(it).matching { exclude "META-INF/**" } })
+}
+
+build {
+    finalizedBy tasks.fatJar
 }
 
 javadoc {
@@ -85,6 +122,7 @@ publishing {
             version = project.version
 
             artifact tasks.jar
+            artifact tasks.fatJar
             artifact tasks.sourcesJar
             artifact tasks.javadocJar
 
