@@ -23,18 +23,6 @@ dependencies {
     implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-smile:${project.jackson_version}"
 }
 
-sourceSets {
-    main {
-        java {
-            srcDir "src/main/java"
-        }
-
-        resources {
-            srcDir "src/main/resources"
-        }
-    }
-}
-
 java {
     withSourcesJar()
     withJavadocJar()
