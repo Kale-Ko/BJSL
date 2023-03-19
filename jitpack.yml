@@ -3,5 +3,5 @@ jdk:
 before_install:
   - ./gradlew clean
 install:
-  - ./gradlew buildAll
+  - ./gradlew build
   - ./gradlew publishToMavenLocal
