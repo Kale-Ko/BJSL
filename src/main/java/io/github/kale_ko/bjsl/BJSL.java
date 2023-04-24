@@ -4,6 +4,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 import com.fasterxml.jackson.databind.JavaType;
 import io.github.kale_ko.bjsl.elements.ParsedElement;
+import io.github.kale_ko.bjsl.parsers.CsvParser;
 import io.github.kale_ko.bjsl.parsers.JsonParser;
 import io.github.kale_ko.bjsl.parsers.Parser;
 import io.github.kale_ko.bjsl.parsers.PropertiesParser;
@@ -77,6 +78,15 @@ public class BJSL<T extends Parser<?, ?>> {
      * @since 1.4.0
      */
     private static XmlParser prettyXmlParser = new XmlParser.Builder().setPrettyPrint(true).build();
+
+    /**
+     * The csv parser used by static calls
+     * <p>
+     * Just uses a default builder
+     *
+     * @since 1.0.0
+     */
+    private static CsvParser csvParser = new CsvParser.Builder().build();
 
     /**
      * The java properties parser used by static calls
@@ -1723,6 +1733,230 @@ public class BJSL<T extends Parser<?, ?>> {
      */
     public static byte[] emptyPropertiesArrayBytes() {
         return propertiesParser.emptyArrayBytes();
+    }
+
+    /**
+     * Parse this string into a {@link ParsedElement}
+     * <p>
+     * Calls {@link Parser#toElement(String)}
+     *
+     * @param data
+     *        The string to parse
+     * @return The string passed parsed to a {@link ParsedElement}
+     * @since 1.0.0
+     */
+    public static ParsedElement parseCsv(String data) {
+        return csvParser.toElement(data);
+    }
+
+    /**
+     * Parse these bytes into a {@link ParsedElement}
+     * <p>
+     * Calls {@link Parser#toElement(byte[])}
+     *
+     * @param data
+     *        The bytes to parse
+     * @return The bytes passed parsed to a {@link ParsedElement}
+     * @since 1.0.0
+     */
+    public static ParsedElement parseCsv(byte[] data) {
+        return csvParser.toElement(data);
+    }
+
+    /**
+     * Parses and maps this string into an Object
+     * <p>
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(String)}
+     *
+     * @param data
+     *        The string to map
+     * @param clazz
+     *        The object type to map to
+     * @param <V>
+     *        The object type to map to
+     * @return A new Object of type clazz with the values of data
+     * @since 1.0.0
+     */
+    public static <V> V parseCsv(String data, Class<V> clazz) {
+        return objectProcessor.toObject(parseCsv(data), clazz);
+    }
+
+    /**
+     * Parses and maps these bytes into an Object
+     * <p>
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(byte[])}
+     *
+     * @param data
+     *        The bytes to map
+     * @param clazz
+     *        The object type to map to
+     * @param <V>
+     *        The object type to map to
+     * @return A new Object of type clazz with the values of data
+     * @since 1.0.0
+     */
+    public static <V> V parseCsv(byte[] data, Class<V> clazz) {
+        return objectProcessor.toObject(parseCsv(data), clazz);
+    }
+
+    /**
+     * Parses and maps this string into an Object
+     * <p>
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(String)}
+     *
+     * @param data
+     *        The string to map
+     * @param type
+     *        The object type to map to
+     * @return A new Object of type type with the values of data
+     * @since 1.0.0
+     */
+    public static Object parseCsv(String data, Type type) {
+        return objectProcessor.toObject(parseCsv(data), type);
+    }
+
+    /**
+     * Parses and maps these bytes into an Object
+     * <p>
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(byte[])}
+     *
+     * @param data
+     *        The bytes to map
+     * @param type
+     *        The object type to map to
+     * @return A new Object of type type with the values of data
+     * @since 1.0.0
+     */
+    public static Object parseCsv(byte[] data, Type type) {
+        return objectProcessor.toObject(parseCsv(data), type);
+    }
+
+    /**
+     * Parses and maps this string into an Object
+     * <p>
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(String)}
+     *
+     * @param data
+     *        The string to map
+     * @param type
+     *        The object type to map to
+     * @return A new Object of type type with the values of data
+     * @since 1.0.0
+     */
+    public static Object parseCsv(String data, JavaType type) {
+        return objectProcessor.toObject(parseCsv(data), type);
+    }
+
+    /**
+     * Parses and maps these bytes into an Object
+     * <p>
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(byte[])}
+     *
+     * @param data
+     *        The bytes to map
+     * @param type
+     *        The object type to map to
+     * @return A new Object of type type with the values of data
+     * @since 1.0.0
+     */
+    public static Object parseCsv(byte[] data, JavaType type) {
+        return objectProcessor.toObject(parseCsv(data), type);
+    }
+
+    /**
+     * Serializes this element into a String
+     * <p>
+     * Calls {@link Parser#toString(ParsedElement)}
+     *
+     * @param element
+     *        The element to serialize
+     * @return The element passed serialized to a String
+     * @since 1.0.0
+     */
+    public static String stringifyCsv(ParsedElement element) {
+        return csvParser.toString(element);
+    }
+
+    /**
+     * Serializes this element into bytes
+     * <p>
+     * Calls {@link Parser#toBytes(ParsedElement)}
+     *
+     * @param element
+     *        The element to serialize
+     * @return The element passed serialized to bytes
+     * @since 1.0.0
+     */
+    public static byte[] byteifyCsv(ParsedElement element) {
+        return csvParser.toBytes(element);
+    }
+
+    /**
+     * Serializes this object into a String
+     * <p>
+     * Calls {@link Parser#toString(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
+     *
+     * @param object
+     *        The object to serialize
+     * @return The object passed serialized to a String
+     * @since 1.0.0
+     */
+    public static String stringifyCsv(Object object) {
+        return stringifyCsv(objectProcessor.toElement(object));
+    }
+
+    /**
+     * Serializes this object into bytes
+     * <p>
+     * Calls {@link Parser#toBytes(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
+     *
+     * @param object
+     *        The object to serialize
+     * @return The object passed serialized to bytes
+     * @since 1.0.0
+     */
+    public static byte[] byteifyCsv(Object object) {
+        return byteifyCsv(objectProcessor.toElement(object));
+    }
+
+    /**
+     * Serializes an empty element into a string
+     *
+     * @return A string for a new/empty object
+     * @since 1.3.0
+     */
+    public static String emptyCsvString() {
+        return csvParser.emptyString();
+    }
+
+    /**
+     * Serializes an empty element into a string
+     *
+     * @return A string for a new/empty array
+     * @since 1.4.0
+     */
+    public static String emptyCsvArrayString() {
+        return csvParser.emptyArrayString();
+    }
+
+    /**
+     * Serializes an empty element into bytes
+     *
+     * @return The bytes for a new/empty object
+     * @since 1.3.0
+     */
+    public static byte[] emptyCsvBytes() {
+        return csvParser.emptyBytes();
+    }
+
+    /**
+     * Serializes an empty element into bytes
+     *
+     * @return The bytes for a new/empty array
+     * @since 1.4.0
+     */
+    public static byte[] emptyCsvArrayBytes() {
+        return csvParser.emptyArrayBytes();
     }
 
     /**
