@@ -620,7 +620,9 @@ public class ObjectProcessor {
                     });
                 }
 
-                if (!this.hasTypeProcessor(Path.class)) {
+                if (!this.hasTypeProcessor(Path.class))
+
+                {
                     this.createTypeProcessor(Path.class, new TypeProcessor() {
                         @Override
                         public ParsedElement toElement(Object object) {
@@ -1041,23 +1043,23 @@ public class ObjectProcessor {
                         Map<String, Object> object = null;
 
                         if (!type.getRawClass().isInterface()) {
-                            try {
-                                for (Constructor<?> constructor : type.getRawClass().getConstructors()) {
-                                    if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
-                                        object = (Map<String, Object>) constructor.newInstance();
+                            if (type.getRawClass().getConstructors().length > 0) {
+                                try {
+                                    for (Constructor<?> constructor : type.getRawClass().getConstructors()) {
+                                        if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
+                                            object = (Map<String, Object>) constructor.newInstance();
 
-                                        break;
+                                            break;
+                                        }
+                                    }
+                                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+                                    if (BJSL.getLogger() != null) {
+                                        StringWriter writer = new StringWriter();
+                                        new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
+                                        BJSL.getLogger().warning(writer.toString());
                                     }
                                 }
-                            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-                                if (BJSL.getLogger() != null) {
-                                    StringWriter writer = new StringWriter();
-                                    new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
-                                    BJSL.getLogger().warning(writer.toString());
-                                }
-                            }
-
-                            if (object == null) {
+                            } else {
                                 try {
                                     Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
                                     unsafeField.setAccessible(true);
@@ -1080,7 +1082,7 @@ public class ObjectProcessor {
                                         break;
                                     }
                                 }
-                            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
                                 if (BJSL.getLogger() != null) {
                                     StringWriter writer = new StringWriter();
                                     new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
@@ -1099,28 +1101,28 @@ public class ObjectProcessor {
 
                             return object;
                         } else {
-                            throw new RuntimeException("No constructors for \"" + type.getRawClass().getSimpleName() + "\" found and unsafe initialization failed");
+                            throw new RuntimeException("No 0-args constructors for \"" + type.getRawClass().getSimpleName() + "\" found and unsafe initialization failed");
                         }
                     } else if (!type.getRawClass().isInterface()) {
                         Object object = null;
 
-                        try {
-                            for (Constructor<?> constructor : type.getRawClass().getConstructors()) {
-                                if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
-                                    object = constructor.newInstance();
+                        if (type.getRawClass().getConstructors().length > 0) {
+                            try {
+                                for (Constructor<?> constructor : type.getRawClass().getConstructors()) {
+                                    if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
+                                        object = constructor.newInstance();
 
-                                    break;
+                                        break;
+                                    }
+                                }
+                            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+                                if (BJSL.getLogger() != null) {
+                                    StringWriter writer = new StringWriter();
+                                    new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
+                                    BJSL.getLogger().warning(writer.toString());
                                 }
                             }
-                        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-                            if (BJSL.getLogger() != null) {
-                                StringWriter writer = new StringWriter();
-                                new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
-                                BJSL.getLogger().warning(writer.toString());
-                            }
-                        }
-
-                        if (object == null) {
+                        } else {
                             try {
                                 Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
                                 unsafeField.setAccessible(true);
@@ -1173,7 +1175,7 @@ public class ObjectProcessor {
 
                             return object;
                         } else {
-                            throw new RuntimeException("No constructors for \"" + type.getRawClass().getSimpleName() + "\" found and unsafe initialization failed");
+                            throw new RuntimeException("No 0-args constructors for \"" + type.getRawClass().getSimpleName() + "\" found and unsafe initialization failed");
                         }
                     } else {
                         throw new RuntimeException("Type \"" + type.getRawClass().getSimpleName() + "\" is not serializable");
@@ -1183,23 +1185,23 @@ public class ObjectProcessor {
                         Collection<Object> object = null;
 
                         if (!type.getRawClass().isInterface()) {
-                            try {
-                                for (Constructor<?> constructor : type.getRawClass().getConstructors()) {
-                                    if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
-                                        object = (Collection<Object>) constructor.newInstance();
+                            if (type.getRawClass().getConstructors().length > 0) {
+                                try {
+                                    for (Constructor<?> constructor : type.getRawClass().getConstructors()) {
+                                        if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
+                                            object = (Collection<Object>) constructor.newInstance();
 
-                                        break;
+                                            break;
+                                        }
+                                    }
+                                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+                                    if (BJSL.getLogger() != null) {
+                                        StringWriter writer = new StringWriter();
+                                        new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
+                                        BJSL.getLogger().warning(writer.toString());
                                     }
                                 }
-                            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-                                if (BJSL.getLogger() != null) {
-                                    StringWriter writer = new StringWriter();
-                                    new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
-                                    BJSL.getLogger().warning(writer.toString());
-                                }
-                            }
-
-                            if (object == null) {
+                            } else {
                                 try {
                                     Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
                                     unsafeField.setAccessible(true);
@@ -1222,7 +1224,7 @@ public class ObjectProcessor {
                                         break;
                                     }
                                 }
-                            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
                                 if (BJSL.getLogger() != null) {
                                     StringWriter writer = new StringWriter();
                                     new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
@@ -1241,7 +1243,7 @@ public class ObjectProcessor {
 
                             return object;
                         } else {
-                            throw new RuntimeException("No constructors for \"" + type.getRawClass().getSimpleName() + "\" found and unsafe initialization failed");
+                            throw new RuntimeException("No 0-args constructors for \"" + type.getRawClass().getSimpleName() + "\" found and unsafe initialization failed");
                         }
                     } else if (type instanceof ArrayType) {
                         try {
@@ -1671,23 +1673,23 @@ public class ObjectProcessor {
                     Object defaultObject = null;
 
                     if (ignoreDefaults) {
-                        try {
-                            for (Constructor<?> constructor : object.getClass().getConstructors()) {
-                                if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
-                                    defaultObject = constructor.newInstance();
+                        if (object.getClass().getConstructors().length > 0) {
+                            try {
+                                for (Constructor<?> constructor : object.getClass().getConstructors()) {
+                                    if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
+                                        defaultObject = constructor.newInstance();
 
-                                    break;
+                                        break;
+                                    }
+                                }
+                            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+                                if (BJSL.getLogger() != null) {
+                                    StringWriter writer = new StringWriter();
+                                    new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
+                                    BJSL.getLogger().warning(writer.toString());
                                 }
                             }
-                        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-                            if (BJSL.getLogger() != null) {
-                                StringWriter writer = new StringWriter();
-                                new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
-                                BJSL.getLogger().warning(writer.toString());
-                            }
-                        }
-
-                        if (defaultObject == null) {
+                        } else {
                             try {
                                 Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
                                 unsafeField.setAccessible(true);
@@ -1703,7 +1705,7 @@ public class ObjectProcessor {
                         }
 
                         if (defaultObject == null) {
-                            BJSL.getLogger().warning("No constructors for \"" + object.getClass().getSimpleName() + "\" found and unsafe initialization failed, defaults will not be ignored");
+                            BJSL.getLogger().warning("Initialization of " + object.getClass().getSimpleName() + " failed, defaults will not be ignored");
                         }
                     }
 
