@@ -122,8 +122,11 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
             TreeNode tree = parser.readValueAsTree();
             parser.close();
 
-            if (tree instanceof JsonNode node) {
-                if (node instanceof ObjectNode objectNode) {
+            if (tree instanceof JsonNode) {
+                JsonNode node = (JsonNode) tree;
+
+                if (node instanceof ObjectNode) {
+                    ObjectNode objectNode = (ObjectNode) node;
                     ParsedObject objectElement = ParsedObject.create();
 
                     objectNode.fieldNames().forEachRemaining((String subKey) -> {
@@ -131,7 +134,8 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
                     });
 
                     return objectElement;
-                } else if (node instanceof ArrayNode arrayNode) {
+                } else if (node instanceof ArrayNode) {
+                    ArrayNode arrayNode = (ArrayNode) node;
                     ParsedArray arrayElement = ParsedArray.create();
 
                     arrayNode.elements().forEachRemaining((JsonNode subNode) -> {
@@ -350,22 +354,30 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      * @since 1.0.0
      */
     protected void toElements(ParsedElement element, String key, JsonNode node) {
-        if (node instanceof ObjectNode objectNode) {
+        if (node instanceof ObjectNode) {
+            ObjectNode objectNode = (ObjectNode) node;
             ParsedObject subElement = ParsedObject.create();
-            if (element instanceof ParsedObject objectElement) {
+
+            if (element instanceof ParsedObject) {
+                ParsedObject objectElement = (ParsedObject) element;
                 objectElement.set(key, subElement);
-            } else if (element instanceof ParsedArray arrayElement) {
+            } else if (element instanceof ParsedArray) {
+                ParsedArray arrayElement = (ParsedArray) element;
                 arrayElement.add(subElement);
             }
 
             objectNode.fieldNames().forEachRemaining((String subKey) -> {
                 toElements(subElement, subKey, objectNode.get(subKey));
             });
-        } else if (node instanceof ArrayNode arrayNode) {
+        } else if (node instanceof ArrayNode) {
+            ArrayNode arrayNode = (ArrayNode) node;
             ParsedArray subElement = ParsedArray.create();
-            if (element instanceof ParsedObject objectElement) {
+
+            if (element instanceof ParsedObject) {
+                ParsedObject objectElement = (ParsedObject) element;
                 objectElement.set(key, subElement);
-            } else if (element instanceof ParsedArray arrayElement) {
+            } else if (element instanceof ParsedArray) {
+                ParsedArray arrayElement = (ParsedArray) element;
                 arrayElement.add(subElement);
             }
 
@@ -373,64 +385,64 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
                 toElements(subElement, key, subNode);
             });
         } else if (node instanceof TextNode) {
-            if (element instanceof ParsedObject objectElement) {
-                objectElement.set(key, ParsedPrimitive.fromString(node.asText()));
-            } else if (element instanceof ParsedArray arrayElement) {
-                arrayElement.add(ParsedPrimitive.fromString(node.asText()));
+            if (element instanceof ParsedObject) {
+                ((ParsedObject) element).set(key, ParsedPrimitive.fromString(node.asText()));
+            } else if (element instanceof ParsedArray) {
+                ((ParsedArray) element).add(ParsedPrimitive.fromString(node.asText()));
             }
         } else if (node instanceof ShortNode) {
-            if (element instanceof ParsedObject objectElement) {
-                objectElement.set(key, ParsedPrimitive.fromShort((short) node.asInt()));
-            } else if (element instanceof ParsedArray arrayElement) {
-                arrayElement.add(ParsedPrimitive.fromShort((short) node.asInt()));
+            if (element instanceof ParsedObject) {
+                ((ParsedObject) element).set(key, ParsedPrimitive.fromShort((short) node.asInt()));
+            } else if (element instanceof ParsedArray) {
+                ((ParsedArray) element).add(ParsedPrimitive.fromShort((short) node.asInt()));
             }
         } else if (node instanceof IntNode) {
-            if (element instanceof ParsedObject objectElement) {
-                objectElement.set(key, ParsedPrimitive.fromInteger(node.asInt()));
-            } else if (element instanceof ParsedArray arrayElement) {
-                arrayElement.add(ParsedPrimitive.fromInteger(node.asInt()));
+            if (element instanceof ParsedObject) {
+                ((ParsedObject) element).set(key, ParsedPrimitive.fromInteger(node.asInt()));
+            } else if (element instanceof ParsedArray) {
+                ((ParsedArray) element).add(ParsedPrimitive.fromInteger(node.asInt()));
             }
         } else if (node instanceof BigIntegerNode) {
-            if (element instanceof ParsedObject objectElement) {
-                objectElement.set(key, ParsedPrimitive.fromBigInteger(node.bigIntegerValue()));
-            } else if (element instanceof ParsedArray arrayElement) {
-                arrayElement.add(ParsedPrimitive.fromBigInteger(node.bigIntegerValue()));
+            if (element instanceof ParsedObject) {
+                ((ParsedObject) element).set(key, ParsedPrimitive.fromBigInteger(node.bigIntegerValue()));
+            } else if (element instanceof ParsedArray) {
+                ((ParsedArray) element).add(ParsedPrimitive.fromBigInteger(node.bigIntegerValue()));
             }
         } else if (node instanceof LongNode) {
-            if (element instanceof ParsedObject objectElement) {
-                objectElement.set(key, ParsedPrimitive.fromLong(node.asLong()));
-            } else if (element instanceof ParsedArray arrayElement) {
-                arrayElement.add(ParsedPrimitive.fromLong(node.asLong()));
+            if (element instanceof ParsedObject) {
+                ((ParsedObject) element).set(key, ParsedPrimitive.fromLong(node.asLong()));
+            } else if (element instanceof ParsedArray) {
+                ((ParsedArray) element).add(ParsedPrimitive.fromLong(node.asLong()));
             }
         } else if (node instanceof FloatNode) {
-            if (element instanceof ParsedObject objectElement) {
-                objectElement.set(key, ParsedPrimitive.fromFloat((float) node.asDouble()));
-            } else if (element instanceof ParsedArray arrayElement) {
-                arrayElement.add(ParsedPrimitive.fromFloat((float) node.asDouble()));
+            if (element instanceof ParsedObject) {
+                ((ParsedObject) element).set(key, ParsedPrimitive.fromFloat((float) node.asDouble()));
+            } else if (element instanceof ParsedArray) {
+                ((ParsedArray) element).add(ParsedPrimitive.fromFloat((float) node.asDouble()));
             }
         } else if (node instanceof DoubleNode) {
-            if (element instanceof ParsedObject objectElement) {
-                objectElement.set(key, ParsedPrimitive.fromDouble(node.asDouble()));
-            } else if (element instanceof ParsedArray arrayElement) {
-                arrayElement.add(ParsedPrimitive.fromDouble(node.asDouble()));
+            if (element instanceof ParsedObject) {
+                ((ParsedObject) element).set(key, ParsedPrimitive.fromDouble(node.asDouble()));
+            } else if (element instanceof ParsedArray) {
+                ((ParsedArray) element).add(ParsedPrimitive.fromDouble(node.asDouble()));
             }
         } else if (node instanceof DecimalNode) {
-            if (element instanceof ParsedObject objectElement) {
-                objectElement.set(key, ParsedPrimitive.fromBigDecimal(node.decimalValue()));
-            } else if (element instanceof ParsedArray arrayElement) {
-                arrayElement.add(ParsedPrimitive.fromBigDecimal(node.decimalValue()));
+            if (element instanceof ParsedObject) {
+                ((ParsedObject) element).set(key, ParsedPrimitive.fromBigDecimal(node.decimalValue()));
+            } else if (element instanceof ParsedArray) {
+                ((ParsedArray) element).add(ParsedPrimitive.fromBigDecimal(node.decimalValue()));
             }
         } else if (node instanceof BooleanNode) {
-            if (element instanceof ParsedObject objectElement) {
-                objectElement.set(key, ParsedPrimitive.fromBoolean(node.asBoolean()));
-            } else if (element instanceof ParsedArray arrayElement) {
-                arrayElement.add(ParsedPrimitive.fromBoolean(node.asBoolean()));
+            if (element instanceof ParsedObject) {
+                ((ParsedObject) element).set(key, ParsedPrimitive.fromBoolean(node.asBoolean()));
+            } else if (element instanceof ParsedArray) {
+                ((ParsedArray) element).add(ParsedPrimitive.fromBoolean(node.asBoolean()));
             }
         } else if (node instanceof NullNode) {
-            if (element instanceof ParsedObject objectElement) {
-                objectElement.set(key, ParsedPrimitive.fromNull());
-            } else if (element instanceof ParsedArray arrayElement) {
-                arrayElement.add(ParsedPrimitive.fromNull());
+            if (element instanceof ParsedObject) {
+                ((ParsedObject) element).set(key, ParsedPrimitive.fromNull());
+            } else if (element instanceof ParsedArray) {
+                ((ParsedArray) element).add(ParsedPrimitive.fromNull());
             }
         } else {
             if (BJSL.getLogger() != null) {
@@ -451,100 +463,106 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      * @since 1.0.0
      */
     protected void toNodes(TreeNode node, String key, ParsedElement element) {
-        if (element instanceof ParsedObject objectElement) {
+        if (element instanceof ParsedObject) {
+            ParsedObject objectElement = (ParsedObject) element;
             ObjectNode subNode = JsonNodeFactory.instance.objectNode();
-            if (node instanceof ObjectNode objectNode) {
-                objectNode.set(key, subNode);
-            } else if (node instanceof ArrayNode arrayNode) {
-                arrayNode.add(subNode);
+
+            if (node instanceof ObjectNode) {
+                ((ObjectNode) node).set(key, subNode);
+            } else if (node instanceof ArrayNode) {
+                ((ArrayNode) node).add(subNode);
             }
 
             for (String subkey : objectElement.getKeys()) {
                 toNodes(subNode, subkey, objectElement.get(subkey));
             }
-        } else if (element instanceof ParsedArray arrayElement) {
+        } else if (element instanceof ParsedArray) {
+            ParsedArray arrayElement = (ParsedArray) element;
             ArrayNode subNode = JsonNodeFactory.instance.arrayNode();
-            if (node instanceof ObjectNode objectNode) {
-                objectNode.set(key, subNode);
-            } else if (node instanceof ArrayNode objectNode) {
-                objectNode.add(subNode);
+
+            if (node instanceof ObjectNode) {
+                ((ObjectNode) node).set(key, subNode);
+            } else if (node instanceof ArrayNode) {
+                ((ArrayNode) node).add(subNode);
             }
 
             for (ParsedElement subElement : arrayElement.getValues()) {
                 toNodes(subNode, key, subElement);
             }
-        } else if (element instanceof ParsedPrimitive primitiveElement) {
+        } else if (element instanceof ParsedPrimitive) {
+            ParsedPrimitive primitiveElement = (ParsedPrimitive) element;
+
             if (primitiveElement.isString()) {
-                if (node instanceof ObjectNode objectNode) {
-                    objectNode.put(key, primitiveElement.asString());
-                } else if (node instanceof ArrayNode objectNode) {
-                    objectNode.add(primitiveElement.asString());
+                if (node instanceof ObjectNode) {
+                    ((ObjectNode) node).put(key, primitiveElement.asString());
+                } else if (node instanceof ArrayNode) {
+                    ((ArrayNode) node).add(primitiveElement.asString());
                 }
             } else if (primitiveElement.isByte()) {
-                if (node instanceof ObjectNode objectNode) {
-                    objectNode.put(key, primitiveElement.asByte());
-                } else if (node instanceof ArrayNode objectNode) {
-                    objectNode.add(primitiveElement.asByte());
+                if (node instanceof ObjectNode) {
+                    ((ObjectNode) node).put(key, primitiveElement.asByte());
+                } else if (node instanceof ArrayNode) {
+                    ((ArrayNode) node).add(primitiveElement.asByte());
                 }
             } else if (primitiveElement.isChar()) {
-                if (node instanceof ObjectNode objectNode) {
-                    objectNode.put(key, primitiveElement.asChar());
-                } else if (node instanceof ArrayNode objectNode) {
-                    objectNode.add(primitiveElement.asChar());
+                if (node instanceof ObjectNode) {
+                    ((ObjectNode) node).put(key, primitiveElement.asChar());
+                } else if (node instanceof ArrayNode) {
+                    ((ArrayNode) node).add(primitiveElement.asChar());
                 }
             } else if (primitiveElement.isShort()) {
-                if (node instanceof ObjectNode objectNode) {
-                    objectNode.put(key, primitiveElement.asShort());
-                } else if (node instanceof ArrayNode objectNode) {
-                    objectNode.add(primitiveElement.asShort());
+                if (node instanceof ObjectNode) {
+                    ((ObjectNode) node).put(key, primitiveElement.asShort());
+                } else if (node instanceof ArrayNode) {
+                    ((ArrayNode) node).add(primitiveElement.asShort());
                 }
             } else if (primitiveElement.isInteger()) {
-                if (node instanceof ObjectNode objectNode) {
-                    objectNode.put(key, primitiveElement.asInteger());
-                } else if (node instanceof ArrayNode objectNode) {
-                    objectNode.add(primitiveElement.asInteger());
+                if (node instanceof ObjectNode) {
+                    ((ObjectNode) node).put(key, primitiveElement.asInteger());
+                } else if (node instanceof ArrayNode) {
+                    ((ArrayNode) node).add(primitiveElement.asInteger());
                 }
             } else if (primitiveElement.isBigInteger()) {
-                if (node instanceof ObjectNode objectNode) {
-                    objectNode.put(key, primitiveElement.asBigInteger());
-                } else if (node instanceof ArrayNode objectNode) {
-                    objectNode.add(primitiveElement.asBigInteger());
+                if (node instanceof ObjectNode) {
+                    ((ObjectNode) node).put(key, primitiveElement.asBigInteger());
+                } else if (node instanceof ArrayNode) {
+                    ((ArrayNode) node).add(primitiveElement.asBigInteger());
                 }
             } else if (primitiveElement.isLong()) {
-                if (node instanceof ObjectNode objectNode) {
-                    objectNode.put(key, primitiveElement.asLong());
-                } else if (node instanceof ArrayNode objectNode) {
-                    objectNode.add(primitiveElement.asLong());
+                if (node instanceof ObjectNode) {
+                    ((ObjectNode) node).put(key, primitiveElement.asLong());
+                } else if (node instanceof ArrayNode) {
+                    ((ArrayNode) node).add(primitiveElement.asLong());
                 }
             } else if (primitiveElement.isFloat()) {
-                if (node instanceof ObjectNode objectNode) {
-                    objectNode.put(key, primitiveElement.asFloat());
-                } else if (node instanceof ArrayNode objectNode) {
-                    objectNode.add(primitiveElement.asFloat());
+                if (node instanceof ObjectNode) {
+                    ((ObjectNode) node).put(key, primitiveElement.asFloat());
+                } else if (node instanceof ArrayNode) {
+                    ((ArrayNode) node).add(primitiveElement.asFloat());
                 }
             } else if (primitiveElement.isDouble()) {
-                if (node instanceof ObjectNode objectNode) {
-                    objectNode.put(key, primitiveElement.asDouble());
-                } else if (node instanceof ArrayNode objectNode) {
-                    objectNode.add(primitiveElement.asDouble());
+                if (node instanceof ObjectNode) {
+                    ((ObjectNode) node).put(key, primitiveElement.asDouble());
+                } else if (node instanceof ArrayNode) {
+                    ((ArrayNode) node).add(primitiveElement.asDouble());
                 }
             } else if (primitiveElement.isBigDecimal()) {
-                if (node instanceof ObjectNode objectNode) {
-                    objectNode.put(key, primitiveElement.asBigDecimal());
-                } else if (node instanceof ArrayNode objectNode) {
-                    objectNode.add(primitiveElement.asBigDecimal());
+                if (node instanceof ObjectNode) {
+                    ((ObjectNode) node).put(key, primitiveElement.asBigDecimal());
+                } else if (node instanceof ArrayNode) {
+                    ((ArrayNode) node).add(primitiveElement.asBigDecimal());
                 }
             } else if (primitiveElement.isBoolean()) {
-                if (node instanceof ObjectNode objectNode) {
-                    objectNode.put(key, primitiveElement.asBoolean());
-                } else if (node instanceof ArrayNode objectNode) {
-                    objectNode.add(primitiveElement.asBoolean());
+                if (node instanceof ObjectNode) {
+                    ((ObjectNode) node).put(key, primitiveElement.asBoolean());
+                } else if (node instanceof ArrayNode) {
+                    ((ArrayNode) node).add(primitiveElement.asBoolean());
                 }
             } else if (primitiveElement.isNull()) {
-                if (node instanceof ObjectNode objectNode) {
-                    objectNode.putNull(key);
-                } else if (node instanceof ArrayNode objectNode) {
-                    objectNode.addNull();
+                if (node instanceof ObjectNode) {
+                    ((ObjectNode) node).putNull(key);
+                } else if (node instanceof ArrayNode) {
+                    ((ArrayNode) node).addNull();
                 }
             } else {
                 if (BJSL.getLogger() != null) {
