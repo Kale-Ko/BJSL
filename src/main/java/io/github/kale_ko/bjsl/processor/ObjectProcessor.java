@@ -1646,7 +1646,7 @@ public class ObjectProcessor {
                 } else if (object instanceof Collection<?>) {
                     ParsedArray arrayElement = ParsedArray.create();
 
-                    for (Object item : (Collection<?>) object) {
+                    for (Object item : List.copyOf((Collection<?>) object)) {
                         ParsedElement subElement = toElement(item);
                         if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
                             arrayElement.add(subElement);
@@ -1657,7 +1657,7 @@ public class ObjectProcessor {
                 } else if (object instanceof Map<?, ?>) {
                     ParsedObject objectElement = ParsedObject.create();
 
-                    for (Map.Entry<?, ?> entry : ((Map<?, ?>) object).entrySet()) {
+                    for (Map.Entry<?, ?> entry : Map.copyOf((Map<?, ?>) object).entrySet()) {
                         ParsedElement subElement = toElement(entry.getValue());
                         if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
                             objectElement.set(entry.getKey().toString(), subElement);
