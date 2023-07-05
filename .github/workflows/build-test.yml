@@ -2,9 +2,9 @@ name: Build Test
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   build:
@@ -20,11 +20,9 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 11
-          distribution: adopt
-          server-id: ghp
-          settings-path: ${{ github.workspace }}
+          distribution: temurin
 
-      - name: Build
-        uses: gradle/gradle-build-action@v2.4.2
+      - name: Build Project
+        uses: gradle/gradle-build-action@v2
         with:
           arguments: build
