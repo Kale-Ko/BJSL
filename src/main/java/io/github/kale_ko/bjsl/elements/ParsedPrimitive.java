@@ -110,7 +110,7 @@ public class ParsedPrimitive extends ParsedElement {
      *
      * @since 1.0.0
      */
-    protected Object primitive;
+    protected final Object primitive;
 
     /**
      * The type of the primitive
@@ -118,7 +118,7 @@ public class ParsedPrimitive extends ParsedElement {
      * @see PrimitiveType
      * @since 1.0.0
      */
-    protected PrimitiveType primitiveType;
+    protected final PrimitiveType primitiveType;
 
     /**
      * Create a new {@link ParsedPrimitive}
@@ -532,21 +532,21 @@ public class ParsedPrimitive extends ParsedElement {
             return fromNull();
         } else if (value instanceof String) {
             return fromString((String) value);
-        } else if (value instanceof Byte || value.getClass() == byte.class) {
+        } else if (value instanceof Byte) {
             return fromByte((byte) value);
-        } else if (value instanceof Character || value.getClass() == char.class) {
+        } else if (value instanceof Character) {
             return fromChar((char) value);
-        } else if (value instanceof Short || value.getClass() == short.class) {
+        } else if (value instanceof Short) {
             return fromShort((short) value);
-        } else if (value instanceof Integer || value.getClass() == int.class) {
+        } else if (value instanceof Integer) {
             return fromInteger((int) value);
-        } else if (value instanceof Long || value.getClass() == long.class) {
+        } else if (value instanceof Long) {
             return fromLong((long) value);
-        } else if (value instanceof Float || value.getClass() == float.class) {
+        } else if (value instanceof Float) {
             return fromFloat((float) value);
-        } else if (value instanceof Double || value.getClass() == double.class) {
+        } else if (value instanceof Double) {
             return fromDouble((double) value);
-        } else if (value instanceof Boolean || value.getClass() == boolean.class) {
+        } else if (value instanceof Boolean) {
             return fromBoolean((boolean) value);
         } else {
             throw new ClassCastException("Value is not a primitive");
