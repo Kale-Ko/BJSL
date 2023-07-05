@@ -8,8 +8,9 @@ import io.github.kale_ko.bjsl.elements.ParsedArray;
 import io.github.kale_ko.bjsl.elements.ParsedElement;
 import io.github.kale_ko.bjsl.elements.ParsedObject;
 import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
+import io.github.kale_ko.bjsl.parsers.exception.InvalidTypeException;
+import io.github.kale_ko.bjsl.parsers.exception.ParsingException;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -31,21 +32,21 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      *
      * @since 1.0.0
      */
-    protected T factory;
+    protected final T factory;
 
     /**
      * The codec used for converting to/from trees/strings
      *
      * @since 1.0.0
      */
-    protected V codec;
+    protected final V codec;
 
     /**
      * The prettyPrinter used for converting to strings
      *
      * @since 1.0.0
      */
-    protected PrettyPrinter prettyPrinter;
+    protected final PrettyPrinter prettyPrinter;
 
     /**
      * Create a new Parser using certain factories
@@ -146,13 +147,13 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
                 } else if (node instanceof NullNode) {
                     return ParsedPrimitive.fromNull();
                 } else {
-                    throw new RuntimeException("\"" + node.getClass().getSimpleName() + "\" is not a processable type");
+                    throw new InvalidTypeException(node.getClass());
                 }
             } else {
-                throw new RuntimeException("\"" + tree.getClass().getSimpleName() + "\" is not a processable type");
+                throw new InvalidTypeException(tree.getClass());
             }
-        } catch (RuntimeException | IOException e) {
-            throw new RuntimeException("Error while parsing:", e);
+        } catch (Exception e) {
+            throw new ParsingException(e);
         }
     }
 
@@ -229,10 +230,10 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
                     return "null".getBytes(StandardCharsets.UTF_8);
                 }
             } else {
-                throw new RuntimeException("\"" + element.getClass().getSimpleName() + "\" is not a processable type");
+                throw new InvalidTypeException(element.getClass());
             }
-        } catch (RuntimeException | IOException e) {
-            throw new RuntimeException("Error while parsing:", e);
+        } catch (Exception e) {
+            throw new ParsingException(e);
         }
     }
 
@@ -274,8 +275,8 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
             outputStream.close();
 
             return outputStream.toByteArray();
-        } catch (RuntimeException | IOException e) {
-            throw new RuntimeException("Error while parsing:", e);
+        } catch (Exception e) {
+            throw new ParsingException(e);
         }
     }
 
@@ -295,8 +296,8 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
             outputStream.close();
 
             return outputStream.toByteArray();
-        } catch (RuntimeException | IOException e) {
-            throw new RuntimeException("Error while parsing:", e);
+        } catch (Exception e) {
+            throw new ParsingException(e);
         }
     }
 
