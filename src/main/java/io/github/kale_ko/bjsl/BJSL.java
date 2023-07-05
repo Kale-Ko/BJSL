@@ -1,26 +1,19 @@
 package io.github.kale_ko.bjsl;
 
-import java.lang.reflect.Type;
-import java.util.logging.Logger;
 import com.fasterxml.jackson.databind.JavaType;
 import io.github.kale_ko.bjsl.elements.ParsedElement;
-import io.github.kale_ko.bjsl.parsers.CsvParser;
-import io.github.kale_ko.bjsl.parsers.JsonParser;
-import io.github.kale_ko.bjsl.parsers.Parser;
-import io.github.kale_ko.bjsl.parsers.PropertiesParser;
-import io.github.kale_ko.bjsl.parsers.SmileParser;
-import io.github.kale_ko.bjsl.parsers.TomlParser;
-import io.github.kale_ko.bjsl.parsers.XmlParser;
-import io.github.kale_ko.bjsl.parsers.YamlParser;
+import io.github.kale_ko.bjsl.parsers.*;
 import io.github.kale_ko.bjsl.processor.ObjectProcessor;
+import java.lang.reflect.Type;
+import java.util.logging.Logger;
 
 /**
  * The main class for interfacing with BJSL
  * <p>
  * Static calls use default instances of each parser and processor
  *
- * @param <T>
- *        The the of the parser to use
+ * @param <T> The parser to use
+ *
  * @version 1.0.0
  * @since 1.1.0
  */
@@ -32,7 +25,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    private static JsonParser jsonParser = new JsonParser.Builder().setPrettyPrint(false).build();
+    private static final JsonParser jsonParser = new JsonParser.Builder().setPrettyPrint(false).build();
 
     /**
      * The pretty JSON parser used by static calls
@@ -41,7 +34,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    private static JsonParser prettyJsonParser = new JsonParser.Builder().setPrettyPrint(true).build();
+    private static final JsonParser prettyJsonParser = new JsonParser.Builder().setPrettyPrint(true).build();
 
     /**
      * The YAML parser used by static calls
@@ -50,7 +43,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    private static YamlParser yamlParser = new YamlParser.Builder().build();
+    private static final YamlParser yamlParser = new YamlParser.Builder().build();
 
     /**
      * The TOML parser used by static calls
@@ -59,7 +52,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    private static TomlParser tomlParser = new TomlParser.Builder().build();
+    private static final TomlParser tomlParser = new TomlParser.Builder().build();
 
     /**
      * The XML parser used by static calls
@@ -68,7 +61,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.4.0
      */
-    private static XmlParser xmlParser = new XmlParser.Builder().setPrettyPrint(false).build();
+    private static final XmlParser xmlParser = new XmlParser.Builder().setPrettyPrint(false).build();
 
     /**
      * The pretty XML parser used by static calls
@@ -77,7 +70,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.4.0
      */
-    private static XmlParser prettyXmlParser = new XmlParser.Builder().setPrettyPrint(true).build();
+    private static final XmlParser prettyXmlParser = new XmlParser.Builder().setPrettyPrint(true).build();
 
     /**
      * The csv parser used by static calls
@@ -86,7 +79,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    private static CsvParser csvParser = new CsvParser.Builder().build();
+    private static final CsvParser csvParser = new CsvParser.Builder().build();
 
     /**
      * The java properties parser used by static calls
@@ -95,7 +88,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    private static PropertiesParser propertiesParser = new PropertiesParser.Builder().build();
+    private static final PropertiesParser propertiesParser = new PropertiesParser.Builder().build();
 
     /**
      * The Smile parser used by static calls
@@ -104,7 +97,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    private static SmileParser smileParser = new SmileParser.Builder().build();
+    private static final SmileParser smileParser = new SmileParser.Builder().build();
 
     /**
      * The object processor used by static calls
@@ -113,7 +106,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    private static ObjectProcessor objectProcessor = new ObjectProcessor.Builder().build();
+    private static final ObjectProcessor objectProcessor = new ObjectProcessor.Builder().build();
 
     /**
      * The main logger used by BJSL
@@ -141,8 +134,8 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Create a new instance of BJSL
      *
-     * @param parser
-     *        The parser to use
+     * @param parser The parser to use
+     *
      * @since 1.0.0
      */
     public BJSL(T parser) {
@@ -152,10 +145,9 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Create a new instance of BJSL
      *
-     * @param parser
-     *        The parser to use
-     * @param processor
-     *        The object processor to use
+     * @param parser    The parser to use
+     * @param processor The object processor to use
+     *
      * @since 1.0.0
      */
     public BJSL(T parser, ObjectProcessor processor) {
@@ -167,6 +159,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Get the parser being used
      *
      * @return The parser being used
+     *
      * @since 1.0.0
      */
     public T getParser() {
@@ -177,6 +170,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Get the object processor being used
      *
      * @return The object processor being used
+     *
      * @since 1.0.0
      */
     public ObjectProcessor getProcessor() {
@@ -188,9 +182,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to parse
+     * @param data The string to parse
+     *
      * @return The string passed parsed to a {@link ParsedElement}
+     *
      * @since 1.0.0
      */
     public ParsedElement parse(String data) {
@@ -202,9 +197,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to parse
+     * @param data The bytes to parse
+     *
      * @return The bytes passed parsed to a {@link ParsedElement}
+     *
      * @since 1.0.0
      */
     public ParsedElement parse(byte[] data) {
@@ -216,13 +212,12 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to map
-     * @param clazz
-     *        The object type to map to
-     * @param <V>
-     *        The object type to map to
-     * @return A new Object of type clazz with the values of data
+     * @param data  The string to map
+     * @param clazz The object type to map to
+     * @param <V>   The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public <V> V parse(String data, Class<V> clazz) {
@@ -234,13 +229,12 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param clazz
-     *        The object type to map to
-     * @param <V>
-     *        The object type to map to
-     * @return A new Object of type clazz with the values of data
+     * @param data  The bytes to map
+     * @param clazz The object type to map to
+     * @param <V>   The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public <V> V parse(byte[] data, Class<V> clazz) {
@@ -252,11 +246,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The string to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public Object parse(String data, Type type) {
@@ -268,11 +262,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The bytes to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public Object parse(byte[] data, Type type) {
@@ -284,11 +278,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The string to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public Object parse(String data, JavaType type) {
@@ -300,11 +294,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The bytes to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public Object parse(byte[] data, JavaType type) {
@@ -316,9 +310,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toString(ParsedElement)}
      *
-     * @param element
-     *        The element to serialize
+     * @param element The element to serialize
+     *
      * @return The element passed serialized to a String
+     *
      * @since 1.0.0
      */
     public String stringify(ParsedElement element) {
@@ -330,9 +325,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toBytes(ParsedElement)}
      *
-     * @param element
-     *        The element to serialize
+     * @param element The element to serialize
+     *
      * @return The element passed serialized to bytes
+     *
      * @since 1.0.0
      */
     public byte[] byteify(ParsedElement element) {
@@ -344,9 +340,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toString(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
-     * @param object
-     *        The object to serialize
+     * @param object The object to serialize
+     *
      * @return The object passed serialized to a String
+     *
      * @since 1.0.0
      */
     public String stringify(Object object) {
@@ -358,9 +355,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toBytes(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
-     * @param object
-     *        The object to serialize
+     * @param object The object to serialize
+     *
      * @return The object passed serialized to bytes
+     *
      * @since 1.0.0
      */
     public byte[] byteify(Object object) {
@@ -371,6 +369,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into a string
      *
      * @return A string for a new/empty object
+     *
      * @since 1.3.0
      */
     public String emptyString() {
@@ -381,6 +380,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into a string
      *
      * @return A string for a new/empty array
+     *
      * @since 1.4.0
      */
     public String emptyArrayString() {
@@ -391,6 +391,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty object
+     *
      * @since 1.3.0
      */
     public byte[] emptyBytes() {
@@ -401,6 +402,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty array
+     *
      * @since 1.4.0
      */
     public byte[] emptyArrayBytes() {
@@ -412,13 +414,12 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)}
      *
-     * @param element
-     *        The element to map
-     * @param clazz
-     *        The object type to map to
-     * @param <V>
-     *        The object type to map to
-     * @return A new Object of type clazz with the values of element
+     * @param element The element to map
+     * @param clazz   The object type to map to
+     * @param <V>     The object type to map to
+     *
+     * @return A new Object of the passed type with the values of element
+     *
      * @since 1.0.0
      */
     public static <V> V parse(ParsedElement element, Class<V> clazz) {
@@ -430,11 +431,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)}
      *
-     * @param element
-     *        The element to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of element
+     * @param element The element to map
+     * @param type    The object type to map to
+     *
+     * @return A new Object of the passed type with the values of element
+     *
      * @since 1.0.0
      */
     public static Object parse(ParsedElement element, Type type) {
@@ -446,11 +447,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)}
      *
-     * @param element
-     *        The element to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of element
+     * @param element The element to map
+     * @param type    The object type to map to
+     *
+     * @return A new Object of the passed type with the values of element
+     *
      * @since 1.0.0
      */
     public static Object parse(ParsedElement element, JavaType type) {
@@ -462,9 +463,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toElement(Object)}
      *
-     * @param object
-     *        The object to serialize
+     * @param object The object to serialize
+     *
      * @return The object passed serialized to a {@link ParsedElement}
+     *
      * @since 1.0.0
      */
     public static ParsedElement elementify(Object object) {
@@ -476,9 +478,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to parse
+     * @param data The string to parse
+     *
      * @return The string passed parsed to a {@link ParsedElement}
+     *
      * @since 1.0.0
      */
     public static ParsedElement parseJson(String data) {
@@ -490,9 +493,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to parse
+     * @param data The bytes to parse
+     *
      * @return The bytes passed parsed to a {@link ParsedElement}
+     *
      * @since 1.0.0
      */
     public static ParsedElement parseJson(byte[] data) {
@@ -504,13 +508,12 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to map
-     * @param clazz
-     *        The object type to map to
-     * @param <V>
-     *        The object type to map to
-     * @return A new Object of type clazz with the values of data
+     * @param data  The string to map
+     * @param clazz The object type to map to
+     * @param <V>   The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static <V> V parseJson(String data, Class<V> clazz) {
@@ -522,13 +525,12 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param clazz
-     *        The object type to map to
-     * @param <V>
-     *        The object type to map to
-     * @return A new Object of type clazz with the values of data
+     * @param data  The bytes to map
+     * @param clazz The object type to map to
+     * @param <V>   The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static <V> V parseJson(byte[] data, Class<V> clazz) {
@@ -540,11 +542,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The string to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static Object parseJson(String data, Type type) {
@@ -556,11 +558,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The bytes to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static Object parseJson(byte[] data, Type type) {
@@ -572,11 +574,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The string to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static Object parseJson(String data, JavaType type) {
@@ -588,11 +590,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The bytes to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static Object parseJson(byte[] data, JavaType type) {
@@ -604,9 +606,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toString(ParsedElement)}
      *
-     * @param element
-     *        The element to serialize
+     * @param element The element to serialize
+     *
      * @return The element passed serialized to a String
+     *
      * @since 1.0.0
      */
     public static String stringifyJson(ParsedElement element) {
@@ -618,11 +621,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toString(ParsedElement)}
      *
-     * @param element
-     *        The element to serialize
-     * @param pretty
-     *        Weather to pretty print the data
+     * @param element The element to serialize
+     * @param pretty  Weather to pretty print the data
+     *
      * @return The element passed serialized to a String
+     *
      * @since 1.0.0
      */
     public static String stringifyJson(ParsedElement element, Boolean pretty) {
@@ -638,9 +641,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toBytes(ParsedElement)}
      *
-     * @param element
-     *        The element to serialize
+     * @param element The element to serialize
+     *
      * @return The element passed serialized to bytes
+     *
      * @since 1.0.0
      */
     public static byte[] byteifyJson(ParsedElement element) {
@@ -652,11 +656,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toBytes(ParsedElement)}
      *
-     * @param element
-     *        The element to serialize
-     * @param pretty
-     *        Weather to pretty print the data
+     * @param element The element to serialize
+     * @param pretty  Weather to pretty print the data
+     *
      * @return The element passed serialized to bytes
+     *
      * @since 1.0.0
      */
     public static byte[] byteifyJson(ParsedElement element, Boolean pretty) {
@@ -672,9 +676,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toString(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
-     * @param object
-     *        The object to serialize
+     * @param object The object to serialize
+     *
      * @return The object passed serialized to a String
+     *
      * @since 1.0.0
      */
     public static String stringifyJson(Object object) {
@@ -686,11 +691,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toString(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
-     * @param object
-     *        The object to serialize
-     * @param pretty
-     *        Weather to pretty print the data
+     * @param object The object to serialize
+     * @param pretty Weather to pretty print the data
+     *
      * @return The object passed serialized to a String
+     *
      * @since 1.0.0
      */
     public static String stringifyJson(Object object, Boolean pretty) {
@@ -702,9 +707,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toBytes(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
-     * @param object
-     *        The object to serialize
+     * @param object The object to serialize
+     *
      * @return The object passed serialized to bytes
+     *
      * @since 1.0.0
      */
     public static byte[] byteifyJson(Object object) {
@@ -716,11 +722,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toBytes(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
-     * @param object
-     *        The object to serialize
-     * @param pretty
-     *        Weather to pretty print the data
+     * @param object The object to serialize
+     * @param pretty Weather to pretty print the data
+     *
      * @return The object passed serialized to bytes
+     *
      * @since 1.0.0
      */
     public static byte[] byteifyJson(Object object, Boolean pretty) {
@@ -731,6 +737,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into a string
      *
      * @return A string for a new/empty object
+     *
      * @since 1.3.0
      */
     public static String emptyJsonString() {
@@ -741,6 +748,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into a string
      *
      * @return A string for a new/empty array
+     *
      * @since 1.4.0
      */
     public static String emptyJsonArrayString() {
@@ -751,6 +759,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty object
+     *
      * @since 1.3.0
      */
     public static byte[] emptyJsonBytes() {
@@ -761,6 +770,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty array
+     *
      * @since 1.4.0
      */
     public static byte[] emptyJsonArrayBytes() {
@@ -772,9 +782,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to parse
+     * @param data The string to parse
+     *
      * @return The string passed parsed to a {@link ParsedElement}
+     *
      * @since 1.0.0
      */
     public static ParsedElement parseYaml(String data) {
@@ -786,9 +797,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to parse
+     * @param data The bytes to parse
+     *
      * @return The bytes passed parsed to a {@link ParsedElement}
+     *
      * @since 1.0.0
      */
     public static ParsedElement parseYaml(byte[] data) {
@@ -800,13 +812,12 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to map
-     * @param clazz
-     *        The object type to map to
-     * @param <V>
-     *        The object type to map to
-     * @return A new Object of type clazz with the values of data
+     * @param data  The string to map
+     * @param clazz The object type to map to
+     * @param <V>   The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static <V> V parseYaml(String data, Class<V> clazz) {
@@ -818,13 +829,12 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param clazz
-     *        The object type to map to
-     * @param <V>
-     *        The object type to map to
-     * @return A new Object of type clazz with the values of data
+     * @param data  The bytes to map
+     * @param clazz The object type to map to
+     * @param <V>   The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static <V> V parseYaml(byte[] data, Class<V> clazz) {
@@ -836,11 +846,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The string to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static Object parseYaml(String data, Type type) {
@@ -852,11 +862,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The bytes to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static Object parseYaml(byte[] data, Type type) {
@@ -868,11 +878,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The string to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static Object parseYaml(String data, JavaType type) {
@@ -884,11 +894,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The bytes to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static Object parseYaml(byte[] data, JavaType type) {
@@ -900,9 +910,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toString(ParsedElement)}
      *
-     * @param element
-     *        The element to serialize
+     * @param element The element to serialize
+     *
      * @return The element passed serialized to a String
+     *
      * @since 1.0.0
      */
     public static String stringifyYaml(ParsedElement element) {
@@ -914,9 +925,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toBytes(ParsedElement)}
      *
-     * @param element
-     *        The element to serialize
+     * @param element The element to serialize
+     *
      * @return The element passed serialized to bytes
+     *
      * @since 1.0.0
      */
     public static byte[] byteifyYaml(ParsedElement element) {
@@ -928,9 +940,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toString(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
-     * @param object
-     *        The object to serialize
+     * @param object The object to serialize
+     *
      * @return The object passed serialized to a String
+     *
      * @since 1.0.0
      */
     public static String stringifyYaml(Object object) {
@@ -942,9 +955,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toBytes(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
-     * @param object
-     *        The object to serialize
+     * @param object The object to serialize
+     *
      * @return The object passed serialized to bytes
+     *
      * @since 1.0.0
      */
     public static byte[] byteifyYaml(Object object) {
@@ -955,6 +969,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into a string
      *
      * @return A string for a new/empty object
+     *
      * @since 1.3.0
      */
     public static String emptyYamlString() {
@@ -965,6 +980,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into a string
      *
      * @return A string for a new/empty array
+     *
      * @since 1.4.0
      */
     public static String emptyYamlArrayString() {
@@ -975,6 +991,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty object
+     *
      * @since 1.3.0
      */
     public static byte[] emptyYamlBytes() {
@@ -985,6 +1002,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty array
+     *
      * @since 1.4.0
      */
     public static byte[] emptyYamlArrayBytes() {
@@ -996,9 +1014,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to parse
+     * @param data The string to parse
+     *
      * @return The string passed parsed to a {@link ParsedElement}
+     *
      * @since 1.0.0
      */
     public static ParsedElement parseToml(String data) {
@@ -1010,9 +1029,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to parse
+     * @param data The bytes to parse
+     *
      * @return The bytes passed parsed to a {@link ParsedElement}
+     *
      * @since 1.0.0
      */
     public static ParsedElement parseToml(byte[] data) {
@@ -1024,13 +1044,12 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to map
-     * @param clazz
-     *        The object type to map to
-     * @param <V>
-     *        The object type to map to
-     * @return A new Object of type clazz with the values of data
+     * @param data  The string to map
+     * @param clazz The object type to map to
+     * @param <V>   The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static <V> V parseToml(String data, Class<V> clazz) {
@@ -1042,13 +1061,12 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param clazz
-     *        The object type to map to
-     * @param <V>
-     *        The object type to map to
-     * @return A new Object of type clazz with the values of data
+     * @param data  The bytes to map
+     * @param clazz The object type to map to
+     * @param <V>   The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static <V> V parseToml(byte[] data, Class<V> clazz) {
@@ -1060,11 +1078,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The string to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static Object parseToml(String data, Type type) {
@@ -1076,11 +1094,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The bytes to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static Object parseToml(byte[] data, Type type) {
@@ -1092,11 +1110,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The string to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static Object parseToml(String data, JavaType type) {
@@ -1108,11 +1126,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The bytes to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static Object parseToml(byte[] data, JavaType type) {
@@ -1124,9 +1142,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toString(ParsedElement)}
      *
-     * @param element
-     *        The element to serialize
+     * @param element The element to serialize
+     *
      * @return The element passed serialized to a String
+     *
      * @since 1.0.0
      */
     public static String stringifyToml(ParsedElement element) {
@@ -1138,9 +1157,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toBytes(ParsedElement)}
      *
-     * @param element
-     *        The element to serialize
+     * @param element The element to serialize
+     *
      * @return The element passed serialized to bytes
+     *
      * @since 1.0.0
      */
     public static byte[] byteifyToml(ParsedElement element) {
@@ -1152,9 +1172,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toString(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
-     * @param object
-     *        The object to serialize
+     * @param object The object to serialize
+     *
      * @return The object passed serialized to a String
+     *
      * @since 1.0.0
      */
     public static String stringifyToml(Object object) {
@@ -1166,9 +1187,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toBytes(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
-     * @param object
-     *        The object to serialize
+     * @param object The object to serialize
+     *
      * @return The object passed serialized to bytes
+     *
      * @since 1.0.0
      */
     public static byte[] byteifyToml(Object object) {
@@ -1179,6 +1201,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into a string
      *
      * @return A string for a new/empty object
+     *
      * @since 1.3.0
      */
     public static String emptyTomlString() {
@@ -1189,6 +1212,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into a string
      *
      * @return A string for a new/empty array
+     *
      * @since 1.4.0
      */
     public static String emptyTomlArrayString() {
@@ -1199,6 +1223,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty object
+     *
      * @since 1.3.0
      */
     public static byte[] emptyTomlBytes() {
@@ -1209,6 +1234,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty array
+     *
      * @since 1.4.0
      */
     public static byte[] emptyTomlArrayBytes() {
@@ -1220,9 +1246,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to parse
+     * @param data The string to parse
+     *
      * @return The string passed parsed to a {@link ParsedElement}
+     *
      * @since 1.4.0
      */
     public static ParsedElement parseXml(String data) {
@@ -1234,9 +1261,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to parse
+     * @param data The bytes to parse
+     *
      * @return The bytes passed parsed to a {@link ParsedElement}
+     *
      * @since 1.4.0
      */
     public static ParsedElement parseXml(byte[] data) {
@@ -1248,13 +1276,12 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to map
-     * @param clazz
-     *        The object type to map to
-     * @param <V>
-     *        The object type to map to
-     * @return A new Object of type clazz with the values of data
+     * @param data  The string to map
+     * @param clazz The object type to map to
+     * @param <V>   The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.4.0
      */
     public static <V> V parseXml(String data, Class<V> clazz) {
@@ -1266,13 +1293,12 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param clazz
-     *        The object type to map to
-     * @param <V>
-     *        The object type to map to
-     * @return A new Object of type clazz with the values of data
+     * @param data  The bytes to map
+     * @param clazz The object type to map to
+     * @param <V>   The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.4.0
      */
     public static <V> V parseXml(byte[] data, Class<V> clazz) {
@@ -1284,11 +1310,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The string to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.4.0
      */
     public static Object parseXml(String data, Type type) {
@@ -1300,11 +1326,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The bytes to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.4.0
      */
     public static Object parseXml(byte[] data, Type type) {
@@ -1316,11 +1342,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The string to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.4.0
      */
     public static Object parseXml(String data, JavaType type) {
@@ -1332,11 +1358,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The bytes to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.4.0
      */
     public static Object parseXml(byte[] data, JavaType type) {
@@ -1348,9 +1374,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toString(ParsedElement)}
      *
-     * @param element
-     *        The element to serialize
+     * @param element The element to serialize
+     *
      * @return The element passed serialized to a String
+     *
      * @since 1.4.0
      */
     public static String stringifyXml(ParsedElement element) {
@@ -1362,11 +1389,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toString(ParsedElement)}
      *
-     * @param element
-     *        The element to serialize
-     * @param pretty
-     *        Weather to pretty print the data
+     * @param element The element to serialize
+     * @param pretty  Weather to pretty print the data
+     *
      * @return The element passed serialized to a String
+     *
      * @since 1.4.0
      */
     public static String stringifyXml(ParsedElement element, Boolean pretty) {
@@ -1382,9 +1409,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toBytes(ParsedElement)}
      *
-     * @param element
-     *        The element to serialize
+     * @param element The element to serialize
+     *
      * @return The element passed serialized to bytes
+     *
      * @since 1.4.0
      */
     public static byte[] byteifyXml(ParsedElement element) {
@@ -1396,11 +1424,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toBytes(ParsedElement)}
      *
-     * @param element
-     *        The element to serialize
-     * @param pretty
-     *        Weather to pretty print the data
+     * @param element The element to serialize
+     * @param pretty  Weather to pretty print the data
+     *
      * @return The element passed serialized to bytes
+     *
      * @since 1.4.0
      */
     public static byte[] byteifyXml(ParsedElement element, Boolean pretty) {
@@ -1416,9 +1444,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toString(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
-     * @param object
-     *        The object to serialize
+     * @param object The object to serialize
+     *
      * @return The object passed serialized to a String
+     *
      * @since 1.4.0
      */
     public static String stringifyXml(Object object) {
@@ -1430,11 +1459,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toString(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
-     * @param object
-     *        The object to serialize
-     * @param pretty
-     *        Weather to pretty print the data
+     * @param object The object to serialize
+     * @param pretty Weather to pretty print the data
+     *
      * @return The object passed serialized to a String
+     *
      * @since 1.4.0
      */
     public static String stringifyXml(Object object, Boolean pretty) {
@@ -1446,9 +1475,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toBytes(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
-     * @param object
-     *        The object to serialize
+     * @param object The object to serialize
+     *
      * @return The object passed serialized to bytes
+     *
      * @since 1.4.0
      */
     public static byte[] byteifyXml(Object object) {
@@ -1460,11 +1490,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toBytes(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
-     * @param object
-     *        The object to serialize
-     * @param pretty
-     *        Weather to pretty print the data
+     * @param object The object to serialize
+     * @param pretty Weather to pretty print the data
+     *
      * @return The object passed serialized to bytes
+     *
      * @since 1.4.0
      */
     public static byte[] byteifyXml(Object object, Boolean pretty) {
@@ -1475,6 +1505,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into a string
      *
      * @return A string for a new/empty object
+     *
      * @since 1.3.0
      */
     public static String emptyXmlString() {
@@ -1485,6 +1516,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into a string
      *
      * @return A string for a new/empty array
+     *
      * @since 1.4.0
      */
     public static String emptyXmlArrayString() {
@@ -1495,6 +1527,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty object
+     *
      * @since 1.3.0
      */
     public static byte[] emptyXmlBytes() {
@@ -1505,6 +1538,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty array
+     *
      * @since 1.4.0
      */
     public static byte[] emptyXmlArrayBytes() {
@@ -1516,9 +1550,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to parse
+     * @param data The string to parse
+     *
      * @return The string passed parsed to a {@link ParsedElement}
+     *
      * @since 1.0.0
      */
     public static ParsedElement parseProperties(String data) {
@@ -1530,9 +1565,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to parse
+     * @param data The bytes to parse
+     *
      * @return The bytes passed parsed to a {@link ParsedElement}
+     *
      * @since 1.0.0
      */
     public static ParsedElement parseProperties(byte[] data) {
@@ -1544,13 +1580,12 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to map
-     * @param clazz
-     *        The object type to map to
-     * @param <V>
-     *        The object type to map to
-     * @return A new Object of type clazz with the values of data
+     * @param data  The string to map
+     * @param clazz The object type to map to
+     * @param <V>   The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static <V> V parseProperties(String data, Class<V> clazz) {
@@ -1562,13 +1597,12 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param clazz
-     *        The object type to map to
-     * @param <V>
-     *        The object type to map to
-     * @return A new Object of type clazz with the values of data
+     * @param data  The bytes to map
+     * @param clazz The object type to map to
+     * @param <V>   The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static <V> V parseProperties(byte[] data, Class<V> clazz) {
@@ -1580,11 +1614,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The string to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static Object parseProperties(String data, Type type) {
@@ -1596,11 +1630,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The bytes to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static Object parseProperties(byte[] data, Type type) {
@@ -1612,11 +1646,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The string to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static Object parseProperties(String data, JavaType type) {
@@ -1628,11 +1662,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The bytes to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static Object parseProperties(byte[] data, JavaType type) {
@@ -1644,9 +1678,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toString(ParsedElement)}
      *
-     * @param element
-     *        The element to serialize
+     * @param element The element to serialize
+     *
      * @return The element passed serialized to a String
+     *
      * @since 1.0.0
      */
     public static String stringifyProperties(ParsedElement element) {
@@ -1658,9 +1693,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toBytes(ParsedElement)}
      *
-     * @param element
-     *        The element to serialize
+     * @param element The element to serialize
+     *
      * @return The element passed serialized to bytes
+     *
      * @since 1.0.0
      */
     public static byte[] byteifyProperties(ParsedElement element) {
@@ -1672,9 +1708,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toString(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
-     * @param object
-     *        The object to serialize
+     * @param object The object to serialize
+     *
      * @return The object passed serialized to a String
+     *
      * @since 1.0.0
      */
     public static String stringifyProperties(Object object) {
@@ -1686,9 +1723,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toBytes(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
-     * @param object
-     *        The object to serialize
+     * @param object The object to serialize
+     *
      * @return The object passed serialized to bytes
+     *
      * @since 1.0.0
      */
     public static byte[] byteifyProperties(Object object) {
@@ -1699,6 +1737,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into a string
      *
      * @return A string for a new/empty object
+     *
      * @since 1.3.0
      */
     public static String emptyPropertiesString() {
@@ -1709,6 +1748,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into a string
      *
      * @return A string for a new/empty array
+     *
      * @since 1.4.0
      */
     public static String emptyPropertiesArrayString() {
@@ -1719,6 +1759,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty object
+     *
      * @since 1.3.0
      */
     public static byte[] emptyPropertiesBytes() {
@@ -1729,6 +1770,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty array
+     *
      * @since 1.4.0
      */
     public static byte[] emptyPropertiesArrayBytes() {
@@ -1740,9 +1782,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to parse
+     * @param data The string to parse
+     *
      * @return The string passed parsed to a {@link ParsedElement}
+     *
      * @since 1.0.0
      */
     public static ParsedElement parseCsv(String data) {
@@ -1754,9 +1797,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to parse
+     * @param data The bytes to parse
+     *
      * @return The bytes passed parsed to a {@link ParsedElement}
+     *
      * @since 1.0.0
      */
     public static ParsedElement parseCsv(byte[] data) {
@@ -1768,13 +1812,12 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to map
-     * @param clazz
-     *        The object type to map to
-     * @param <V>
-     *        The object type to map to
-     * @return A new Object of type clazz with the values of data
+     * @param data  The string to map
+     * @param clazz The object type to map to
+     * @param <V>   The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static <V> V parseCsv(String data, Class<V> clazz) {
@@ -1786,13 +1829,12 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param clazz
-     *        The object type to map to
-     * @param <V>
-     *        The object type to map to
-     * @return A new Object of type clazz with the values of data
+     * @param data  The bytes to map
+     * @param clazz The object type to map to
+     * @param <V>   The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static <V> V parseCsv(byte[] data, Class<V> clazz) {
@@ -1804,11 +1846,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The string to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static Object parseCsv(String data, Type type) {
@@ -1820,11 +1862,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The bytes to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static Object parseCsv(byte[] data, Type type) {
@@ -1836,11 +1878,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(String)}
      *
-     * @param data
-     *        The string to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The string to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static Object parseCsv(String data, JavaType type) {
@@ -1852,11 +1894,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The bytes to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static Object parseCsv(byte[] data, JavaType type) {
@@ -1868,9 +1910,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toString(ParsedElement)}
      *
-     * @param element
-     *        The element to serialize
+     * @param element The element to serialize
+     *
      * @return The element passed serialized to a String
+     *
      * @since 1.0.0
      */
     public static String stringifyCsv(ParsedElement element) {
@@ -1882,9 +1925,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toBytes(ParsedElement)}
      *
-     * @param element
-     *        The element to serialize
+     * @param element The element to serialize
+     *
      * @return The element passed serialized to bytes
+     *
      * @since 1.0.0
      */
     public static byte[] byteifyCsv(ParsedElement element) {
@@ -1896,9 +1940,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toString(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
-     * @param object
-     *        The object to serialize
+     * @param object The object to serialize
+     *
      * @return The object passed serialized to a String
+     *
      * @since 1.0.0
      */
     public static String stringifyCsv(Object object) {
@@ -1910,9 +1955,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toBytes(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
-     * @param object
-     *        The object to serialize
+     * @param object The object to serialize
+     *
      * @return The object passed serialized to bytes
+     *
      * @since 1.0.0
      */
     public static byte[] byteifyCsv(Object object) {
@@ -1923,6 +1969,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into a string
      *
      * @return A string for a new/empty object
+     *
      * @since 1.3.0
      */
     public static String emptyCsvString() {
@@ -1933,6 +1980,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into a string
      *
      * @return A string for a new/empty array
+     *
      * @since 1.4.0
      */
     public static String emptyCsvArrayString() {
@@ -1943,6 +1991,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty object
+     *
      * @since 1.3.0
      */
     public static byte[] emptyCsvBytes() {
@@ -1953,6 +2002,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty array
+     *
      * @since 1.4.0
      */
     public static byte[] emptyCsvArrayBytes() {
@@ -1964,9 +2014,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to parse
+     * @param data The bytes to parse
+     *
      * @return The bytes passed parsed to a {@link ParsedElement}
+     *
      * @since 1.0.0
      */
     public static ParsedElement parseSmile(byte[] data) {
@@ -1978,13 +2029,12 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param clazz
-     *        The object type to map to
-     * @param <V>
-     *        The object type to map to
-     * @return A new Object of type clazz with the values of data
+     * @param data  The bytes to map
+     * @param clazz The object type to map to
+     * @param <V>   The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static <V> V parseSmile(byte[] data, Class<V> clazz) {
@@ -1996,11 +2046,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The bytes to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static Object parseSmile(byte[] data, Type type) {
@@ -2012,11 +2062,11 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(byte[])}
      *
-     * @param data
-     *        The bytes to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of data
+     * @param data The bytes to map
+     * @param type The object type to map to
+     *
+     * @return A new Object of the passed type with the values of data
+     *
      * @since 1.0.0
      */
     public static Object parseSmile(byte[] data, JavaType type) {
@@ -2028,9 +2078,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toBytes(ParsedElement)}
      *
-     * @param element
-     *        The element to serialize
+     * @param element The element to serialize
+     *
      * @return The element passed serialized to bytes
+     *
      * @since 1.0.0
      */
     public static byte[] byteifySmile(ParsedElement element) {
@@ -2042,9 +2093,10 @@ public class BJSL<T extends Parser<?, ?>> {
      * <p>
      * Calls {@link Parser#toBytes(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
-     * @param object
-     *        The object to serialize
+     * @param object The object to serialize
+     *
      * @return The object passed serialized to bytes
+     *
      * @since 1.0.0
      */
     public static byte[] byteifySmile(Object object) {
@@ -2055,6 +2107,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty object
+     *
      * @since 1.3.0
      */
     public static byte[] emptySmileBytes() {
@@ -2065,6 +2118,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty array
+     *
      * @since 1.4.0
      */
     public static byte[] emptySmileArrayBytes() {
@@ -2075,6 +2129,7 @@ public class BJSL<T extends Parser<?, ?>> {
      * Get the main logger used by BJSL
      *
      * @return The main logger used by BJSL
+     *
      * @since 1.0.0
      */
     public static Logger getLogger() {
@@ -2084,8 +2139,8 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Set the main logger to be used by BJSL
      *
-     * @param value
-     *        The new logger
+     * @param value The new logger
+     *
      * @since 1.0.0
      */
     public static void setLogger(Logger value) {

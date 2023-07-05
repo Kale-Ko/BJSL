@@ -29,7 +29,7 @@ java {
     withJavadocJar()
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     sourceCompatibility = JavaVersion.toVersion(project.java_version)
     targetCompatibility = JavaVersion.toVersion(project.java_version)
 
@@ -42,13 +42,13 @@ jar {
 
     manifest {
         attributes "Name": "io/github/kale_ko/bjsl/",
-            "Specification-Title": "BJSL",
-            "Specification-Version": project.version,
-            "Specification-Vendor": "Kale-Ko",
-            "Implementation-Title": "io.github.kale_ko.bjsl",
-            "Implementation-Version": project.version,
-            "Implementation-Vendor": "Kale-Ko",
-            "Sealed": true
+                "Specification-Title": "BJSL",
+                "Specification-Version": project.version,
+                "Specification-Vendor": "Kale-Ko",
+                "Implementation-Title": "io.github.kale_ko.bjsl",
+                "Implementation-Version": project.version,
+                "Implementation-Vendor": "Kale-Ko",
+                "Sealed": true
     }
 }
 
@@ -59,18 +59,20 @@ tasks.register("fatJar", Jar) {
     archiveClassifier = "fat"
     manifest {
         attributes "Name": "io/github/kale_ko/bjsl/",
-            "Specification-Title": "BJSL",
-            "Specification-Version": project.version,
-            "Specification-Vendor": "Kale-Ko",
-            "Implementation-Title": "io.github.kale_ko.bjsl",
-            "Implementation-Version": project.version,
-            "Implementation-Vendor": "Kale-Ko",
-            "Sealed": true
+                "Specification-Title": "BJSL",
+                "Specification-Version": project.version,
+                "Specification-Vendor": "Kale-Ko",
+                "Implementation-Title": "io.github.kale_ko.bjsl",
+                "Implementation-Version": project.version,
+                "Implementation-Vendor": "Kale-Ko",
+                "Sealed": true
     }
 
-    duplicatesStrategy = "exclude"
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from(sourceSets.main.output)
-    from(configurations.runtimeClasspath.collect { it.isDirectory() ? null : zipTree(it) })
+    from(configurations.runtimeClasspath.collect {
+        it.isDirectory() ? null : zipTree(it)
+    })
 }
 
 build {
@@ -118,7 +120,7 @@ publishing {
             pom.withXml {
                 def node = asNode()
 
-                def packagingNode = node.appendNode("packaging", "jar")
+                node.appendNode("packaging", "jar")
 
                 def licenseNode = node.appendNode("licenses").appendNode("license")
                 licenseNode.appendNode("name", "MIT")
@@ -138,8 +140,8 @@ publishing {
 
                 def dependenciesNode = node.appendNode("dependencies")
 
-                def dependencyManagmentNode = node.appendNode("dependencyManagement")
-                def dependenciesManagmentNode = dependencyManagmentNode.appendNode("dependencies")
+                def dependencyManagementNode = node.appendNode("dependencyManagement")
+                dependencyManagementNode.appendNode("dependencies")
 
                 configurations.compileClasspath.resolvedConfiguration.getFirstLevelModuleDependencies().each {
                     def dependencyNode = dependenciesNode.appendNode("dependency")

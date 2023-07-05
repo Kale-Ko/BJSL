@@ -1,36 +1,5 @@
 package io.github.kale_ko.bjsl.processor;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.nio.file.Path;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.ArrayType;
 import com.fasterxml.jackson.databind.type.CollectionType;
@@ -44,6 +13,17 @@ import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
 import io.github.kale_ko.bjsl.processor.annotations.AlwaysSerialize;
 import io.github.kale_ko.bjsl.processor.annotations.Default;
 import io.github.kale_ko.bjsl.processor.annotations.DontSerialize;
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
+import java.net.*;
+import java.nio.file.Path;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.time.Instant;
+import java.util.*;
 
 /**
  * An Object processor for mapping elements to objects and objects to elements
@@ -78,7 +58,7 @@ public class ObjectProcessor {
     protected boolean ignoreDefaults;
 
     /**
-     * Weather checks for enum names should be case sensitive
+     * Weather checks for enum names should be case-sensitive
      *
      * @since 1.0.0
      */
@@ -94,16 +74,12 @@ public class ObjectProcessor {
     /**
      * Create a new Parser using certain factories
      *
-     * @param ignoreNulls
-     *        Weather null values should be ignored when serializing
-     * @param ignoreEmptyObjects
-     *        Weather empty objects (Objects with a size of 0) should be ignored when serializing
-     * @param ignoreDefaults
-     *        Weather default values should be ignored when serializing
-     * @param caseSensitiveEnums
-     *        Weather checks for enum names should be case sensitive
-     * @param typeProcessors
-     *        A map of object types to type processors
+     * @param ignoreNulls        Weather null values should be ignored when serializing
+     * @param ignoreEmptyObjects Weather empty objects (Objects with a size of 0) should be ignored when serializing
+     * @param ignoreDefaults     Weather default values should be ignored when serializing
+     * @param caseSensitiveEnums Weather checks for enum names should be case-sensitive
+     * @param typeProcessors     A map of object types to type processors
+     *
      * @since 1.0.0
      */
     protected ObjectProcessor(boolean ignoreNulls, boolean ignoreEmptyObjects, boolean ignoreDefaults, boolean caseSensitiveEnums, Map<JavaType, TypeProcessor> typeProcessors) {
@@ -153,7 +129,7 @@ public class ObjectProcessor {
         protected boolean ignoreDefaults = false;
 
         /**
-         * Weather checks for enum names should be case sensitive
+         * Weather checks for enum names should be case-sensitive
          * <p>
          * Default is false
          *
@@ -166,7 +142,7 @@ public class ObjectProcessor {
          *
          * @since 1.0.0
          */
-        protected Map<JavaType, TypeProcessor> typeProcessors = new HashMap<JavaType, TypeProcessor>();
+        protected Map<JavaType, TypeProcessor> typeProcessors = new HashMap<>();
 
         /**
          * Weather or not to enable the default type processors
@@ -180,7 +156,8 @@ public class ObjectProcessor {
          *
          * @since 1.0.0
          */
-        public Builder() {}
+        public Builder() {
+        }
 
         /**
          * Get weather or not null values should be ignored when serializing
@@ -188,6 +165,7 @@ public class ObjectProcessor {
          * Default is false
          *
          * @return Weather or not null values should be ignored when serializing
+         *
          * @since 1.0.0
          */
         public boolean getIgnoreNulls() {
@@ -199,9 +177,10 @@ public class ObjectProcessor {
          * <p>
          * Default is false
          *
-         * @param value
-         *        Weather or not null values should be ignored when serializing
+         * @param value Weather or not null values should be ignored when serializing
+         *
          * @return Self for chaining
+         *
          * @since 1.0.0
          */
         public Builder setIgnoreNulls(boolean value) {
@@ -216,6 +195,7 @@ public class ObjectProcessor {
          * Default is false
          *
          * @return Weather or not empty objects (Objects with a size of 0) should be ignored when serializing
+         *
          * @since 1.0.0
          */
         public boolean getIgnoreEmptyObjects() {
@@ -227,9 +207,10 @@ public class ObjectProcessor {
          * <p>
          * Default is false
          *
-         * @param value
-         *        Weather or not empty objects (Objects with a size of 0) should be ignored when serializing
+         * @param value Weather or not empty objects (Objects with a size of 0) should be ignored when serializing
+         *
          * @return Self for chaining
+         *
          * @since 1.0.0
          */
         public Builder setIgnoreEmptyObjects(boolean value) {
@@ -246,6 +227,7 @@ public class ObjectProcessor {
          * Default is false
          *
          * @return Weather or not default values should be ignored when serializing
+         *
          * @since 1.0.0
          */
         public boolean getIgnoreDefaults() {
@@ -259,9 +241,10 @@ public class ObjectProcessor {
          * <p>
          * Default is false
          *
-         * @param value
-         *        Weather or not default values should be ignored when serializing
+         * @param value Weather or not default values should be ignored when serializing
+         *
          * @return Self for chaining
+         *
          * @since 1.0.0
          */
         public Builder setIgnoreDefaults(boolean value) {
@@ -271,11 +254,12 @@ public class ObjectProcessor {
         }
 
         /**
-         * Get weather checks for enum names should be case sensitive
+         * Get weather checks for enum names should be case-sensitive
          * <p>
          * Default is false
          *
-         * @return Weather checks for enum names should be case sensitive
+         * @return Weather checks for enum names should be case-sensitive
+         *
          * @since 1.0.0
          */
         public boolean getCaseSensitiveEnums() {
@@ -283,13 +267,14 @@ public class ObjectProcessor {
         }
 
         /**
-         * Set weather checks for enum names should be case sensitive
+         * Set weather checks for enum names should be case-sensitive
          * <p>
          * Default is false
          *
-         * @param value
-         *        Weather checks for enum names should be case sensitive
+         * @param value Weather checks for enum names should be case-sensitive
+         *
          * @return Self for chaining
+         *
          * @since 1.0.0
          */
         public Builder setCaseSensitiveEnums(boolean value) {
@@ -302,6 +287,7 @@ public class ObjectProcessor {
          * Get all the type processors created
          *
          * @return All the type processors created
+         *
          * @since 1.0.0
          */
         public Map<JavaType, TypeProcessor> getTypeProcessors() {
@@ -313,13 +299,14 @@ public class ObjectProcessor {
          * <p>
          * Calls {@link #hasTypeProcessor(JavaType)}
          *
-         * @param clazz
-         *        The class to check for
+         * @param clazz The class to check for
+         *
          * @return If a type processor for clazz exists
+         *
          * @since 1.0.0
          */
         public boolean hasTypeProcessor(Class<?> clazz) {
-            return this.hasTypeProcessor(TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] {}));
+            return this.hasTypeProcessor(TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] { }));
         }
 
         /**
@@ -327,9 +314,10 @@ public class ObjectProcessor {
          * <p>
          * Calls {@link #hasTypeProcessor(JavaType)}
          *
-         * @param type
-         *        The type to check for
+         * @param type The type to check for
+         *
          * @return If a type processor for type exists
+         *
          * @since 1.0.0
          */
         public boolean hasTypeProcessor(Type type) {
@@ -341,9 +329,10 @@ public class ObjectProcessor {
          * <p>
          * Note: This method also checks for superclasses
          *
-         * @param type
-         *        The type to check for
+         * @param type The type to check for
+         *
          * @return If a type processor for type exists
+         *
          * @since 1.0.0
          */
         public boolean hasTypeProcessor(JavaType type) {
@@ -361,13 +350,14 @@ public class ObjectProcessor {
          * <p>
          * Calls {@link #getTypeProcessor(JavaType)}
          *
-         * @param clazz
-         *        The class to get
+         * @param clazz The class to get
+         *
          * @return The type processor for class
+         *
          * @since 1.0.0
          */
         public TypeProcessor getTypeProcessor(Class<?> clazz) {
-            return this.getTypeProcessor(TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] {}));
+            return this.getTypeProcessor(TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] { }));
         }
 
         /**
@@ -375,9 +365,10 @@ public class ObjectProcessor {
          * <p>
          * Calls {@link #getTypeProcessor(JavaType)}
          *
-         * @param type
-         *        The type to get
+         * @param type The type to get
+         *
          * @return The type processor for type
+         *
          * @since 1.0.0
          */
         public TypeProcessor getTypeProcessor(Type type) {
@@ -389,9 +380,10 @@ public class ObjectProcessor {
          * <p>
          * Note: This method also checks for superclasses
          *
-         * @param type
-         *        The type to get
+         * @param type The type to get
+         *
          * @return The type processor for type
+         *
          * @since 1.0.0
          */
         public TypeProcessor getTypeProcessor(JavaType type) {
@@ -409,15 +401,15 @@ public class ObjectProcessor {
          * <p>
          * Calls {@link #createTypeProcessor(JavaType, TypeProcessor)}
          *
-         * @param clazz
-         *        The class to create
-         * @param value
-         *        The type processor to use
+         * @param clazz The class to create
+         * @param value The type processor to use
+         *
          * @return Self for chaining
+         *
          * @since 1.0.0
          */
         public Builder createTypeProcessor(Class<?> clazz, TypeProcessor value) {
-            return this.createTypeProcessor(TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] {}), value);
+            return this.createTypeProcessor(TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] { }), value);
         }
 
         /**
@@ -425,11 +417,11 @@ public class ObjectProcessor {
          * <p>
          * Calls {@link #createTypeProcessor(JavaType, TypeProcessor)}
          *
-         * @param type
-         *        The type to create
-         * @param value
-         *        The type processor to use
+         * @param type  The type to create
+         * @param value The type processor to use
+         *
          * @return Self for chaining
+         *
          * @since 1.0.0
          */
         public Builder createTypeProcessor(Type type, TypeProcessor value) {
@@ -439,11 +431,11 @@ public class ObjectProcessor {
         /**
          * Create a type processor
          *
-         * @param type
-         *        The type to create
-         * @param value
-         *        The type processor to use
+         * @param type  The type to create
+         * @param value The type processor to use
+         *
          * @return Self for chaining
+         *
          * @since 1.0.0
          */
         public Builder createTypeProcessor(JavaType type, TypeProcessor value) {
@@ -463,13 +455,14 @@ public class ObjectProcessor {
          * <p>
          * Calls {@link #removeTypeProcessor(JavaType)}
          *
-         * @param clazz
-         *        The class to remove
+         * @param clazz The class to remove
+         *
          * @return Self for chaining
+         *
          * @since 1.0.0
          */
         public Builder removeTypeProcessor(Class<?> clazz) {
-            return this.removeTypeProcessor(TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] {}));
+            return this.removeTypeProcessor(TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] { }));
         }
 
         /**
@@ -477,9 +470,10 @@ public class ObjectProcessor {
          * <p>
          * Calls {@link #removeTypeProcessor(JavaType)}
          *
-         * @param type
-         *        The type to remove
+         * @param type The type to remove
+         *
          * @return Self for chaining
+         *
          * @since 1.0.0
          */
         public Builder removeTypeProcessor(Type type) {
@@ -491,9 +485,10 @@ public class ObjectProcessor {
          * <p>
          * Note: This method also checks for superclasses
          *
-         * @param type
-         *        The type to remove
+         * @param type The type to remove
+         *
          * @return Self for chaining
+         *
          * @since 1.0.0
          */
         public Builder removeTypeProcessor(JavaType type) {
@@ -514,6 +509,7 @@ public class ObjectProcessor {
          * Default is true
          *
          * @return Weather or not to enable the default type processors
+         *
          * @since 1.4.0
          */
         public boolean getEnableDefaultTypeProcessors() {
@@ -527,9 +523,10 @@ public class ObjectProcessor {
          * <p>
          * Default is true
          *
-         * @param value
-         *        Weather or not to enable the default type processors
+         * @param value Weather or not to enable the default type processors
+         *
          * @return Self for chaining
+         *
          * @since 1.4.0
          */
         public Builder setEnableDefaultTypeProcessors(boolean value) {
@@ -542,6 +539,7 @@ public class ObjectProcessor {
          * Uses the current settings to build a new {@link ObjectProcessor}
          *
          * @return A new {@link ObjectProcessor} instance
+         *
          * @since 1.0.0
          */
         public ObjectProcessor build() {
@@ -550,7 +548,7 @@ public class ObjectProcessor {
                     this.createTypeProcessor(UUID.class, new TypeProcessor() {
                         @Override
                         public ParsedElement toElement(Object object) {
-                            if (object != null && object instanceof UUID) {
+                            if (object instanceof java.util.UUID) {
                                 return ParsedPrimitive.fromString(((UUID) object).toString());
                             } else {
                                 return ParsedPrimitive.fromNull();
@@ -572,7 +570,7 @@ public class ObjectProcessor {
                     this.createTypeProcessor(URI.class, new TypeProcessor() {
                         @Override
                         public ParsedElement toElement(Object object) {
-                            if (object != null && object instanceof URI) {
+                            if (object instanceof URI) {
                                 return ParsedPrimitive.fromString(((URI) object).toString());
                             } else {
                                 return ParsedPrimitive.fromNull();
@@ -598,7 +596,7 @@ public class ObjectProcessor {
                     this.createTypeProcessor(URL.class, new TypeProcessor() {
                         @Override
                         public ParsedElement toElement(Object object) {
-                            if (object != null && object instanceof URL) {
+                            if (object instanceof URL) {
                                 return ParsedPrimitive.fromString(((URL) object).toString());
                             } else {
                                 return ParsedPrimitive.fromNull();
@@ -624,7 +622,7 @@ public class ObjectProcessor {
                     this.createTypeProcessor(Path.class, new TypeProcessor() {
                         @Override
                         public ParsedElement toElement(Object object) {
-                            if (object != null && object instanceof Path) {
+                            if (object instanceof Path) {
                                 return ParsedPrimitive.fromString(((Path) object).toString());
                             } else {
                                 return ParsedPrimitive.fromNull();
@@ -646,7 +644,7 @@ public class ObjectProcessor {
                     this.createTypeProcessor(File.class, new TypeProcessor() {
                         @Override
                         public ParsedElement toElement(Object object) {
-                            if (object != null && object instanceof File) {
+                            if (object instanceof File) {
                                 return ParsedPrimitive.fromString(((File) object).getPath());
                             } else {
                                 return ParsedPrimitive.fromNull();
@@ -668,7 +666,7 @@ public class ObjectProcessor {
                     this.createTypeProcessor(InetAddress.class, new TypeProcessor() {
                         @Override
                         public ParsedElement toElement(Object object) {
-                            if (object != null && object instanceof InetAddress) {
+                            if (object instanceof InetAddress) {
                                 return ParsedPrimitive.fromString(((InetAddress) object).getHostName());
                             } else {
                                 return ParsedPrimitive.fromNull();
@@ -694,7 +692,7 @@ public class ObjectProcessor {
                     this.createTypeProcessor(InetSocketAddress.class, new TypeProcessor() {
                         @Override
                         public ParsedElement toElement(Object object) {
-                            if (object != null && object instanceof InetSocketAddress) {
+                            if (object instanceof InetSocketAddress) {
                                 return ParsedPrimitive.fromString(((InetSocketAddress) object).getHostName() + ":" + ((InetSocketAddress) object).getPort());
                             } else {
                                 return ParsedPrimitive.fromNull();
@@ -720,7 +718,7 @@ public class ObjectProcessor {
                     this.createTypeProcessor(Calendar.class, new TypeProcessor() {
                         @Override
                         public ParsedElement toElement(Object object) {
-                            if (object != null && object instanceof Calendar) {
+                            if (object instanceof Calendar) {
                                 return ParsedPrimitive.fromString(DateFormat.getDateInstance(DateFormat.DEFAULT).format(((Calendar) object).getTime()));
                             } else {
                                 return ParsedPrimitive.fromNull();
@@ -748,7 +746,7 @@ public class ObjectProcessor {
                     this.createTypeProcessor(Date.class, new TypeProcessor() {
                         @Override
                         public ParsedElement toElement(Object object) {
-                            if (object != null && object instanceof Date) {
+                            if (object instanceof Date) {
                                 return ParsedPrimitive.fromString(DateFormat.getDateInstance(DateFormat.DEFAULT).format((Date) object));
                             } else {
                                 return ParsedPrimitive.fromNull();
@@ -774,7 +772,7 @@ public class ObjectProcessor {
                     this.createTypeProcessor(Instant.class, new TypeProcessor() {
                         @Override
                         public ParsedElement toElement(Object object) {
-                            if (object != null && object instanceof Instant) {
+                            if (object instanceof Instant) {
                                 return ParsedPrimitive.fromLong(((Instant) object).toEpochMilli());
                             } else {
                                 return ParsedPrimitive.fromNull();
@@ -802,13 +800,12 @@ public class ObjectProcessor {
      * <p>
      * Calls {@link #toObject(ParsedElement, JavaType)}
      *
-     * @param element
-     *        The element to map
-     * @param clazz
-     *        The object type to map to
-     * @param <T>
-     *        The object type to map to
-     * @return A new Object of type clazz with the values of element
+     * @param element The element to map
+     * @param clazz   The object type to map to
+     * @param <T>     The object type to map to
+     *
+     * @return A new Object of passed type with the values of element
+     *
      * @since 1.0.0
      */
     @SuppressWarnings("unchecked")
@@ -817,7 +814,7 @@ public class ObjectProcessor {
             throw new NullPointerException("Clazz can not be null");
         }
 
-        return (T) toObject(element, TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] {}));
+        return (T) toObject(element, TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] { }));
     }
 
     /**
@@ -825,11 +822,11 @@ public class ObjectProcessor {
      * <p>
      * Calls {@link #toObject(ParsedElement, JavaType)}
      *
-     * @param element
-     *        The element to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of element
+     * @param element The element to map
+     * @param type    The object type to map to
+     *
+     * @return A new Object of passed type with the values of element
+     *
      * @since 1.0.0
      */
     public Object toObject(ParsedElement element, Type type) {
@@ -843,11 +840,11 @@ public class ObjectProcessor {
     /**
      * Maps this element into an Object
      *
-     * @param element
-     *        The element to map
-     * @param type
-     *        The object type to map to
-     * @return A new Object of type type with the values of element
+     * @param element The element to map
+     * @param type    The object type to map to
+     *
+     * @return A new Object of passed type with the values of element
+     *
      * @since 1.0.0
      */
     @SuppressWarnings("unchecked")
@@ -869,22 +866,18 @@ public class ObjectProcessor {
 
             if (element instanceof ParsedPrimitive) {
                 if (type.getRawClass().isEnum()) {
-                    if (element instanceof ParsedPrimitive) {
-                        if (element.asPrimitive().isString()) {
-                            for (Object value : type.getRawClass().getEnumConstants()) {
-                                if ((caseSensitiveEnums && ((Enum<?>) value).name().equals(element.asPrimitive().asString())) || (!caseSensitiveEnums && ((Enum<?>) value).name().equalsIgnoreCase(element.asPrimitive().asString()))) {
-                                    return value;
-                                }
+                    if (element.asPrimitive().isString()) {
+                        for (Object value : type.getRawClass().getEnumConstants()) {
+                            if ((caseSensitiveEnums && ((Enum<?>) value).name().equals(element.asPrimitive().asString())) || (!caseSensitiveEnums && ((Enum<?>) value).name().equalsIgnoreCase(element.asPrimitive().asString()))) {
+                                return value;
                             }
-
-                            BJSL.getLogger().warning("Unknown enum value \"" + element.asPrimitive().asString() + "\" for type \"" + type.getRawClass().getSimpleName() + "\"");
-
-                            return null;
-                        } else if (element.asPrimitive().isNull()) {
-                            return null;
-                        } else {
-                            throw new RuntimeException("Element for type \"" + type.getRawClass().getSimpleName() + "\" is not a enum");
                         }
+
+                        BJSL.getLogger().warning("Unknown enum value \"" + element.asPrimitive().asString() + "\" for type \"" + type.getRawClass().getSimpleName() + "\"");
+
+                        return null;
+                    } else if (element.asPrimitive().isNull()) {
+                        return null;
                     } else {
                         throw new RuntimeException("Element for type \"" + type.getRawClass().getSimpleName() + "\" is not a enum");
                     }
@@ -893,7 +886,7 @@ public class ObjectProcessor {
                         Object object = element.asPrimitive().get();
 
                         if (object == null) {
-                            return object;
+                            return null;
                         } else if (type.getRawClass() == String.class) {
                             return (String) object;
                         } else if (type.getRawClass() == Byte.class || type.getRawClass() == byte.class) {
@@ -1141,7 +1134,7 @@ public class ObjectProcessor {
                             for (Field field : fields) {
                                 try {
                                     if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
-                                        Boolean shouldSerialize = element.asObject().has(field.getName()) && !Modifier.isTransient(field.getModifiers());
+                                        boolean shouldSerialize = element.asObject().has(field.getName()) && !Modifier.isTransient(field.getModifiers());
 
                                         for (Annotation annotation : field.getDeclaredAnnotations()) {
                                             if (annotation.annotationType() == AlwaysSerialize.class) {
@@ -1518,9 +1511,10 @@ public class ObjectProcessor {
     /**
      * Maps this Object into a {@link ParsedElement}
      *
-     * @param object
-     *        The object to map
+     * @param object The object to map
+     *
      * @return A new {@link ParsedElement} with the values of object
+     *
      * @since 1.0.0
      */
     public ParsedElement toElement(Object object) {
@@ -1530,7 +1524,7 @@ public class ObjectProcessor {
             }
 
             if (object.getClass().getTypeParameters().length == 0) {
-                JavaType type = TypeFactory.defaultInstance().constructSimpleType(object.getClass(), new JavaType[] {});
+                JavaType type = TypeFactory.defaultInstance().constructSimpleType(object.getClass(), new JavaType[] { });
 
                 for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
                     if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
@@ -1703,7 +1697,9 @@ public class ObjectProcessor {
                         }
 
                         if (defaultObject == null) {
-                            BJSL.getLogger().warning("Initialization of " + object.getClass().getSimpleName() + " failed, defaults will not be ignored");
+                            if (BJSL.getLogger() != null) {
+                                BJSL.getLogger().warning("Initialization of " + object.getClass().getSimpleName() + " failed, defaults will not be ignored");
+                            }
                         }
                     }
 
@@ -1712,7 +1708,7 @@ public class ObjectProcessor {
                     for (Field field : fields) {
                         try {
                             if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
-                                Boolean shouldSerialize = !Modifier.isTransient(field.getModifiers());
+                                boolean shouldSerialize = !Modifier.isTransient(field.getModifiers());
 
                                 ParsedElement subElement = toElement(field.get(object));
 
@@ -1810,29 +1806,26 @@ public class ObjectProcessor {
     /**
      * Get all the fields on a class and its superclasses
      *
-     * @param clazz
-     *        The class to get the fields of
-     * @param <T>
-     *        The class to get the fields of
+     * @param clazz The class to get the fields of
+     * @param <T>   The class to get the fields of
+     *
      * @return All the fields on the class and its superclasses
+     *
      * @since 1.0.0
      */
     protected static <T> List<Field> getFields(Class<T> clazz) {
-        List<Field> fields = new ArrayList<Field>();
-
-        fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
+        List<Field> fields = new ArrayList<>(Arrays.asList(clazz.getDeclaredFields()));
 
         if (clazz.getSuperclass() != Object.class && clazz.getSuperclass() != null) {
             List<Field> parentFields = getFields(clazz.getSuperclass());
 
             for (Field parentField : parentFields) {
-                Boolean overwritten = false;
+                boolean overwritten = false;
 
                 for (Field field : fields) {
                     if (field.getName().equals(parentField.getName())) {
                         overwritten = true;
-
-                        continue;
+                        break;
                     }
                 }
 
