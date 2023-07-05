@@ -1,33 +1,21 @@
 package io.github.kale_ko.bjsl.parsers;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.core.TokenStreamFactory;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.BigIntegerNode;
-import com.fasterxml.jackson.databind.node.BooleanNode;
-import com.fasterxml.jackson.databind.node.DecimalNode;
-import com.fasterxml.jackson.databind.node.DoubleNode;
-import com.fasterxml.jackson.databind.node.FloatNode;
-import com.fasterxml.jackson.databind.node.IntNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.LongNode;
-import com.fasterxml.jackson.databind.node.NullNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.ShortNode;
-import com.fasterxml.jackson.databind.node.TextNode;
+import com.fasterxml.jackson.databind.node.*;
 import io.github.kale_ko.bjsl.BJSL;
 import io.github.kale_ko.bjsl.elements.ParsedArray;
 import io.github.kale_ko.bjsl.elements.ParsedElement;
 import io.github.kale_ko.bjsl.elements.ParsedObject;
 import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 
 /**
  * An abstract class that all parsers extend from
@@ -36,10 +24,9 @@ import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
  * <p>
  * Basically just a wrapper for Jackson parsers
  *
- * @param <T>
- *        The type of the factory used for converting to/from trees/strings
- * @param <V>
- *        The type of the codec used for converting to/from trees/strings
+ * @param <T> The type of the factory used for converting to/from trees/strings
+ * @param <V> The type of the codec used for converting to/from trees/strings
+ *
  * @version 1.3.0
  * @since 1.0.0
  */
@@ -68,12 +55,10 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
     /**
      * Create a new Parser using certain factories
      *
-     * @param factory
-     *        The factory used for converting to/from trees/strings
-     * @param codec
-     *        The codec used for converting to/from trees/strings
-     * @param prettyPrinter
-     *        The prettyPrinter used for converting to strings
+     * @param factory       The factory used for converting to/from trees/strings
+     * @param codec         The codec used for converting to/from trees/strings
+     * @param prettyPrinter The prettyPrinter used for converting to strings
+     *
      * @since 1.0.0
      */
     protected Parser(T factory, V codec, PrettyPrinter prettyPrinter) {
@@ -88,9 +73,10 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      * <p>
      * Calls {@link #toElement(byte[])} with the bytes of the passed string ({@link String#getBytes()})
      *
-     * @param data
-     *        The string to parse
+     * @param data The string to parse
+     *
      * @return The string passed parsed to a {@link ParsedElement}
+     *
      * @since 1.0.0
      */
     public ParsedElement toElement(String data) {
@@ -106,9 +92,10 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      * <p>
      * Calls Jackson functions to get a parsed node and then converts it into BJSL's format
      *
-     * @param data
-     *        The bytes to parse
+     * @param data The bytes to parse
+     *
      * @return The bytes passed parsed to a {@link ParsedElement}
+     *
      * @since 1.0.0
      */
     public ParsedElement toElement(byte[] data) {
@@ -164,10 +151,10 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
                 } else if (node instanceof NullNode) {
                     return ParsedPrimitive.fromNull();
                 } else {
-                    throw new RuntimeException("\"" + node.getClass().getSimpleName() + "\" is not a parsable type");
+                    throw new RuntimeException("\"" + node.getClass().getSimpleName() + "\" is not a processable type");
                 }
             } else {
-                throw new RuntimeException("\"" + tree.getClass().getSimpleName() + "\" is not a parsable type");
+                throw new RuntimeException("\"" + tree.getClass().getSimpleName() + "\" is not a processable type");
             }
         } catch (RuntimeException | IOException e) {
             if (BJSL.getLogger() != null) {
@@ -185,11 +172,12 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
     /**
      * Serializes this element into a String
      * <p>
-     * Calls {@link #toString(ParsedElement)} and uses {@link String#String(byte[])} to create a string from that
+     * Calls {@link #toBytes(ParsedElement)} and uses {@link String#String(byte[])} to create a string from that
      *
-     * @param element
-     *        The element to serialize
+     * @param element The element to serialize
+     *
      * @return The element passed serialized to a String
+     *
      * @since 1.0.0
      */
     public String toString(ParsedElement element) {
@@ -205,9 +193,10 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      * <p>
      * Converts it from BJSL's format and calls Jackson functions to get bytes
      *
-     * @param element
-     *        The element to serialize
+     * @param element The element to serialize
+     *
      * @return The element passed serialized to bytes
+     *
      * @since 1.0.0
      */
     public byte[] toBytes(ParsedElement element) {
@@ -253,7 +242,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
                     return "null".getBytes(StandardCharsets.UTF_8);
                 }
             } else {
-                throw new RuntimeException("\"" + element.getClass().getSimpleName() + "\" is not a parsable type");
+                throw new RuntimeException("\"" + element.getClass().getSimpleName() + "\" is not a processable type");
             }
         } catch (RuntimeException | IOException e) {
             if (BJSL.getLogger() != null) {
@@ -272,6 +261,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      * Serializes an empty element into a string
      *
      * @return A string for a new/empty object
+     *
      * @since 1.3.0
      */
     public String emptyString() {
@@ -282,6 +272,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      * Serializes an empty element into a string
      *
      * @return A string for a new/empty object
+     *
      * @since 1.4.0
      */
     public String emptyArrayString() {
@@ -292,6 +283,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty object
+     *
      * @since 1.3.0
      */
     public byte[] emptyBytes() {
@@ -320,6 +312,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      * Serializes an empty element into bytes
      *
      * @return The bytes for a new/empty array
+     *
      * @since 1.4.0
      */
     public byte[] emptyArrayBytes() {
@@ -345,12 +338,10 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
     /**
      * Converts Jackson's format to BJSL's format
      *
-     * @param element
-     *        The element to add too
-     * @param key
-     *        The key of the element
-     * @param node
-     *        The node to convert
+     * @param element The element to add too
+     * @param key     The key of the element
+     * @param node    The node to convert
+     *
      * @since 1.0.0
      */
     protected void toElements(ParsedElement element, String key, JsonNode node) {
@@ -454,12 +445,10 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
     /**
      * Converts BJSL's format to Jackson's format
      *
-     * @param element
-     *        The element to add too
-     * @param key
-     *        The key of the element
-     * @param node
-     *        The node to convert
+     * @param element The element to add too
+     * @param key     The key of the element
+     * @param node    The node to convert
+     *
      * @since 1.0.0
      */
     protected void toNodes(TreeNode node, String key, ParsedElement element) {
@@ -473,8 +462,8 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
                 ((ArrayNode) node).add(subNode);
             }
 
-            for (String subkey : objectElement.getKeys()) {
-                toNodes(subNode, subkey, objectElement.get(subkey));
+            for (String subKey : objectElement.getKeys()) {
+                toNodes(subNode, subKey, objectElement.get(subKey));
             }
         } else if (element instanceof ParsedArray) {
             ParsedArray arrayElement = (ParsedArray) element;

@@ -1,11 +1,9 @@
-build
-bin
+build/
+bin/
 
-.vscode
-.classpath
-.project
-.settings
-.gradle
-
-*.jar
-!gradle-wrapper.jar
+.vscode/
+.idea/
+.classpath/
+.project/
+.settings/
+.gradle/

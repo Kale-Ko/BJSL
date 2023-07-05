@@ -25,14 +25,14 @@ public class ParsedObject extends ParsedElement {
      * @since 1.0.0
      */
     protected ParsedObject() {
-        this(new LinkedHashMap<String, ParsedElement>());
+        this(new LinkedHashMap<>());
     }
 
     /**
      * Create a new {@link ParsedObject} from an object
      *
-     * @param object
-     *        The object to use
+     * @param object The object to use
+     *
      * @since 1.0.0
      */
     protected ParsedObject(LinkedHashMap<String, ParsedElement> object) {
@@ -43,6 +43,7 @@ public class ParsedObject extends ParsedElement {
      * Get the amount of key/value pairs this object stores
      *
      * @return The amount of key/value pairs this object stores
+     *
      * @since 1.0.0
      */
     public int getSize() {
@@ -55,10 +56,11 @@ public class ParsedObject extends ParsedElement {
      * Note: Returns a copy of the list
      *
      * @return A list of all the key/value pairs this object stores
+     *
      * @since 1.0.0
      */
     public List<Map.Entry<String, ParsedElement>> getEntries() {
-        return new ArrayList<Map.Entry<String, ParsedElement>>(this.object.entrySet());
+        return new ArrayList<>(this.object.entrySet());
     }
 
     /**
@@ -67,10 +69,11 @@ public class ParsedObject extends ParsedElement {
      * Note: Returns a copy of the list
      *
      * @return A list of all the keys this object stores
+     *
      * @since 1.0.0
      */
     public List<String> getKeys() {
-        return new ArrayList<String>(this.object.keySet());
+        return new ArrayList<>(this.object.keySet());
     }
 
     /**
@@ -79,18 +82,20 @@ public class ParsedObject extends ParsedElement {
      * Note: Returns a copy of the list
      *
      * @return A list of all the values this object stores
+     *
      * @since 1.0.0
      */
     public List<ParsedElement> getValues() {
-        return new ArrayList<ParsedElement>(this.object.values());
+        return new ArrayList<>(this.object.values());
     }
 
     /**
      * Check if this object stores a certain key
      *
-     * @param key
-     *        The key to check
+     * @param key The key to check
+     *
      * @return If this object stores a certain key
+     *
      * @since 1.0.0
      */
     public Boolean has(String key) {
@@ -104,9 +109,10 @@ public class ParsedObject extends ParsedElement {
     /**
      * Get the value of a certain key this object stores
      *
-     * @param key
-     *        The key to get
+     * @param key The key to get
+     *
      * @return The value of a certain key this object stores
+     *
      * @since 1.0.0
      */
     public ParsedElement get(String key) {
@@ -124,10 +130,9 @@ public class ParsedObject extends ParsedElement {
     /**
      * Set the value of a certain key this object stores
      *
-     * @param key
-     *        The key to set
-     * @param value
-     *        The value to set
+     * @param key   The key to set
+     * @param value The value to set
+     *
      * @since 1.0.0
      */
     public void set(String key, ParsedElement value) {
@@ -138,17 +143,15 @@ public class ParsedObject extends ParsedElement {
             throw new NullPointerException("Value can not be null");
         }
 
-        if (this.object.containsKey(key)) {
-            this.object.remove(key);
-        }
+        this.object.remove(key);
         this.object.put(key, value);
     }
 
     /**
      * Remove a certain key/value pair this object stores
      *
-     * @param key
-     *        The key to remove
+     * @param key The key to remove
+     *
      * @since 1.0.0
      */
     public void remove(String key) {
@@ -167,6 +170,7 @@ public class ParsedObject extends ParsedElement {
      * Create a new empty {@link ParsedObject}
      *
      * @return A new empty {@link ParsedObject}
+     *
      * @since 1.0.0
      */
     public static ParsedObject create() {
@@ -176,9 +180,10 @@ public class ParsedObject extends ParsedElement {
     /**
      * Create a new {@link ParsedObject} that will be populated with the passed map
      *
-     * @param object
-     *        The map to use to populate the new object
+     * @param object The map to use to populate the new object
+     *
      * @return A new {@link ParsedObject} populated with the passed map
+     *
      * @since 1.0.0
      */
     public static ParsedObject from(Map<String, ParsedElement> object) {
@@ -186,6 +191,6 @@ public class ParsedObject extends ParsedElement {
             throw new NullPointerException("Object can not be null");
         }
 
-        return new ParsedObject(new LinkedHashMap<String, ParsedElement>(object));
+        return new ParsedObject(new LinkedHashMap<>(object));
     }
 }

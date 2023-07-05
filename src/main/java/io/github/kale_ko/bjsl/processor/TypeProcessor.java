@@ -12,20 +12,22 @@ public interface TypeProcessor {
     /**
      * Converts an Object into a {@link ParsedElement}
      *
-     * @param object
-     *        The object to convert
+     * @param object The object to convert
+     *
      * @return A new {@link ParsedElement} representing the Object
+     *
      * @since 1.0.0
      */
-    public ParsedElement toElement(Object object);
+    ParsedElement toElement(Object object);
 
     /**
      * Converts a {@link ParsedElement} into an Object
      *
-     * @param element
-     *        The element to convert
+     * @param element The element to convert
+     *
      * @return A new Object representing the element
+     *
      * @since 1.0.0
      */
-    public Object toObject(ParsedElement element);
+    Object toObject(ParsedElement element);
 }

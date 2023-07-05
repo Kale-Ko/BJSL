@@ -21,12 +21,10 @@ public class XmlParser extends Parser<XmlFactory, XmlMapper> {
     /**
      * Create a new Parser using certain factories
      *
-     * @param factory
-     *        The factory used for converting to/from trees/strings
-     * @param mapper
-     *        The mapper used for converting to/from trees/strings
-     * @param prettyPrinter
-     *        The prettyPrinter used for converting to strings
+     * @param factory       The factory used for converting to/from trees/strings
+     * @param mapper        The mapper used for converting to/from trees/strings
+     * @param prettyPrinter The prettyPrinter used for converting to strings
+     *
      * @since 1.0.0
      */
     protected XmlParser(XmlFactory factory, XmlMapper mapper, PrettyPrinter prettyPrinter) {
@@ -54,7 +52,8 @@ public class XmlParser extends Parser<XmlFactory, XmlMapper> {
          *
          * @since 1.0.0
          */
-        public Builder() {}
+        public Builder() {
+        }
 
         /**
          * Get weather pretty printing should be enabled or not
@@ -62,6 +61,7 @@ public class XmlParser extends Parser<XmlFactory, XmlMapper> {
          * Default is false
          *
          * @return Weather pretty printing should be enabled or not
+         *
          * @since 1.0.0
          */
         public boolean getPrettyPrint() {
@@ -73,9 +73,10 @@ public class XmlParser extends Parser<XmlFactory, XmlMapper> {
          * <p>
          * Default is false
          *
-         * @param value
-         *        Weather pretty printing should be enabled or not
+         * @param value Weather pretty printing should be enabled or not
+         *
          * @return Self for chaining
+         *
          * @since 1.0.0
          */
         public Builder setPrettyPrint(boolean value) {
@@ -88,6 +89,7 @@ public class XmlParser extends Parser<XmlFactory, XmlMapper> {
          * Uses the current settings to build a new {@link XmlParser}
          *
          * @return A new {@link XmlParser} instance
+         *
          * @since 1.0.0
          */
         public XmlParser build() {
@@ -99,7 +101,7 @@ public class XmlParser extends Parser<XmlFactory, XmlMapper> {
 
             XmlFactory factory = factoryBuilder.build();
 
-            DefaultXmlPrettyPrinter prettyPrinter = null;
+            DefaultXmlPrettyPrinter prettyPrinter;
 
             if (prettyPrint) {
                 prettyPrinter = new DefaultXmlPrettyPrinter();

@@ -1,19 +1,15 @@
 package io.github.kale_ko.bjsl.parsers;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.reflect.Field;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonFactoryBuilder;
-import com.fasterxml.jackson.core.PrettyPrinter;
-import com.fasterxml.jackson.core.StreamReadFeature;
-import com.fasterxml.jackson.core.StreamWriteFeature;
+import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.core.json.JsonWriteFeature;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import io.github.kale_ko.bjsl.BJSL;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.Field;
 
 /**
  * A parser for interfacing with JSON
@@ -27,12 +23,10 @@ public class JsonParser extends Parser<JsonFactory, JsonMapper> {
     /**
      * Create a new Parser using certain factories
      *
-     * @param factory
-     *        The factory used for converting to/from trees/strings
-     * @param mapper
-     *        The mapper used for converting to/from trees/strings
-     * @param prettyPrinter
-     *        The prettyPrinter used for converting to strings
+     * @param factory       The factory used for converting to/from trees/strings
+     * @param mapper        The mapper used for converting to/from trees/strings
+     * @param prettyPrinter The prettyPrinter used for converting to strings
+     *
      * @since 1.0.0
      */
     protected JsonParser(JsonFactory factory, JsonMapper mapper, PrettyPrinter prettyPrinter) {
@@ -78,7 +72,8 @@ public class JsonParser extends Parser<JsonFactory, JsonMapper> {
          *
          * @since 1.0.0
          */
-        public Builder() {}
+        public Builder() {
+        }
 
         /**
          * Get weather pretty printing should be enabled or not
@@ -86,6 +81,7 @@ public class JsonParser extends Parser<JsonFactory, JsonMapper> {
          * Default is false
          *
          * @return Weather pretty printing should be enabled or not
+         *
          * @since 1.0.0
          */
         public boolean getPrettyPrint() {
@@ -97,9 +93,10 @@ public class JsonParser extends Parser<JsonFactory, JsonMapper> {
          * <p>
          * Default is false
          *
-         * @param value
-         *        Weather pretty printing should be enabled or not
+         * @param value Weather pretty printing should be enabled or not
+         *
          * @return Self for chaining
+         *
          * @since 1.0.0
          */
         public Builder setPrettyPrint(boolean value) {
@@ -114,6 +111,7 @@ public class JsonParser extends Parser<JsonFactory, JsonMapper> {
          * Default is 2
          *
          * @return The indent level (in spaces) to use when pretty printing
+         *
          * @since 1.0.0
          */
         public int getIndentLevel() {
@@ -125,9 +123,10 @@ public class JsonParser extends Parser<JsonFactory, JsonMapper> {
          * <p>
          * Default is 2
          *
-         * @param value
-         *        The indent level (in spaces) to use when pretty printing
+         * @param value The indent level (in spaces) to use when pretty printing
+         *
          * @return Self for chaining
+         *
          * @since 1.0.0
          */
         public Builder setIndentLevel(int value) {
@@ -142,6 +141,7 @@ public class JsonParser extends Parser<JsonFactory, JsonMapper> {
          * Default is lf
          *
          * @return Weather to use crlf or lf line endings
+         *
          * @since 1.0.0
          */
         public boolean getCrlf() {
@@ -153,9 +153,10 @@ public class JsonParser extends Parser<JsonFactory, JsonMapper> {
          * <p>
          * Default is lf
          *
-         * @param value
-         *        Weather to use crlf or lf line endings
+         * @param value Weather to use crlf or lf line endings
+         *
          * @return Self for chaining
+         *
          * @since 1.0.0
          */
         public Builder setCrlf(boolean value) {
@@ -168,6 +169,7 @@ public class JsonParser extends Parser<JsonFactory, JsonMapper> {
          * Uses the current settings to build a new {@link JsonParser}
          *
          * @return A new {@link JsonParser} instance
+         *
          * @since 1.0.0
          */
         public JsonParser build() {
@@ -188,7 +190,7 @@ public class JsonParser extends Parser<JsonFactory, JsonMapper> {
 
             JsonFactory factory = factoryBuilder.build();
 
-            DefaultPrettyPrinter prettyPrinter = null;
+            DefaultPrettyPrinter prettyPrinter;
 
             if (prettyPrint) {
                 prettyPrinter = new DefaultPrettyPrinter();

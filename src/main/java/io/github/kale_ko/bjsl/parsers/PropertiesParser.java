@@ -19,12 +19,10 @@ public class PropertiesParser extends Parser<JavaPropsFactory, JavaPropsMapper> 
     /**
      * Create a new Parser using certain factories
      *
-     * @param factory
-     *        The factory used for converting to/from trees/strings
-     * @param mapper
-     *        The mapper used for converting to/from trees/strings
-     * @param prettyPrinter
-     *        The prettyPrinter used for converting to strings
+     * @param factory       The factory used for converting to/from trees/strings
+     * @param mapper        The mapper used for converting to/from trees/strings
+     * @param prettyPrinter The prettyPrinter used for converting to strings
+     *
      * @since 1.0.0
      */
     protected PropertiesParser(JavaPropsFactory factory, JavaPropsMapper mapper, PrettyPrinter prettyPrinter) {
@@ -43,12 +41,14 @@ public class PropertiesParser extends Parser<JavaPropsFactory, JavaPropsMapper> 
          *
          * @since 1.0.0
          */
-        public Builder() {}
+        public Builder() {
+        }
 
         /**
          * Uses the current settings to build a new {@link PropertiesParser}
          *
          * @return A new {@link PropertiesParser} instance
+         *
          * @since 1.0.0
          */
         public PropertiesParser build() {
