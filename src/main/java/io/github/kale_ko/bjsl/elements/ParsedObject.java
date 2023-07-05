@@ -1,6 +1,5 @@
 package io.github.kale_ko.bjsl.elements;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +16,7 @@ public class ParsedObject extends ParsedElement {
      *
      * @since 1.0.0
      */
-    protected LinkedHashMap<String, ParsedElement> object;
+    protected final Map<String, ParsedElement> object;
 
     /**
      * Create a new {@link ParsedObject}
@@ -35,7 +34,7 @@ public class ParsedObject extends ParsedElement {
      *
      * @since 1.0.0
      */
-    protected ParsedObject(LinkedHashMap<String, ParsedElement> object) {
+    protected ParsedObject(Map<String, ParsedElement> object) {
         this.object = object;
     }
 
@@ -59,8 +58,8 @@ public class ParsedObject extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public List<Map.Entry<String, ParsedElement>> getEntries() {
-        return new ArrayList<>(this.object.entrySet());
+    public List<java.util.Map.Entry<String, ParsedElement>> getEntries() {
+        return List.copyOf(this.object.entrySet());
     }
 
     /**
@@ -73,7 +72,7 @@ public class ParsedObject extends ParsedElement {
      * @since 1.0.0
      */
     public List<String> getKeys() {
-        return new ArrayList<>(this.object.keySet());
+        return List.copyOf(this.object.keySet());
     }
 
     /**
@@ -86,7 +85,7 @@ public class ParsedObject extends ParsedElement {
      * @since 1.0.0
      */
     public List<ParsedElement> getValues() {
-        return new ArrayList<>(this.object.values());
+        return List.copyOf(this.object.values());
     }
 
     /**
@@ -98,7 +97,7 @@ public class ParsedObject extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public Boolean has(String key) {
+    public boolean has(String key) {
         if (key == null) {
             throw new NullPointerException("Key can not be null");
         }

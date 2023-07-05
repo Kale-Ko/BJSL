@@ -628,7 +628,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static String stringifyJson(ParsedElement element, Boolean pretty) {
+    public static String stringifyJson(ParsedElement element, boolean pretty) {
         if (pretty) {
             return prettyJsonParser.toString(element);
         } else {
@@ -663,7 +663,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static byte[] byteifyJson(ParsedElement element, Boolean pretty) {
+    public static byte[] byteifyJson(ParsedElement element, boolean pretty) {
         if (pretty) {
             return prettyJsonParser.toBytes(element);
         } else {
@@ -698,7 +698,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static String stringifyJson(Object object, Boolean pretty) {
+    public static String stringifyJson(Object object, boolean pretty) {
         return stringifyJson(objectProcessor.toElement(object), pretty);
     }
 
@@ -729,7 +729,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static byte[] byteifyJson(Object object, Boolean pretty) {
+    public static byte[] byteifyJson(Object object, boolean pretty) {
         return byteifyJson(objectProcessor.toElement(object), pretty);
     }
 
@@ -1396,7 +1396,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.4.0
      */
-    public static String stringifyXml(ParsedElement element, Boolean pretty) {
+    public static String stringifyXml(ParsedElement element, boolean pretty) {
         if (pretty) {
             return prettyXmlParser.toString(element);
         } else {
@@ -1431,7 +1431,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.4.0
      */
-    public static byte[] byteifyXml(ParsedElement element, Boolean pretty) {
+    public static byte[] byteifyXml(ParsedElement element, boolean pretty) {
         if (pretty) {
             return prettyXmlParser.toBytes(element);
         } else {
@@ -1466,7 +1466,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.4.0
      */
-    public static String stringifyXml(Object object, Boolean pretty) {
+    public static String stringifyXml(Object object, boolean pretty) {
         return stringifyXml(objectProcessor.toElement(object), pretty);
     }
 
@@ -1497,7 +1497,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.4.0
      */
-    public static byte[] byteifyXml(Object object, Boolean pretty) {
+    public static byte[] byteifyXml(Object object, boolean pretty) {
         return byteifyXml(objectProcessor.toElement(object), pretty);
     }
 
