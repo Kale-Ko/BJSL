@@ -1,10 +1,6 @@
 package io.github.kale_ko.bjsl.processor.annotations;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Mark a field to never be serialized no matter what it contains
@@ -14,4 +10,5 @@ import java.lang.annotation.Target;
 @Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-public @interface DontSerialize {}
+public @interface DontSerialize {
+}

@@ -12,12 +12,14 @@ public abstract class ParsedElement {
      *
      * @since 1.0.0
      */
-    protected ParsedElement() {}
+    protected ParsedElement() {
+    }
 
     /**
      * Check if this element is a {@link ParsedObject}
      *
      * @return If the element is a {@link ParsedObject}
+     *
      * @since 1.0.0
      */
     public boolean isObject() {
@@ -28,6 +30,7 @@ public abstract class ParsedElement {
      * Check if this element is a {@link ParsedArray}
      *
      * @return If the element is a {@link ParsedArray}
+     *
      * @since 1.0.0
      */
     public boolean isArray() {
@@ -38,6 +41,7 @@ public abstract class ParsedElement {
      * Check if this element is a {@link ParsedPrimitive}
      *
      * @return If the element is a {@link ParsedPrimitive}
+     *
      * @since 1.0.0
      */
     public boolean isPrimitive() {
@@ -50,6 +54,7 @@ public abstract class ParsedElement {
      * Note: Does not catch casting errors
      *
      * @return This element as a {@link ParsedObject}
+     *
      * @since 1.0.0
      */
     public ParsedObject asObject() {
@@ -62,6 +67,7 @@ public abstract class ParsedElement {
      * Note: Does not catch casting errors
      *
      * @return This element as a {@link ParsedArray}
+     *
      * @since 1.0.0
      */
     public ParsedArray asArray() {
@@ -74,6 +80,7 @@ public abstract class ParsedElement {
      * Note: Does not catch casting errors
      *
      * @return This element as a {@link ParsedPrimitive}
+     *
      * @since 1.0.0
      */
     public ParsedPrimitive asPrimitive() {

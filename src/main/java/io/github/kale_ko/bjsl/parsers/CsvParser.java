@@ -21,12 +21,10 @@ public class CsvParser extends Parser<CsvFactory, CsvMapper> {
     /**
      * Create a new Parser using certain factories
      *
-     * @param factory
-     *        The factory used for converting to/from trees/strings
-     * @param mapper
-     *        The mapper used for converting to/from trees/strings
-     * @param prettyPrinter
-     *        The prettyPrinter used for converting to strings
+     * @param factory       The factory used for converting to/from trees/strings
+     * @param mapper        The mapper used for converting to/from trees/strings
+     * @param prettyPrinter The prettyPrinter used for converting to strings
+     *
      * @since 1.0.0
      */
     protected CsvParser(CsvFactory factory, CsvMapper mapper, PrettyPrinter prettyPrinter) {
@@ -45,12 +43,14 @@ public class CsvParser extends Parser<CsvFactory, CsvMapper> {
          *
          * @since 1.0.0
          */
-        public Builder() {}
+        public Builder() {
+        }
 
         /**
          * Uses the current settings to build a new {@link CsvParser}
          *
          * @return A new {@link CsvParser} instance
+         *
          * @since 1.0.0
          */
         public CsvParser build() {

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
- * A wrapper for a primitive object used to represent String/int/float/etc values
+ * A wrapper for a primitive object used to represent String/int/float/etc. values
  * <p>
  * Note: Values are often not stored as their normal type but rather higher bit types for ease of conversion
  *
@@ -15,11 +15,11 @@ public class ParsedPrimitive extends ParsedElement {
     /**
      * An enum representing different types of Primitives
      *
-     * @see ParsedPrimitive
      * @version 1.0.0
+     * @see ParsedPrimitive
      * @since 1.0.0
      */
-    public static enum PrimitiveType {
+    public enum PrimitiveType {
         /**
          * Represents a {@link String}
          *
@@ -123,10 +123,9 @@ public class ParsedPrimitive extends ParsedElement {
     /**
      * Create a new {@link ParsedPrimitive}
      *
-     * @param value
-     *        The value of the primitive
-     * @param type
-     *        The type of the primitive
+     * @param value The value of the primitive
+     * @param type  The type of the primitive
+     *
      * @since 1.0.0
      */
     protected ParsedPrimitive(Object value, PrimitiveType type) {
@@ -138,6 +137,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Get the type of this primitive
      *
      * @return The type of this primitive
+     *
      * @see PrimitiveType
      * @since 1.0.0
      */
@@ -149,6 +149,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Get if the type of this primitive is a string
      *
      * @return If the type of this primitive is a string
+     *
      * @since 1.0.0
      */
     public boolean isString() {
@@ -159,6 +160,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Get if the type of this primitive is a byte
      *
      * @return If the type of this primitive is a byte
+     *
      * @since 1.0.0
      */
     public boolean isByte() {
@@ -169,6 +171,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Get if the type of this primitive is a char
      *
      * @return If the type of this primitive is a char
+     *
      * @since 1.0.0
      */
     public boolean isChar() {
@@ -179,6 +182,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Get if the type of this primitive is a short
      *
      * @return If the type of this primitive is a short
+     *
      * @since 1.0.0
      */
     public boolean isShort() {
@@ -189,6 +193,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Get if the type of this primitive is an integer
      *
      * @return If the type of this primitive is an integer
+     *
      * @since 1.0.0
      */
     public boolean isInteger() {
@@ -199,6 +204,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Get if the type of this primitive is a big integer
      *
      * @return If the type of this primitive is a big integer
+     *
      * @since 1.0.0
      */
     public boolean isBigInteger() {
@@ -209,6 +215,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Get if the type of this primitive is a long
      *
      * @return If the type of this primitive is a long
+     *
      * @since 1.0.0
      */
     public boolean isLong() {
@@ -219,6 +226,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Get if the type of this primitive is a float
      *
      * @return If the type of this primitive is a float
+     *
      * @since 1.0.0
      */
     public boolean isFloat() {
@@ -229,6 +237,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Get if the type of this primitive is a double
      *
      * @return If the type of this primitive is a double
+     *
      * @since 1.0.0
      */
     public boolean isDouble() {
@@ -239,6 +248,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Get if the type of this primitive is a big decimal
      *
      * @return If the type of this primitive is a big decimal
+     *
      * @since 1.0.0
      */
     public boolean isBigDecimal() {
@@ -249,6 +259,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Get if the type of this primitive is a boolean
      *
      * @return If the type of this primitive is a boolean
+     *
      * @since 1.0.0
      */
     public boolean isBoolean() {
@@ -259,6 +270,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Get if the type of this primitive is null
      *
      * @return If the type of this primitive is null
+     *
      * @since 1.0.0
      */
     public boolean isNull() {
@@ -269,6 +281,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Get the value of this primitive as it's type
      *
      * @return The value of this primitive as it's type
+     *
      * @since 1.0.0
      */
     public Object get() {
@@ -307,6 +320,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Note: Does not catch casting errors
      *
      * @return The value of this primitive as a string
+     *
      * @since 1.0.0
      */
     public String asString() {
@@ -323,6 +337,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Note: Does not catch casting errors
      *
      * @return The value of this primitive as a byte
+     *
      * @since 1.0.0
      */
     public byte asByte() {
@@ -339,6 +354,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Note: Does not catch casting errors
      *
      * @return The value of this primitive as a char
+     *
      * @since 1.0.0
      */
     public char asChar() {
@@ -355,6 +371,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Note: Does not catch casting errors
      *
      * @return The value of this primitive as a short
+     *
      * @since 1.0.0
      */
     public short asShort() {
@@ -366,11 +383,12 @@ public class ParsedPrimitive extends ParsedElement {
     }
 
     /**
-     * Get the value of this primitive as a integer
+     * Get the value of this primitive as an integer
      * <p>
      * Note: Does not catch casting errors
      *
-     * @return The value of this primitive as a integer
+     * @return The value of this primitive as an integer
+     *
      * @since 1.0.0
      */
     public int asInteger() {
@@ -387,6 +405,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Note: Does not catch casting errors
      *
      * @return The value of this primitive as a big integer
+     *
      * @since 1.0.0
      */
     public BigInteger asBigInteger() {
@@ -403,6 +422,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Note: Does not catch casting errors
      *
      * @return The value of this primitive as a long
+     *
      * @since 1.0.0
      */
     public long asLong() {
@@ -419,6 +439,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Note: Does not catch casting errors
      *
      * @return The value of this primitive as a float
+     *
      * @since 1.0.0
      */
     public float asFloat() {
@@ -435,6 +456,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Note: Does not catch casting errors
      *
      * @return The value of this primitive as a double
+     *
      * @since 1.0.0
      */
     public double asDouble() {
@@ -451,6 +473,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Note: Does not catch casting errors
      *
      * @return The value of this primitive as a big decimal
+     *
      * @since 1.0.0
      */
     public BigDecimal asBigDecimal() {
@@ -467,6 +490,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Note: Does not catch casting errors
      *
      * @return The value of this primitive as a boolean
+     *
      * @since 1.0.0
      */
     public boolean asBoolean() {
@@ -483,6 +507,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Note: Does not catch casting errors
      *
      * @return The value of this primitive as null
+     *
      * @since 1.0.0
      */
     public Object asNull() {
@@ -496,9 +521,10 @@ public class ParsedPrimitive extends ParsedElement {
     /**
      * Create a new {@link ParsedPrimitive} with the passed value
      *
-     * @param value
-     *        The value to use
+     * @param value The value to use
+     *
      * @return A new {@link ParsedPrimitive} with the passed value
+     *
      * @since 1.0.0
      */
     public static ParsedPrimitive from(Object value) {
@@ -530,9 +556,10 @@ public class ParsedPrimitive extends ParsedElement {
     /**
      * Create a new {@link ParsedPrimitive} with the passed string
      *
-     * @param value
-     *        The string to use
+     * @param value The string to use
+     *
      * @return A new {@link ParsedPrimitive} with the passed string
+     *
      * @since 1.0.0
      */
     public static ParsedPrimitive fromString(String value) {
@@ -546,9 +573,10 @@ public class ParsedPrimitive extends ParsedElement {
     /**
      * Create a new {@link ParsedPrimitive} with the passed byte
      *
-     * @param value
-     *        The byte to use
+     * @param value The byte to use
+     *
      * @return A new {@link ParsedPrimitive} with the passed byte
+     *
      * @since 1.0.0
      */
     public static ParsedPrimitive fromByte(byte value) {
@@ -558,9 +586,10 @@ public class ParsedPrimitive extends ParsedElement {
     /**
      * Create a new {@link ParsedPrimitive} with the passed char
      *
-     * @param value
-     *        The char to use
+     * @param value The char to use
+     *
      * @return A new {@link ParsedPrimitive} with the passed char
+     *
      * @since 1.0.0
      */
     public static ParsedPrimitive fromChar(char value) {
@@ -570,9 +599,10 @@ public class ParsedPrimitive extends ParsedElement {
     /**
      * Create a new {@link ParsedPrimitive} with the passed short
      *
-     * @param value
-     *        The short to use
+     * @param value The short to use
+     *
      * @return A new {@link ParsedPrimitive} with the passed short
+     *
      * @since 1.0.0
      */
     public static ParsedPrimitive fromShort(short value) {
@@ -582,9 +612,10 @@ public class ParsedPrimitive extends ParsedElement {
     /**
      * Create a new {@link ParsedPrimitive} with the passed integer
      *
-     * @param value
-     *        The integer to use
+     * @param value The integer to use
+     *
      * @return A new {@link ParsedPrimitive} with the passed integer
+     *
      * @since 1.0.0
      */
     public static ParsedPrimitive fromInteger(int value) {
@@ -594,9 +625,10 @@ public class ParsedPrimitive extends ParsedElement {
     /**
      * Create a new {@link ParsedPrimitive} with the passed big integer
      *
-     * @param value
-     *        The big integer to use
+     * @param value The big integer to use
+     *
      * @return A new {@link ParsedPrimitive} with the passed big integer
+     *
      * @since 1.0.0
      */
     public static ParsedPrimitive fromBigInteger(BigInteger value) {
@@ -610,9 +642,10 @@ public class ParsedPrimitive extends ParsedElement {
     /**
      * Create a new {@link ParsedPrimitive} with the passed long
      *
-     * @param value
-     *        The long to use
+     * @param value The long to use
+     *
      * @return A new {@link ParsedPrimitive} with the passed long
+     *
      * @since 1.0.0
      */
     public static ParsedPrimitive fromLong(long value) {
@@ -622,9 +655,10 @@ public class ParsedPrimitive extends ParsedElement {
     /**
      * Create a new {@link ParsedPrimitive} with the passed float
      *
-     * @param value
-     *        The float to use
+     * @param value The float to use
+     *
      * @return A new {@link ParsedPrimitive} with the passed float
+     *
      * @since 1.0.0
      */
     public static ParsedPrimitive fromFloat(float value) {
@@ -634,9 +668,10 @@ public class ParsedPrimitive extends ParsedElement {
     /**
      * Create a new {@link ParsedPrimitive} with the passed double
      *
-     * @param value
-     *        The double to use
+     * @param value The double to use
+     *
      * @return A new {@link ParsedPrimitive} with the passed double
+     *
      * @since 1.0.0
      */
     public static ParsedPrimitive fromDouble(double value) {
@@ -646,9 +681,10 @@ public class ParsedPrimitive extends ParsedElement {
     /**
      * Create a new {@link ParsedPrimitive} with the passed big decimal
      *
-     * @param value
-     *        The big decimal to use
+     * @param value The big decimal to use
+     *
      * @return A new {@link ParsedPrimitive} with the passed big decimal
+     *
      * @since 1.0.0
      */
     public static ParsedPrimitive fromBigDecimal(BigDecimal value) {
@@ -662,9 +698,10 @@ public class ParsedPrimitive extends ParsedElement {
     /**
      * Create a new {@link ParsedPrimitive} with the passed boolean
      *
-     * @param value
-     *        The boolean to use
+     * @param value The boolean to use
+     *
      * @return A new {@link ParsedPrimitive} with the passed boolean
+     *
      * @since 1.0.0
      */
     public static ParsedPrimitive fromBoolean(boolean value) {
@@ -675,6 +712,7 @@ public class ParsedPrimitive extends ParsedElement {
      * Create a new {@link ParsedPrimitive} with null
      *
      * @return A new {@link ParsedPrimitive} with null
+     *
      * @since 1.0.0
      */
     public static ParsedPrimitive fromNull() {

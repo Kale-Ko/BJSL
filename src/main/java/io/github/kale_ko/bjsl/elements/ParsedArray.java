@@ -23,14 +23,14 @@ public class ParsedArray extends ParsedElement {
      * @since 1.0.0
      */
     protected ParsedArray() {
-        this(new ArrayList<ParsedElement>());
+        this(new ArrayList<>());
     }
 
     /**
      * Create a new {@link ParsedArray} from an array
      *
-     * @param array
-     *        The array to use
+     * @param array The array to use
+     *
      * @since 1.0.0
      */
     protected ParsedArray(ArrayList<ParsedElement> array) {
@@ -41,6 +41,7 @@ public class ParsedArray extends ParsedElement {
      * Get the amount of values in this array
      *
      * @return The amount of values in this array
+     *
      * @since 1.0.0
      */
     public int getSize() {
@@ -53,18 +54,20 @@ public class ParsedArray extends ParsedElement {
      * Note: Returns a copy of the list
      *
      * @return A list of all the values in this array
+     *
      * @since 1.0.0
      */
     public List<ParsedElement> getValues() {
-        return new ArrayList<ParsedElement>(this.array);
+        return new ArrayList<>(this.array);
     }
 
     /**
      * Get the value of a certain index in this array
      *
-     * @param index
-     *        The index to get
+     * @param index The index to get
+     *
      * @return The value of a certain index in this array
+     *
      * @since 1.0.0
      */
     public ParsedElement get(int index) {
@@ -78,8 +81,8 @@ public class ParsedArray extends ParsedElement {
     /**
      * Add a value to this array at the end
      *
-     * @param value
-     *        The value to add
+     * @param value The value to add
+     *
      * @since 1.0.0
      */
     public void add(ParsedElement value) {
@@ -93,10 +96,9 @@ public class ParsedArray extends ParsedElement {
     /**
      * Add a value to this array at a certain index
      *
-     * @param index
-     *        The index to add it at
-     * @param value
-     *        The value to add
+     * @param index The index to add it at
+     * @param value The value to add
+     *
      * @since 1.0.0
      */
     public void addAt(int index, ParsedElement value) {
@@ -114,8 +116,8 @@ public class ParsedArray extends ParsedElement {
     /**
      * Add a list of values to this array
      *
-     * @param values
-     *        The values to add
+     * @param values The values to add
+     *
      * @since 1.0.0
      */
     public void addAll(List<ParsedElement> values) {
@@ -131,10 +133,9 @@ public class ParsedArray extends ParsedElement {
     /**
      * Set the value of a certain index in this array
      *
-     * @param index
-     *        The index to set
-     * @param value
-     *        The value to set
+     * @param index The index to set
+     * @param value The value to set
+     *
      * @since 1.0.0
      */
     public void set(int index, ParsedElement value) {
@@ -152,8 +153,8 @@ public class ParsedArray extends ParsedElement {
     /**
      * Remove the value of a certain index in this array
      *
-     * @param index
-     *        The index to remove
+     * @param index The index to remove
+     *
      * @since 1.0.0
      */
     public void remove(int index) {
@@ -168,6 +169,7 @@ public class ParsedArray extends ParsedElement {
      * Create a new empty {@link ParsedArray}
      *
      * @return A new empty {@link ParsedArray}
+     *
      * @since 1.0.0
      */
     public static ParsedArray create() {
@@ -177,9 +179,10 @@ public class ParsedArray extends ParsedElement {
     /**
      * Create a new {@link ParsedArray} that will be populated with the passed list
      *
-     * @param array
-     *        The list to use to populate the new array
+     * @param array The list to use to populate the new array
+     *
      * @return A new {@link ParsedArray} populated with the passed list
+     *
      * @since 1.0.0
      */
     public static ParsedArray from(List<ParsedElement> array) {
@@ -187,6 +190,6 @@ public class ParsedArray extends ParsedElement {
             throw new NullPointerException("Array can not be null");
         }
 
-        return new ParsedArray(new ArrayList<ParsedElement>(array));
+        return new ParsedArray(new ArrayList<>(array));
     }
 }
