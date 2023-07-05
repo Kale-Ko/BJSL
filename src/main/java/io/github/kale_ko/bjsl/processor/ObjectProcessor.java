@@ -10,13 +10,15 @@ import io.github.kale_ko.bjsl.elements.ParsedArray;
 import io.github.kale_ko.bjsl.elements.ParsedElement;
 import io.github.kale_ko.bjsl.elements.ParsedObject;
 import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
+import io.github.kale_ko.bjsl.parsers.exception.InvalidTypeException;
 import io.github.kale_ko.bjsl.processor.annotations.AlwaysSerialize;
 import io.github.kale_ko.bjsl.processor.annotations.Default;
 import io.github.kale_ko.bjsl.processor.annotations.DontSerialize;
+import io.github.kale_ko.bjsl.processor.exception.EnumExpectedException;
+import io.github.kale_ko.bjsl.processor.exception.InitializationException;
+import io.github.kale_ko.bjsl.processor.exception.ProcessorException;
 import io.github.kale_ko.bjsl.processor.reflection.InitializationUtil;
 import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -396,7 +398,7 @@ public class ObjectProcessor {
                 }
             }
 
-            throw new RuntimeException("A type processor does not exists for class \"" + type.getRawClass().getSimpleName() + "\" or one of its superclasses");
+            throw new NullPointerException("A type processor does not exists for class \"" + type.getRawClass().getSimpleName() + "\" or one of its superclasses");
         }
 
         /**
@@ -444,7 +446,7 @@ public class ObjectProcessor {
         public Builder createTypeProcessor(JavaType type, TypeProcessor value) {
             for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
                 if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
-                    throw new RuntimeException("A type processor already exists for class \"" + type.getRawClass().getSimpleName() + "\" or one of its superclasses");
+                    throw new NullPointerException("A type processor already exists for class \"" + type.getRawClass().getSimpleName() + "\" or one of its superclasses");
                 }
             }
 
@@ -503,7 +505,7 @@ public class ObjectProcessor {
                 }
             }
 
-            throw new RuntimeException("A type processor does not exists for class \"" + type.getRawClass().getSimpleName() + "\" or one of its superclasses");
+            throw new NullPointerException("A type processor does not exists for class \"" + type.getRawClass().getSimpleName() + "\" or one of its superclasses");
         }
 
         /**
@@ -586,7 +588,7 @@ public class ObjectProcessor {
                                 try {
                                     return new URI(element.asPrimitive().asString());
                                 } catch (URISyntaxException e) {
-                                    throw new RuntimeException(e);
+                                    return null;
                                 }
                             } else {
                                 return null;
@@ -612,7 +614,7 @@ public class ObjectProcessor {
                                 try {
                                     return new URL(element.asPrimitive().asString());
                                 } catch (MalformedURLException e) {
-                                    throw new RuntimeException(e);
+                                    return null;
                                 }
                             } else {
                                 return null;
@@ -682,7 +684,7 @@ public class ObjectProcessor {
                                 try {
                                     return InetAddress.getByName(element.asPrimitive().asString());
                                 } catch (UnknownHostException e) {
-                                    throw new RuntimeException(e);
+                                    return null;
                                 }
                             } else {
                                 return null;
@@ -708,7 +710,7 @@ public class ObjectProcessor {
                                 try {
                                     return new InetSocketAddress(InetAddress.getByName(element.asPrimitive().asString().split(":")[0]), Integer.parseInt(element.asPrimitive().asString().split(":")[1]));
                                 } catch (UnknownHostException e) {
-                                    throw new RuntimeException(e);
+                                    return null;
                                 }
                             } else {
                                 return null;
@@ -736,7 +738,7 @@ public class ObjectProcessor {
                                     calendar.setTime(DateFormat.getDateInstance(DateFormat.DEFAULT).parse(element.asPrimitive().asString()));
                                     return calendar;
                                 } catch (ParseException e) {
-                                    throw new RuntimeException(e);
+                                    return null;
                                 }
                             } else {
                                 return null;
@@ -762,7 +764,7 @@ public class ObjectProcessor {
                                 try {
                                     return DateFormat.getDateInstance(DateFormat.DEFAULT).parse(element.asPrimitive().asString());
                                 } catch (ParseException e) {
-                                    throw new RuntimeException(e);
+                                    return null;
                                 }
                             } else {
                                 return null;
@@ -882,153 +884,149 @@ public class ObjectProcessor {
                     } else if (element.asPrimitive().isNull()) {
                         return null;
                     } else {
-                        throw new RuntimeException("Element for type \"" + type.getRawClass().getSimpleName() + "\" is not a enum");
+                        throw new EnumExpectedException(type.getRawClass());
                     }
                 } else {
-                    try {
-                        Object object = element.asPrimitive().get();
+                    Object object = element.asPrimitive().get();
 
-                        if (object == null) {
-                            return null;
-                        } else if (type.getRawClass() == String.class) {
-                            return (String) object;
-                        } else if (type.getRawClass() == Byte.class || type.getRawClass() == byte.class) {
-                            if (object.getClass() == String.class) {
-                                return Byte.parseByte((String) object);
-                            } else if (object.getClass() == Character.class) {
-                                return (byte) (char) object;
-                            } else if (object.getClass() == Short.class) {
-                                return (byte) (short) object;
-                            } else if (object.getClass() == Integer.class) {
-                                return (byte) (int) object;
-                            } else if (object.getClass() == Long.class) {
-                                return (byte) (long) object;
-                            } else if (object.getClass() == Float.class) {
-                                return (byte) (float) object;
-                            } else if (object.getClass() == Double.class) {
-                                return (byte) (double) object;
-                            } else {
-                                return (byte) object;
-                            }
-                        } else if (type.getRawClass() == Character.class || type.getRawClass() == char.class) {
-                            if (object.getClass() == String.class) {
-                                return ((String) object).charAt(0);
-                            } else if (object.getClass() == Byte.class) {
-                                return (char) (byte) object;
-                            } else if (object.getClass() == Short.class) {
-                                return (char) (short) object;
-                            } else if (object.getClass() == Integer.class) {
-                                return (char) (int) object;
-                            } else if (object.getClass() == Long.class) {
-                                return (char) (long) object;
-                            } else if (object.getClass() == Float.class) {
-                                return (char) (float) object;
-                            } else if (object.getClass() == Double.class) {
-                                return (char) (double) object;
-                            } else {
-                                return (char) object;
-                            }
-                        } else if (type.getRawClass() == Short.class || type.getRawClass() == short.class) {
-                            if (object.getClass() == String.class) {
-                                return Short.parseShort((String) object);
-                            } else if (object.getClass() == Byte.class) {
-                                return (short) (byte) object;
-                            } else if (object.getClass() == Character.class) {
-                                return (short) (char) object;
-                            } else if (object.getClass() == Integer.class) {
-                                return (short) (int) object;
-                            } else if (object.getClass() == Long.class) {
-                                return (short) (long) object;
-                            } else if (object.getClass() == Float.class) {
-                                return (short) (float) object;
-                            } else if (object.getClass() == Double.class) {
-                                return (short) (double) object;
-                            } else {
-                                return (short) object;
-                            }
-                        } else if (type.getRawClass() == Integer.class || type.getRawClass() == int.class) {
-                            if (object.getClass() == String.class) {
-                                return Integer.parseInt((String) object);
-                            } else if (object.getClass() == Byte.class) {
-                                return (int) (byte) object;
-                            } else if (object.getClass() == Character.class) {
-                                return (int) (char) object;
-                            } else if (object.getClass() == Short.class) {
-                                return (int) (short) object;
-                            } else if (object.getClass() == Long.class) {
-                                return (int) (long) object;
-                            } else if (object.getClass() == Float.class) {
-                                return (int) (float) object;
-                            } else if (object.getClass() == Double.class) {
-                                return (int) (double) object;
-                            } else {
-                                return (int) object;
-                            }
-                        } else if (type.getRawClass() == Long.class || type.getRawClass() == long.class) {
-                            if (object.getClass() == String.class) {
-                                return Long.parseLong((String) object);
-                            } else if (object.getClass() == Byte.class) {
-                                return (long) (byte) object;
-                            } else if (object.getClass() == Character.class) {
-                                return (long) (char) object;
-                            } else if (object.getClass() == Short.class) {
-                                return (long) (short) object;
-                            } else if (object.getClass() == Integer.class) {
-                                return (long) (int) object;
-                            } else if (object.getClass() == Float.class) {
-                                return (long) (float) object;
-                            } else if (object.getClass() == Double.class) {
-                                return (long) (double) object;
-                            } else {
-                                return (long) object;
-                            }
-                        } else if (type.getRawClass() == Float.class || type.getRawClass() == float.class) {
-                            if (object.getClass() == String.class) {
-                                return Float.parseFloat((String) object);
-                            } else if (object.getClass() == Byte.class) {
-                                return (float) (byte) object;
-                            } else if (object.getClass() == Character.class) {
-                                return (float) (char) object;
-                            } else if (object.getClass() == Short.class) {
-                                return (float) (short) object;
-                            } else if (object.getClass() == Integer.class) {
-                                return (float) (int) object;
-                            } else if (object.getClass() == Long.class) {
-                                return (float) (long) object;
-                            } else if (object.getClass() == Double.class) {
-                                return (float) (double) object;
-                            } else {
-                                return (float) object;
-                            }
-                        } else if (type.getRawClass() == Double.class || type.getRawClass() == double.class) {
-                            if (object.getClass() == String.class) {
-                                return Double.parseDouble((String) object);
-                            } else if (object.getClass() == Byte.class) {
-                                return (double) (byte) object;
-                            } else if (object.getClass() == Character.class) {
-                                return (double) (char) object;
-                            } else if (object.getClass() == Short.class) {
-                                return (double) (short) object;
-                            } else if (object.getClass() == Integer.class) {
-                                return (double) (int) object;
-                            } else if (object.getClass() == Long.class) {
-                                return (double) (long) object;
-                            } else if (object.getClass() == Float.class) {
-                                return (double) (float) object;
-                            } else {
-                                return (double) object;
-                            }
-                        } else if (type.getRawClass() == Boolean.class || type.getRawClass() == boolean.class) {
-                            if (object.getClass() == String.class) {
-                                return Boolean.parseBoolean((String) object);
-                            } else {
-                                return (boolean) object;
-                            }
+                    if (object == null) {
+                        return null;
+                    } else if (type.getRawClass() == String.class) {
+                        return (String) object;
+                    } else if (type.getRawClass() == Byte.class || type.getRawClass() == byte.class) {
+                        if (object.getClass() == String.class) {
+                            return Byte.parseByte((String) object);
+                        } else if (object.getClass() == Character.class) {
+                            return (byte) (char) object;
+                        } else if (object.getClass() == Short.class) {
+                            return (byte) (short) object;
+                        } else if (object.getClass() == Integer.class) {
+                            return (byte) (int) object;
+                        } else if (object.getClass() == Long.class) {
+                            return (byte) (long) object;
+                        } else if (object.getClass() == Float.class) {
+                            return (byte) (float) object;
+                        } else if (object.getClass() == Double.class) {
+                            return (byte) (double) object;
                         } else {
-                            return type.getRawClass().cast(object);
+                            return (byte) object;
                         }
-                    } catch (ClassCastException e) {
-                        throw new RuntimeException("Element could not be cast to \"" + type.getRawClass().getSimpleName() + "\"", e);
+                    } else if (type.getRawClass() == Character.class || type.getRawClass() == char.class) {
+                        if (object.getClass() == String.class) {
+                            return ((String) object).charAt(0);
+                        } else if (object.getClass() == Byte.class) {
+                            return (char) (byte) object;
+                        } else if (object.getClass() == Short.class) {
+                            return (char) (short) object;
+                        } else if (object.getClass() == Integer.class) {
+                            return (char) (int) object;
+                        } else if (object.getClass() == Long.class) {
+                            return (char) (long) object;
+                        } else if (object.getClass() == Float.class) {
+                            return (char) (float) object;
+                        } else if (object.getClass() == Double.class) {
+                            return (char) (double) object;
+                        } else {
+                            return (char) object;
+                        }
+                    } else if (type.getRawClass() == Short.class || type.getRawClass() == short.class) {
+                        if (object.getClass() == String.class) {
+                            return Short.parseShort((String) object);
+                        } else if (object.getClass() == Byte.class) {
+                            return (short) (byte) object;
+                        } else if (object.getClass() == Character.class) {
+                            return (short) (char) object;
+                        } else if (object.getClass() == Integer.class) {
+                            return (short) (int) object;
+                        } else if (object.getClass() == Long.class) {
+                            return (short) (long) object;
+                        } else if (object.getClass() == Float.class) {
+                            return (short) (float) object;
+                        } else if (object.getClass() == Double.class) {
+                            return (short) (double) object;
+                        } else {
+                            return (short) object;
+                        }
+                    } else if (type.getRawClass() == Integer.class || type.getRawClass() == int.class) {
+                        if (object.getClass() == String.class) {
+                            return Integer.parseInt((String) object);
+                        } else if (object.getClass() == Byte.class) {
+                            return (int) (byte) object;
+                        } else if (object.getClass() == Character.class) {
+                            return (int) (char) object;
+                        } else if (object.getClass() == Short.class) {
+                            return (int) (short) object;
+                        } else if (object.getClass() == Long.class) {
+                            return (int) (long) object;
+                        } else if (object.getClass() == Float.class) {
+                            return (int) (float) object;
+                        } else if (object.getClass() == Double.class) {
+                            return (int) (double) object;
+                        } else {
+                            return (int) object;
+                        }
+                    } else if (type.getRawClass() == Long.class || type.getRawClass() == long.class) {
+                        if (object.getClass() == String.class) {
+                            return Long.parseLong((String) object);
+                        } else if (object.getClass() == Byte.class) {
+                            return (long) (byte) object;
+                        } else if (object.getClass() == Character.class) {
+                            return (long) (char) object;
+                        } else if (object.getClass() == Short.class) {
+                            return (long) (short) object;
+                        } else if (object.getClass() == Integer.class) {
+                            return (long) (int) object;
+                        } else if (object.getClass() == Float.class) {
+                            return (long) (float) object;
+                        } else if (object.getClass() == Double.class) {
+                            return (long) (double) object;
+                        } else {
+                            return (long) object;
+                        }
+                    } else if (type.getRawClass() == Float.class || type.getRawClass() == float.class) {
+                        if (object.getClass() == String.class) {
+                            return Float.parseFloat((String) object);
+                        } else if (object.getClass() == Byte.class) {
+                            return (float) (byte) object;
+                        } else if (object.getClass() == Character.class) {
+                            return (float) (char) object;
+                        } else if (object.getClass() == Short.class) {
+                            return (float) (short) object;
+                        } else if (object.getClass() == Integer.class) {
+                            return (float) (int) object;
+                        } else if (object.getClass() == Long.class) {
+                            return (float) (long) object;
+                        } else if (object.getClass() == Double.class) {
+                            return (float) (double) object;
+                        } else {
+                            return (float) object;
+                        }
+                    } else if (type.getRawClass() == Double.class || type.getRawClass() == double.class) {
+                        if (object.getClass() == String.class) {
+                            return Double.parseDouble((String) object);
+                        } else if (object.getClass() == Byte.class) {
+                            return (double) (byte) object;
+                        } else if (object.getClass() == Character.class) {
+                            return (double) (char) object;
+                        } else if (object.getClass() == Short.class) {
+                            return (double) (short) object;
+                        } else if (object.getClass() == Integer.class) {
+                            return (double) (int) object;
+                        } else if (object.getClass() == Long.class) {
+                            return (double) (long) object;
+                        } else if (object.getClass() == Float.class) {
+                            return (double) (float) object;
+                        } else {
+                            return (double) object;
+                        }
+                    } else if (type.getRawClass() == Boolean.class || type.getRawClass() == boolean.class) {
+                        if (object.getClass() == String.class) {
+                            return Boolean.parseBoolean((String) object);
+                        } else {
+                            return (boolean) object;
+                        }
+                    } else {
+                        return type.getRawClass().cast(object);
                     }
                 }
             } else if (!type.getRawClass().isAnonymousClass() && !type.getRawClass().isAnnotation()) {
@@ -1051,7 +1049,7 @@ public class ObjectProcessor {
 
                             return object;
                         } else {
-                            throw new RuntimeException("No 0-args constructors for \"" + type.getRawClass().getSimpleName() + "\" found and unsafe initialization failed");
+                            throw new InitializationException(type.getRawClass());
                         }
                     } else if (!type.getRawClass().isInterface()) {
                         Object object = InitializationUtil.initializeUnsafe(type.getRawClass());
@@ -1060,44 +1058,36 @@ public class ObjectProcessor {
                             List<Field> fields = getFields(object.getClass());
 
                             for (Field field : fields) {
-                                try {
-                                    if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
-                                        boolean shouldSerialize = element.asObject().has(field.getName()) && !Modifier.isTransient(field.getModifiers());
+                                if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
+                                    boolean shouldSerialize = element.asObject().has(field.getName()) && !Modifier.isTransient(field.getModifiers());
 
-                                        for (Annotation annotation : field.getDeclaredAnnotations()) {
-                                            if (annotation.annotationType() == AlwaysSerialize.class) {
-                                                shouldSerialize = true;
-                                            } else if (annotation.annotationType() == DontSerialize.class) {
-                                                shouldSerialize = false;
-                                            }
-                                        }
-
-                                        if (field.getName().startsWith("this$")) {
+                                    for (Annotation annotation : field.getDeclaredAnnotations()) {
+                                        if (annotation.annotationType() == AlwaysSerialize.class) {
+                                            shouldSerialize = true;
+                                        } else if (annotation.annotationType() == DontSerialize.class) {
                                             shouldSerialize = false;
                                         }
-
-                                        if (shouldSerialize) {
-                                            Object subObject = toObject(element.asObject().get(field.getName()), field.getGenericType());
-                                            if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).size() == 0) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
-                                                field.set(object, subObject);
-                                            }
-                                        }
                                     }
-                                } catch (IllegalArgumentException | IllegalAccessException e) {
-                                    if (BJSL.getLogger() != null) {
-                                        StringWriter writer = new StringWriter();
-                                        new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
-                                        BJSL.getLogger().warning(writer.toString());
+
+                                    if (field.getName().startsWith("this$")) {
+                                        shouldSerialize = false;
+                                    }
+
+                                    if (shouldSerialize) {
+                                        Object subObject = toObject(element.asObject().get(field.getName()), field.getGenericType());
+                                        if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).size() == 0) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
+                                            field.set(object, subObject);
+                                        }
                                     }
                                 }
                             }
 
                             return object;
                         } else {
-                            throw new RuntimeException("No 0-args constructors for \"" + type.getRawClass().getSimpleName() + "\" found and unsafe initialization failed");
+                            throw new InitializationException(type.getRawClass());
                         }
                     } else {
-                        throw new RuntimeException("Type \"" + type.getRawClass().getSimpleName() + "\" is not serializable");
+                        throw new InvalidTypeException(type.getRawClass());
                     }
                 } else if (element instanceof ParsedArray) {
                     if (type instanceof CollectionType) {
@@ -1118,277 +1108,261 @@ public class ObjectProcessor {
 
                             return object;
                         } else {
-                            throw new RuntimeException("No 0-args constructors for \"" + type.getRawClass().getSimpleName() + "\" found and unsafe initialization failed");
+                            throw new InitializationException(type.getRawClass());
                         }
                     } else if (type instanceof ArrayType) {
-                        try {
-                            int nonNull = element.asArray().getSize();
+                        int nonNull = element.asArray().getSize();
 
-                            if (ignoreNulls || ignoreEmptyObjects) {
-                                nonNull = 0;
+                        if (ignoreNulls || ignoreEmptyObjects) {
+                            nonNull = 0;
 
-                                for (ParsedElement subElement : element.asArray().getValues()) {
-                                    Object subObject = toObject(subElement, type.getRawClass().getComponentType());
-                                    if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).size() == 0) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
-                                        nonNull++;
-                                    }
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                Object subObject = toObject(subElement, type.getRawClass().getComponentType());
+                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).size() == 0) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
+                                    nonNull++;
                                 }
                             }
-
-                            Object result;
-
-                            if (type.getRawClass() == byte[].class) {
-                                byte[] array = (byte[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
-
-                                int i = 0;
-                                for (ParsedElement subElement : element.asArray().getValues()) {
-                                    array[i] = (byte) toObject(subElement, type.getRawClass().getComponentType());
-
-                                    i++;
-                                }
-
-                                result = array;
-                            } else if (type.getRawClass() == char[].class) {
-                                char[] array = (char[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
-
-                                int i = 0;
-                                for (ParsedElement subElement : element.asArray().getValues()) {
-                                    array[i] = (char) toObject(subElement, type.getRawClass().getComponentType());
-
-                                    i++;
-                                }
-
-                                result = array;
-                            } else if (type.getRawClass() == short[].class) {
-                                short[] array = (short[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
-
-                                int i = 0;
-                                for (ParsedElement subElement : element.asArray().getValues()) {
-                                    array[i] = (short) toObject(subElement, type.getRawClass().getComponentType());
-
-                                    i++;
-                                }
-
-                                result = array;
-                            } else if (type.getRawClass() == int[].class) {
-                                int[] array = (int[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
-
-                                int i = 0;
-                                for (ParsedElement subElement : element.asArray().getValues()) {
-                                    array[i] = (int) toObject(subElement, type.getRawClass().getComponentType());
-
-                                    i++;
-                                }
-
-                                result = array;
-                            } else if (type.getRawClass() == long[].class) {
-                                long[] array = (long[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
-
-                                int i = 0;
-                                for (ParsedElement subElement : element.asArray().getValues()) {
-                                    array[i] = (long) toObject(subElement, type.getRawClass().getComponentType());
-
-                                    i++;
-                                }
-
-                                result = array;
-                            } else if (type.getRawClass() == float[].class) {
-                                float[] array = (float[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
-
-                                int i = 0;
-                                for (ParsedElement subElement : element.asArray().getValues()) {
-                                    array[i] = (float) toObject(subElement, type.getRawClass().getComponentType());
-
-                                    i++;
-                                }
-
-                                result = array;
-                            } else if (type.getRawClass() == double[].class) {
-                                double[] array = (double[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
-
-                                int i = 0;
-                                for (ParsedElement subElement : element.asArray().getValues()) {
-                                    array[i] = (double) toObject(subElement, type.getRawClass().getComponentType());
-
-                                    i++;
-                                }
-
-                                result = array;
-                            } else if (type.getRawClass() == boolean[].class) {
-                                boolean[] array = (boolean[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
-
-                                int i = 0;
-                                for (ParsedElement subElement : element.asArray().getValues()) {
-                                    array[i] = (boolean) toObject(subElement, type.getRawClass().getComponentType());
-
-                                    i++;
-                                }
-
-                                result = array;
-                            } else {
-                                Object[] array = (Object[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
-
-                                int i = 0;
-                                for (ParsedElement subElement : element.asArray().getValues()) {
-                                    Object subObject = toObject(subElement, type.getRawClass().getComponentType());
-                                    if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).size() == 0) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
-                                        array[i] = subObject;
-
-                                        i++;
-                                    }
-                                }
-
-                                result = array;
-                            }
-
-                            return result;
-                        } catch (NegativeArraySizeException e) {
-                            throw new RuntimeException("Error while parsing: ", e);
                         }
+
+                        Object result;
+
+                        if (type.getRawClass() == byte[].class) {
+                            byte[] array = (byte[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                array[i] = (byte) toObject(subElement, type.getRawClass().getComponentType());
+
+                                i++;
+                            }
+
+                            result = array;
+                        } else if (type.getRawClass() == char[].class) {
+                            char[] array = (char[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                array[i] = (char) toObject(subElement, type.getRawClass().getComponentType());
+
+                                i++;
+                            }
+
+                            result = array;
+                        } else if (type.getRawClass() == short[].class) {
+                            short[] array = (short[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                array[i] = (short) toObject(subElement, type.getRawClass().getComponentType());
+
+                                i++;
+                            }
+
+                            result = array;
+                        } else if (type.getRawClass() == int[].class) {
+                            int[] array = (int[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                array[i] = (int) toObject(subElement, type.getRawClass().getComponentType());
+
+                                i++;
+                            }
+
+                            result = array;
+                        } else if (type.getRawClass() == long[].class) {
+                            long[] array = (long[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                array[i] = (long) toObject(subElement, type.getRawClass().getComponentType());
+
+                                i++;
+                            }
+
+                            result = array;
+                        } else if (type.getRawClass() == float[].class) {
+                            float[] array = (float[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                array[i] = (float) toObject(subElement, type.getRawClass().getComponentType());
+
+                                i++;
+                            }
+
+                            result = array;
+                        } else if (type.getRawClass() == double[].class) {
+                            double[] array = (double[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                array[i] = (double) toObject(subElement, type.getRawClass().getComponentType());
+
+                                i++;
+                            }
+
+                            result = array;
+                        } else if (type.getRawClass() == boolean[].class) {
+                            boolean[] array = (boolean[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                array[i] = (boolean) toObject(subElement, type.getRawClass().getComponentType());
+
+                                i++;
+                            }
+
+                            result = array;
+                        } else {
+                            Object[] array = (Object[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                Object subObject = toObject(subElement, type.getRawClass().getComponentType());
+                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).size() == 0) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
+                                    array[i] = subObject;
+
+                                    i++;
+                                }
+                            }
+
+                            result = array;
+                        }
+
+                        return result;
                     } else if (!type.getRawClass().isInterface()) {
-                        try {
-                            int nonNull = element.asArray().getSize();
+                        int nonNull = element.asArray().getSize();
 
-                            if (ignoreNulls || ignoreEmptyObjects) {
-                                nonNull = 0;
+                        if (ignoreNulls || ignoreEmptyObjects) {
+                            nonNull = 0;
 
-                                for (ParsedElement subElement : element.asArray().getValues()) {
-                                    Object subObject = toObject(subElement, type.getRawClass());
-                                    if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).size() == 0) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
-                                        nonNull++;
-                                    }
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                Object subObject = toObject(subElement, type.getRawClass());
+                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).size() == 0) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
+                                    nonNull++;
                                 }
                             }
-
-                            Object result;
-
-                            if (type.getRawClass() == byte[].class) {
-                                byte[] array = (byte[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
-
-                                int i = 0;
-                                for (ParsedElement subElement : element.asArray().getValues()) {
-                                    array[i] = (byte) toObject(subElement, type.getRawClass());
-
-                                    i++;
-                                }
-
-                                result = array;
-                            } else if (type.getRawClass() == char[].class) {
-                                char[] array = (char[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
-
-                                int i = 0;
-                                for (ParsedElement subElement : element.asArray().getValues()) {
-                                    array[i] = (char) toObject(subElement, type.getRawClass());
-
-                                    i++;
-                                }
-
-                                result = array;
-                            } else if (type.getRawClass() == short[].class) {
-                                short[] array = (short[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
-
-                                int i = 0;
-                                for (ParsedElement subElement : element.asArray().getValues()) {
-                                    array[i] = (short) toObject(subElement, type.getRawClass());
-
-                                    i++;
-                                }
-
-                                result = array;
-                            } else if (type.getRawClass() == int[].class) {
-                                int[] array = (int[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
-
-                                int i = 0;
-                                for (ParsedElement subElement : element.asArray().getValues()) {
-                                    array[i] = (int) toObject(subElement, type.getRawClass());
-
-                                    i++;
-                                }
-
-                                result = array;
-                            } else if (type.getRawClass() == long[].class) {
-                                long[] array = (long[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
-
-                                int i = 0;
-                                for (ParsedElement subElement : element.asArray().getValues()) {
-                                    array[i] = (long) toObject(subElement, type.getRawClass());
-
-                                    i++;
-                                }
-
-                                result = array;
-                            } else if (type.getRawClass() == float[].class) {
-                                float[] array = (float[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
-
-                                int i = 0;
-                                for (ParsedElement subElement : element.asArray().getValues()) {
-                                    array[i] = (float) toObject(subElement, type.getRawClass());
-
-                                    i++;
-                                }
-
-                                result = array;
-                            } else if (type.getRawClass() == double[].class) {
-                                double[] array = (double[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
-
-                                int i = 0;
-                                for (ParsedElement subElement : element.asArray().getValues()) {
-                                    array[i] = (double) toObject(subElement, type.getRawClass());
-
-                                    i++;
-                                }
-
-                                result = array;
-                            } else if (type.getRawClass() == boolean[].class) {
-                                boolean[] array = (boolean[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
-
-                                int i = 0;
-                                for (ParsedElement subElement : element.asArray().getValues()) {
-                                    array[i] = (boolean) toObject(subElement, type.getRawClass());
-
-                                    i++;
-                                }
-
-                                result = array;
-                            } else {
-                                Object[] array = (Object[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
-
-                                int i = 0;
-                                for (ParsedElement subElement : element.asArray().getValues()) {
-                                    Object subObject = toObject(subElement, type.getRawClass());
-                                    if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).size() == 0) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
-                                        array[i] = subObject;
-
-                                        i++;
-                                    }
-                                }
-
-                                result = array;
-                            }
-
-                            return result;
-                        } catch (NegativeArraySizeException e) {
-                            throw new RuntimeException("Error while parsing: ", e);
                         }
+
+                        Object result;
+
+                        if (type.getRawClass() == byte[].class) {
+                            byte[] array = (byte[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                array[i] = (byte) toObject(subElement, type.getRawClass());
+
+                                i++;
+                            }
+
+                            result = array;
+                        } else if (type.getRawClass() == char[].class) {
+                            char[] array = (char[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                array[i] = (char) toObject(subElement, type.getRawClass());
+
+                                i++;
+                            }
+
+                            result = array;
+                        } else if (type.getRawClass() == short[].class) {
+                            short[] array = (short[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                array[i] = (short) toObject(subElement, type.getRawClass());
+
+                                i++;
+                            }
+
+                            result = array;
+                        } else if (type.getRawClass() == int[].class) {
+                            int[] array = (int[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                array[i] = (int) toObject(subElement, type.getRawClass());
+
+                                i++;
+                            }
+
+                            result = array;
+                        } else if (type.getRawClass() == long[].class) {
+                            long[] array = (long[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                array[i] = (long) toObject(subElement, type.getRawClass());
+
+                                i++;
+                            }
+
+                            result = array;
+                        } else if (type.getRawClass() == float[].class) {
+                            float[] array = (float[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                array[i] = (float) toObject(subElement, type.getRawClass());
+
+                                i++;
+                            }
+
+                            result = array;
+                        } else if (type.getRawClass() == double[].class) {
+                            double[] array = (double[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                array[i] = (double) toObject(subElement, type.getRawClass());
+
+                                i++;
+                            }
+
+                            result = array;
+                        } else if (type.getRawClass() == boolean[].class) {
+                            boolean[] array = (boolean[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                array[i] = (boolean) toObject(subElement, type.getRawClass());
+
+                                i++;
+                            }
+
+                            result = array;
+                        } else {
+                            Object[] array = (Object[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                Object subObject = toObject(subElement, type.getRawClass());
+                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).size() == 0) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
+                                    array[i] = subObject;
+
+                                    i++;
+                                }
+                            }
+
+                            result = array;
+                        }
+
+                        return result;
                     } else {
-                        throw new RuntimeException("Type \"" + type.getRawClass().getSimpleName() + "\" is not serializable");
+                        throw new InvalidTypeException(type.getRawClass());
                     }
                 } else {
-                    throw new RuntimeException("Element is not an object or array");
+                    throw new InvalidTypeException(type.getRawClass());
                 }
             } else {
-                throw new RuntimeException("Type \"" + type.getRawClass().getSimpleName() + "\" is not serializable");
+                throw new InvalidTypeException(type.getRawClass());
             }
-        } catch (RuntimeException e) {
-            if (BJSL.getLogger() != null) {
-                StringWriter writer = new StringWriter();
-                new RuntimeException("Error while parsing:", e).printStackTrace(new PrintWriter(writer));
-                BJSL.getLogger().severe(writer.toString());
-
-                return null;
-            } else {
-                throw new RuntimeException("Error while parsing:", e);
-            }
+        } catch (Exception e) {
+            throw new ProcessorException(e);
         }
     }
 
@@ -1419,240 +1393,226 @@ public class ObjectProcessor {
 
             try {
                 return ParsedPrimitive.from(object);
-            } catch (ClassCastException e2) {
-                if (object instanceof Enum<?>) {
-                    return ParsedPrimitive.fromString(((Enum<?>) object).name());
-                } else if (object instanceof byte[]) {
-                    ParsedArray arrayElement = ParsedArray.create();
+            } catch (ClassCastException e) {
+                // Continue
+            }
 
-                    for (byte item : (byte[]) object) {
-                        ParsedElement subElement = toElement(item);
-                        if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
-                            arrayElement.add(subElement);
-                        }
+            if (object instanceof Enum<?>) {
+                return ParsedPrimitive.fromString(((Enum<?>) object).name());
+            } else if (object instanceof byte[]) {
+                ParsedArray arrayElement = ParsedArray.create();
+
+                for (byte item : (byte[]) object) {
+                    ParsedElement subElement = toElement(item);
+                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                        arrayElement.add(subElement);
                     }
+                }
 
-                    return arrayElement;
-                } else if (object instanceof char[]) {
-                    ParsedArray arrayElement = ParsedArray.create();
+                return arrayElement;
+            } else if (object instanceof char[]) {
+                ParsedArray arrayElement = ParsedArray.create();
 
-                    for (char item : (char[]) object) {
-                        ParsedElement subElement = toElement(item);
-                        if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
-                            arrayElement.add(subElement);
-                        }
+                for (char item : (char[]) object) {
+                    ParsedElement subElement = toElement(item);
+                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                        arrayElement.add(subElement);
                     }
+                }
 
-                    return arrayElement;
-                } else if (object instanceof short[]) {
-                    ParsedArray arrayElement = ParsedArray.create();
+                return arrayElement;
+            } else if (object instanceof short[]) {
+                ParsedArray arrayElement = ParsedArray.create();
 
-                    for (short item : (short[]) object) {
-                        ParsedElement subElement = toElement(item);
-                        if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
-                            arrayElement.add(subElement);
-                        }
+                for (short item : (short[]) object) {
+                    ParsedElement subElement = toElement(item);
+                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                        arrayElement.add(subElement);
                     }
+                }
 
-                    return arrayElement;
-                } else if (object instanceof int[]) {
-                    ParsedArray arrayElement = ParsedArray.create();
+                return arrayElement;
+            } else if (object instanceof int[]) {
+                ParsedArray arrayElement = ParsedArray.create();
 
-                    for (int item : (int[]) object) {
-                        ParsedElement subElement = toElement(item);
-                        if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
-                            arrayElement.add(subElement);
-                        }
+                for (int item : (int[]) object) {
+                    ParsedElement subElement = toElement(item);
+                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                        arrayElement.add(subElement);
                     }
+                }
 
-                    return arrayElement;
-                } else if (object instanceof long[]) {
-                    ParsedArray arrayElement = ParsedArray.create();
+                return arrayElement;
+            } else if (object instanceof long[]) {
+                ParsedArray arrayElement = ParsedArray.create();
 
-                    for (long item : (long[]) object) {
-                        ParsedElement subElement = toElement(item);
-                        if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
-                            arrayElement.add(subElement);
-                        }
+                for (long item : (long[]) object) {
+                    ParsedElement subElement = toElement(item);
+                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                        arrayElement.add(subElement);
                     }
+                }
 
-                    return arrayElement;
-                } else if (object instanceof float[]) {
-                    ParsedArray arrayElement = ParsedArray.create();
+                return arrayElement;
+            } else if (object instanceof float[]) {
+                ParsedArray arrayElement = ParsedArray.create();
 
-                    for (float item : (float[]) object) {
-                        ParsedElement subElement = toElement(item);
-                        if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
-                            arrayElement.add(subElement);
-                        }
+                for (float item : (float[]) object) {
+                    ParsedElement subElement = toElement(item);
+                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                        arrayElement.add(subElement);
                     }
+                }
 
-                    return arrayElement;
-                } else if (object instanceof double[]) {
-                    ParsedArray arrayElement = ParsedArray.create();
+                return arrayElement;
+            } else if (object instanceof double[]) {
+                ParsedArray arrayElement = ParsedArray.create();
 
-                    for (double item : (double[]) object) {
-                        ParsedElement subElement = toElement(item);
-                        if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
-                            arrayElement.add(subElement);
-                        }
+                for (double item : (double[]) object) {
+                    ParsedElement subElement = toElement(item);
+                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                        arrayElement.add(subElement);
                     }
+                }
 
-                    return arrayElement;
-                } else if (object instanceof boolean[]) {
-                    ParsedArray arrayElement = ParsedArray.create();
+                return arrayElement;
+            } else if (object instanceof boolean[]) {
+                ParsedArray arrayElement = ParsedArray.create();
 
-                    for (boolean item : (boolean[]) object) {
-                        ParsedElement subElement = toElement(item);
-                        if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
-                            arrayElement.add(subElement);
-                        }
+                for (boolean item : (boolean[]) object) {
+                    ParsedElement subElement = toElement(item);
+                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                        arrayElement.add(subElement);
                     }
+                }
 
-                    return arrayElement;
-                } else if (object instanceof Object[]) {
-                    ParsedArray arrayElement = ParsedArray.create();
+                return arrayElement;
+            } else if (object instanceof Object[]) {
+                ParsedArray arrayElement = ParsedArray.create();
 
-                    for (Object item : (Object[]) object) {
-                        ParsedElement subElement = toElement(item);
-                        if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
-                            arrayElement.add(subElement);
-                        }
+                for (Object item : (Object[]) object) {
+                    ParsedElement subElement = toElement(item);
+                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                        arrayElement.add(subElement);
                     }
+                }
 
-                    return arrayElement;
-                } else if (object instanceof Collection<?>) {
-                    ParsedArray arrayElement = ParsedArray.create();
+                return arrayElement;
+            } else if (object instanceof Collection<?>) {
+                ParsedArray arrayElement = ParsedArray.create();
 
-                    for (Object item : List.copyOf((Collection<?>) object)) {
-                        ParsedElement subElement = toElement(item);
-                        if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
-                            arrayElement.add(subElement);
-                        }
+                for (Object item : List.copyOf((Collection<?>) object)) {
+                    ParsedElement subElement = toElement(item);
+                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                        arrayElement.add(subElement);
                     }
+                }
 
-                    return arrayElement;
-                } else if (object instanceof Map<?, ?>) {
-                    ParsedObject objectElement = ParsedObject.create();
+                return arrayElement;
+            } else if (object instanceof Map<?, ?>) {
+                ParsedObject objectElement = ParsedObject.create();
 
-                    for (Map.Entry<?, ?> entry : Map.copyOf((Map<?, ?>) object).entrySet()) {
-                        ParsedElement subElement = toElement(entry.getValue());
-                        if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
-                            objectElement.set(entry.getKey().toString(), subElement);
-                        }
+                for (Map.Entry<?, ?> entry : Map.copyOf((Map<?, ?>) object).entrySet()) {
+                    ParsedElement subElement = toElement(entry.getValue());
+                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                        objectElement.set(entry.getKey().toString(), subElement);
                     }
+                }
 
-                    return objectElement;
-                } else {
-                    ParsedObject objectElement = ParsedObject.create();
+                return objectElement;
+            } else {
+                ParsedObject objectElement = ParsedObject.create();
 
-                    Object defaultObject = null;
+                Object defaultObject = null;
 
-                    if (ignoreDefaults) {
-                        defaultObject = InitializationUtil.initializeUnsafe(object.getClass());
+                if (ignoreDefaults) {
+                    defaultObject = InitializationUtil.initializeUnsafe(object.getClass());
 
-                        if (defaultObject == null && BJSL.getLogger() != null) {
-                            BJSL.getLogger().warning("Initialization of " + object.getClass().getSimpleName() + " failed, defaults will not be ignored");
-                        }
+                    if (defaultObject == null && BJSL.getLogger() != null) {
+                        BJSL.getLogger().warning("Initialization of " + object.getClass().getSimpleName() + " failed, defaults will not be ignored");
                     }
+                }
 
-                    List<Field> fields = getFields(object.getClass());
+                List<Field> fields = getFields(object.getClass());
 
-                    for (Field field : fields) {
-                        try {
-                            if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
-                                boolean shouldSerialize = !Modifier.isTransient(field.getModifiers());
+                for (Field field : fields) {
+                    if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
+                        boolean shouldSerialize = !Modifier.isTransient(field.getModifiers());
 
-                                ParsedElement subElement = toElement(field.get(object));
+                        ParsedElement subElement = toElement(field.get(object));
 
-                                if (ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) {
-                                    shouldSerialize = false;
-                                }
+                        if (ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) {
+                            shouldSerialize = false;
+                        }
 
-                                if (ignoreEmptyObjects && ((subElement.isArray() && subElement.asArray().getSize() == 0) || (subElement.isObject() && subElement.asObject().getSize() == 0))) {
-                                    shouldSerialize = false;
-                                }
+                        if (ignoreEmptyObjects && ((subElement.isArray() && subElement.asArray().getSize() == 0) || (subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                            shouldSerialize = false;
+                        }
 
-                                if (ignoreDefaults && (subElement.isPrimitive() && !subElement.asPrimitive().isNull() && subElement.asPrimitive().get().equals(field.get(defaultObject)))) {
-                                    shouldSerialize = false;
-                                }
+                        if (ignoreDefaults && (subElement.isPrimitive() && !subElement.asPrimitive().isNull() && subElement.asPrimitive().get().equals(field.get(defaultObject)))) {
+                            shouldSerialize = false;
+                        }
 
-                                for (Annotation annotation : field.getDeclaredAnnotations()) {
-                                    if (annotation.annotationType() == AlwaysSerialize.class) {
-                                        shouldSerialize = true;
-                                    } else if (annotation.annotationType() == DontSerialize.class) {
-                                        shouldSerialize = false;
-                                    } else if (annotation.annotationType() == Default.class) {
-                                        Default defaultAnnotation = (Default) annotation;
+                        for (Annotation annotation : field.getDeclaredAnnotations()) {
+                            if (annotation.annotationType() == AlwaysSerialize.class) {
+                                shouldSerialize = true;
+                            } else if (annotation.annotationType() == DontSerialize.class) {
+                                shouldSerialize = false;
+                            } else if (annotation.annotationType() == Default.class) {
+                                Default defaultAnnotation = (Default) annotation;
 
-                                        if (ignoreDefaults && subElement.isPrimitive()) {
-                                            if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.STRING && !defaultAnnotation.stringValue().equals("")) {
-                                                if (field.get(object) != null && field.get(object).equals(defaultAnnotation.stringValue())) {
-                                                    shouldSerialize = false;
-                                                }
-                                            } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.BYTE && defaultAnnotation.byteValue() != Byte.MIN_VALUE) {
-                                                if (field.get(object) != null && field.get(object).equals(defaultAnnotation.byteValue())) {
-                                                    shouldSerialize = false;
-                                                }
-                                            } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.CHAR && defaultAnnotation.charValue() != Character.MIN_VALUE) {
-                                                if (field.get(object) != null && field.get(object).equals(defaultAnnotation.charValue())) {
-                                                    shouldSerialize = false;
-                                                }
-                                            } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.SHORT && defaultAnnotation.shortValue() != Short.MIN_VALUE) {
-                                                if (field.get(object) != null && field.get(object).equals(defaultAnnotation.shortValue())) {
-                                                    shouldSerialize = false;
-                                                }
-                                            } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.INTEGER && defaultAnnotation.intValue() != Integer.MIN_VALUE) {
-                                                if (field.get(object) != null && field.get(object).equals(defaultAnnotation.intValue())) {
-                                                    shouldSerialize = false;
-                                                }
-                                            } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.LONG && defaultAnnotation.longValue() != Long.MIN_VALUE) {
-                                                if (field.get(object) != null && field.get(object).equals(defaultAnnotation.longValue())) {
-                                                    shouldSerialize = false;
-                                                }
-                                            } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.DOUBLE && defaultAnnotation.doubleValue() != Double.MIN_VALUE) {
-                                                if (field.get(object) != null && field.get(object).equals(defaultAnnotation.doubleValue())) {
-                                                    shouldSerialize = false;
-                                                }
-                                            } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.FLOAT && defaultAnnotation.floatValue() != Float.MIN_VALUE) {
-                                                if (field.get(object) != null && field.get(object).equals(defaultAnnotation.floatValue())) {
-                                                    shouldSerialize = false;
-                                                }
-                                            }
+                                if (ignoreDefaults && subElement.isPrimitive()) {
+                                    if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.STRING && !defaultAnnotation.stringValue().equals("")) {
+                                        if (field.get(object) != null && field.get(object).equals(defaultAnnotation.stringValue())) {
+                                            shouldSerialize = false;
+                                        }
+                                    } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.BYTE && defaultAnnotation.byteValue() != Byte.MIN_VALUE) {
+                                        if (field.get(object) != null && field.get(object).equals(defaultAnnotation.byteValue())) {
+                                            shouldSerialize = false;
+                                        }
+                                    } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.CHAR && defaultAnnotation.charValue() != Character.MIN_VALUE) {
+                                        if (field.get(object) != null && field.get(object).equals(defaultAnnotation.charValue())) {
+                                            shouldSerialize = false;
+                                        }
+                                    } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.SHORT && defaultAnnotation.shortValue() != Short.MIN_VALUE) {
+                                        if (field.get(object) != null && field.get(object).equals(defaultAnnotation.shortValue())) {
+                                            shouldSerialize = false;
+                                        }
+                                    } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.INTEGER && defaultAnnotation.intValue() != Integer.MIN_VALUE) {
+                                        if (field.get(object) != null && field.get(object).equals(defaultAnnotation.intValue())) {
+                                            shouldSerialize = false;
+                                        }
+                                    } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.LONG && defaultAnnotation.longValue() != Long.MIN_VALUE) {
+                                        if (field.get(object) != null && field.get(object).equals(defaultAnnotation.longValue())) {
+                                            shouldSerialize = false;
+                                        }
+                                    } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.DOUBLE && defaultAnnotation.doubleValue() != Double.MIN_VALUE) {
+                                        if (field.get(object) != null && field.get(object).equals(defaultAnnotation.doubleValue())) {
+                                            shouldSerialize = false;
+                                        }
+                                    } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.FLOAT && defaultAnnotation.floatValue() != Float.MIN_VALUE) {
+                                        if (field.get(object) != null && field.get(object).equals(defaultAnnotation.floatValue())) {
+                                            shouldSerialize = false;
                                         }
                                     }
                                 }
-
-                                if (field.getName().startsWith("this$")) {
-                                    shouldSerialize = false;
-                                }
-
-                                if (shouldSerialize) {
-                                    objectElement.set(field.getName(), subElement);
-                                }
-                            }
-                        } catch (IllegalArgumentException | IllegalAccessException e) {
-                            if (BJSL.getLogger() != null) {
-                                StringWriter writer = new StringWriter();
-                                new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
-                                BJSL.getLogger().warning(writer.toString());
                             }
                         }
+
+                        if (field.getName().startsWith("this$")) {
+                            shouldSerialize = false;
+                        }
+
+                        if (shouldSerialize) {
+                            objectElement.set(field.getName(), subElement);
+                        }
                     }
-
-                    return objectElement;
                 }
-            }
-        } catch (RuntimeException e) {
-            if (BJSL.getLogger() != null) {
-                StringWriter writer = new StringWriter();
-                new RuntimeException("Error while parsing:", e).printStackTrace(new PrintWriter(writer));
-                BJSL.getLogger().severe(writer.toString());
 
-                return null;
-            } else {
-                throw new RuntimeException("Error while parsing:", e);
+                return objectElement;
             }
+        } catch (Exception e) {
+            throw new ProcessorException(e);
         }
     }
 

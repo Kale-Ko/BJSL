@@ -9,11 +9,27 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import sun.misc.Unsafe;
 
+/**
+ * A utility class for initializing objects and arrays from a class type
+ * <p>
+ * Objects can be initialized using 0-args constructors or using {@link sun.misc.Unsafe}
+ *
+ * @version 1.7.0
+ * @since 1.7.0
+ */
 @SuppressWarnings("unchecked")
 public class InitializationUtil {
     private InitializationUtil() {
     }
 
+    /**
+     * Initialize a class safely using a 0-args constructor
+     *
+     * @param clazz The class to initialize
+     * @param <T>   The type to initialize
+     *
+     * @return The initialized instance of clazz
+     */
     public static <T> T initialize(Class<T> clazz) {
         try {
             for (Constructor<?> constructor : clazz.getConstructors()) {
@@ -32,6 +48,16 @@ public class InitializationUtil {
         return null;
     }
 
+    /**
+     * Initialize a class unsafely using {@link sun.misc.Unsafe}
+     * <p>
+     * Will attempt to use {@link #initialize(Class)} before resorting to {@link sun.misc.Unsafe}
+     *
+     * @param clazz The class to initialize
+     * @param <T>   The type to initialize
+     *
+     * @return The initialized instance of clazz
+     */
     public static <T> T initializeUnsafe(Class<T> clazz) {
         T attempt = initialize(clazz);
         if (attempt != null) {
@@ -54,6 +80,15 @@ public class InitializationUtil {
         return null;
     }
 
+    /**
+     * Initialize a class safely using {@link Array#newInstance(Class, int)}
+     *
+     * @param clazz  The class to initialize
+     * @param length The length of the new array
+     * @param <T>    The type to initialize
+     *
+     * @return The initialized array instance of clazz with the passed length
+     */
     public static <T> Object initializeArray(Class<T> clazz, int length) {
         return (T[]) Array.newInstance(clazz, length);
     }

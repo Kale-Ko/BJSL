@@ -122,14 +122,14 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    protected T parser;
+    protected final T parser;
 
     /**
      * The object processor to use
      *
      * @since 1.0.0
      */
-    protected ObjectProcessor processor;
+    protected final ObjectProcessor processor;
 
     /**
      * Create a new instance of BJSL
