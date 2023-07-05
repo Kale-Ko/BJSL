@@ -20,12 +20,10 @@ public class SmileParser extends Parser<SmileFactory, SmileMapper> {
     /**
      * Create a new Parser using certain factories
      *
-     * @param factory
-     *        The factory used for converting to/from trees/strings
-     * @param mapper
-     *        The mapper used for converting to/from trees/strings
-     * @param prettyPrinter
-     *        The prettyPrinter used for converting to strings
+     * @param factory       The factory used for converting to/from trees/strings
+     * @param mapper        The mapper used for converting to/from trees/strings
+     * @param prettyPrinter The prettyPrinter used for converting to strings
+     *
      * @since 1.0.0
      */
     protected SmileParser(SmileFactory factory, SmileMapper mapper, PrettyPrinter prettyPrinter) {
@@ -44,12 +42,14 @@ public class SmileParser extends Parser<SmileFactory, SmileMapper> {
          *
          * @since 1.0.0
          */
-        public Builder() {}
+        public Builder() {
+        }
 
         /**
          * Uses the current settings to build a new {@link SmileParser}
          *
          * @return A new {@link SmileParser} instance
+         *
          * @since 1.0.0
          */
         public SmileParser build() {
