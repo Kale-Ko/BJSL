@@ -1,6 +1,6 @@
 package io.github.kale_ko.bjsl.elements;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -15,7 +15,7 @@ public class ParsedArray extends ParsedElement {
      *
      * @since 1.0.0
      */
-    protected ArrayList<ParsedElement> array;
+    protected final List<ParsedElement> array;
 
     /**
      * Create a new {@link ParsedArray}
@@ -23,7 +23,7 @@ public class ParsedArray extends ParsedElement {
      * @since 1.0.0
      */
     protected ParsedArray() {
-        this(new ArrayList<>());
+        this(new LinkedList<>());
     }
 
     /**
@@ -33,7 +33,7 @@ public class ParsedArray extends ParsedElement {
      *
      * @since 1.0.0
      */
-    protected ParsedArray(ArrayList<ParsedElement> array) {
+    protected ParsedArray(List<ParsedElement> array) {
         this.array = array;
     }
 
@@ -58,7 +58,7 @@ public class ParsedArray extends ParsedElement {
      * @since 1.0.0
      */
     public List<ParsedElement> getValues() {
-        return new ArrayList<>(this.array);
+        return List.copyOf(this.array);
     }
 
     /**
@@ -190,6 +190,6 @@ public class ParsedArray extends ParsedElement {
             throw new NullPointerException("Array can not be null");
         }
 
-        return new ParsedArray(new ArrayList<>(array));
+        return new ParsedArray(new LinkedList<>(array));
     }
 }
