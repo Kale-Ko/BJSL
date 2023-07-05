@@ -2,7 +2,7 @@ name: Publish
 
 on:
   push:
-    tags: ["*.*.*"]
+    tags: [ "*.*.*" ]
 
 jobs:
   publish:
@@ -18,17 +18,15 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 11
-          distribution: adopt
-          server-id: ghp
-          settings-path: ${{ github.workspace }}
+          distribution: temurin
 
-      - name: Build
-        uses: gradle/gradle-build-action@v2.4.2
+      - name: Build Project
+        uses: gradle/gradle-build-action@v2
         with:
           arguments: build
 
       - name: Publish to GitHub Packages
-        uses: gradle/gradle-build-action@v2.4.2
+        uses: gradle/gradle-build-action@v2
         with:
           arguments: publish
         env:
@@ -36,7 +34,7 @@ jobs:
           GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
 
       - name: Publish to Github Pages
-        uses: jamesives/github-pages-deploy-action@v4.3.3
+        uses: jamesives/github-pages-deploy-action@v4
         with:
           git-config-name: github-actions[bot]
           git-config-email: 41898282+github-actions[bot]@users.noreply.github.com
