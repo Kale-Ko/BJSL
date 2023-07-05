@@ -1,9 +1,6 @@
 package io.github.kale_ko.bjsl.parsers;
 
-import com.fasterxml.jackson.core.ObjectCodec;
-import com.fasterxml.jackson.core.PrettyPrinter;
-import com.fasterxml.jackson.core.TokenStreamFactory;
-import com.fasterxml.jackson.core.TreeNode;
+import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.*;
 import io.github.kale_ko.bjsl.BJSL;
@@ -13,8 +10,6 @@ import io.github.kale_ko.bjsl.elements.ParsedObject;
 import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -157,15 +152,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
                 throw new RuntimeException("\"" + tree.getClass().getSimpleName() + "\" is not a processable type");
             }
         } catch (RuntimeException | IOException e) {
-            if (BJSL.getLogger() != null) {
-                StringWriter writer = new StringWriter();
-                new RuntimeException("Error while parsing:", e).printStackTrace(new PrintWriter(writer));
-                BJSL.getLogger().severe(writer.toString());
-
-                return null;
-            } else {
-                throw new RuntimeException("Error while parsing:", e);
-            }
+            throw new RuntimeException("Error while parsing:", e);
         }
     }
 
@@ -214,9 +201,9 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
                 }
 
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter).setCodec(this.codec);
-                generator.writeTree(node);
-                generator.close();
+                try (com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter).setCodec(this.codec)) {
+                    generator.writeTree(node);
+                }
                 outputStream.close();
 
                 return outputStream.toByteArray();
@@ -229,9 +216,9 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
                 }
 
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter).setCodec(this.codec);
-                generator.writeTree(node);
-                generator.close();
+                try (com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter).setCodec(this.codec)) {
+                    generator.writeTree(node);
+                }
                 outputStream.close();
 
                 return outputStream.toByteArray();
@@ -245,15 +232,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
                 throw new RuntimeException("\"" + element.getClass().getSimpleName() + "\" is not a processable type");
             }
         } catch (RuntimeException | IOException e) {
-            if (BJSL.getLogger() != null) {
-                StringWriter writer = new StringWriter();
-                new RuntimeException("Error while parsing:", e).printStackTrace(new PrintWriter(writer));
-                BJSL.getLogger().severe(writer.toString());
-
-                return null;
-            } else {
-                throw new RuntimeException("Error while parsing:", e);
-            }
+            throw new RuntimeException("Error while parsing:", e);
         }
     }
 
@@ -289,22 +268,14 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
     public byte[] emptyBytes() {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter).setCodec(this.codec);
-            generator.writeTree(JsonNodeFactory.instance.objectNode());
-            generator.close();
+            try (JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter).setCodec(this.codec)) {
+                generator.writeTree(JsonNodeFactory.instance.objectNode());
+            }
             outputStream.close();
 
             return outputStream.toByteArray();
         } catch (RuntimeException | IOException e) {
-            if (BJSL.getLogger() != null) {
-                StringWriter writer = new StringWriter();
-                new RuntimeException("Error while parsing:", e).printStackTrace(new PrintWriter(writer));
-                BJSL.getLogger().severe(writer.toString());
-
-                return null;
-            } else {
-                throw new RuntimeException("Error while parsing:", e);
-            }
+            throw new RuntimeException("Error while parsing:", e);
         }
     }
 
@@ -318,19 +289,13 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
     public byte[] emptyArrayBytes() {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter).setCodec(this.codec);
-            generator.writeTree(JsonNodeFactory.instance.arrayNode());
-            generator.close();
+            try (JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter).setCodec(this.codec)) {
+                generator.writeTree(JsonNodeFactory.instance.arrayNode());
+            }
             outputStream.close();
 
             return outputStream.toByteArray();
         } catch (RuntimeException | IOException e) {
-            if (BJSL.getLogger() != null) {
-                StringWriter writer = new StringWriter();
-                new RuntimeException("Error while parsing:", e).printStackTrace(new PrintWriter(writer));
-                BJSL.getLogger().severe(writer.toString());
-            }
-
             throw new RuntimeException("Error while parsing:", e);
         }
     }

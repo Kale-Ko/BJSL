@@ -13,11 +13,14 @@ import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
 import io.github.kale_ko.bjsl.processor.annotations.AlwaysSerialize;
 import io.github.kale_ko.bjsl.processor.annotations.Default;
 import io.github.kale_ko.bjsl.processor.annotations.DontSerialize;
+import io.github.kale_ko.bjsl.processor.reflection.InitializationUtil;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.net.*;
 import java.nio.file.Path;
 import java.text.DateFormat;
@@ -1031,61 +1034,17 @@ public class ObjectProcessor {
             } else if (!type.getRawClass().isAnonymousClass() && !type.getRawClass().isAnnotation()) {
                 if (element instanceof ParsedObject) {
                     if (type instanceof MapType) {
-                        Map<String, Object> object = null;
-
+                        Map<String, Object> object;
                         if (!type.getRawClass().isInterface()) {
-                            if (type.getRawClass().getConstructors().length > 0) {
-                                try {
-                                    for (Constructor<?> constructor : type.getRawClass().getConstructors()) {
-                                        if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
-                                            object = (Map<String, Object>) constructor.newInstance();
-
-                                            break;
-                                        }
-                                    }
-                                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-                                    if (BJSL.getLogger() != null) {
-                                        StringWriter writer = new StringWriter();
-                                        new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
-                                        BJSL.getLogger().warning(writer.toString());
-                                    }
-                                }
-                            } else {
-                                try {
-                                    Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
-                                    unsafeField.setAccessible(true);
-                                    sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
-                                    object = (Map<String, Object>) unsafe.allocateInstance(type.getRawClass());
-                                } catch (InstantiationException | IllegalAccessException | NoSuchFieldException e) {
-                                    if (BJSL.getLogger() != null) {
-                                        StringWriter writer = new StringWriter();
-                                        new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
-                                        BJSL.getLogger().warning(writer.toString());
-                                    }
-                                }
-                            }
+                            object = (Map<String, Object>) InitializationUtil.initializeUnsafe(type.getRawClass());
                         } else {
-                            try {
-                                for (Constructor<?> constructor : LinkedHashMap.class.getConstructors()) {
-                                    if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
-                                        object = (Map<String, Object>) constructor.newInstance();
-
-                                        break;
-                                    }
-                                }
-                            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-                                if (BJSL.getLogger() != null) {
-                                    StringWriter writer = new StringWriter();
-                                    new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
-                                    BJSL.getLogger().warning(writer.toString());
-                                }
-                            }
+                            object = (Map<String, Object>) InitializationUtil.initializeUnsafe(LinkedHashMap.class);
                         }
 
                         if (object != null) {
                             for (Map.Entry<String, ParsedElement> entry : element.asObject().getEntries()) {
                                 Object subObject = toObject(entry.getValue(), ((MapType) type).getContentType());
-                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).size() == 0) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
+                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
                                     object.put(entry.getKey(), subObject);
                                 }
                             }
@@ -1095,38 +1054,7 @@ public class ObjectProcessor {
                             throw new RuntimeException("No 0-args constructors for \"" + type.getRawClass().getSimpleName() + "\" found and unsafe initialization failed");
                         }
                     } else if (!type.getRawClass().isInterface()) {
-                        Object object = null;
-
-                        if (type.getRawClass().getConstructors().length > 0) {
-                            try {
-                                for (Constructor<?> constructor : type.getRawClass().getConstructors()) {
-                                    if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
-                                        object = constructor.newInstance();
-
-                                        break;
-                                    }
-                                }
-                            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-                                if (BJSL.getLogger() != null) {
-                                    StringWriter writer = new StringWriter();
-                                    new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
-                                    BJSL.getLogger().warning(writer.toString());
-                                }
-                            }
-                        } else {
-                            try {
-                                Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
-                                unsafeField.setAccessible(true);
-                                sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
-                                object = unsafe.allocateInstance(type.getRawClass());
-                            } catch (InstantiationException | IllegalAccessException | NoSuchFieldException e) {
-                                if (BJSL.getLogger() != null) {
-                                    StringWriter writer = new StringWriter();
-                                    new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
-                                    BJSL.getLogger().warning(writer.toString());
-                                }
-                            }
-                        }
+                        Object object = InitializationUtil.initializeUnsafe(type.getRawClass());
 
                         if (object != null) {
                             List<Field> fields = getFields(object.getClass());
@@ -1173,55 +1101,11 @@ public class ObjectProcessor {
                     }
                 } else if (element instanceof ParsedArray) {
                     if (type instanceof CollectionType) {
-                        Collection<Object> object = null;
-
+                        Collection<Object> object;
                         if (!type.getRawClass().isInterface()) {
-                            if (type.getRawClass().getConstructors().length > 0) {
-                                try {
-                                    for (Constructor<?> constructor : type.getRawClass().getConstructors()) {
-                                        if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
-                                            object = (Collection<Object>) constructor.newInstance();
-
-                                            break;
-                                        }
-                                    }
-                                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-                                    if (BJSL.getLogger() != null) {
-                                        StringWriter writer = new StringWriter();
-                                        new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
-                                        BJSL.getLogger().warning(writer.toString());
-                                    }
-                                }
-                            } else {
-                                try {
-                                    Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
-                                    unsafeField.setAccessible(true);
-                                    sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
-                                    object = (Collection<Object>) unsafe.allocateInstance(type.getRawClass());
-                                } catch (InstantiationException | IllegalAccessException | NoSuchFieldException e) {
-                                    if (BJSL.getLogger() != null) {
-                                        StringWriter writer = new StringWriter();
-                                        new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
-                                        BJSL.getLogger().warning(writer.toString());
-                                    }
-                                }
-                            }
+                            object = (Collection<Object>) InitializationUtil.initializeUnsafe(type.getRawClass());
                         } else {
-                            try {
-                                for (Constructor<?> constructor : ArrayList.class.getConstructors()) {
-                                    if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
-                                        object = (Collection<Object>) constructor.newInstance();
-
-                                        break;
-                                    }
-                                }
-                            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-                                if (BJSL.getLogger() != null) {
-                                    StringWriter writer = new StringWriter();
-                                    new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
-                                    BJSL.getLogger().warning(writer.toString());
-                                }
-                            }
+                            object = (Collection<Object>) InitializationUtil.initializeUnsafe(LinkedList.class);
                         }
 
                         if (object != null) {
@@ -1254,7 +1138,7 @@ public class ObjectProcessor {
                             Object result;
 
                             if (type.getRawClass() == byte[].class) {
-                                byte[] array = (byte[]) Array.newInstance(type.getRawClass().getComponentType(), nonNull);
+                                byte[] array = (byte[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
 
                                 int i = 0;
                                 for (ParsedElement subElement : element.asArray().getValues()) {
@@ -1265,7 +1149,7 @@ public class ObjectProcessor {
 
                                 result = array;
                             } else if (type.getRawClass() == char[].class) {
-                                char[] array = (char[]) Array.newInstance(type.getRawClass().getComponentType(), nonNull);
+                                char[] array = (char[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
 
                                 int i = 0;
                                 for (ParsedElement subElement : element.asArray().getValues()) {
@@ -1276,7 +1160,7 @@ public class ObjectProcessor {
 
                                 result = array;
                             } else if (type.getRawClass() == short[].class) {
-                                short[] array = (short[]) Array.newInstance(type.getRawClass().getComponentType(), nonNull);
+                                short[] array = (short[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
 
                                 int i = 0;
                                 for (ParsedElement subElement : element.asArray().getValues()) {
@@ -1287,7 +1171,7 @@ public class ObjectProcessor {
 
                                 result = array;
                             } else if (type.getRawClass() == int[].class) {
-                                int[] array = (int[]) Array.newInstance(type.getRawClass().getComponentType(), nonNull);
+                                int[] array = (int[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
 
                                 int i = 0;
                                 for (ParsedElement subElement : element.asArray().getValues()) {
@@ -1298,7 +1182,7 @@ public class ObjectProcessor {
 
                                 result = array;
                             } else if (type.getRawClass() == long[].class) {
-                                long[] array = (long[]) Array.newInstance(type.getRawClass().getComponentType(), nonNull);
+                                long[] array = (long[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
 
                                 int i = 0;
                                 for (ParsedElement subElement : element.asArray().getValues()) {
@@ -1309,7 +1193,7 @@ public class ObjectProcessor {
 
                                 result = array;
                             } else if (type.getRawClass() == float[].class) {
-                                float[] array = (float[]) Array.newInstance(type.getRawClass().getComponentType(), nonNull);
+                                float[] array = (float[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
 
                                 int i = 0;
                                 for (ParsedElement subElement : element.asArray().getValues()) {
@@ -1320,7 +1204,7 @@ public class ObjectProcessor {
 
                                 result = array;
                             } else if (type.getRawClass() == double[].class) {
-                                double[] array = (double[]) Array.newInstance(type.getRawClass().getComponentType(), nonNull);
+                                double[] array = (double[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
 
                                 int i = 0;
                                 for (ParsedElement subElement : element.asArray().getValues()) {
@@ -1331,7 +1215,7 @@ public class ObjectProcessor {
 
                                 result = array;
                             } else if (type.getRawClass() == boolean[].class) {
-                                boolean[] array = (boolean[]) Array.newInstance(type.getRawClass().getComponentType(), nonNull);
+                                boolean[] array = (boolean[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
 
                                 int i = 0;
                                 for (ParsedElement subElement : element.asArray().getValues()) {
@@ -1342,7 +1226,7 @@ public class ObjectProcessor {
 
                                 result = array;
                             } else {
-                                Object[] array = (Object[]) Array.newInstance(type.getRawClass().getComponentType(), nonNull);
+                                Object[] array = (Object[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
 
                                 int i = 0;
                                 for (ParsedElement subElement : element.asArray().getValues()) {
@@ -1379,7 +1263,7 @@ public class ObjectProcessor {
                             Object result;
 
                             if (type.getRawClass() == byte[].class) {
-                                byte[] array = (byte[]) Array.newInstance(type.getRawClass(), nonNull);
+                                byte[] array = (byte[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
 
                                 int i = 0;
                                 for (ParsedElement subElement : element.asArray().getValues()) {
@@ -1390,7 +1274,7 @@ public class ObjectProcessor {
 
                                 result = array;
                             } else if (type.getRawClass() == char[].class) {
-                                char[] array = (char[]) Array.newInstance(type.getRawClass(), nonNull);
+                                char[] array = (char[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
 
                                 int i = 0;
                                 for (ParsedElement subElement : element.asArray().getValues()) {
@@ -1401,7 +1285,7 @@ public class ObjectProcessor {
 
                                 result = array;
                             } else if (type.getRawClass() == short[].class) {
-                                short[] array = (short[]) Array.newInstance(type.getRawClass(), nonNull);
+                                short[] array = (short[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
 
                                 int i = 0;
                                 for (ParsedElement subElement : element.asArray().getValues()) {
@@ -1412,7 +1296,7 @@ public class ObjectProcessor {
 
                                 result = array;
                             } else if (type.getRawClass() == int[].class) {
-                                int[] array = (int[]) Array.newInstance(type.getRawClass(), nonNull);
+                                int[] array = (int[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
 
                                 int i = 0;
                                 for (ParsedElement subElement : element.asArray().getValues()) {
@@ -1423,7 +1307,7 @@ public class ObjectProcessor {
 
                                 result = array;
                             } else if (type.getRawClass() == long[].class) {
-                                long[] array = (long[]) Array.newInstance(type.getRawClass(), nonNull);
+                                long[] array = (long[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
 
                                 int i = 0;
                                 for (ParsedElement subElement : element.asArray().getValues()) {
@@ -1434,7 +1318,7 @@ public class ObjectProcessor {
 
                                 result = array;
                             } else if (type.getRawClass() == float[].class) {
-                                float[] array = (float[]) Array.newInstance(type.getRawClass(), nonNull);
+                                float[] array = (float[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
 
                                 int i = 0;
                                 for (ParsedElement subElement : element.asArray().getValues()) {
@@ -1445,7 +1329,7 @@ public class ObjectProcessor {
 
                                 result = array;
                             } else if (type.getRawClass() == double[].class) {
-                                double[] array = (double[]) Array.newInstance(type.getRawClass(), nonNull);
+                                double[] array = (double[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
 
                                 int i = 0;
                                 for (ParsedElement subElement : element.asArray().getValues()) {
@@ -1456,7 +1340,7 @@ public class ObjectProcessor {
 
                                 result = array;
                             } else if (type.getRawClass() == boolean[].class) {
-                                boolean[] array = (boolean[]) Array.newInstance(type.getRawClass(), nonNull);
+                                boolean[] array = (boolean[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
 
                                 int i = 0;
                                 for (ParsedElement subElement : element.asArray().getValues()) {
@@ -1467,7 +1351,7 @@ public class ObjectProcessor {
 
                                 result = array;
                             } else {
-                                Object[] array = (Object[]) Array.newInstance(type.getRawClass(), nonNull);
+                                Object[] array = (Object[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
 
                                 int i = 0;
                                 for (ParsedElement subElement : element.asArray().getValues()) {
@@ -1665,41 +1549,10 @@ public class ObjectProcessor {
                     Object defaultObject = null;
 
                     if (ignoreDefaults) {
-                        if (object.getClass().getConstructors().length > 0) {
-                            try {
-                                for (Constructor<?> constructor : object.getClass().getConstructors()) {
-                                    if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
-                                        defaultObject = constructor.newInstance();
+                        defaultObject = InitializationUtil.initializeUnsafe(object.getClass());
 
-                                        break;
-                                    }
-                                }
-                            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-                                if (BJSL.getLogger() != null) {
-                                    StringWriter writer = new StringWriter();
-                                    new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
-                                    BJSL.getLogger().warning(writer.toString());
-                                }
-                            }
-                        } else {
-                            try {
-                                Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
-                                unsafeField.setAccessible(true);
-                                sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
-                                defaultObject = unsafe.allocateInstance(object.getClass());
-                            } catch (InstantiationException | IllegalAccessException | NoSuchFieldException e) {
-                                if (BJSL.getLogger() != null) {
-                                    StringWriter writer = new StringWriter();
-                                    new RuntimeException("Nonfatal error while parsing:", e).printStackTrace(new PrintWriter(writer));
-                                    BJSL.getLogger().warning(writer.toString());
-                                }
-                            }
-                        }
-
-                        if (defaultObject == null) {
-                            if (BJSL.getLogger() != null) {
-                                BJSL.getLogger().warning("Initialization of " + object.getClass().getSimpleName() + " failed, defaults will not be ignored");
-                            }
+                        if (defaultObject == null && BJSL.getLogger() != null) {
+                            BJSL.getLogger().warning("Initialization of " + object.getClass().getSimpleName() + " failed, defaults will not be ignored");
                         }
                     }
 
