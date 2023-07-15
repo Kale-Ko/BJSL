@@ -554,7 +554,7 @@ public class ObjectProcessor {
                         @Override
                         public ParsedElement toElement(Object object) {
                             if (object instanceof java.util.UUID) {
-                                return ParsedPrimitive.fromString(((UUID) object).toString());
+                                return ParsedPrimitive.fromString(object.toString());
                             } else {
                                 return ParsedPrimitive.fromNull();
                             }
@@ -576,7 +576,7 @@ public class ObjectProcessor {
                         @Override
                         public ParsedElement toElement(Object object) {
                             if (object instanceof URI) {
-                                return ParsedPrimitive.fromString(((URI) object).toString());
+                                return ParsedPrimitive.fromString(object.toString());
                             } else {
                                 return ParsedPrimitive.fromNull();
                             }
@@ -602,7 +602,7 @@ public class ObjectProcessor {
                         @Override
                         public ParsedElement toElement(Object object) {
                             if (object instanceof URL) {
-                                return ParsedPrimitive.fromString(((URL) object).toString());
+                                return ParsedPrimitive.fromString(object.toString());
                             } else {
                                 return ParsedPrimitive.fromNull();
                             }
@@ -892,7 +892,7 @@ public class ObjectProcessor {
                     if (object == null) {
                         return null;
                     } else if (type.getRawClass() == String.class) {
-                        return (String) object;
+                        return object;
                     } else if (type.getRawClass() == Byte.class || type.getRawClass() == byte.class) {
                         if (object.getClass() == String.class) {
                             return Byte.parseByte((String) object);
@@ -909,7 +909,7 @@ public class ObjectProcessor {
                         } else if (object.getClass() == Double.class) {
                             return (byte) (double) object;
                         } else {
-                            return (byte) object;
+                            return object;
                         }
                     } else if (type.getRawClass() == Character.class || type.getRawClass() == char.class) {
                         if (object.getClass() == String.class) {
@@ -927,7 +927,7 @@ public class ObjectProcessor {
                         } else if (object.getClass() == Double.class) {
                             return (char) (double) object;
                         } else {
-                            return (char) object;
+                            return object;
                         }
                     } else if (type.getRawClass() == Short.class || type.getRawClass() == short.class) {
                         if (object.getClass() == String.class) {
@@ -945,7 +945,7 @@ public class ObjectProcessor {
                         } else if (object.getClass() == Double.class) {
                             return (short) (double) object;
                         } else {
-                            return (short) object;
+                            return object;
                         }
                     } else if (type.getRawClass() == Integer.class || type.getRawClass() == int.class) {
                         if (object.getClass() == String.class) {
@@ -963,7 +963,7 @@ public class ObjectProcessor {
                         } else if (object.getClass() == Double.class) {
                             return (int) (double) object;
                         } else {
-                            return (int) object;
+                            return object;
                         }
                     } else if (type.getRawClass() == Long.class || type.getRawClass() == long.class) {
                         if (object.getClass() == String.class) {
@@ -981,7 +981,7 @@ public class ObjectProcessor {
                         } else if (object.getClass() == Double.class) {
                             return (long) (double) object;
                         } else {
-                            return (long) object;
+                            return object;
                         }
                     } else if (type.getRawClass() == Float.class || type.getRawClass() == float.class) {
                         if (object.getClass() == String.class) {
@@ -999,7 +999,7 @@ public class ObjectProcessor {
                         } else if (object.getClass() == Double.class) {
                             return (float) (double) object;
                         } else {
-                            return (float) object;
+                            return object;
                         }
                     } else if (type.getRawClass() == Double.class || type.getRawClass() == double.class) {
                         if (object.getClass() == String.class) {
@@ -1017,13 +1017,13 @@ public class ObjectProcessor {
                         } else if (object.getClass() == Float.class) {
                             return (double) (float) object;
                         } else {
-                            return (double) object;
+                            return object;
                         }
                     } else if (type.getRawClass() == Boolean.class || type.getRawClass() == boolean.class) {
                         if (object.getClass() == String.class) {
                             return Boolean.parseBoolean((String) object);
                         } else {
-                            return (boolean) object;
+                            return object;
                         }
                     } else {
                         return type.getRawClass().cast(object);
@@ -1041,7 +1041,7 @@ public class ObjectProcessor {
 
                         if (object != null) {
                             for (Map.Entry<String, ParsedElement> entry : element.asObject().getEntries()) {
-                                Object subObject = toObject(entry.getValue(), ((MapType) type).getContentType());
+                                Object subObject = toObject(entry.getValue(), type.getContentType());
                                 if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
                                     object.put(entry.getKey(), subObject);
                                 }
@@ -1100,7 +1100,7 @@ public class ObjectProcessor {
 
                         if (object != null) {
                             for (ParsedElement subElement : element.asArray().getValues()) {
-                                Object subObject = toObject(subElement, ((CollectionType) type).getContentType());
+                                Object subObject = toObject(subElement, type.getContentType());
                                 if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).size() == 0) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
                                     object.add(subObject);
                                 }
