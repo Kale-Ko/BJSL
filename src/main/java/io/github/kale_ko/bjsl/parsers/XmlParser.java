@@ -93,7 +93,7 @@ public class XmlParser extends Parser<XmlFactory, XmlMapper> {
          * @since 1.0.0
          */
         public XmlParser build() {
-            XmlFactoryBuilder factoryBuilder = (XmlFactoryBuilder) XmlFactory.builder();
+            XmlFactoryBuilder factoryBuilder = XmlFactory.builder();
             factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
             factoryBuilder = factoryBuilder.configure(StreamWriteFeature.USE_FAST_DOUBLE_WRITER, true);
             factoryBuilder = factoryBuilder.configure(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN, true);
