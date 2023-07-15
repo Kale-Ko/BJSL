@@ -90,6 +90,6 @@ public class InitializationUtil {
      * @return The initialized array instance of clazz with the passed length
      */
     public static <T> Object initializeArray(Class<T> clazz, int length) {
-        return (T[]) Array.newInstance(clazz, length);
+        return Array.newInstance(clazz, length);
     }
 }

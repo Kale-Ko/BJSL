@@ -52,7 +52,7 @@ public class PropertiesParser extends Parser<JavaPropsFactory, JavaPropsMapper> 
          * @since 1.0.0
          */
         public PropertiesParser build() {
-            JavaPropsFactoryBuilder factoryBuilder = (JavaPropsFactoryBuilder) JavaPropsFactory.builder();
+            JavaPropsFactoryBuilder factoryBuilder = JavaPropsFactory.builder();
             factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
             factoryBuilder = factoryBuilder.configure(StreamWriteFeature.USE_FAST_DOUBLE_WRITER, true);
             factoryBuilder = factoryBuilder.configure(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN, true);

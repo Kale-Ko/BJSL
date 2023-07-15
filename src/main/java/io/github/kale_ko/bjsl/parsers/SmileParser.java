@@ -53,7 +53,7 @@ public class SmileParser extends Parser<SmileFactory, SmileMapper> {
          * @since 1.0.0
          */
         public SmileParser build() {
-            SmileFactoryBuilder factoryBuilder = (SmileFactoryBuilder) SmileFactory.builder();
+            SmileFactoryBuilder factoryBuilder = SmileFactory.builder();
             factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
             factoryBuilder = factoryBuilder.configure(StreamWriteFeature.USE_FAST_DOUBLE_WRITER, true);
             factoryBuilder = factoryBuilder.configure(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN, true);

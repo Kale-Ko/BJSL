@@ -54,7 +54,7 @@ public class CsvParser extends Parser<CsvFactory, CsvMapper> {
          * @since 1.0.0
          */
         public CsvParser build() {
-            CsvFactoryBuilder factoryBuilder = (CsvFactoryBuilder) CsvFactory.builder();
+            CsvFactoryBuilder factoryBuilder = CsvFactory.builder();
             factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
             factoryBuilder = factoryBuilder.configure(StreamWriteFeature.USE_FAST_DOUBLE_WRITER, true);
             factoryBuilder = factoryBuilder.configure(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN, true);
