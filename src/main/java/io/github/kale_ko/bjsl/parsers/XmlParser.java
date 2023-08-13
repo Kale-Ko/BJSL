@@ -8,6 +8,8 @@ import com.fasterxml.jackson.dataformat.xml.XmlFactoryBuilder;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A parser for interfacing with XML
@@ -27,7 +29,7 @@ public class XmlParser extends Parser<XmlFactory, XmlMapper> {
      *
      * @since 1.0.0
      */
-    protected XmlParser(XmlFactory factory, XmlMapper mapper, PrettyPrinter prettyPrinter) {
+    protected XmlParser(@NotNull XmlFactory factory, @NotNull XmlMapper mapper, @Nullable PrettyPrinter prettyPrinter) {
         super(factory, mapper, prettyPrinter);
     }
 
@@ -79,7 +81,7 @@ public class XmlParser extends Parser<XmlFactory, XmlMapper> {
          *
          * @since 1.0.0
          */
-        public Builder setPrettyPrint(boolean value) {
+        public @NotNull Builder setPrettyPrint(boolean value) {
             this.prettyPrint = value;
 
             return this;
@@ -92,7 +94,7 @@ public class XmlParser extends Parser<XmlFactory, XmlMapper> {
          *
          * @since 1.0.0
          */
-        public XmlParser build() {
+        public @NotNull XmlParser build() {
             XmlFactoryBuilder factoryBuilder = XmlFactory.builder();
             factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
             factoryBuilder = factoryBuilder.configure(StreamWriteFeature.USE_FAST_DOUBLE_WRITER, true);

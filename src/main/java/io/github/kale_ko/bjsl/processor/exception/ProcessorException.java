@@ -1,5 +1,7 @@
 package io.github.kale_ko.bjsl.processor.exception;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Thrown when an exception occurs during processing
  *
@@ -12,7 +14,7 @@ public class ProcessorException extends RuntimeException {
      *
      * @param cause The cause of the exception
      */
-    public ProcessorException(Exception cause) {
+    public ProcessorException(@NotNull Exception cause) {
         super("Error while processing:", cause);
     }
 }

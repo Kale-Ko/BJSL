@@ -6,6 +6,8 @@ import io.github.kale_ko.bjsl.parsers.*;
 import io.github.kale_ko.bjsl.processor.ObjectProcessor;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The main class for interfacing with BJSL
@@ -21,92 +23,92 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * The JSON parser used by static calls
      * <p>
-     * Just uses a default builder
+     * Just uses a default instance
      *
      * @since 1.0.0
      */
-    private static final JsonParser jsonParser = new JsonParser.Builder().setPrettyPrint(false).build();
+    private static final @NotNull JsonParser jsonParser = new JsonParser.Builder().setPrettyPrint(false).build();
 
     /**
      * The pretty JSON parser used by static calls
      * <p>
-     * Just uses a default builder with pretty printing
+     * Just uses a default instance with pretty printing
      *
      * @since 1.0.0
      */
-    private static final JsonParser prettyJsonParser = new JsonParser.Builder().setPrettyPrint(true).build();
+    private static final @NotNull JsonParser prettyJsonParser = new JsonParser.Builder().setPrettyPrint(true).build();
 
     /**
      * The YAML parser used by static calls
      * <p>
-     * Just uses a default builder
+     * Just uses a default instance
      *
      * @since 1.0.0
      */
-    private static final YamlParser yamlParser = new YamlParser.Builder().build();
+    private static final @NotNull YamlParser yamlParser = new YamlParser.Builder().build();
 
     /**
      * The TOML parser used by static calls
      * <p>
-     * Just uses a default builder
+     * Just uses a default instance
      *
      * @since 1.0.0
      */
-    private static final TomlParser tomlParser = new TomlParser.Builder().build();
+    private static final @NotNull TomlParser tomlParser = new TomlParser.Builder().build();
 
     /**
      * The XML parser used by static calls
      * <p>
-     * Just uses a default builder
+     * Just uses a default instance
      *
      * @since 1.4.0
      */
-    private static final XmlParser xmlParser = new XmlParser.Builder().setPrettyPrint(false).build();
+    private static final @NotNull XmlParser xmlParser = new XmlParser.Builder().setPrettyPrint(false).build();
 
     /**
      * The pretty XML parser used by static calls
      * <p>
-     * Just uses a default builder with pretty printing
+     * Just uses a default instance with pretty printing
      *
      * @since 1.4.0
      */
-    private static final XmlParser prettyXmlParser = new XmlParser.Builder().setPrettyPrint(true).build();
+    private static final @NotNull XmlParser prettyXmlParser = new XmlParser.Builder().setPrettyPrint(true).build();
 
     /**
      * The csv parser used by static calls
      * <p>
-     * Just uses a default builder
+     * Just uses a default instance
      *
      * @since 1.0.0
      */
-    private static final CsvParser csvParser = new CsvParser.Builder().build();
+    private static final @NotNull CsvParser csvParser = new CsvParser.Builder().build();
 
     /**
      * The java properties parser used by static calls
      * <p>
-     * Just uses a default builder
+     * Just uses a default instance
      *
      * @since 1.0.0
      */
-    private static final PropertiesParser propertiesParser = new PropertiesParser.Builder().build();
+    private static final @NotNull PropertiesParser propertiesParser = new PropertiesParser.Builder().build();
 
     /**
      * The Smile parser used by static calls
      * <p>
-     * Just uses a default builder
+     * Just uses a default instance
      *
      * @since 1.0.0
      */
-    private static final SmileParser smileParser = new SmileParser.Builder().build();
+    private static final @NotNull SmileParser smileParser = new SmileParser.Builder().build();
 
     /**
      * The object processor used by static calls
      * <p>
-     * Just uses a default builder
+     * Just uses a default instance
      *
      * @since 1.0.0
      */
-    private static final ObjectProcessor objectProcessor = new ObjectProcessor.Builder().build();
+    private static final @NotNull ObjectProcessor objectProcessor = new ObjectProcessor.Builder().build();
 
     /**
      * The main logger used by BJSL
@@ -115,42 +117,42 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    private static Logger logger = Logger.getLogger("BJSL");
+    private static @Nullable Logger logger = Logger.getLogger("BJSL");
 
     /**
-     * The parser to use
+     * The parser to use for method calls
      *
      * @since 1.0.0
      */
-    protected final T parser;
+    protected final @NotNull T parser;
 
     /**
-     * The object processor to use
+     * The object processor to use for method calls
      *
      * @since 1.0.0
      */
-    protected final ObjectProcessor processor;
+    protected final @NotNull ObjectProcessor processor;
 
     /**
      * Create a new instance of BJSL
      *
-     * @param parser The parser to use
+     * @param parser The parser to use for method calls
      *
      * @since 1.0.0
      */
-    public BJSL(T parser) {
+    public BJSL(@NotNull T parser) {
         this(parser, new ObjectProcessor.Builder().build());
     }
 
     /**
      * Create a new instance of BJSL
      *
-     * @param parser    The parser to use
-     * @param processor The object processor to use
+     * @param parser    The parser to use for method calls
+     * @param processor The object processor to use for method calls
      *
      * @since 1.0.0
      */
-    public BJSL(T parser, ObjectProcessor processor) {
+    public BJSL(@NotNull T parser, @NotNull ObjectProcessor processor) {
         this.parser = parser;
         this.processor = processor;
     }
@@ -162,7 +164,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public T getParser() {
+    public @NotNull T getParser() {
         return this.parser;
     }
 
@@ -173,7 +175,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public ObjectProcessor getProcessor() {
+    public @NotNull ObjectProcessor getProcessor() {
         return this.processor;
     }
 
@@ -188,7 +190,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public ParsedElement parse(String data) {
+    public ParsedElement parse(@NotNull String data) {
         return this.parser.toElement(data);
     }
 
@@ -203,7 +205,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public ParsedElement parse(byte[] data) {
+    public ParsedElement parse(byte @NotNull [] data) {
         return this.parser.toElement(data);
     }
 
@@ -220,7 +222,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public <V> V parse(String data, Class<V> clazz) {
+    public <V> V parse(@NotNull String data, @NotNull Class<V> clazz) {
         return this.processor.toObject(this.parse(data), clazz);
     }
 
@@ -237,7 +239,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public <V> V parse(byte[] data, Class<V> clazz) {
+    public <V> V parse(byte @NotNull [] data, @NotNull Class<V> clazz) {
         return this.processor.toObject(this.parse(data), clazz);
     }
 
@@ -253,7 +255,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public Object parse(String data, Type type) {
+    public Object parse(@NotNull String data, @NotNull Type type) {
         return this.processor.toObject(this.parse(data), type);
     }
 
@@ -269,7 +271,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public Object parse(byte[] data, Type type) {
+    public Object parse(byte @NotNull [] data, @NotNull Type type) {
         return this.processor.toObject(this.parse(data), type);
     }
 
@@ -285,7 +287,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public Object parse(String data, JavaType type) {
+    public Object parse(@NotNull String data, @NotNull JavaType type) {
         return this.processor.toObject(this.parse(data), type);
     }
 
@@ -301,7 +303,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public Object parse(byte[] data, JavaType type) {
+    public Object parse(byte @NotNull [] data, @NotNull JavaType type) {
         return this.processor.toObject(this.parse(data), type);
     }
 
@@ -316,7 +318,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public String stringify(ParsedElement element) {
+    public String stringify(@NotNull ParsedElement element) {
         return this.parser.toString(element);
     }
 
@@ -331,7 +333,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public byte[] byteify(ParsedElement element) {
+    public byte[] byteify(@NotNull ParsedElement element) {
         return this.parser.toBytes(element);
     }
 
@@ -346,7 +348,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public String stringify(Object object) {
+    public String stringify(@Nullable Object object) {
         return this.stringify(this.processor.toElement(object));
     }
 
@@ -361,7 +363,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public byte[] byteify(Object object) {
+    public byte[] byteify(@Nullable Object object) {
         return this.byteify(this.processor.toElement(object));
     }
 
@@ -422,7 +424,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static <V> V parse(ParsedElement element, Class<V> clazz) {
+    public static <V> V parse(@NotNull ParsedElement element, @NotNull Class<V> clazz) {
         return objectProcessor.toObject(element, clazz);
     }
 
@@ -438,7 +440,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parse(ParsedElement element, Type type) {
+    public static Object parse(@NotNull ParsedElement element, @NotNull Type type) {
         return objectProcessor.toObject(element, type);
     }
 
@@ -454,7 +456,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parse(ParsedElement element, JavaType type) {
+    public static Object parse(@NotNull ParsedElement element, @NotNull JavaType type) {
         return objectProcessor.toObject(element, type);
     }
 
@@ -469,7 +471,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static ParsedElement elementify(Object object) {
+    public static ParsedElement elementify(@Nullable Object object) {
         return objectProcessor.toElement(object);
     }
 
@@ -484,7 +486,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static ParsedElement parseJson(String data) {
+    public static ParsedElement parseJson(@NotNull String data) {
         return jsonParser.toElement(data);
     }
 
@@ -499,7 +501,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static ParsedElement parseJson(byte[] data) {
+    public static ParsedElement parseJson(byte @NotNull [] data) {
         return jsonParser.toElement(data);
     }
 
@@ -516,7 +518,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static <V> V parseJson(String data, Class<V> clazz) {
+    public static <V> V parseJson(@NotNull String data, @NotNull Class<V> clazz) {
         return objectProcessor.toObject(parseJson(data), clazz);
     }
 
@@ -533,7 +535,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static <V> V parseJson(byte[] data, Class<V> clazz) {
+    public static <V> V parseJson(byte @NotNull [] data, @NotNull Class<V> clazz) {
         return objectProcessor.toObject(parseJson(data), clazz);
     }
 
@@ -549,7 +551,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parseJson(String data, Type type) {
+    public static Object parseJson(@NotNull String data, @NotNull Type type) {
         return objectProcessor.toObject(parseJson(data), type);
     }
 
@@ -565,7 +567,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parseJson(byte[] data, Type type) {
+    public static Object parseJson(byte @NotNull [] data, @NotNull Type type) {
         return objectProcessor.toObject(parseJson(data), type);
     }
 
@@ -581,7 +583,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parseJson(String data, JavaType type) {
+    public static Object parseJson(@NotNull String data, @NotNull JavaType type) {
         return objectProcessor.toObject(parseJson(data), type);
     }
 
@@ -597,7 +599,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parseJson(byte[] data, JavaType type) {
+    public static Object parseJson(byte @NotNull [] data, @NotNull JavaType type) {
         return objectProcessor.toObject(parseJson(data), type);
     }
 
@@ -612,7 +614,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static String stringifyJson(ParsedElement element) {
+    public static String stringifyJson(@NotNull ParsedElement element) {
         return stringifyJson(element, false);
     }
 
@@ -628,7 +630,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static String stringifyJson(ParsedElement element, boolean pretty) {
+    public static String stringifyJson(@NotNull ParsedElement element, boolean pretty) {
         if (pretty) {
             return prettyJsonParser.toString(element);
         } else {
@@ -647,7 +649,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static byte[] byteifyJson(ParsedElement element) {
+    public static byte[] byteifyJson(@NotNull ParsedElement element) {
         return byteifyJson(element, true);
     }
 
@@ -663,7 +665,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static byte[] byteifyJson(ParsedElement element, boolean pretty) {
+    public static byte[] byteifyJson(@NotNull ParsedElement element, boolean pretty) {
         if (pretty) {
             return prettyJsonParser.toBytes(element);
         } else {
@@ -682,7 +684,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static String stringifyJson(Object object) {
+    public static String stringifyJson(@Nullable Object object) {
         return stringifyJson(object, true);
     }
 
@@ -698,7 +700,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static String stringifyJson(Object object, boolean pretty) {
+    public static String stringifyJson(@Nullable Object object, boolean pretty) {
         return stringifyJson(objectProcessor.toElement(object), pretty);
     }
 
@@ -713,7 +715,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static byte[] byteifyJson(Object object) {
+    public static byte[] byteifyJson(@Nullable Object object) {
         return byteifyJson(object, true);
     }
 
@@ -729,7 +731,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static byte[] byteifyJson(Object object, boolean pretty) {
+    public static byte[] byteifyJson(@Nullable Object object, boolean pretty) {
         return byteifyJson(objectProcessor.toElement(object), pretty);
     }
 
@@ -788,7 +790,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static ParsedElement parseYaml(String data) {
+    public static ParsedElement parseYaml(@NotNull String data) {
         return yamlParser.toElement(data);
     }
 
@@ -803,7 +805,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static ParsedElement parseYaml(byte[] data) {
+    public static ParsedElement parseYaml(byte @NotNull [] data) {
         return yamlParser.toElement(data);
     }
 
@@ -820,7 +822,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static <V> V parseYaml(String data, Class<V> clazz) {
+    public static <V> V parseYaml(@NotNull String data, @NotNull Class<V> clazz) {
         return objectProcessor.toObject(parseYaml(data), clazz);
     }
 
@@ -837,7 +839,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static <V> V parseYaml(byte[] data, Class<V> clazz) {
+    public static <V> V parseYaml(byte @NotNull [] data, @NotNull Class<V> clazz) {
         return objectProcessor.toObject(parseYaml(data), clazz);
     }
 
@@ -853,7 +855,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parseYaml(String data, Type type) {
+    public static Object parseYaml(@NotNull String data, @NotNull Type type) {
         return objectProcessor.toObject(parseYaml(data), type);
     }
 
@@ -869,7 +871,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parseYaml(byte[] data, Type type) {
+    public static Object parseYaml(byte @NotNull [] data, @NotNull Type type) {
         return objectProcessor.toObject(parseYaml(data), type);
     }
 
@@ -885,7 +887,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parseYaml(String data, JavaType type) {
+    public static Object parseYaml(@NotNull String data, @NotNull JavaType type) {
         return objectProcessor.toObject(parseYaml(data), type);
     }
 
@@ -901,7 +903,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parseYaml(byte[] data, JavaType type) {
+    public static Object parseYaml(byte @NotNull [] data, @NotNull JavaType type) {
         return objectProcessor.toObject(parseYaml(data), type);
     }
 
@@ -916,7 +918,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static String stringifyYaml(ParsedElement element) {
+    public static String stringifyYaml(@NotNull ParsedElement element) {
         return yamlParser.toString(element);
     }
 
@@ -931,7 +933,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static byte[] byteifyYaml(ParsedElement element) {
+    public static byte[] byteifyYaml(@NotNull ParsedElement element) {
         return yamlParser.toBytes(element);
     }
 
@@ -946,7 +948,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static String stringifyYaml(Object object) {
+    public static String stringifyYaml(@Nullable Object object) {
         return stringifyYaml(objectProcessor.toElement(object));
     }
 
@@ -961,7 +963,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static byte[] byteifyYaml(Object object) {
+    public static byte[] byteifyYaml(@Nullable Object object) {
         return byteifyYaml(objectProcessor.toElement(object));
     }
 
@@ -1020,7 +1022,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static ParsedElement parseToml(String data) {
+    public static ParsedElement parseToml(@NotNull String data) {
         return tomlParser.toElement(data);
     }
 
@@ -1035,7 +1037,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static ParsedElement parseToml(byte[] data) {
+    public static ParsedElement parseToml(byte @NotNull [] data) {
         return tomlParser.toElement(data);
     }
 
@@ -1052,7 +1054,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static <V> V parseToml(String data, Class<V> clazz) {
+    public static <V> V parseToml(@NotNull String data, @NotNull Class<V> clazz) {
         return objectProcessor.toObject(parseToml(data), clazz);
     }
 
@@ -1069,7 +1071,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static <V> V parseToml(byte[] data, Class<V> clazz) {
+    public static <V> V parseToml(byte @NotNull [] data, @NotNull Class<V> clazz) {
         return objectProcessor.toObject(parseToml(data), clazz);
     }
 
@@ -1085,7 +1087,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parseToml(String data, Type type) {
+    public static Object parseToml(@NotNull String data, @NotNull Type type) {
         return objectProcessor.toObject(parseToml(data), type);
     }
 
@@ -1101,7 +1103,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parseToml(byte[] data, Type type) {
+    public static Object parseToml(byte @NotNull [] data, @NotNull Type type) {
         return objectProcessor.toObject(parseToml(data), type);
     }
 
@@ -1117,7 +1119,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parseToml(String data, JavaType type) {
+    public static Object parseToml(@NotNull String data, @NotNull JavaType type) {
         return objectProcessor.toObject(parseToml(data), type);
     }
 
@@ -1133,7 +1135,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parseToml(byte[] data, JavaType type) {
+    public static Object parseToml(byte @NotNull [] data, @NotNull JavaType type) {
         return objectProcessor.toObject(parseToml(data), type);
     }
 
@@ -1148,7 +1150,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static String stringifyToml(ParsedElement element) {
+    public static String stringifyToml(@NotNull ParsedElement element) {
         return tomlParser.toString(element);
     }
 
@@ -1163,7 +1165,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static byte[] byteifyToml(ParsedElement element) {
+    public static byte[] byteifyToml(@NotNull ParsedElement element) {
         return tomlParser.toBytes(element);
     }
 
@@ -1178,7 +1180,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static String stringifyToml(Object object) {
+    public static String stringifyToml(@Nullable Object object) {
         return stringifyToml(objectProcessor.toElement(object));
     }
 
@@ -1193,7 +1195,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static byte[] byteifyToml(Object object) {
+    public static byte[] byteifyToml(@Nullable Object object) {
         return byteifyToml(objectProcessor.toElement(object));
     }
 
@@ -1252,7 +1254,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.4.0
      */
-    public static ParsedElement parseXml(String data) {
+    public static ParsedElement parseXml(@NotNull String data) {
         return xmlParser.toElement(data);
     }
 
@@ -1267,7 +1269,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.4.0
      */
-    public static ParsedElement parseXml(byte[] data) {
+    public static ParsedElement parseXml(byte @NotNull [] data) {
         return xmlParser.toElement(data);
     }
 
@@ -1284,7 +1286,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.4.0
      */
-    public static <V> V parseXml(String data, Class<V> clazz) {
+    public static <V> V parseXml(@NotNull String data, @NotNull Class<V> clazz) {
         return objectProcessor.toObject(parseXml(data), clazz);
     }
 
@@ -1301,7 +1303,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.4.0
      */
-    public static <V> V parseXml(byte[] data, Class<V> clazz) {
+    public static <V> V parseXml(byte @NotNull [] data, @NotNull Class<V> clazz) {
         return objectProcessor.toObject(parseXml(data), clazz);
     }
 
@@ -1317,7 +1319,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.4.0
      */
-    public static Object parseXml(String data, Type type) {
+    public static Object parseXml(@NotNull String data, @NotNull Type type) {
         return objectProcessor.toObject(parseXml(data), type);
     }
 
@@ -1333,7 +1335,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.4.0
      */
-    public static Object parseXml(byte[] data, Type type) {
+    public static Object parseXml(byte @NotNull [] data, @NotNull Type type) {
         return objectProcessor.toObject(parseXml(data), type);
     }
 
@@ -1349,7 +1351,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.4.0
      */
-    public static Object parseXml(String data, JavaType type) {
+    public static Object parseXml(@NotNull String data, @NotNull JavaType type) {
         return objectProcessor.toObject(parseXml(data), type);
     }
 
@@ -1365,7 +1367,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.4.0
      */
-    public static Object parseXml(byte[] data, JavaType type) {
+    public static Object parseXml(byte @NotNull [] data, @NotNull JavaType type) {
         return objectProcessor.toObject(parseXml(data), type);
     }
 
@@ -1380,7 +1382,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.4.0
      */
-    public static String stringifyXml(ParsedElement element) {
+    public static String stringifyXml(@NotNull ParsedElement element) {
         return stringifyXml(element, false);
     }
 
@@ -1396,7 +1398,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.4.0
      */
-    public static String stringifyXml(ParsedElement element, boolean pretty) {
+    public static String stringifyXml(@NotNull ParsedElement element, boolean pretty) {
         if (pretty) {
             return prettyXmlParser.toString(element);
         } else {
@@ -1415,7 +1417,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.4.0
      */
-    public static byte[] byteifyXml(ParsedElement element) {
+    public static byte[] byteifyXml(@NotNull ParsedElement element) {
         return byteifyXml(element, true);
     }
 
@@ -1431,7 +1433,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.4.0
      */
-    public static byte[] byteifyXml(ParsedElement element, boolean pretty) {
+    public static byte[] byteifyXml(@NotNull ParsedElement element, boolean pretty) {
         if (pretty) {
             return prettyXmlParser.toBytes(element);
         } else {
@@ -1450,7 +1452,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.4.0
      */
-    public static String stringifyXml(Object object) {
+    public static String stringifyXml(@Nullable Object object) {
         return stringifyXml(object, true);
     }
 
@@ -1466,7 +1468,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.4.0
      */
-    public static String stringifyXml(Object object, boolean pretty) {
+    public static String stringifyXml(@Nullable Object object, boolean pretty) {
         return stringifyXml(objectProcessor.toElement(object), pretty);
     }
 
@@ -1481,7 +1483,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.4.0
      */
-    public static byte[] byteifyXml(Object object) {
+    public static byte[] byteifyXml(@Nullable Object object) {
         return byteifyXml(object, true);
     }
 
@@ -1497,7 +1499,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.4.0
      */
-    public static byte[] byteifyXml(Object object, boolean pretty) {
+    public static byte[] byteifyXml(@Nullable Object object, boolean pretty) {
         return byteifyXml(objectProcessor.toElement(object), pretty);
     }
 
@@ -1556,7 +1558,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static ParsedElement parseProperties(String data) {
+    public static ParsedElement parseProperties(@NotNull String data) {
         return propertiesParser.toElement(data);
     }
 
@@ -1571,7 +1573,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static ParsedElement parseProperties(byte[] data) {
+    public static ParsedElement parseProperties(byte @NotNull [] data) {
         return propertiesParser.toElement(data);
     }
 
@@ -1588,7 +1590,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static <V> V parseProperties(String data, Class<V> clazz) {
+    public static <V> V parseProperties(@NotNull String data, @NotNull Class<V> clazz) {
         return objectProcessor.toObject(parseProperties(data), clazz);
     }
 
@@ -1605,7 +1607,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static <V> V parseProperties(byte[] data, Class<V> clazz) {
+    public static <V> V parseProperties(byte @NotNull [] data, @NotNull Class<V> clazz) {
         return objectProcessor.toObject(parseProperties(data), clazz);
     }
 
@@ -1621,7 +1623,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parseProperties(String data, Type type) {
+    public static Object parseProperties(@NotNull String data, @NotNull Type type) {
         return objectProcessor.toObject(parseProperties(data), type);
     }
 
@@ -1637,7 +1639,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parseProperties(byte[] data, Type type) {
+    public static Object parseProperties(byte @NotNull [] data, @NotNull Type type) {
         return objectProcessor.toObject(parseProperties(data), type);
     }
 
@@ -1653,7 +1655,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parseProperties(String data, JavaType type) {
+    public static Object parseProperties(@NotNull String data, @NotNull JavaType type) {
         return objectProcessor.toObject(parseProperties(data), type);
     }
 
@@ -1669,7 +1671,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parseProperties(byte[] data, JavaType type) {
+    public static Object parseProperties(byte @NotNull [] data, @NotNull JavaType type) {
         return objectProcessor.toObject(parseProperties(data), type);
     }
 
@@ -1684,7 +1686,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static String stringifyProperties(ParsedElement element) {
+    public static String stringifyProperties(@NotNull ParsedElement element) {
         return propertiesParser.toString(element);
     }
 
@@ -1699,7 +1701,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static byte[] byteifyProperties(ParsedElement element) {
+    public static byte[] byteifyProperties(@NotNull ParsedElement element) {
         return propertiesParser.toBytes(element);
     }
 
@@ -1714,7 +1716,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static String stringifyProperties(Object object) {
+    public static String stringifyProperties(@Nullable Object object) {
         return stringifyProperties(objectProcessor.toElement(object));
     }
 
@@ -1729,7 +1731,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static byte[] byteifyProperties(Object object) {
+    public static byte[] byteifyProperties(@Nullable Object object) {
         return byteifyProperties(objectProcessor.toElement(object));
     }
 
@@ -1788,7 +1790,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static ParsedElement parseCsv(String data) {
+    public static ParsedElement parseCsv(@NotNull String data) {
         return csvParser.toElement(data);
     }
 
@@ -1803,7 +1805,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static ParsedElement parseCsv(byte[] data) {
+    public static ParsedElement parseCsv(byte @NotNull [] data) {
         return csvParser.toElement(data);
     }
 
@@ -1820,7 +1822,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static <V> V parseCsv(String data, Class<V> clazz) {
+    public static <V> V parseCsv(@NotNull String data, @NotNull Class<V> clazz) {
         return objectProcessor.toObject(parseCsv(data), clazz);
     }
 
@@ -1837,7 +1839,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static <V> V parseCsv(byte[] data, Class<V> clazz) {
+    public static <V> V parseCsv(byte @NotNull [] data, @NotNull Class<V> clazz) {
         return objectProcessor.toObject(parseCsv(data), clazz);
     }
 
@@ -1853,7 +1855,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parseCsv(String data, Type type) {
+    public static Object parseCsv(@NotNull String data, @NotNull Type type) {
         return objectProcessor.toObject(parseCsv(data), type);
     }
 
@@ -1869,7 +1871,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parseCsv(byte[] data, Type type) {
+    public static Object parseCsv(byte @NotNull [] data, @NotNull Type type) {
         return objectProcessor.toObject(parseCsv(data), type);
     }
 
@@ -1885,7 +1887,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parseCsv(String data, JavaType type) {
+    public static Object parseCsv(@NotNull String data, @NotNull JavaType type) {
         return objectProcessor.toObject(parseCsv(data), type);
     }
 
@@ -1901,7 +1903,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parseCsv(byte[] data, JavaType type) {
+    public static Object parseCsv(byte @NotNull [] data, @NotNull JavaType type) {
         return objectProcessor.toObject(parseCsv(data), type);
     }
 
@@ -1916,7 +1918,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static String stringifyCsv(ParsedElement element) {
+    public static String stringifyCsv(@NotNull ParsedElement element) {
         return csvParser.toString(element);
     }
 
@@ -1931,7 +1933,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static byte[] byteifyCsv(ParsedElement element) {
+    public static byte[] byteifyCsv(@NotNull ParsedElement element) {
         return csvParser.toBytes(element);
     }
 
@@ -1946,7 +1948,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static String stringifyCsv(Object object) {
+    public static String stringifyCsv(@Nullable Object object) {
         return stringifyCsv(objectProcessor.toElement(object));
     }
 
@@ -1961,7 +1963,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static byte[] byteifyCsv(Object object) {
+    public static byte[] byteifyCsv(@Nullable Object object) {
         return byteifyCsv(objectProcessor.toElement(object));
     }
 
@@ -2020,7 +2022,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static ParsedElement parseSmile(byte[] data) {
+    public static ParsedElement parseSmile(byte @NotNull [] data) {
         return smileParser.toElement(data);
     }
 
@@ -2037,7 +2039,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static <V> V parseSmile(byte[] data, Class<V> clazz) {
+    public static <V> V parseSmile(byte @NotNull [] data, @NotNull Class<V> clazz) {
         return objectProcessor.toObject(parseSmile(data), clazz);
     }
 
@@ -2053,7 +2055,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parseSmile(byte[] data, Type type) {
+    public static Object parseSmile(byte @NotNull [] data, @NotNull Type type) {
         return objectProcessor.toObject(parseSmile(data), type);
     }
 
@@ -2069,7 +2071,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Object parseSmile(byte[] data, JavaType type) {
+    public static Object parseSmile(byte @NotNull [] data, @NotNull JavaType type) {
         return objectProcessor.toObject(parseSmile(data), type);
     }
 
@@ -2084,7 +2086,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static byte[] byteifySmile(ParsedElement element) {
+    public static byte[] byteifySmile(@NotNull ParsedElement element) {
         return smileParser.toBytes(element);
     }
 
@@ -2099,7 +2101,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static byte[] byteifySmile(Object object) {
+    public static byte[] byteifySmile(@Nullable Object object) {
         return byteifySmile(objectProcessor.toElement(object));
     }
 
@@ -2132,7 +2134,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static Logger getLogger() {
+    public static @Nullable Logger getLogger() {
         return logger;
     }
 
@@ -2143,11 +2145,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public static void setLogger(Logger value) {
-        if (value == null) {
-            throw new NullPointerException("Value can not be null");
-        }
-
+    public static void setLogger(@Nullable Logger value) {
         logger = value;
     }
 }

@@ -29,6 +29,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.time.Instant;
 import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * An Object processor for mapping elements to objects and objects to elements
@@ -44,14 +46,14 @@ public class ObjectProcessor {
      *
      * @since 1.0.0
      */
-    protected boolean ignoreNulls;
+    protected final boolean ignoreNulls;
 
     /**
      * Weather empty objects (Objects with a size of 0) should be ignored when serializing
      *
      * @since 1.0.0
      */
-    protected boolean ignoreEmptyObjects;
+    protected final boolean ignoreEmptyObjects;
 
     /**
      * Weather default values should be ignored when serializing
@@ -60,21 +62,21 @@ public class ObjectProcessor {
      *
      * @since 1.0.0
      */
-    protected boolean ignoreDefaults;
+    protected final boolean ignoreDefaults;
 
     /**
      * Weather checks for enum names should be case-sensitive
      *
      * @since 1.0.0
      */
-    protected boolean caseSensitiveEnums;
+    protected final boolean caseSensitiveEnums;
 
     /**
      * A map of object types to type processors
      *
      * @since 1.0.0
      */
-    protected Map<JavaType, TypeProcessor> typeProcessors;
+    protected final @NotNull Map<JavaType, TypeProcessor> typeProcessors;
 
     /**
      * Create a new Parser using certain factories
@@ -87,7 +89,7 @@ public class ObjectProcessor {
      *
      * @since 1.0.0
      */
-    protected ObjectProcessor(boolean ignoreNulls, boolean ignoreEmptyObjects, boolean ignoreDefaults, boolean caseSensitiveEnums, Map<JavaType, TypeProcessor> typeProcessors) {
+    protected ObjectProcessor(boolean ignoreNulls, boolean ignoreEmptyObjects, boolean ignoreDefaults, boolean caseSensitiveEnums, @NotNull Map<JavaType, TypeProcessor> typeProcessors) {
         this.ignoreNulls = ignoreNulls;
         this.ignoreEmptyObjects = ignoreEmptyObjects;
         this.ignoreDefaults = ignoreDefaults;
@@ -147,7 +149,7 @@ public class ObjectProcessor {
          *
          * @since 1.0.0
          */
-        protected Map<JavaType, TypeProcessor> typeProcessors = new HashMap<>();
+        protected final @NotNull Map<JavaType, TypeProcessor> typeProcessors = new HashMap<>();
 
         /**
          * Weather or not to enable the default type processors
@@ -188,7 +190,7 @@ public class ObjectProcessor {
          *
          * @since 1.0.0
          */
-        public Builder setIgnoreNulls(boolean value) {
+        public @NotNull Builder setIgnoreNulls(boolean value) {
             this.ignoreNulls = value;
 
             return this;
@@ -218,7 +220,7 @@ public class ObjectProcessor {
          *
          * @since 1.0.0
          */
-        public Builder setIgnoreEmptyObjects(boolean value) {
+        public @NotNull Builder setIgnoreEmptyObjects(boolean value) {
             this.ignoreEmptyObjects = value;
 
             return this;
@@ -252,7 +254,7 @@ public class ObjectProcessor {
          *
          * @since 1.0.0
          */
-        public Builder setIgnoreDefaults(boolean value) {
+        public @NotNull Builder setIgnoreDefaults(boolean value) {
             this.ignoreDefaults = value;
 
             return this;
@@ -282,7 +284,7 @@ public class ObjectProcessor {
          *
          * @since 1.0.0
          */
-        public Builder setCaseSensitiveEnums(boolean value) {
+        public @NotNull Builder setCaseSensitiveEnums(boolean value) {
             this.caseSensitiveEnums = value;
 
             return this;
@@ -295,7 +297,7 @@ public class ObjectProcessor {
          *
          * @since 1.0.0
          */
-        public Map<JavaType, TypeProcessor> getTypeProcessors() {
+        public @NotNull Map<JavaType, TypeProcessor> getTypeProcessors() {
             return this.typeProcessors;
         }
 
@@ -310,7 +312,7 @@ public class ObjectProcessor {
          *
          * @since 1.0.0
          */
-        public boolean hasTypeProcessor(Class<?> clazz) {
+        public boolean hasTypeProcessor(@NotNull Class<?> clazz) {
             return this.hasTypeProcessor(TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] { }));
         }
 
@@ -325,7 +327,7 @@ public class ObjectProcessor {
          *
          * @since 1.0.0
          */
-        public boolean hasTypeProcessor(Type type) {
+        public boolean hasTypeProcessor(@NotNull Type type) {
             return this.hasTypeProcessor(TypeFactory.defaultInstance().constructType(type));
         }
 
@@ -340,7 +342,7 @@ public class ObjectProcessor {
          *
          * @since 1.0.0
          */
-        public boolean hasTypeProcessor(JavaType type) {
+        public boolean hasTypeProcessor(@NotNull JavaType type) {
             for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
                 if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
                     return true;
@@ -361,7 +363,7 @@ public class ObjectProcessor {
          *
          * @since 1.0.0
          */
-        public TypeProcessor getTypeProcessor(Class<?> clazz) {
+        public @NotNull TypeProcessor getTypeProcessor(@NotNull Class<?> clazz) {
             return this.getTypeProcessor(TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] { }));
         }
 
@@ -376,7 +378,7 @@ public class ObjectProcessor {
          *
          * @since 1.0.0
          */
-        public TypeProcessor getTypeProcessor(Type type) {
+        public @NotNull TypeProcessor getTypeProcessor(@NotNull Type type) {
             return this.getTypeProcessor(TypeFactory.defaultInstance().constructType(type));
         }
 
@@ -391,7 +393,7 @@ public class ObjectProcessor {
          *
          * @since 1.0.0
          */
-        public TypeProcessor getTypeProcessor(JavaType type) {
+        public @NotNull TypeProcessor getTypeProcessor(@NotNull JavaType type) {
             for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
                 if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
                     return typeProcessor.getValue();
@@ -413,7 +415,7 @@ public class ObjectProcessor {
          *
          * @since 1.0.0
          */
-        public Builder createTypeProcessor(Class<?> clazz, TypeProcessor value) {
+        public @NotNull Builder createTypeProcessor(@NotNull Class<?> clazz, @NotNull TypeProcessor value) {
             return this.createTypeProcessor(TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] { }), value);
         }
 
@@ -429,7 +431,7 @@ public class ObjectProcessor {
          *
          * @since 1.0.0
          */
-        public Builder createTypeProcessor(Type type, TypeProcessor value) {
+        public @NotNull Builder createTypeProcessor(@NotNull Type type, @NotNull TypeProcessor value) {
             return this.createTypeProcessor(TypeFactory.defaultInstance().constructType(type), value);
         }
 
@@ -443,7 +445,7 @@ public class ObjectProcessor {
          *
          * @since 1.0.0
          */
-        public Builder createTypeProcessor(JavaType type, TypeProcessor value) {
+        public @NotNull Builder createTypeProcessor(@NotNull JavaType type, @NotNull TypeProcessor value) {
             for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
                 if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
                     throw new NullPointerException("A type processor already exists for class \"" + type.getRawClass().getSimpleName() + "\" or one of its superclasses");
@@ -466,7 +468,7 @@ public class ObjectProcessor {
          *
          * @since 1.0.0
          */
-        public Builder removeTypeProcessor(Class<?> clazz) {
+        public @NotNull Builder removeTypeProcessor(@NotNull Class<?> clazz) {
             return this.removeTypeProcessor(TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] { }));
         }
 
@@ -481,7 +483,7 @@ public class ObjectProcessor {
          *
          * @since 1.0.0
          */
-        public Builder removeTypeProcessor(Type type) {
+        public @NotNull Builder removeTypeProcessor(@NotNull Type type) {
             return this.removeTypeProcessor(TypeFactory.defaultInstance().constructType(type));
         }
 
@@ -496,7 +498,7 @@ public class ObjectProcessor {
          *
          * @since 1.0.0
          */
-        public Builder removeTypeProcessor(JavaType type) {
+        public @NotNull Builder removeTypeProcessor(@NotNull JavaType type) {
             for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
                 if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
                     typeProcessors.remove(typeProcessor.getKey());
@@ -534,7 +536,7 @@ public class ObjectProcessor {
          *
          * @since 1.4.0
          */
-        public Builder setEnableDefaultTypeProcessors(boolean value) {
+        public @NotNull Builder setEnableDefaultTypeProcessors(boolean value) {
             this.enableDefaultTypeProcessors = value;
 
             return this;
@@ -547,12 +549,12 @@ public class ObjectProcessor {
          *
          * @since 1.0.0
          */
-        public ObjectProcessor build() {
+        public @NotNull ObjectProcessor build() {
             if (this.enableDefaultTypeProcessors) {
                 if (!this.hasTypeProcessor(UUID.class)) {
                     this.createTypeProcessor(UUID.class, new TypeProcessor() {
                         @Override
-                        public ParsedElement toElement(Object object) {
+                        public @NotNull ParsedElement toElement(Object object) {
                             if (object instanceof java.util.UUID) {
                                 return ParsedPrimitive.fromString(object.toString());
                             } else {
@@ -561,7 +563,7 @@ public class ObjectProcessor {
                         }
 
                         @Override
-                        public Object toObject(ParsedElement element) {
+                        public @Nullable Object toObject(@NotNull ParsedElement element) {
                             if (element.isPrimitive() && element.asPrimitive().isString()) {
                                 return UUID.fromString(element.asPrimitive().asString());
                             } else {
@@ -574,7 +576,7 @@ public class ObjectProcessor {
                 if (!this.hasTypeProcessor(URI.class)) {
                     this.createTypeProcessor(URI.class, new TypeProcessor() {
                         @Override
-                        public ParsedElement toElement(Object object) {
+                        public @NotNull ParsedElement toElement(Object object) {
                             if (object instanceof URI) {
                                 return ParsedPrimitive.fromString(object.toString());
                             } else {
@@ -583,7 +585,7 @@ public class ObjectProcessor {
                         }
 
                         @Override
-                        public Object toObject(ParsedElement element) {
+                        public @Nullable Object toObject(@NotNull ParsedElement element) {
                             if (element.isPrimitive() && element.asPrimitive().isString()) {
                                 try {
                                     return new URI(element.asPrimitive().asString());
@@ -600,7 +602,7 @@ public class ObjectProcessor {
                 if (!this.hasTypeProcessor(URL.class)) {
                     this.createTypeProcessor(URL.class, new TypeProcessor() {
                         @Override
-                        public ParsedElement toElement(Object object) {
+                        public @NotNull ParsedElement toElement(Object object) {
                             if (object instanceof URL) {
                                 return ParsedPrimitive.fromString(object.toString());
                             } else {
@@ -609,7 +611,7 @@ public class ObjectProcessor {
                         }
 
                         @Override
-                        public Object toObject(ParsedElement element) {
+                        public @Nullable Object toObject(@NotNull ParsedElement element) {
                             if (element.isPrimitive() && element.asPrimitive().isString()) {
                                 try {
                                     return new URL(element.asPrimitive().asString());
@@ -626,7 +628,7 @@ public class ObjectProcessor {
                 if (!this.hasTypeProcessor(Path.class)) {
                     this.createTypeProcessor(Path.class, new TypeProcessor() {
                         @Override
-                        public ParsedElement toElement(Object object) {
+                        public @NotNull ParsedElement toElement(Object object) {
                             if (object instanceof Path) {
                                 return ParsedPrimitive.fromString(((Path) object).toString());
                             } else {
@@ -635,7 +637,7 @@ public class ObjectProcessor {
                         }
 
                         @Override
-                        public Object toObject(ParsedElement element) {
+                        public @Nullable Object toObject(@NotNull ParsedElement element) {
                             if (element.isPrimitive() && element.asPrimitive().isString()) {
                                 return Path.of(element.asPrimitive().asString());
                             } else {
@@ -648,7 +650,7 @@ public class ObjectProcessor {
                 if (!this.hasTypeProcessor(File.class)) {
                     this.createTypeProcessor(File.class, new TypeProcessor() {
                         @Override
-                        public ParsedElement toElement(Object object) {
+                        public @NotNull ParsedElement toElement(Object object) {
                             if (object instanceof File) {
                                 return ParsedPrimitive.fromString(((File) object).getPath());
                             } else {
@@ -657,7 +659,7 @@ public class ObjectProcessor {
                         }
 
                         @Override
-                        public Object toObject(ParsedElement element) {
+                        public @Nullable Object toObject(@NotNull ParsedElement element) {
                             if (element.isPrimitive() && element.asPrimitive().isString()) {
                                 return new File(element.asPrimitive().asString());
                             } else {
@@ -670,7 +672,7 @@ public class ObjectProcessor {
                 if (!this.hasTypeProcessor(InetAddress.class)) {
                     this.createTypeProcessor(InetAddress.class, new TypeProcessor() {
                         @Override
-                        public ParsedElement toElement(Object object) {
+                        public @NotNull ParsedElement toElement(Object object) {
                             if (object instanceof InetAddress) {
                                 return ParsedPrimitive.fromString(((InetAddress) object).getHostName());
                             } else {
@@ -679,7 +681,7 @@ public class ObjectProcessor {
                         }
 
                         @Override
-                        public Object toObject(ParsedElement element) {
+                        public @Nullable Object toObject(@NotNull ParsedElement element) {
                             if (element.isPrimitive() && element.asPrimitive().isString()) {
                                 try {
                                     return InetAddress.getByName(element.asPrimitive().asString());
@@ -696,7 +698,7 @@ public class ObjectProcessor {
                 if (!this.hasTypeProcessor(InetSocketAddress.class)) {
                     this.createTypeProcessor(InetSocketAddress.class, new TypeProcessor() {
                         @Override
-                        public ParsedElement toElement(Object object) {
+                        public @NotNull ParsedElement toElement(Object object) {
                             if (object instanceof InetSocketAddress) {
                                 return ParsedPrimitive.fromString(((InetSocketAddress) object).getHostName() + ":" + ((InetSocketAddress) object).getPort());
                             } else {
@@ -705,7 +707,7 @@ public class ObjectProcessor {
                         }
 
                         @Override
-                        public Object toObject(ParsedElement element) {
+                        public @Nullable Object toObject(@NotNull ParsedElement element) {
                             if (element.isPrimitive() && element.asPrimitive().isString()) {
                                 try {
                                     return new InetSocketAddress(InetAddress.getByName(element.asPrimitive().asString().split(":")[0]), Integer.parseInt(element.asPrimitive().asString().split(":")[1]));
@@ -722,7 +724,7 @@ public class ObjectProcessor {
                 if (!this.hasTypeProcessor(Calendar.class)) {
                     this.createTypeProcessor(Calendar.class, new TypeProcessor() {
                         @Override
-                        public ParsedElement toElement(Object object) {
+                        public @NotNull ParsedElement toElement(Object object) {
                             if (object instanceof Calendar) {
                                 return ParsedPrimitive.fromString(DateFormat.getDateInstance(DateFormat.DEFAULT).format(((Calendar) object).getTime()));
                             } else {
@@ -731,7 +733,7 @@ public class ObjectProcessor {
                         }
 
                         @Override
-                        public Object toObject(ParsedElement element) {
+                        public @Nullable Object toObject(@NotNull ParsedElement element) {
                             if (element.isPrimitive() && element.asPrimitive().isString()) {
                                 try {
                                     Calendar calendar = Calendar.getInstance();
@@ -750,7 +752,7 @@ public class ObjectProcessor {
                 if (!this.hasTypeProcessor(Date.class)) {
                     this.createTypeProcessor(Date.class, new TypeProcessor() {
                         @Override
-                        public ParsedElement toElement(Object object) {
+                        public @NotNull ParsedElement toElement(Object object) {
                             if (object instanceof Date) {
                                 return ParsedPrimitive.fromString(DateFormat.getDateInstance(DateFormat.DEFAULT).format((Date) object));
                             } else {
@@ -759,7 +761,7 @@ public class ObjectProcessor {
                         }
 
                         @Override
-                        public Object toObject(ParsedElement element) {
+                        public @Nullable Object toObject(@NotNull ParsedElement element) {
                             if (element.isPrimitive() && element.asPrimitive().isString()) {
                                 try {
                                     return DateFormat.getDateInstance(DateFormat.DEFAULT).parse(element.asPrimitive().asString());
@@ -776,7 +778,7 @@ public class ObjectProcessor {
                 if (!this.hasTypeProcessor(Instant.class)) {
                     this.createTypeProcessor(Instant.class, new TypeProcessor() {
                         @Override
-                        public ParsedElement toElement(Object object) {
+                        public @NotNull ParsedElement toElement(Object object) {
                             if (object instanceof Instant) {
                                 return ParsedPrimitive.fromLong(((Instant) object).toEpochMilli());
                             } else {
@@ -785,7 +787,7 @@ public class ObjectProcessor {
                         }
 
                         @Override
-                        public Object toObject(ParsedElement element) {
+                        public @Nullable Object toObject(@NotNull ParsedElement element) {
                             if (element.isPrimitive() && element.asPrimitive().isLong()) {
                                 return Instant.ofEpochMilli(element.asPrimitive().asLong());
                             } else {
@@ -814,11 +816,7 @@ public class ObjectProcessor {
      * @since 1.0.0
      */
     @SuppressWarnings("unchecked")
-    public <T> T toObject(ParsedElement element, Class<T> clazz) {
-        if (clazz == null) {
-            throw new NullPointerException("Clazz can not be null");
-        }
-
+    public <T> @Nullable T toObject(@NotNull ParsedElement element, @NotNull Class<T> clazz) {
         return (T) toObject(element, TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] { }));
     }
 
@@ -834,11 +832,7 @@ public class ObjectProcessor {
      *
      * @since 1.0.0
      */
-    public Object toObject(ParsedElement element, Type type) {
-        if (type == null) {
-            throw new NullPointerException("Type can not be null");
-        }
-
+    public @Nullable Object toObject(@NotNull ParsedElement element, @NotNull Type type) {
         return toObject(element, TypeFactory.defaultInstance().constructType(type));
     }
 
@@ -853,13 +847,9 @@ public class ObjectProcessor {
      * @since 1.0.0
      */
     @SuppressWarnings("unchecked")
-    public Object toObject(ParsedElement element, JavaType type) {
-        if (type == null) {
-            throw new NullPointerException("Type can not be null");
-        }
-
+    public @Nullable Object toObject(@NotNull ParsedElement element, @NotNull JavaType type) {
         try {
-            if (element == null || (element.isPrimitive() && element.asPrimitive().isNull())) {
+            if (element.isPrimitive() && element.asPrimitive().isNull()) {
                 return null;
             }
 
@@ -878,7 +868,9 @@ public class ObjectProcessor {
                             }
                         }
 
-                        BJSL.getLogger().warning("Unknown enum value \"" + element.asPrimitive().asString() + "\" for type \"" + type.getRawClass().getSimpleName() + "\"");
+                        if (BJSL.getLogger() != null) {
+                            BJSL.getLogger().warning("Unknown enum value \"" + element.asPrimitive().asString() + "\" for type \"" + type.getRawClass().getSimpleName() + "\"");
+                        }
 
                         return null;
                     } else if (element.asPrimitive().isNull()) {
@@ -1042,7 +1034,7 @@ public class ObjectProcessor {
                         if (object != null) {
                             for (Map.Entry<String, ParsedElement> entry : element.asObject().getEntries()) {
                                 Object subObject = toObject(entry.getValue(), type.getContentType());
-                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
+                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
                                     object.put(entry.getKey(), subObject);
                                 }
                             }
@@ -1075,7 +1067,7 @@ public class ObjectProcessor {
 
                                     if (shouldSerialize) {
                                         Object subObject = toObject(element.asObject().get(field.getName()), field.getGenericType());
-                                        if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
+                                        if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
                                             field.set(object, subObject);
                                         }
                                     }
@@ -1101,7 +1093,7 @@ public class ObjectProcessor {
                         if (object != null) {
                             for (ParsedElement subElement : element.asArray().getValues()) {
                                 Object subObject = toObject(subElement, type.getContentType());
-                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
+                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
                                     object.add(subObject);
                                 }
                             }
@@ -1118,7 +1110,7 @@ public class ObjectProcessor {
 
                             for (ParsedElement subElement : element.asArray().getValues()) {
                                 Object subObject = toObject(subElement, type.getRawClass().getComponentType());
-                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
+                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
                                     nonNull++;
                                 }
                             }
@@ -1220,7 +1212,7 @@ public class ObjectProcessor {
                             int i = 0;
                             for (ParsedElement subElement : element.asArray().getValues()) {
                                 Object subObject = toObject(subElement, type.getRawClass().getComponentType());
-                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
+                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
                                     array[i] = subObject;
 
                                     i++;
@@ -1239,7 +1231,7 @@ public class ObjectProcessor {
 
                             for (ParsedElement subElement : element.asArray().getValues()) {
                                 Object subObject = toObject(subElement, type.getRawClass());
-                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
+                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
                                     nonNull++;
                                 }
                             }
@@ -1341,7 +1333,7 @@ public class ObjectProcessor {
                             int i = 0;
                             for (ParsedElement subElement : element.asArray().getValues()) {
                                 Object subObject = toObject(subElement, type.getRawClass());
-                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).size() == 0))) {
+                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
                                     array[i] = subObject;
 
                                     i++;
@@ -1375,7 +1367,7 @@ public class ObjectProcessor {
      *
      * @since 1.0.0
      */
-    public ParsedElement toElement(Object object) {
+    public @NotNull ParsedElement toElement(@Nullable Object object) {
         try {
             if (object == null) {
                 return ParsedPrimitive.fromNull();
@@ -1562,7 +1554,7 @@ public class ObjectProcessor {
                                 Default defaultAnnotation = (Default) annotation;
 
                                 if (ignoreDefaults && subElement.isPrimitive()) {
-                                    if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.STRING && !defaultAnnotation.stringValue().equals("")) {
+                                    if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.STRING && !defaultAnnotation.stringValue().isEmpty()) {
                                         if (field.get(object) != null && field.get(object).equals(defaultAnnotation.stringValue())) {
                                             shouldSerialize = false;
                                         }
@@ -1626,7 +1618,7 @@ public class ObjectProcessor {
      *
      * @since 1.0.0
      */
-    protected static <T> List<Field> getFields(Class<T> clazz) {
+    protected static <T> @NotNull List<Field> getFields(@NotNull Class<T> clazz) {
         List<Field> fields = new ArrayList<>(Arrays.asList(clazz.getDeclaredFields()));
 
         if (clazz.getSuperclass() != Object.class && clazz.getSuperclass() != null) {

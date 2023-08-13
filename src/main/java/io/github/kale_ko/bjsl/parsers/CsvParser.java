@@ -8,6 +8,8 @@ import com.fasterxml.jackson.dataformat.csv.CsvFactoryBuilder;
 import com.fasterxml.jackson.dataformat.csv.CsvGenerator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvParser.Feature;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A parser for interfacing with CSV
@@ -27,7 +29,7 @@ public class CsvParser extends Parser<CsvFactory, CsvMapper> {
      *
      * @since 1.0.0
      */
-    protected CsvParser(CsvFactory factory, CsvMapper mapper, PrettyPrinter prettyPrinter) {
+    protected CsvParser(@NotNull CsvFactory factory, @NotNull CsvMapper mapper, @Nullable PrettyPrinter prettyPrinter) {
         super(factory, mapper, prettyPrinter);
     }
 
@@ -53,7 +55,7 @@ public class CsvParser extends Parser<CsvFactory, CsvMapper> {
          *
          * @since 1.0.0
          */
-        public CsvParser build() {
+        public @NotNull CsvParser build() {
             CsvFactoryBuilder factoryBuilder = CsvFactory.builder();
             factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
             factoryBuilder = factoryBuilder.configure(StreamWriteFeature.USE_FAST_DOUBLE_WRITER, true);

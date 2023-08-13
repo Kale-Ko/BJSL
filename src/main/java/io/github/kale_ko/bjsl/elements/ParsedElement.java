@@ -1,5 +1,7 @@
 package io.github.kale_ko.bjsl.elements;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * An abstract class that all element types extend from
  *
@@ -55,9 +57,10 @@ public abstract class ParsedElement {
      *
      * @return This element as a {@link ParsedObject}
      *
+     * @throws java.lang.ClassCastException If this element is not an object
      * @since 1.0.0
      */
-    public ParsedObject asObject() {
+    public @NotNull ParsedObject asObject() {
         return (ParsedObject) this;
     }
 
@@ -68,9 +71,10 @@ public abstract class ParsedElement {
      *
      * @return This element as a {@link ParsedArray}
      *
+     * @throws java.lang.ClassCastException If this element is not an array
      * @since 1.0.0
      */
-    public ParsedArray asArray() {
+    public @NotNull ParsedArray asArray() {
         return (ParsedArray) this;
     }
 
@@ -81,9 +85,10 @@ public abstract class ParsedElement {
      *
      * @return This element as a {@link ParsedPrimitive}
      *
+     * @throws java.lang.ClassCastException If this element is not a primitive
      * @since 1.0.0
      */
-    public ParsedPrimitive asPrimitive() {
+    public @NotNull ParsedPrimitive asPrimitive() {
         return (ParsedPrimitive) this;
     }
 }

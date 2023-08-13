@@ -1,5 +1,7 @@
 package io.github.kale_ko.bjsl.parsers.exception;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Thrown when an exception occurs during parsing
  *
@@ -12,7 +14,7 @@ public class ParsingException extends RuntimeException {
      *
      * @param cause The cause of the exception
      */
-    public ParsingException(Exception cause) {
+    public ParsingException(@NotNull Exception cause) {
         super("Error while parsing:", cause);
     }
 }

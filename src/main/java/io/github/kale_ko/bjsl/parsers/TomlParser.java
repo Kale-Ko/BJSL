@@ -8,6 +8,8 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.dataformat.toml.TomlFactory;
 import com.fasterxml.jackson.dataformat.toml.TomlFactoryBuilder;
 import com.fasterxml.jackson.dataformat.toml.TomlMapper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A parser for interfacing with TOML
@@ -27,7 +29,7 @@ public class TomlParser extends Parser<TomlFactory, TomlMapper> {
      *
      * @since 1.0.0
      */
-    protected TomlParser(TomlFactory factory, TomlMapper mapper, PrettyPrinter prettyPrinter) {
+    protected TomlParser(@NotNull TomlFactory factory, @NotNull TomlMapper mapper, @Nullable PrettyPrinter prettyPrinter) {
         super(factory, mapper, prettyPrinter);
     }
 
@@ -88,7 +90,7 @@ public class TomlParser extends Parser<TomlFactory, TomlMapper> {
          *
          * @since 1.0.0
          */
-        public Builder setIndentLevel(int value) {
+        public @NotNull Builder setIndentLevel(int value) {
             this.indentLevel = value;
 
             return this;
@@ -118,7 +120,7 @@ public class TomlParser extends Parser<TomlFactory, TomlMapper> {
          *
          * @since 1.0.0
          */
-        public Builder setCrlf(boolean value) {
+        public @NotNull Builder setCrlf(boolean value) {
             this.crlf = value;
 
             return this;
@@ -131,7 +133,7 @@ public class TomlParser extends Parser<TomlFactory, TomlMapper> {
          *
          * @since 1.0.0
          */
-        public TomlParser build() {
+        public @NotNull TomlParser build() {
             TomlFactoryBuilder factoryBuilder = TomlFactory.builder();
             factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
             factoryBuilder = factoryBuilder.configure(StreamWriteFeature.USE_FAST_DOUBLE_WRITER, true);
