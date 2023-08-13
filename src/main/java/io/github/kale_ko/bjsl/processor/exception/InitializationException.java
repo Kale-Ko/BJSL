@@ -1,5 +1,7 @@
 package io.github.kale_ko.bjsl.processor.exception;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Thrown when a type can't be initialized
  *
@@ -12,7 +14,7 @@ public class InitializationException extends RuntimeException {
      *
      * @param type The type that was unable to be initialized
      */
-    public InitializationException(Class<?> type) {
+    public InitializationException(@NotNull Class<?> type) {
         super("No 0-args constructors for \"" + type.getSimpleName() + "\" found and unsafe initialization failed");
     }
 }

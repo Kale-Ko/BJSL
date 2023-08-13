@@ -1,5 +1,7 @@
 package io.github.kale_ko.bjsl.parsers.exception;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Thrown when an invalid/unknown type is passed to a method that can't handle it
  *
@@ -12,7 +14,7 @@ public class InvalidTypeException extends RuntimeException {
      *
      * @param type The type that was unable to be handled
      */
-    public InvalidTypeException(Class<?> type) {
+    public InvalidTypeException(@NotNull Class<?> type) {
         super("\"" + type.getSimpleName() + "\" is not a processable type");
     }
 }

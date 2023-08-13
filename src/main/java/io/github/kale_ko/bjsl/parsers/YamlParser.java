@@ -9,6 +9,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactoryBuilder;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A parser for interfacing with YAML
@@ -28,7 +30,7 @@ public class YamlParser extends Parser<YAMLFactory, YAMLMapper> {
      *
      * @since 1.0.0
      */
-    protected YamlParser(YAMLFactory factory, YAMLMapper mapper, PrettyPrinter prettyPrinter) {
+    protected YamlParser(@NotNull YAMLFactory factory, @NotNull YAMLMapper mapper, @Nullable PrettyPrinter prettyPrinter) {
         super(factory, mapper, prettyPrinter);
     }
 
@@ -89,7 +91,7 @@ public class YamlParser extends Parser<YAMLFactory, YAMLMapper> {
          *
          * @since 1.0.0
          */
-        public Builder setIndentLevel(int value) {
+        public @NotNull Builder setIndentLevel(int value) {
             this.indentLevel = value;
 
             return this;
@@ -119,7 +121,7 @@ public class YamlParser extends Parser<YAMLFactory, YAMLMapper> {
          *
          * @since 1.0.0
          */
-        public Builder setCrlf(boolean value) {
+        public @NotNull Builder setCrlf(boolean value) {
             this.crlf = value;
 
             return this;
@@ -132,7 +134,7 @@ public class YamlParser extends Parser<YAMLFactory, YAMLMapper> {
          *
          * @since 1.0.0
          */
-        public YamlParser build() {
+        public @NotNull YamlParser build() {
             YAMLFactoryBuilder factoryBuilder = YAMLFactory.builder();
             factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
             factoryBuilder = factoryBuilder.configure(StreamWriteFeature.USE_FAST_DOUBLE_WRITER, true);

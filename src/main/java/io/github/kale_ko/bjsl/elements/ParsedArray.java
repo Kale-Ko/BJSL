@@ -2,6 +2,7 @@ package io.github.kale_ko.bjsl.elements;
 
 import java.util.LinkedList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A wrapper for an ordered map used to represent an Array in most data formats
@@ -15,7 +16,7 @@ public class ParsedArray extends ParsedElement {
      *
      * @since 1.0.0
      */
-    protected final List<ParsedElement> array;
+    protected final @NotNull List<ParsedElement> array;
 
     /**
      * Create a new {@link ParsedArray}
@@ -33,7 +34,7 @@ public class ParsedArray extends ParsedElement {
      *
      * @since 1.0.0
      */
-    protected ParsedArray(List<ParsedElement> array) {
+    protected ParsedArray(@NotNull List<ParsedElement> array) {
         this.array = array;
     }
 
@@ -57,7 +58,7 @@ public class ParsedArray extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public List<ParsedElement> getValues() {
+    public @NotNull List<ParsedElement> getValues() {
         return List.copyOf(this.array);
     }
 
@@ -68,9 +69,10 @@ public class ParsedArray extends ParsedElement {
      *
      * @return The value of a certain index in this array
      *
+     * @throws java.lang.IndexOutOfBoundsException If there is no value associated with the index
      * @since 1.0.0
      */
-    public ParsedElement get(int index) {
+    public @NotNull ParsedElement get(int index) {
         if (index >= 0 && index < this.array.size()) {
             return this.array.get(index);
         } else {
@@ -85,11 +87,7 @@ public class ParsedArray extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public void add(ParsedElement value) {
-        if (value == null) {
-            throw new NullPointerException("Value can not be null");
-        }
-
+    public void add(@NotNull ParsedElement value) {
         this.array.add(value);
     }
 
@@ -99,13 +97,10 @@ public class ParsedArray extends ParsedElement {
      * @param index The index to add it at
      * @param value The value to add
      *
+     * @throws java.lang.IndexOutOfBoundsException If there is no value associated with the index
      * @since 1.0.0
      */
-    public void addAt(int index, ParsedElement value) {
-        if (value == null) {
-            throw new NullPointerException("Value can not be null");
-        }
-
+    public void addAt(int index, @NotNull ParsedElement value) {
         if (index >= 0 && index <= this.array.size()) {
             this.array.add(index, value);
         } else {
@@ -120,11 +115,7 @@ public class ParsedArray extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public void addAll(List<ParsedElement> values) {
-        if (values == null) {
-            throw new NullPointerException("Values can not be null");
-        }
-
+    public void addAll(@NotNull List<ParsedElement> values) {
         for (ParsedElement value : values) {
             add(value);
         }
@@ -136,13 +127,10 @@ public class ParsedArray extends ParsedElement {
      * @param index The index to set
      * @param value The value to set
      *
+     * @throws java.lang.IndexOutOfBoundsException If there is no value associated with the index
      * @since 1.0.0
      */
-    public void set(int index, ParsedElement value) {
-        if (value == null) {
-            throw new NullPointerException("Value can not be null");
-        }
-
+    public void set(int index, @NotNull ParsedElement value) {
         if (index >= 0 && index < this.array.size()) {
             this.array.set(index, value);
         } else {
@@ -155,6 +143,7 @@ public class ParsedArray extends ParsedElement {
      *
      * @param index The index to remove
      *
+     * @throws java.lang.IndexOutOfBoundsException If there is no value associated with the index
      * @since 1.0.0
      */
     public void remove(int index) {
@@ -172,7 +161,7 @@ public class ParsedArray extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public static ParsedArray create() {
+    public static @NotNull ParsedArray create() {
         return new ParsedArray();
     }
 
@@ -185,11 +174,7 @@ public class ParsedArray extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public static ParsedArray from(List<ParsedElement> array) {
-        if (array == null) {
-            throw new NullPointerException("Array can not be null");
-        }
-
-        return new ParsedArray(new LinkedList<>(array));
+    public static @NotNull ParsedArray from(@NotNull List<ParsedElement> array) {
+        return new ParsedArray(array);
     }
 }
