@@ -10,6 +10,8 @@ import io.github.kale_ko.bjsl.BJSL;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A parser for interfacing with JSON
@@ -29,7 +31,7 @@ public class JsonParser extends Parser<JsonFactory, JsonMapper> {
      *
      * @since 1.0.0
      */
-    protected JsonParser(JsonFactory factory, JsonMapper mapper, PrettyPrinter prettyPrinter) {
+    protected JsonParser(@NotNull JsonFactory factory, @NotNull JsonMapper mapper, @Nullable PrettyPrinter prettyPrinter) {
         super(factory, mapper, prettyPrinter);
     }
 
@@ -99,7 +101,7 @@ public class JsonParser extends Parser<JsonFactory, JsonMapper> {
          *
          * @since 1.0.0
          */
-        public Builder setPrettyPrint(boolean value) {
+        public @NotNull Builder setPrettyPrint(boolean value) {
             this.prettyPrint = value;
 
             return this;
@@ -129,7 +131,7 @@ public class JsonParser extends Parser<JsonFactory, JsonMapper> {
          *
          * @since 1.0.0
          */
-        public Builder setIndentLevel(int value) {
+        public @NotNull Builder setIndentLevel(int value) {
             this.indentLevel = value;
 
             return this;
@@ -159,7 +161,7 @@ public class JsonParser extends Parser<JsonFactory, JsonMapper> {
          *
          * @since 1.0.0
          */
-        public Builder setCrlf(boolean value) {
+        public @NotNull Builder setCrlf(boolean value) {
             this.crlf = value;
 
             return this;
@@ -172,7 +174,7 @@ public class JsonParser extends Parser<JsonFactory, JsonMapper> {
          *
          * @since 1.0.0
          */
-        public JsonParser build() {
+        public @NotNull JsonParser build() {
             JsonFactoryBuilder factoryBuilder = (JsonFactoryBuilder) JsonFactory.builder();
             factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
             factoryBuilder = factoryBuilder.configure(StreamWriteFeature.USE_FAST_DOUBLE_WRITER, true);
