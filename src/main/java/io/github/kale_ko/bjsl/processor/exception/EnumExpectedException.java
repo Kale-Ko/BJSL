@@ -1,5 +1,7 @@
 package io.github.kale_ko.bjsl.processor.exception;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Thrown when an invalid/unknown type is attempted to be parsed as an enum
  *
@@ -12,7 +14,7 @@ public class EnumExpectedException extends RuntimeException {
      *
      * @param type The type that was invalid
      */
-    public EnumExpectedException(Class<?> type) {
+    public EnumExpectedException(@NotNull Class<?> type) {
         super("Element for type \"" + type.getSimpleName() + "\" is not a enum");
     }
 }

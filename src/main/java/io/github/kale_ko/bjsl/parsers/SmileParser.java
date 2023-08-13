@@ -7,6 +7,8 @@ import com.fasterxml.jackson.dataformat.smile.SmileFactory;
 import com.fasterxml.jackson.dataformat.smile.SmileFactoryBuilder;
 import com.fasterxml.jackson.dataformat.smile.SmileGenerator;
 import com.fasterxml.jackson.dataformat.smile.databind.SmileMapper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A parser for interfacing with Smile (Binary JSON)
@@ -26,7 +28,7 @@ public class SmileParser extends Parser<SmileFactory, SmileMapper> {
      *
      * @since 1.0.0
      */
-    protected SmileParser(SmileFactory factory, SmileMapper mapper, PrettyPrinter prettyPrinter) {
+    protected SmileParser(@NotNull SmileFactory factory, @NotNull SmileMapper mapper, @Nullable PrettyPrinter prettyPrinter) {
         super(factory, mapper, prettyPrinter);
     }
 
@@ -52,7 +54,7 @@ public class SmileParser extends Parser<SmileFactory, SmileMapper> {
          *
          * @since 1.0.0
          */
-        public SmileParser build() {
+        public @NotNull SmileParser build() {
             SmileFactoryBuilder factoryBuilder = SmileFactory.builder();
             factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
             factoryBuilder = factoryBuilder.configure(StreamWriteFeature.USE_FAST_DOUBLE_WRITER, true);

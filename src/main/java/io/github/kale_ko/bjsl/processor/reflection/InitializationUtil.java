@@ -7,6 +7,8 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import sun.misc.Unsafe;
 
 /**
@@ -30,7 +32,7 @@ public class InitializationUtil {
      *
      * @return The initialized instance of clazz
      */
-    public static <T> T initialize(Class<T> clazz) {
+    public static <T> @Nullable T initialize(@NotNull Class<T> clazz) {
         try {
             for (Constructor<?> constructor : clazz.getConstructors()) {
                 if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
@@ -58,7 +60,7 @@ public class InitializationUtil {
      *
      * @return The initialized instance of clazz
      */
-    public static <T> T initializeUnsafe(Class<T> clazz) {
+    public static <T> @Nullable T initializeUnsafe(@NotNull Class<T> clazz) {
         T attempt = initialize(clazz);
         if (attempt != null) {
             return attempt;
@@ -89,7 +91,7 @@ public class InitializationUtil {
      *
      * @return The initialized array instance of clazz with the passed length
      */
-    public static <T> Object initializeArray(Class<T> clazz, int length) {
+    public static <T> @NotNull Object initializeArray(@NotNull Class<T> clazz, int length) {
         return Array.newInstance(clazz, length);
     }
 }

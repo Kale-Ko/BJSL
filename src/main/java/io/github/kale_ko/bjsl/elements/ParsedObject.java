@@ -3,6 +3,7 @@ package io.github.kale_ko.bjsl.elements;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A wrapper for an ordered map used to represent an Object in most data formats
@@ -16,7 +17,7 @@ public class ParsedObject extends ParsedElement {
      *
      * @since 1.0.0
      */
-    protected final Map<String, ParsedElement> object;
+    protected final @NotNull Map<String, ParsedElement> object;
 
     /**
      * Create a new {@link ParsedObject}
@@ -34,7 +35,7 @@ public class ParsedObject extends ParsedElement {
      *
      * @since 1.0.0
      */
-    protected ParsedObject(Map<String, ParsedElement> object) {
+    protected ParsedObject(@NotNull Map<String, ParsedElement> object) {
         this.object = object;
     }
 
@@ -58,7 +59,7 @@ public class ParsedObject extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public List<java.util.Map.Entry<String, ParsedElement>> getEntries() {
+    public @NotNull List<Map.Entry<String, ParsedElement>> getEntries() {
         return List.copyOf(this.object.entrySet());
     }
 
@@ -71,7 +72,7 @@ public class ParsedObject extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public List<String> getKeys() {
+    public @NotNull List<String> getKeys() {
         return List.copyOf(this.object.keySet());
     }
 
@@ -84,7 +85,7 @@ public class ParsedObject extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public List<ParsedElement> getValues() {
+    public @NotNull List<ParsedElement> getValues() {
         return List.copyOf(this.object.values());
     }
 
@@ -97,11 +98,7 @@ public class ParsedObject extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public boolean has(String key) {
-        if (key == null) {
-            throw new NullPointerException("Key can not be null");
-        }
-
+    public boolean has(@NotNull String key) {
         return this.object.containsKey(key);
     }
 
@@ -112,13 +109,10 @@ public class ParsedObject extends ParsedElement {
      *
      * @return The value of a certain key this object stores
      *
+     * @throws java.lang.NullPointerException If there is no value associated with the key
      * @since 1.0.0
      */
-    public ParsedElement get(String key) {
-        if (key == null) {
-            throw new NullPointerException("Key can not be null");
-        }
-
+    public @NotNull ParsedElement get(@NotNull String key) {
         if (this.object.containsKey(key)) {
             return this.object.get(key);
         } else {
@@ -134,14 +128,7 @@ public class ParsedObject extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public void set(String key, ParsedElement value) {
-        if (key == null) {
-            throw new NullPointerException("Key can not be null");
-        }
-        if (value == null) {
-            throw new NullPointerException("Value can not be null");
-        }
-
+    public void set(@NotNull String key, @NotNull ParsedElement value) {
         this.object.remove(key);
         this.object.put(key, value);
     }
@@ -153,11 +140,7 @@ public class ParsedObject extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public void remove(String key) {
-        if (key == null) {
-            throw new NullPointerException("Key can not be null");
-        }
-
+    public void remove(@NotNull String key) {
         if (this.object.containsKey(key)) {
             this.object.remove(key);
         } else {
@@ -172,7 +155,7 @@ public class ParsedObject extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public static ParsedObject create() {
+    public static @NotNull ParsedObject create() {
         return new ParsedObject();
     }
 
@@ -185,11 +168,7 @@ public class ParsedObject extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public static ParsedObject from(Map<String, ParsedElement> object) {
-        if (object == null) {
-            throw new NullPointerException("Object can not be null");
-        }
-
-        return new ParsedObject(new LinkedHashMap<>(object));
+    public static @NotNull ParsedObject from(@NotNull Map<String, ParsedElement> object) {
+        return new ParsedObject(object);
     }
 }

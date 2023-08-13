@@ -12,6 +12,8 @@ import io.github.kale_ko.bjsl.parsers.exception.InvalidTypeException;
 import io.github.kale_ko.bjsl.parsers.exception.ParsingException;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * An abstract class that all parsers extend from
@@ -32,21 +34,21 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      *
      * @since 1.0.0
      */
-    protected final T factory;
+    protected final @NotNull T factory;
 
     /**
      * The codec used for converting to/from trees/strings
      *
      * @since 1.0.0
      */
-    protected final V codec;
+    protected final @NotNull V codec;
 
     /**
      * The prettyPrinter used for converting to strings
      *
      * @since 1.0.0
      */
-    protected final PrettyPrinter prettyPrinter;
+    protected final @Nullable PrettyPrinter prettyPrinter;
 
     /**
      * Create a new Parser using certain factories
@@ -57,7 +59,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      *
      * @since 1.0.0
      */
-    protected Parser(T factory, V codec, PrettyPrinter prettyPrinter) {
+    protected Parser(@NotNull T factory, @NotNull V codec, @Nullable PrettyPrinter prettyPrinter) {
         this.factory = factory;
         this.codec = codec;
 
@@ -75,11 +77,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      *
      * @since 1.0.0
      */
-    public ParsedElement toElement(String data) {
-        if (data == null || data.length() == 0) {
-            throw new NullPointerException("Data can not be null");
-        }
-
+    public @NotNull ParsedElement toElement(@NotNull String data) {
         return toElement(data.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -94,11 +92,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      *
      * @since 1.0.0
      */
-    public ParsedElement toElement(byte[] data) {
-        if (data == null || data.length == 0) {
-            throw new NullPointerException("Data can not be null");
-        }
-
+    public @NotNull ParsedElement toElement(byte @NotNull [] data) {
         try {
             com.fasterxml.jackson.core.JsonParser parser = this.factory.createParser(data);
             parser.setCodec(this.codec);
@@ -168,11 +162,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      *
      * @since 1.0.0
      */
-    public String toString(ParsedElement element) {
-        if (element == null) {
-            throw new NullPointerException("Element can not be null");
-        }
-
+    public @NotNull String toString(@NotNull ParsedElement element) {
         return new String(toBytes(element), StandardCharsets.UTF_8);
     }
 
@@ -187,11 +177,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      *
      * @since 1.0.0
      */
-    public byte[] toBytes(ParsedElement element) {
-        if (element == null) {
-            throw new NullPointerException("Element can not be null");
-        }
-
+    public byte @NotNull [] toBytes(@NotNull ParsedElement element) {
         try {
             if (element instanceof ParsedObject) {
                 ParsedObject objectElement = element.asObject();
@@ -244,7 +230,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      *
      * @since 1.3.0
      */
-    public String emptyString() {
+    public @NotNull String emptyString() {
         return new String(emptyBytes(), StandardCharsets.UTF_8);
     }
 
@@ -255,7 +241,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      *
      * @since 1.4.0
      */
-    public String emptyArrayString() {
+    public @NotNull String emptyArrayString() {
         return new String(emptyArrayBytes(), StandardCharsets.UTF_8);
     }
 
@@ -266,7 +252,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      *
      * @since 1.3.0
      */
-    public byte[] emptyBytes() {
+    public byte @NotNull [] emptyBytes() {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             try (JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter).setCodec(this.codec)) {
@@ -287,7 +273,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      *
      * @since 1.4.0
      */
-    public byte[] emptyArrayBytes() {
+    public byte @NotNull [] emptyArrayBytes() {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             try (JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter).setCodec(this.codec)) {
@@ -310,7 +296,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      *
      * @since 1.0.0
      */
-    protected void toElements(ParsedElement element, String key, JsonNode node) {
+    protected void toElements(@NotNull ParsedElement element, @NotNull String key, @NotNull JsonNode node) {
         if (node instanceof ObjectNode) {
             ObjectNode objectNode = (ObjectNode) node;
             ParsedObject subElement = ParsedObject.create();
@@ -417,7 +403,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      *
      * @since 1.0.0
      */
-    protected void toNodes(TreeNode node, String key, ParsedElement element) {
+    protected void toNodes(@NotNull TreeNode node, @NotNull String key, @NotNull ParsedElement element) {
         if (element instanceof ParsedObject) {
             ParsedObject objectElement = (ParsedObject) element;
             ObjectNode subNode = JsonNodeFactory.instance.objectNode();

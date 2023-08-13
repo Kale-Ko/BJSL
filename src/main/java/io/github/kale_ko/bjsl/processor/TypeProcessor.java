@@ -1,6 +1,8 @@
 package io.github.kale_ko.bjsl.processor;
 
 import io.github.kale_ko.bjsl.elements.ParsedElement;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A type processor for converting elements to objects and objects to elements
@@ -18,7 +20,7 @@ public interface TypeProcessor {
      *
      * @since 1.0.0
      */
-    ParsedElement toElement(Object object);
+    @NotNull ParsedElement toElement(@Nullable Object object);
 
     /**
      * Converts a {@link ParsedElement} into an Object
@@ -29,5 +31,5 @@ public interface TypeProcessor {
      *
      * @since 1.0.0
      */
-    Object toObject(ParsedElement element);
+    @Nullable Object toObject(@NotNull ParsedElement element);
 }

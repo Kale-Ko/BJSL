@@ -6,6 +6,8 @@ import com.fasterxml.jackson.core.StreamWriteFeature;
 import com.fasterxml.jackson.dataformat.javaprop.JavaPropsFactory;
 import com.fasterxml.jackson.dataformat.javaprop.JavaPropsFactoryBuilder;
 import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A parser for interfacing with Java properties
@@ -25,7 +27,7 @@ public class PropertiesParser extends Parser<JavaPropsFactory, JavaPropsMapper> 
      *
      * @since 1.0.0
      */
-    protected PropertiesParser(JavaPropsFactory factory, JavaPropsMapper mapper, PrettyPrinter prettyPrinter) {
+    protected PropertiesParser(@NotNull JavaPropsFactory factory, @NotNull JavaPropsMapper mapper, @Nullable PrettyPrinter prettyPrinter) {
         super(factory, mapper, prettyPrinter);
     }
 
@@ -51,7 +53,7 @@ public class PropertiesParser extends Parser<JavaPropsFactory, JavaPropsMapper> 
          *
          * @since 1.0.0
          */
-        public PropertiesParser build() {
+        public @NotNull PropertiesParser build() {
             JavaPropsFactoryBuilder factoryBuilder = JavaPropsFactory.builder();
             factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
             factoryBuilder = factoryBuilder.configure(StreamWriteFeature.USE_FAST_DOUBLE_WRITER, true);
