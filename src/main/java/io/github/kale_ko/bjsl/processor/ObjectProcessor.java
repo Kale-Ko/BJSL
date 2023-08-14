@@ -14,6 +14,7 @@ import io.github.kale_ko.bjsl.parsers.exception.InvalidTypeException;
 import io.github.kale_ko.bjsl.processor.annotations.AlwaysSerialize;
 import io.github.kale_ko.bjsl.processor.annotations.Default;
 import io.github.kale_ko.bjsl.processor.annotations.DontSerialize;
+import io.github.kale_ko.bjsl.processor.annotations.Rename;
 import io.github.kale_ko.bjsl.processor.exception.EnumExpectedException;
 import io.github.kale_ko.bjsl.processor.exception.InitializationException;
 import io.github.kale_ko.bjsl.processor.exception.ProcessorException;
@@ -1028,7 +1029,7 @@ public class ObjectProcessor {
                         if (!type.getRawClass().isInterface()) {
                             object = (Map<String, Object>) InitializationUtil.initializeUnsafe(type.getRawClass());
                         } else {
-                            object = (Map<String, Object>) InitializationUtil.initializeUnsafe(LinkedHashMap.class);
+                            object = InitializationUtil.initializeUnsafe(LinkedHashMap.class);
                         }
 
                         if (object != null) {
@@ -1051,22 +1052,22 @@ public class ObjectProcessor {
 
                             for (Field field : fields) {
                                 if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
-                                    boolean shouldSerialize = element.asObject().has(field.getName()) && !Modifier.isTransient(field.getModifiers());
+                                    boolean shouldSerialize = !(Modifier.isTransient(field.getModifiers()) || field.getName().startsWith("this$"));
+
+                                    String subKey = field.getName();
 
                                     for (Annotation annotation : field.getDeclaredAnnotations()) {
                                         if (annotation.annotationType() == AlwaysSerialize.class) {
                                             shouldSerialize = true;
                                         } else if (annotation.annotationType() == DontSerialize.class) {
                                             shouldSerialize = false;
+                                        } else if (annotation.annotationType() == Rename.class) {
+                                            subKey = ((Rename) annotation).name();
                                         }
                                     }
 
-                                    if (field.getName().startsWith("this$")) {
-                                        shouldSerialize = false;
-                                    }
-
-                                    if (shouldSerialize) {
-                                        Object subObject = toObject(element.asObject().get(field.getName()), field.getGenericType());
+                                    if (shouldSerialize && element.asObject().has(subKey)) {
+                                        Object subObject = toObject(element.asObject().get(subKey), field.getGenericType());
                                         if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
                                             field.set(object, subObject);
                                         }
@@ -1087,7 +1088,7 @@ public class ObjectProcessor {
                         if (!type.getRawClass().isInterface()) {
                             object = (Collection<Object>) InitializationUtil.initializeUnsafe(type.getRawClass());
                         } else {
-                            object = (Collection<Object>) InitializationUtil.initializeUnsafe(LinkedList.class);
+                            object = InitializationUtil.initializeUnsafe(LinkedList.class);
                         }
 
                         if (object != null) {
@@ -1359,11 +1360,11 @@ public class ObjectProcessor {
     }
 
     /**
-     * Maps this Object into a {@link ParsedElement}
+     * Maps this Object into a {@link io.github.kale_ko.bjsl.elements.ParsedElement}
      *
      * @param object The object to map
      *
-     * @return A new {@link ParsedElement} with the values of object
+     * @return A new {@link io.github.kale_ko.bjsl.elements.ParsedElement} with the values of object
      *
      * @since 1.0.0
      */
@@ -1519,7 +1520,6 @@ public class ObjectProcessor {
 
                 if (ignoreDefaults) {
                     defaultObject = InitializationUtil.initializeUnsafe(object.getClass());
-
                     if (defaultObject == null && BJSL.getLogger() != null) {
                         BJSL.getLogger().warning("Initialization of " + object.getClass().getSimpleName() + " failed, defaults will not be ignored");
                     }
@@ -1529,8 +1529,9 @@ public class ObjectProcessor {
 
                 for (Field field : fields) {
                     if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
-                        boolean shouldSerialize = !Modifier.isTransient(field.getModifiers());
+                        boolean shouldSerialize = !(Modifier.isTransient(field.getModifiers()) || field.getName().startsWith("this$"));
 
+                        String subKey = field.getName();
                         ParsedElement subElement = toElement(field.get(object));
 
                         if (ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) {
@@ -1588,15 +1589,13 @@ public class ObjectProcessor {
                                         }
                                     }
                                 }
+                            } else if (annotation.annotationType() == Rename.class) {
+                                subKey = ((Rename) annotation).name();
                             }
                         }
 
-                        if (field.getName().startsWith("this$")) {
-                            shouldSerialize = false;
-                        }
-
                         if (shouldSerialize) {
-                            objectElement.set(field.getName(), subElement);
+                            objectElement.set(subKey, subElement);
                         }
                     }
                 }
