@@ -14,7 +14,7 @@ public abstract class ParsedElement {
      *
      * @since 1.0.0
      */
-    protected ParsedElement() {
+    ParsedElement() {
     }
 
     @Override
