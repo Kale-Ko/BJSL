@@ -94,10 +94,11 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
      */
     public @NotNull ParsedElement toElement(byte @NotNull [] data) {
         try {
-            com.fasterxml.jackson.core.JsonParser parser = this.factory.createParser(data);
-            parser.setCodec(this.codec);
-            TreeNode tree = parser.readValueAsTree();
-            parser.close();
+            TreeNode tree;
+            try (com.fasterxml.jackson.core.JsonParser parser = this.factory.createParser(data)) {
+                parser.setCodec(this.codec);
+                tree = parser.readValueAsTree();
+            }
 
             if (tree instanceof JsonNode) {
                 JsonNode node = (JsonNode) tree;
@@ -126,10 +127,10 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
                     return ParsedPrimitive.fromShort((short) node.asInt());
                 } else if (node instanceof IntNode) {
                     return ParsedPrimitive.fromInteger(node.asInt());
-                } else if (node instanceof BigIntegerNode) {
-                    return ParsedPrimitive.fromBigInteger(node.bigIntegerValue());
                 } else if (node instanceof LongNode) {
                     return ParsedPrimitive.fromLong(node.asLong());
+                } else if (node instanceof BigIntegerNode) {
+                    return ParsedPrimitive.fromBigInteger(node.bigIntegerValue());
                 } else if (node instanceof FloatNode) {
                     return ParsedPrimitive.fromFloat((float) node.asDouble());
                 } else if (node instanceof DoubleNode) {
@@ -345,17 +346,17 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
             } else if (element instanceof ParsedArray) {
                 ((ParsedArray) element).add(ParsedPrimitive.fromInteger(node.asInt()));
             }
-        } else if (node instanceof BigIntegerNode) {
-            if (element instanceof ParsedObject) {
-                ((ParsedObject) element).set(key, ParsedPrimitive.fromBigInteger(node.bigIntegerValue()));
-            } else if (element instanceof ParsedArray) {
-                ((ParsedArray) element).add(ParsedPrimitive.fromBigInteger(node.bigIntegerValue()));
-            }
         } else if (node instanceof LongNode) {
             if (element instanceof ParsedObject) {
                 ((ParsedObject) element).set(key, ParsedPrimitive.fromLong(node.asLong()));
             } else if (element instanceof ParsedArray) {
                 ((ParsedArray) element).add(ParsedPrimitive.fromLong(node.asLong()));
+            }
+        } else if (node instanceof BigIntegerNode) {
+            if (element instanceof ParsedObject) {
+                ((ParsedObject) element).set(key, ParsedPrimitive.fromBigInteger(node.bigIntegerValue()));
+            } else if (element instanceof ParsedArray) {
+                ((ParsedArray) element).add(ParsedPrimitive.fromBigInteger(node.bigIntegerValue()));
             }
         } else if (node instanceof FloatNode) {
             if (element instanceof ParsedObject) {
@@ -463,17 +464,17 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
                 } else if (node instanceof ArrayNode) {
                     ((ArrayNode) node).add(primitiveElement.asInteger());
                 }
-            } else if (primitiveElement.isBigInteger()) {
-                if (node instanceof ObjectNode) {
-                    ((ObjectNode) node).put(key, primitiveElement.asBigInteger());
-                } else if (node instanceof ArrayNode) {
-                    ((ArrayNode) node).add(primitiveElement.asBigInteger());
-                }
             } else if (primitiveElement.isLong()) {
                 if (node instanceof ObjectNode) {
                     ((ObjectNode) node).put(key, primitiveElement.asLong());
                 } else if (node instanceof ArrayNode) {
                     ((ArrayNode) node).add(primitiveElement.asLong());
+                }
+            } else if (primitiveElement.isBigInteger()) {
+                if (node instanceof ObjectNode) {
+                    ((ObjectNode) node).put(key, primitiveElement.asBigInteger());
+                } else if (node instanceof ArrayNode) {
+                    ((ArrayNode) node).add(primitiveElement.asBigInteger());
                 }
             } else if (primitiveElement.isFloat()) {
                 if (node instanceof ObjectNode) {
