@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import io.github.kale_ko.bjsl.BJSL;
 
 /**
  * A wrapper for a primitive object used to represent String/int/float/etc. values
@@ -58,18 +59,18 @@ public class ParsedPrimitive extends ParsedElement {
         INTEGER,
 
         /**
-         * Represents a {@link BigInteger}
-         *
-         * @since 1.0.0
-         */
-        BIGINTEGER,
-
-        /**
          * Represents a {@link Long}
          *
          * @since 1.0.0
          */
         LONG,
+
+        /**
+         * Represents a {@link BigInteger}
+         *
+         * @since 1.0.0
+         */
+        BIGINTEGER,
 
         /**
          * Represents a {@link Float}
@@ -203,17 +204,6 @@ public class ParsedPrimitive extends ParsedElement {
     }
 
     /**
-     * Get if the type of this primitive is a big integer
-     *
-     * @return If the type of this primitive is a big integer
-     *
-     * @since 1.0.0
-     */
-    public boolean isBigInteger() {
-        return this.primitiveType == PrimitiveType.BIGINTEGER;
-    }
-
-    /**
      * Get if the type of this primitive is a long
      *
      * @return If the type of this primitive is a long
@@ -222,6 +212,17 @@ public class ParsedPrimitive extends ParsedElement {
      */
     public boolean isLong() {
         return this.primitiveType == PrimitiveType.LONG;
+    }
+
+    /**
+     * Get if the type of this primitive is a big integer
+     *
+     * @return If the type of this primitive is a big integer
+     *
+     * @since 1.0.0
+     */
+    public boolean isBigInteger() {
+        return this.primitiveType == PrimitiveType.BIGINTEGER;
     }
 
     /**
@@ -298,9 +299,9 @@ public class ParsedPrimitive extends ParsedElement {
             return (short) (long) this.primitive;
         } else if (this.primitiveType == PrimitiveType.INTEGER) {
             return (int) (long) this.primitive;
-        } else if (this.primitiveType == PrimitiveType.BIGINTEGER) {
-            return this.primitive;
         } else if (this.primitiveType == PrimitiveType.LONG) {
+            return this.primitive;
+        } else if (this.primitiveType == PrimitiveType.BIGINTEGER) {
             return this.primitive;
         } else if (this.primitiveType == PrimitiveType.FLOAT) {
             return (float) (double) this.primitive;
@@ -408,24 +409,6 @@ public class ParsedPrimitive extends ParsedElement {
     }
 
     /**
-     * Get the value of this primitive as a big integer
-     * <p>
-     * Note: Does not catch casting errors
-     *
-     * @return The value of this primitive as a big integer
-     *
-     * @throws java.lang.ClassCastException If the value is not a BigInteger
-     * @since 1.0.0
-     */
-    public @NotNull BigInteger asBigInteger() {
-        if (this.primitiveType == PrimitiveType.BIGINTEGER) {
-            return (BigInteger) this.primitive;
-        } else {
-            throw new ClassCastException("Value is not a big integer");
-        }
-    }
-
-    /**
      * Get the value of this primitive as a long
      * <p>
      * Note: Does not catch casting errors
@@ -440,6 +423,24 @@ public class ParsedPrimitive extends ParsedElement {
             return (long) this.primitive;
         } else {
             throw new ClassCastException("Value is not a long");
+        }
+    }
+
+    /**
+     * Get the value of this primitive as a big integer
+     * <p>
+     * Note: Does not catch casting errors
+     *
+     * @return The value of this primitive as a big integer
+     *
+     * @throws java.lang.ClassCastException If the value is not a BigInteger
+     * @since 1.0.0
+     */
+    public @NotNull BigInteger asBigInteger() {
+        if (this.primitiveType == PrimitiveType.BIGINTEGER) {
+            return (BigInteger) this.primitive;
+        } else {
+            throw new ClassCastException("Value is not a big integer");
         }
     }
 
@@ -533,6 +534,16 @@ public class ParsedPrimitive extends ParsedElement {
         }
     }
 
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "=" + BJSL.stringifyJson(this);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.primitive != null ? this.primitive.hashCode() : 0;
+    }
+
     /**
      * Create a new {@link ParsedPrimitive} with the passed value
      *
@@ -558,10 +569,14 @@ public class ParsedPrimitive extends ParsedElement {
             return fromInteger((int) value);
         } else if (value instanceof Long) {
             return fromLong((long) value);
+        } else if (value instanceof BigInteger) {
+            return fromBigInteger((BigInteger) value);
         } else if (value instanceof Float) {
             return fromFloat((float) value);
         } else if (value instanceof Double) {
             return fromDouble((double) value);
+        } else if (value instanceof BigDecimal) {
+            return fromBigDecimal((BigDecimal) value);
         } else if (value instanceof Boolean) {
             return fromBoolean((boolean) value);
         } else {
@@ -635,19 +650,6 @@ public class ParsedPrimitive extends ParsedElement {
     }
 
     /**
-     * Create a new {@link ParsedPrimitive} with the passed big integer
-     *
-     * @param value The big integer to use
-     *
-     * @return A new {@link ParsedPrimitive} with the passed big integer
-     *
-     * @since 1.0.0
-     */
-    public static @NotNull ParsedPrimitive fromBigInteger(@NotNull BigInteger value) {
-        return new ParsedPrimitive(value, PrimitiveType.BIGINTEGER);
-    }
-
-    /**
      * Create a new {@link ParsedPrimitive} with the passed long
      *
      * @param value The long to use
@@ -658,6 +660,19 @@ public class ParsedPrimitive extends ParsedElement {
      */
     public static @NotNull ParsedPrimitive fromLong(long value) {
         return new ParsedPrimitive(value, PrimitiveType.LONG);
+    }
+
+    /**
+     * Create a new {@link ParsedPrimitive} with the passed big integer
+     *
+     * @param value The big integer to use
+     *
+     * @return A new {@link ParsedPrimitive} with the passed big integer
+     *
+     * @since 1.0.0
+     */
+    public static @NotNull ParsedPrimitive fromBigInteger(@NotNull BigInteger value) {
+        return new ParsedPrimitive(value, PrimitiveType.BIGINTEGER);
     }
 
     /**

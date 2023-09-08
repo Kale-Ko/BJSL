@@ -1,5 +1,5 @@
 /**
- * Contains classes used for simplify reflection
+ * Contains classes used for simplifying reflection
  *
  * @since 1.7.0
  */
