@@ -3,6 +3,7 @@ package io.github.kale_ko.bjsl.elements;
 import java.util.LinkedList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
+import io.github.kale_ko.bjsl.BJSL;
 
 /**
  * A wrapper for an ordered map used to represent an Array in most data formats
@@ -117,7 +118,7 @@ public class ParsedArray extends ParsedElement {
      */
     public void addAll(@NotNull List<ParsedElement> values) {
         for (ParsedElement value : values) {
-            add(value);
+            this.add(value);
         }
     }
 
@@ -154,6 +155,16 @@ public class ParsedArray extends ParsedElement {
         }
     }
 
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "=" + BJSL.stringifyJson(this);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.array.hashCode();
+    }
+
     /**
      * Create a new empty {@link ParsedArray}
      *
@@ -175,6 +186,6 @@ public class ParsedArray extends ParsedElement {
      * @since 1.0.0
      */
     public static @NotNull ParsedArray from(@NotNull List<ParsedElement> array) {
-        return new ParsedArray(array);
+        return new ParsedArray(new LinkedList<>(array));
     }
 }

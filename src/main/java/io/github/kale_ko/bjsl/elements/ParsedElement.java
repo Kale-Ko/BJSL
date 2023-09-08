@@ -17,6 +17,12 @@ public abstract class ParsedElement {
     protected ParsedElement() {
     }
 
+    @Override
+    public abstract String toString();
+
+    @Override
+    public abstract int hashCode();
+
     /**
      * Check if this element is a {@link ParsedObject}
      *

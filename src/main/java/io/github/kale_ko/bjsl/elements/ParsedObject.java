@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
+import io.github.kale_ko.bjsl.BJSL;
 
 /**
  * A wrapper for an ordered map used to represent an Object in most data formats
@@ -129,7 +130,9 @@ public class ParsedObject extends ParsedElement {
      * @since 1.0.0
      */
     public void set(@NotNull String key, @NotNull ParsedElement value) {
-        this.object.remove(key);
+        if (this.object.containsKey(key)) {
+            this.object.remove(key);
+        }
         this.object.put(key, value);
     }
 
@@ -146,6 +149,16 @@ public class ParsedObject extends ParsedElement {
         } else {
             throw new NullPointerException("Key does not exist on this object");
         }
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "=" + BJSL.stringifyJson(this);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.object.hashCode();
     }
 
     /**
@@ -169,6 +182,6 @@ public class ParsedObject extends ParsedElement {
      * @since 1.0.0
      */
     public static @NotNull ParsedObject from(@NotNull Map<String, ParsedElement> object) {
-        return new ParsedObject(object);
+        return new ParsedObject(new LinkedHashMap<>(object));
     }
 }
