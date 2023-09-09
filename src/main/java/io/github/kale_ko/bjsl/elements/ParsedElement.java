@@ -1,6 +1,7 @@
 package io.github.kale_ko.bjsl.elements;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * An abstract class that all element types extend from
@@ -18,10 +19,10 @@ public abstract class ParsedElement {
     }
 
     @Override
-    public abstract String toString();
+    public abstract @NotNull String toString();
 
     @Override
-    public abstract boolean equals(Object obj);
+    public abstract boolean equals(@Nullable Object obj);
 
     @Override
     public abstract int hashCode();
