@@ -4,6 +4,7 @@ import io.github.kale_ko.bjsl.BJSL;
 import java.util.LinkedList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A wrapper for an ordered map used to represent an Array in most data formats
@@ -156,12 +157,12 @@ public class ParsedArray extends ParsedElement {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return this.getClass().getSimpleName() + "=" + BJSL.stringifyJson(this);
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (obj == null) {
             return false;
         }
