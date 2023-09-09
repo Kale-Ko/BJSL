@@ -20,5 +20,5 @@ public @interface Rename {
      *
      * @since 1.8.0
      */
-    String name();
+    String value();
 }

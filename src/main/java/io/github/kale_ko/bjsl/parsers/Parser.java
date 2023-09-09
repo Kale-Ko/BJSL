@@ -107,7 +107,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
                     ObjectNode objectNode = (ObjectNode) node;
                     ParsedObject objectElement = ParsedObject.create();
 
-                    objectNode.fieldNames().forEachRemaining((String subKey) -> {
+                    objectNode.fieldNames().forEachRemaining(subKey -> {
                         toElements(objectElement, subKey, objectNode.get(subKey));
                     });
 
@@ -116,7 +116,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
                     ArrayNode arrayNode = (ArrayNode) node;
                     ParsedArray arrayElement = ParsedArray.create();
 
-                    arrayNode.elements().forEachRemaining((JsonNode subNode) -> {
+                    arrayNode.elements().forEachRemaining(subNode -> {
                         toElements(arrayElement, "root", subNode);
                     });
 
@@ -310,7 +310,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
                 arrayElement.add(subElement);
             }
 
-            objectNode.fieldNames().forEachRemaining((String subKey) -> {
+            objectNode.fieldNames().forEachRemaining(subKey -> {
                 toElements(subElement, subKey, objectNode.get(subKey));
             });
         } else if (node instanceof ArrayNode) {
@@ -325,7 +325,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
                 arrayElement.add(subElement);
             }
 
-            arrayNode.elements().forEachRemaining((JsonNode subNode) -> {
+            arrayNode.elements().forEachRemaining(subNode -> {
                 toElements(subElement, key, subNode);
             });
         } else if (node instanceof TextNode) {

@@ -1062,7 +1062,7 @@ public class ObjectProcessor {
                                         } else if (annotation.annotationType() == DontSerialize.class) {
                                             shouldSerialize = false;
                                         } else if (annotation.annotationType() == Rename.class) {
-                                            subKey = ((Rename) annotation).name();
+                                            subKey = ((Rename) annotation).value();
                                         }
                                     }
 
@@ -1590,7 +1590,7 @@ public class ObjectProcessor {
                                     }
                                 }
                             } else if (annotation.annotationType() == Rename.class) {
-                                subKey = ((Rename) annotation).name();
+                                subKey = ((Rename) annotation).value();
                             }
                         }
 

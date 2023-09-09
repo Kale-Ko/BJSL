@@ -1,9 +1,9 @@
 package io.github.kale_ko.bjsl.elements;
 
+import io.github.kale_ko.bjsl.BJSL;
 import java.util.LinkedList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
-import io.github.kale_ko.bjsl.BJSL;
 
 /**
  * A wrapper for an ordered map used to represent an Array in most data formats
@@ -158,6 +158,18 @@ public class ParsedArray extends ParsedElement {
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "=" + BJSL.stringifyJson(this);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj instanceof ParsedArray) {
+            return this.array.equals(((ParsedArray) obj).array);
+        }
+
+        return false;
     }
 
     @Override
