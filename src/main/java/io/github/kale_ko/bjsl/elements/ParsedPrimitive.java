@@ -1,10 +1,10 @@
 package io.github.kale_ko.bjsl.elements;
 
+import io.github.kale_ko.bjsl.BJSL;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import io.github.kale_ko.bjsl.BJSL;
 
 /**
  * A wrapper for a primitive object used to represent String/int/float/etc. values
@@ -537,6 +537,18 @@ public class ParsedPrimitive extends ParsedElement {
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "=" + BJSL.stringifyJson(this);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj instanceof ParsedPrimitive) {
+            return this.primitive.equals(((ParsedPrimitive) obj).primitive);
+        }
+
+        return false;
     }
 
     @Override

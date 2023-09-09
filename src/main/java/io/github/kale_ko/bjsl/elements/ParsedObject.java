@@ -1,10 +1,10 @@
 package io.github.kale_ko.bjsl.elements;
 
+import io.github.kale_ko.bjsl.BJSL;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
-import io.github.kale_ko.bjsl.BJSL;
 
 /**
  * A wrapper for an ordered map used to represent an Object in most data formats
@@ -130,9 +130,7 @@ public class ParsedObject extends ParsedElement {
      * @since 1.0.0
      */
     public void set(@NotNull String key, @NotNull ParsedElement value) {
-        if (this.object.containsKey(key)) {
-            this.object.remove(key);
-        }
+        this.object.remove(key);
         this.object.put(key, value);
     }
 
@@ -154,6 +152,18 @@ public class ParsedObject extends ParsedElement {
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "=" + BJSL.stringifyJson(this);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj instanceof ParsedObject) {
+            return this.object.equals(((ParsedObject) obj).object);
+        }
+
+        return false;
     }
 
     @Override
