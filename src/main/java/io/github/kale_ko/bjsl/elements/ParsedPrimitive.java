@@ -535,12 +535,12 @@ public class ParsedPrimitive extends ParsedElement {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return this.getClass().getSimpleName() + "=" + BJSL.stringifyJson(this);
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (obj == null) {
             return false;
         }
@@ -566,7 +566,7 @@ public class ParsedPrimitive extends ParsedElement {
      * @throws java.lang.ClassCastException If the value is not a primitive
      * @since 1.0.0
      */
-    public static @NotNull ParsedPrimitive from(Object value) {
+    public static ParsedPrimitive from(@Nullable Object value) {
         if (value == null) {
             return fromNull();
         } else if (value instanceof String) {
