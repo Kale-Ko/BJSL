@@ -961,8 +961,10 @@ public class ObjectProcessor {
 
                             if (element.isPrimitive() && element.asPrimitive().isLong()) {
                                 return Instant.ofEpochMilli(element.asPrimitive().asLong());
+                            } else if (element.isPrimitive() && element.asPrimitive().isString()) {
+                                return Instant.ofEpochMilli(Long.parseLong(element.asPrimitive().asString()));
                             } else {
-                                throw new InvalidParameterException("object must be String");
+                                throw new InvalidParameterException("object must be Long");
                             }
                         }
                     });
