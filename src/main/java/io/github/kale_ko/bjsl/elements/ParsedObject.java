@@ -19,14 +19,14 @@ public class ParsedObject extends ParsedElement {
      *
      * @since 1.0.0
      */
-    protected final @NotNull Map<String, ParsedElement> object;
+    final @NotNull Map<String, ParsedElement> object;
 
     /**
      * Create a new {@link ParsedObject}
      *
      * @since 1.0.0
      */
-    protected ParsedObject() {
+    ParsedObject() {
         this(new LinkedHashMap<>());
     }
 
@@ -37,7 +37,7 @@ public class ParsedObject extends ParsedElement {
      *
      * @since 1.0.0
      */
-    protected ParsedObject(@NotNull Map<String, ParsedElement> object) {
+    ParsedObject(@NotNull Map<String, ParsedElement> object) {
         this.object = object;
     }
 
@@ -131,7 +131,9 @@ public class ParsedObject extends ParsedElement {
      * @since 1.0.0
      */
     public void set(@NotNull String key, @NotNull ParsedElement value) {
-        this.object.remove(key);
+        if (this.object.containsKey(key)) {
+            this.object.remove(key);
+        }
         this.object.put(key, value);
     }
 
