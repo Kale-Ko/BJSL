@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * A wrapper for an ordered map used to represent an Array in most data formats
@@ -60,7 +61,7 @@ public class ParsedArray extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public @NotNull List<ParsedElement> getValues() {
+    public @NotNull @Unmodifiable List<ParsedElement> getValues() {
         return List.copyOf(this.array);
     }
 
