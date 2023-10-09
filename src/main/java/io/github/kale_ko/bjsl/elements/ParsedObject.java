@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * A wrapper for an ordered map used to represent an Object in most data formats
@@ -61,7 +62,7 @@ public class ParsedObject extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public @NotNull List<Map.Entry<String, ParsedElement>> getEntries() {
+    public @NotNull @Unmodifiable List<Map.Entry<String, ParsedElement>> getEntries() {
         return List.copyOf(this.object.entrySet());
     }
 
@@ -74,7 +75,7 @@ public class ParsedObject extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public @NotNull List<String> getKeys() {
+    public @NotNull @Unmodifiable List<String> getKeys() {
         return List.copyOf(this.object.keySet());
     }
 
@@ -87,7 +88,7 @@ public class ParsedObject extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public @NotNull List<ParsedElement> getValues() {
+    public @NotNull @Unmodifiable List<ParsedElement> getValues() {
         return List.copyOf(this.object.values());
     }
 
