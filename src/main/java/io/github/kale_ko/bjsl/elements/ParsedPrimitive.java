@@ -113,7 +113,7 @@ public class ParsedPrimitive extends ParsedElement {
      *
      * @since 1.0.0
      */
-    protected final Object primitive;
+    final Object primitive;
 
     /**
      * The type of the primitive
@@ -121,7 +121,7 @@ public class ParsedPrimitive extends ParsedElement {
      * @see PrimitiveType
      * @since 1.0.0
      */
-    protected final @NotNull PrimitiveType primitiveType;
+    final @NotNull PrimitiveType primitiveType;
 
     /**
      * Create a new {@link ParsedPrimitive}
@@ -131,7 +131,7 @@ public class ParsedPrimitive extends ParsedElement {
      *
      * @since 1.0.0
      */
-    protected ParsedPrimitive(Object value, @NotNull PrimitiveType type) {
+    ParsedPrimitive(Object value, @NotNull PrimitiveType type) {
         this.primitive = value;
         this.primitiveType = type;
     }

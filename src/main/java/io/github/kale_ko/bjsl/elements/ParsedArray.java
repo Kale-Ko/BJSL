@@ -18,14 +18,14 @@ public class ParsedArray extends ParsedElement {
      *
      * @since 1.0.0
      */
-    protected final @NotNull List<ParsedElement> array;
+    final @NotNull List<ParsedElement> array;
 
     /**
      * Create a new {@link ParsedArray}
      *
      * @since 1.0.0
      */
-    protected ParsedArray() {
+    ParsedArray() {
         this(new LinkedList<>());
     }
 
@@ -36,7 +36,7 @@ public class ParsedArray extends ParsedElement {
      *
      * @since 1.0.0
      */
-    protected ParsedArray(@NotNull List<ParsedElement> array) {
+    ParsedArray(@NotNull List<ParsedElement> array) {
         this.array = array;
     }
 

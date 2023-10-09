@@ -1,6 +1,9 @@
 package io.github.kale_ko.bjsl.parsers;
 
-import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.core.ObjectCodec;
+import com.fasterxml.jackson.core.PrettyPrinter;
+import com.fasterxml.jackson.core.TokenStreamFactory;
+import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.*;
 import io.github.kale_ko.bjsl.BJSL;
@@ -189,7 +192,8 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
                 }
 
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                try (com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter).setCodec(this.codec)) {
+                try (com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter)) {
+                    generator.setCodec(this.codec);
                     generator.writeTree(node);
                 }
                 outputStream.close();
@@ -204,7 +208,8 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
                 }
 
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                try (com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter).setCodec(this.codec)) {
+                try (com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter)) {
+                    generator.setCodec(this.codec);
                     generator.writeTree(node);
                 }
                 outputStream.close();
@@ -256,7 +261,8 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
     public byte @NotNull [] emptyBytes() {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            try (JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter).setCodec(this.codec)) {
+            try (com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter)) {
+                generator.setCodec(this.codec);
                 generator.writeTree(JsonNodeFactory.instance.objectNode());
             }
             outputStream.close();
@@ -277,7 +283,8 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
     public byte @NotNull [] emptyArrayBytes() {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            try (JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter).setCodec(this.codec)) {
+            try (com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter)) {
+                generator.setCodec(this.codec);
                 generator.writeTree(JsonNodeFactory.instance.arrayNode());
             }
             outputStream.close();
