@@ -102,6 +102,7 @@ publishing {
     publications {
         ghp(MavenPublication) {
             groupId = project.group
+            artifactId = "bjsl"
             version = project.version
 
             artifact tasks.jar
