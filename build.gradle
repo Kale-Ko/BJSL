@@ -7,6 +7,9 @@ project.group = "io.github.kale_ko"
 project.version = project.project_version
 
 repositories {
+    if (project.useLocal) {
+        mavenLocal()
+    }
     mavenCentral()
 }
 
