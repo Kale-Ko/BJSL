@@ -194,26 +194,33 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>protected boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ignoreArrayNulls">ignoreArrayNulls</a></span></code></th>
+<td class="colLast">
+<div class="block">Weather null values should be ignored when serializing maps and arrays</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ignoreDefaults">ignoreDefaults</a></span></code></th>
 <td class="colLast">
 <div class="block">Weather default values should be ignored when serializing</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ignoreEmptyObjects">ignoreEmptyObjects</a></span></code></th>
 <td class="colLast">
 <div class="block">Weather empty objects (Objects with a size of 0) should be ignored when serializing</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ignoreNulls">ignoreNulls</a></span></code></th>
 <td class="colLast">
 <div class="block">Weather null values should be ignored when serializing</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected @NotNull java.util.Map&lt;com.fasterxml.jackson.databind.JavaType,&#8203;<a href="TypeProcessor.html" title="interface in io.github.kale_ko.bjsl.processor">TypeProcessor</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#typeProcessors">typeProcessors</a></span></code></th>
 <td class="colLast">
@@ -240,7 +247,8 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>protected </code></td>
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(boolean,boolean,boolean,boolean,java.util.Map)">ObjectProcessor</a></span>&#8203;(boolean&nbsp;ignoreNulls,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(boolean,boolean,boolean,boolean,boolean,java.util.Map)">ObjectProcessor</a></span>&#8203;(boolean&nbsp;ignoreNulls,
+               boolean&nbsp;ignoreArrayNulls,
                boolean&nbsp;ignoreEmptyObjects,
                boolean&nbsp;ignoreDefaults,
                boolean&nbsp;caseSensitiveEnums,
@@ -343,6 +351,20 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
+<a id="ignoreArrayNulls">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ignoreArrayNulls</h4>
+<pre>protected final&nbsp;boolean ignoreArrayNulls</pre>
+<div class="block">Weather null values should be ignored when serializing maps and arrays</div>
+<dl>
+<dt><span class="simpleTagLabel">Since:</span></dt>
+<dd>4.0.0</dd>
+</dl>
+</li>
+</ul>
 <a id="ignoreEmptyObjects">
 <!--   -->
 </a>
@@ -412,13 +434,14 @@ protected final&nbsp;@NotNull java.util.Map&lt;com.fasterxml.jackson.databind.Ja
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(boolean,boolean,boolean,boolean,java.util.Map)">
+<a id="&lt;init&gt;(boolean,boolean,boolean,boolean,boolean,java.util.Map)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>ObjectProcessor</h4>
 <pre>protected&nbsp;ObjectProcessor&#8203;(boolean&nbsp;ignoreNulls,
+                          boolean&nbsp;ignoreArrayNulls,
                           boolean&nbsp;ignoreEmptyObjects,
                           boolean&nbsp;ignoreDefaults,
                           boolean&nbsp;caseSensitiveEnums,
@@ -428,6 +451,7 @@ protected final&nbsp;@NotNull java.util.Map&lt;com.fasterxml.jackson.databind.Ja
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>ignoreNulls</code> - Weather null values should be ignored when serializing</dd>
+<dd><code>ignoreArrayNulls</code> - Weather null values should be ignored when serializing maps and arrays</dd>
 <dd><code>ignoreEmptyObjects</code> - Weather empty objects (Objects with a size of 0) should be ignored when serializing</dd>
 <dd><code>ignoreDefaults</code> - Weather default values should be ignored when serializing</dd>
 <dd><code>caseSensitiveEnums</code> - Weather checks for enum names should be case-sensitive</dd>

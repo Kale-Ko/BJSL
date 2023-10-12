@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -178,26 +178,33 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>protected boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ignoreArrayNulls">ignoreArrayNulls</a></span></code></th>
+<td class="colLast">
+<div class="block">Weather null values should be ignored when serializing maps and arrays</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ignoreDefaults">ignoreDefaults</a></span></code></th>
 <td class="colLast">
 <div class="block">Weather or not default values should be ignored when serializing</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ignoreEmptyObjects">ignoreEmptyObjects</a></span></code></th>
 <td class="colLast">
 <div class="block">Weather or not empty objects (Objects with a size of 0) should be ignored when serializing</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ignoreNulls">ignoreNulls</a></span></code></th>
 <td class="colLast">
 <div class="block">Weather or not null values should be ignored when serializing</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected @NotNull java.util.Map&lt;com.fasterxml.jackson.databind.JavaType,&#8203;<a href="TypeProcessor.html" title="interface in io.github.kale_ko.bjsl.processor">TypeProcessor</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#typeProcessors">typeProcessors</a></span></code></th>
 <td class="colLast">
@@ -292,124 +299,138 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getIgnoreArrayNulls()">getIgnoreArrayNulls</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Get weather or not null values should be ignored when serializing maps and arrays</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getIgnoreDefaults()">getIgnoreDefaults</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get weather or not default values should be ignored when serializing</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getIgnoreEmptyObjects()">getIgnoreEmptyObjects</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get weather or not empty objects (Objects with a size of 0) should be ignored when serializing</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getIgnoreNulls()">getIgnoreNulls</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get weather or not null values should be ignored when serializing</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>@NotNull <a href="TypeProcessor.html" title="interface in io.github.kale_ko.bjsl.processor">TypeProcessor</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTypeProcessor(com.fasterxml.jackson.databind.JavaType)">getTypeProcessor</a></span>&#8203;(@NotNull com.fasterxml.jackson.databind.JavaType&nbsp;type)</code></th>
 <td class="colLast">
 <div class="block">Get a type processor</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>@NotNull <a href="TypeProcessor.html" title="interface in io.github.kale_ko.bjsl.processor">TypeProcessor</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTypeProcessor(java.lang.Class)">getTypeProcessor</a></span>&#8203;(@NotNull java.lang.Class&lt;?&gt;&nbsp;clazz)</code></th>
 <td class="colLast">
 <div class="block">Get a type processor</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>@NotNull <a href="TypeProcessor.html" title="interface in io.github.kale_ko.bjsl.processor">TypeProcessor</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTypeProcessor(java.lang.reflect.Type)">getTypeProcessor</a></span>&#8203;(@NotNull java.lang.reflect.Type&nbsp;type)</code></th>
 <td class="colLast">
 <div class="block">Get a type processor</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>@NotNull java.util.Map&lt;com.fasterxml.jackson.databind.JavaType,&#8203;<a href="TypeProcessor.html" title="interface in io.github.kale_ko.bjsl.processor">TypeProcessor</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTypeProcessors()">getTypeProcessors</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get all the type processors created</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hasTypeProcessor(com.fasterxml.jackson.databind.JavaType)">hasTypeProcessor</a></span>&#8203;(@NotNull com.fasterxml.jackson.databind.JavaType&nbsp;type)</code></th>
 <td class="colLast">
 <div class="block">Check if a type processor exists</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hasTypeProcessor(java.lang.Class)">hasTypeProcessor</a></span>&#8203;(@NotNull java.lang.Class&lt;?&gt;&nbsp;clazz)</code></th>
 <td class="colLast">
 <div class="block">Check if a type processor exists</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hasTypeProcessor(java.lang.reflect.Type)">hasTypeProcessor</a></span>&#8203;(@NotNull java.lang.reflect.Type&nbsp;type)</code></th>
 <td class="colLast">
 <div class="block">Check if a type processor exists</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>@NotNull <a href="ObjectProcessor.Builder.html" title="class in io.github.kale_ko.bjsl.processor">ObjectProcessor.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#removeTypeProcessor(com.fasterxml.jackson.databind.JavaType)">removeTypeProcessor</a></span>&#8203;(@NotNull com.fasterxml.jackson.databind.JavaType&nbsp;type)</code></th>
 <td class="colLast">
 <div class="block">Remove a type processor</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>@NotNull <a href="ObjectProcessor.Builder.html" title="class in io.github.kale_ko.bjsl.processor">ObjectProcessor.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#removeTypeProcessor(java.lang.Class)">removeTypeProcessor</a></span>&#8203;(@NotNull java.lang.Class&lt;?&gt;&nbsp;clazz)</code></th>
 <td class="colLast">
 <div class="block">Remove a type processor</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>@NotNull <a href="ObjectProcessor.Builder.html" title="class in io.github.kale_ko.bjsl.processor">ObjectProcessor.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#removeTypeProcessor(java.lang.reflect.Type)">removeTypeProcessor</a></span>&#8203;(@NotNull java.lang.reflect.Type&nbsp;type)</code></th>
 <td class="colLast">
 <div class="block">Remove a type processor</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>@NotNull <a href="ObjectProcessor.Builder.html" title="class in io.github.kale_ko.bjsl.processor">ObjectProcessor.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setCaseSensitiveEnums(boolean)">setCaseSensitiveEnums</a></span>&#8203;(boolean&nbsp;value)</code></th>
 <td class="colLast">
 <div class="block">Set weather checks for enum names should be case-sensitive</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>@NotNull <a href="ObjectProcessor.Builder.html" title="class in io.github.kale_ko.bjsl.processor">ObjectProcessor.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setEnableDefaultTypeProcessors(boolean)">setEnableDefaultTypeProcessors</a></span>&#8203;(boolean&nbsp;value)</code></th>
 <td class="colLast">
 <div class="block">Set weather or not to enable the default type processors</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i22" class="altColor">
+<td class="colFirst"><code>@NotNull <a href="ObjectProcessor.Builder.html" title="class in io.github.kale_ko.bjsl.processor">ObjectProcessor.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setIgnoreArrayNulls(boolean)">setIgnoreArrayNulls</a></span>&#8203;(boolean&nbsp;value)</code></th>
+<td class="colLast">
+<div class="block"><b>DISABLING THIS MAY CAUSE ISSUES</b></div>
+</td>
+</tr>
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>@NotNull <a href="ObjectProcessor.Builder.html" title="class in io.github.kale_ko.bjsl.processor">ObjectProcessor.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setIgnoreDefaults(boolean)">setIgnoreDefaults</a></span>&#8203;(boolean&nbsp;value)</code></th>
 <td class="colLast">
 <div class="block">Set weather or not default values should be ignored when serializing</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>@NotNull <a href="ObjectProcessor.Builder.html" title="class in io.github.kale_ko.bjsl.processor">ObjectProcessor.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setIgnoreEmptyObjects(boolean)">setIgnoreEmptyObjects</a></span>&#8203;(boolean&nbsp;value)</code></th>
 <td class="colLast">
 <div class="block">Set weather or not empty objects (Objects with a size of 0) should be ignored when serializing</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>@NotNull <a href="ObjectProcessor.Builder.html" title="class in io.github.kale_ko.bjsl.processor">ObjectProcessor.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setIgnoreNulls(boolean)">setIgnoreNulls</a></span>&#8203;(boolean&nbsp;value)</code></th>
 <td class="colLast">
@@ -453,6 +474,22 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="simpleTagLabel">Since:</span></dt>
 <dd>1.0.0</dd>
+</dl>
+</li>
+</ul>
+<a id="ignoreArrayNulls">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ignoreArrayNulls</h4>
+<pre>protected&nbsp;boolean ignoreArrayNulls</pre>
+<div class="block">Weather null values should be ignored when serializing maps and arrays
+ <p>
+ Default is true</div>
+<dl>
+<dt><span class="simpleTagLabel">Since:</span></dt>
+<dd>4.0.0</dd>
 </dl>
 </li>
 </ul>
@@ -605,6 +642,47 @@ public&nbsp;@NotNull <a href="ObjectProcessor.Builder.html" title="class in io.g
 <dd>Self for chaining</dd>
 <dt><span class="simpleTagLabel">Since:</span></dt>
 <dd>1.0.0</dd>
+</dl>
+</li>
+</ul>
+<a id="getIgnoreArrayNulls()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getIgnoreArrayNulls</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;getIgnoreArrayNulls()</pre>
+<div class="block">Get weather or not null values should be ignored when serializing maps and arrays
+ <p>
+ Default is false</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Weather or not null values should be ignored when serializing maps and arrays</dd>
+<dt><span class="simpleTagLabel">Since:</span></dt>
+<dd>4.0.0</dd>
+</dl>
+</li>
+</ul>
+<a id="setIgnoreArrayNulls(boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setIgnoreArrayNulls</h4>
+<pre class="methodSignature">@NotNull
+public&nbsp;@NotNull <a href="ObjectProcessor.Builder.html" title="class in io.github.kale_ko.bjsl.processor">ObjectProcessor.Builder</a>&nbsp;setIgnoreArrayNulls&#8203;(boolean&nbsp;value)</pre>
+<div class="block"><b>DISABLING THIS MAY CAUSE ISSUES</b>
+ <p>
+ Set weather or not null values should be ignored when serializing maps and arrays
+ <p>
+ Default is true</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>value</code> - Weather or not null values should be ignored when serializing maps and arrays</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Self for chaining</dd>
+<dt><span class="simpleTagLabel">Since:</span></dt>
+<dd>4.0.0</dd>
 </dl>
 </li>
 </ul>
