@@ -24,6 +24,9 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: build
+        env:
+          GH_PACKAGES_USER: Kale-Ko
+          GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
 
       - name: Publish to GitHub Packages
         uses: gradle/gradle-build-action@v2
