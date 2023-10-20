@@ -288,7 +288,7 @@ public class ParsedPrimitive extends ParsedElement {
      * @throws java.lang.ClassCastException If the value is not a primitive
      * @since 1.0.0
      */
-    public Object get() {
+    public @Nullable Object get() {
         if (this.primitiveType == PrimitiveType.STRING) {
             return this.primitive;
         } else if (this.primitiveType == PrimitiveType.BYTE) {
@@ -566,7 +566,7 @@ public class ParsedPrimitive extends ParsedElement {
      * @throws java.lang.ClassCastException If the value is not a primitive
      * @since 1.0.0
      */
-    public static ParsedPrimitive from(@Nullable Object value) {
+    public static @NotNull ParsedPrimitive from(@Nullable Object value) {
         if (value == null) {
             return fromNull();
         } else if (value instanceof String) {

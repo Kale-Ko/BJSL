@@ -132,9 +132,7 @@ public class ParsedObject extends ParsedElement {
      * @since 1.0.0
      */
     public void set(@NotNull String key, @NotNull ParsedElement value) {
-        if (this.object.containsKey(key)) {
-            this.object.remove(key);
-        }
+        this.object.remove(key);
         this.object.put(key, value);
     }
 

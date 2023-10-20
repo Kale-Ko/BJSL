@@ -1246,7 +1246,6 @@ public class ObjectProcessor {
                         }
 
                         return null;
-                        // return type.getRawClass().cast(object);
                     }
                 }
             } else if (!type.getRawClass().isAnonymousClass() && !type.getRawClass().isAnnotation()) {
