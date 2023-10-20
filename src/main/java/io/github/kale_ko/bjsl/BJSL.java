@@ -348,7 +348,7 @@ public class BJSL<T extends Parser<?, ?>> {
      *
      * @since 1.0.0
      */
-    public String stringify(@Nullable Object object) {
+    public @NotNull String stringify(@Nullable Object object) {
         return this.stringify(this.processor.toElement(object));
     }
 
