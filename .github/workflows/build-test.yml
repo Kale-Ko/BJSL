@@ -27,5 +27,8 @@ jobs:
         with:
           arguments: build
         env:
-          GH_PACKAGES_USER: Kale-Ko
+          MAVEN_USER: ${{ secrets.MAVEN_USER }}
+          MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
+          MAVEN_TYPE: release
+          GH_PACKAGES_USER: ${{ secrets.GH_PACKAGES_USER }}
           GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}

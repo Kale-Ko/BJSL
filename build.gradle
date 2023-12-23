@@ -7,8 +7,14 @@ project.group = "io.github.kale_ko"
 project.version = project.project_version
 
 repositories {
-    if (project.useLocal) {
-        mavenLocal()
+    maven {
+        name = "Kales-Maven"
+        url = "https://maven.kaleko.dev/public-snapshot"
+
+        credentials {
+            username = System.getenv("MAVEN_USER")
+            password = System.getenv("MAVEN_TOKEN")
+        }
     }
     mavenCentral()
 }
@@ -78,6 +84,12 @@ build {
 javadoc {
     title = project.name + " " + project.version
 
+    options.encoding = "UTF-8"
+    options.locale = "en"
+
+    options.author = true
+    options.version = true
+
     doFirst {
         mkdir "./build/"
         mkdir "./build/docs/"
@@ -92,12 +104,33 @@ javadoc {
 publishing {
     repositories {
         maven {
-            name = "GitHub-Packages"
-            url = "https://maven.pkg.github.com/Kale-Ko/BJSL"
+            name = "Kales-Maven"
+            url = "https://maven.kaleko.dev/public-snapshot"
 
             credentials {
-                username = System.getenv("GH_PACKAGES_USER")
-                password = System.getenv("GH_PACKAGES_TOKEN")
+                username = System.getenv("MAVEN_USER")
+                password = System.getenv("MAVEN_TOKEN")
+            }
+        }
+
+        if ("release".equalsIgnoreCase(System.getenv("MAVEN_TYPE"))) {
+            maven {
+                name = "Kales-Maven"
+                url = "https://maven.kaleko.dev/public-release"
+
+                credentials {
+                    username = System.getenv("MAVEN_USER")
+                    password = System.getenv("MAVEN_TOKEN")
+                }
+            }
+            maven {
+                name = "GitHub-Packages"
+                url = "https://maven.pkg.github.com/Kale-Ko/BJSL"
+
+                credentials {
+                    username = System.getenv("GH_PACKAGES_USER")
+                    password = System.getenv("GH_PACKAGES_TOKEN")
+                }
             }
         }
     }
