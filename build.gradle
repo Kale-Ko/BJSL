@@ -9,7 +9,7 @@ project.version = project.project_version
 repositories {
     maven {
         name = "Kales-Maven"
-        url = "https://maven.kaleko.dev/public-snapshot"
+        url = "https://maven.kaleko.dev/public-snapshot/"
 
         credentials {
             username = System.getenv("MAVEN_USER")
@@ -105,7 +105,7 @@ publishing {
     repositories {
         maven {
             name = "Kales-Maven"
-            url = "https://maven.kaleko.dev/public-snapshot"
+            url = "https://maven.kaleko.dev/public-snapshot/"
 
             credentials {
                 username = System.getenv("MAVEN_USER")
@@ -116,7 +116,7 @@ publishing {
         if ("release".equalsIgnoreCase(System.getenv("MAVEN_TYPE"))) {
             maven {
                 name = "Kales-Maven"
-                url = "https://maven.kaleko.dev/public-release"
+                url = "https://maven.kaleko.dev/public-release/"
 
                 credentials {
                     username = System.getenv("MAVEN_USER")
@@ -125,7 +125,7 @@ publishing {
             }
             maven {
                 name = "GitHub-Packages"
-                url = "https://maven.pkg.github.com/Kale-Ko/BJSL"
+                url = "https://maven.pkg.github.com/Kale-Ko/BJSL/"
 
                 credentials {
                     username = System.getenv("GH_PACKAGES_USER")
@@ -165,7 +165,7 @@ publishing {
                 scmNode.appendNode("connection", "scm:git:git@github.com:Kale-Ko/BJSL.git")
                 scmNode.appendNode("developerConnection", "scm:git:git@github.com:Kale-Ko/BJSL.git")
                 scmNode.appendNode("tag", "master")
-                scmNode.appendNode("url", "https://github.com/Kale-Ko/BJSL")
+                scmNode.appendNode("url", "https://github.com/Kale-Ko/BJSL/")
 
                 def dependenciesNode = node.appendNode("dependencies")
 
