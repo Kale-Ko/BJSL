@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.StreamReadFeature;
 import com.fasterxml.jackson.core.StreamWriteFeature;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.core.util.Separators;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactoryBuilder;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
@@ -150,7 +151,12 @@ public class YamlParser extends Parser<YAMLFactory, YAMLMapper> {
             indenter = indenter.withIndent(" ".repeat(this.indentLevel));
             indenter = indenter.withLinefeed(this.crlf ? "\r\n" : "\n");
 
-            prettyPrinter = prettyPrinter.withObjectIndenter(indenter).withArrayIndenter(indenter).withSpacesInObjectEntries();
+            Separators separators = new Separators();
+            separators = separators.withObjectFieldValueSpacing(Separators.Spacing.BOTH);
+            separators = separators.withObjectEntrySpacing(Separators.Spacing.AFTER);
+            separators = separators.withArrayValueSpacing(Separators.Spacing.AFTER);
+
+            prettyPrinter = prettyPrinter.withObjectIndenter(indenter).withArrayIndenter(indenter).withSeparators(separators);
 
             return new YamlParser(factory, new YAMLMapper(factory), prettyPrinter);
         }

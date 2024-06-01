@@ -20,7 +20,7 @@ public interface TypeProcessor {
      *
      * @since 1.0.0
      */
-    @NotNull ParsedElement toElement(@Nullable Object object);
+    public @NotNull ParsedElement toElement(@Nullable Object object);
 
     /**
      * Converts a {@link ParsedElement} into an Object
@@ -31,5 +31,5 @@ public interface TypeProcessor {
      *
      * @since 1.0.0
      */
-    @Nullable Object toObject(@NotNull ParsedElement element);
+    public @Nullable Object toObject(@NotNull ParsedElement element);
 }
