@@ -288,9 +288,9 @@ public class ParsedPrimitive extends ParsedElement {
      * @throws java.lang.ClassCastException If the value is not a primitive
      * @since 1.0.0
      */
-    public @Nullable Object get() {
+    public Object get() {
         if (this.primitiveType == PrimitiveType.STRING) {
-            return this.primitive;
+            return (String) this.primitive;
         } else if (this.primitiveType == PrimitiveType.BYTE) {
             return (byte) (long) this.primitive;
         } else if (this.primitiveType == PrimitiveType.CHAR) {
@@ -300,17 +300,17 @@ public class ParsedPrimitive extends ParsedElement {
         } else if (this.primitiveType == PrimitiveType.INTEGER) {
             return (int) (long) this.primitive;
         } else if (this.primitiveType == PrimitiveType.LONG) {
-            return this.primitive;
+            return (long) this.primitive;
         } else if (this.primitiveType == PrimitiveType.BIGINTEGER) {
-            return this.primitive;
+            return (BigInteger) this.primitive;
         } else if (this.primitiveType == PrimitiveType.FLOAT) {
             return (float) (double) this.primitive;
         } else if (this.primitiveType == PrimitiveType.DOUBLE) {
-            return this.primitive;
+            return (double) this.primitive;
         } else if (this.primitiveType == PrimitiveType.BIGDECIMAL) {
-            return this.primitive;
+            return (BigDecimal) this.primitive;
         } else if (this.primitiveType == PrimitiveType.BOOLEAN) {
-            return this.primitive;
+            return (boolean) this.primitive;
         } else if (this.primitiveType == PrimitiveType.NULL) {
             return null;
         } else {
@@ -545,7 +545,11 @@ public class ParsedPrimitive extends ParsedElement {
             return false;
         }
         if (obj instanceof ParsedPrimitive) {
-            return this.primitive.equals(((ParsedPrimitive) obj).primitive);
+            if (this.primitive != null) {
+                return this.primitive.equals(((ParsedPrimitive) obj).primitive);
+            } else {
+                return ((ParsedPrimitive) obj).primitive == null;
+            }
         }
 
         return false;
