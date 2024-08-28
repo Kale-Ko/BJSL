@@ -15,7 +15,10 @@ import io.github.kale_ko.bjsl.processor.annotations.AlwaysSerialize;
 import io.github.kale_ko.bjsl.processor.annotations.Default;
 import io.github.kale_ko.bjsl.processor.annotations.DontSerialize;
 import io.github.kale_ko.bjsl.processor.annotations.Rename;
+import io.github.kale_ko.bjsl.processor.conditions.ExpectIsNull;
+import io.github.kale_ko.bjsl.processor.conditions.ExpectNotNull;
 import io.github.kale_ko.bjsl.processor.exception.EnumExpectedException;
+import io.github.kale_ko.bjsl.processor.exception.ExpectFailedException;
 import io.github.kale_ko.bjsl.processor.exception.InitializationException;
 import io.github.kale_ko.bjsl.processor.exception.ProcessorException;
 import io.github.kale_ko.bjsl.processor.reflection.InitializationUtil;
@@ -1281,6 +1284,7 @@ public class ObjectProcessor {
                                     boolean shouldSerialize = !(Modifier.isTransient(field.getModifiers()) || field.getName().startsWith("this$"));
 
                                     String subKey = field.getName();
+                                    boolean expect = false;
 
                                     for (Annotation annotation : field.getDeclaredAnnotations()) {
                                         if (annotation.annotationType() == AlwaysSerialize.class) {
@@ -1289,11 +1293,26 @@ public class ObjectProcessor {
                                             shouldSerialize = false;
                                         } else if (annotation.annotationType() == Rename.class) {
                                             subKey = ((Rename) annotation).value();
+                                        } else if (annotation.annotationType() == ExpectNotNull.class || annotation.annotationType() == ExpectIsNull.class) {
+                                            expect = true;
                                         }
                                     }
 
                                     if (shouldSerialize && element.asObject().has(subKey)) {
                                         Object subObject = toObject(element.asObject().get(subKey), field.getGenericType());
+                                        if (expect) {
+                                            for (Annotation annotation : field.getDeclaredAnnotations()) {
+                                                if (annotation.annotationType() == ExpectNotNull.class) {
+                                                    if (subObject == null) {
+                                                        throw new ExpectFailedException(subKey + " != null");
+                                                    }
+                                                } else if (annotation.annotationType() == ExpectIsNull.class) {
+                                                    if (subObject != null) {
+                                                        throw new ExpectFailedException(subKey + " == null");
+                                                    }
+                                                }
+                                            }
+                                        }
                                         if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
                                             field.set(object, subObject);
                                         }
