@@ -32,7 +32,7 @@ public class InitializationUtil {
      */
     public static <T> @Nullable T initialize(@NotNull Class<T> clazz) {
         try {
-            for (Constructor<?> constructor : clazz.getConstructors()) {
+            for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
                 if ((constructor.canAccess(null) || constructor.trySetAccessible()) && constructor.getParameterTypes().length == 0) {
                     return (T) constructor.newInstance();
                 }
