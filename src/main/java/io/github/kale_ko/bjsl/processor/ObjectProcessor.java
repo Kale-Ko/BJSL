@@ -1256,9 +1256,9 @@ public class ObjectProcessor {
                     if (type instanceof MapType) {
                         Map<String, Object> object;
                         if (!type.getRawClass().isInterface()) {
-                            object = (Map<String, Object>) InitializationUtil.initializeUnsafe(type.getRawClass());
+                            object = (Map<String, Object>) InitializationUtil.initialize(type.getRawClass());
                         } else {
-                            object = InitializationUtil.initializeUnsafe(LinkedHashMap.class);
+                            object = InitializationUtil.initialize(LinkedHashMap.class);
                         }
 
                         if (object != null) {
@@ -1274,7 +1274,7 @@ public class ObjectProcessor {
                             throw new InitializationException(type.getRawClass());
                         }
                     } else if (!type.getRawClass().isInterface()) {
-                        Object object = InitializationUtil.initializeUnsafe(type.getRawClass());
+                        Object object = InitializationUtil.initialize(type.getRawClass());
 
                         if (object != null) {
                             List<Field> fields = getFields(object.getClass());
@@ -1331,9 +1331,9 @@ public class ObjectProcessor {
                     if (type instanceof CollectionType) {
                         Collection<Object> object;
                         if (!type.getRawClass().isInterface()) {
-                            object = (Collection<Object>) InitializationUtil.initializeUnsafe(type.getRawClass());
+                            object = (Collection<Object>) InitializationUtil.initialize(type.getRawClass());
                         } else {
-                            object = InitializationUtil.initializeUnsafe(LinkedList.class);
+                            object = InitializationUtil.initialize(LinkedList.class);
                         }
 
                         if (object != null) {
@@ -1764,7 +1764,7 @@ public class ObjectProcessor {
                 Object defaultObject = null;
 
                 if (ignoreDefaults) {
-                    defaultObject = InitializationUtil.initializeUnsafe(object.getClass());
+                    defaultObject = InitializationUtil.initialize(object.getClass());
                     if (defaultObject == null && BJSL.getLogger() != null) {
                         BJSL.getLogger().warning("Initialization of " + object.getClass().getSimpleName() + " failed, defaults will not be ignored");
                     }
