@@ -33,7 +33,7 @@ jobs:
           GH_PACKAGES_USER: ${{ secrets.GH_PACKAGES_USER }}
           GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
 
-      - name: Publish to GitHub Packages
+      - name: Publish
         run: ./gradlew publish
         env:
           MAVEN_TYPE: release
@@ -42,7 +42,7 @@ jobs:
           GH_PACKAGES_USER: ${{ secrets.GH_PACKAGES_USER }}
           GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
 
-      - name: Publish to Github Pages
+      - name: Publish Pages
         uses: jamesives/github-pages-deploy-action@v4
         with:
           git-config-name: "github-actions[bot]"
