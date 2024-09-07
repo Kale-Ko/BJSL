@@ -1,6 +1,6 @@
 plugins {
     id "java"
-    id "io.github.kale_ko.gradleshade" version "1.2.0"
+    id "com.gradleup.shadow" version "8.3.0"
     id "maven-publish"
 }
 
@@ -53,14 +53,12 @@ jar {
     }
 }
 
-import io.github.kale_ko.gradleshade.ShadeMode
-
-shade {
-    mode = ShadeMode.EMBED_CLASSES
+shadowJar {
+    archiveClassifier = "fat"
 }
 
-shadedJar {
-    archiveClassifier = "fat"
+build {
+    finalizedBy tasks.shadowJar
 }
 
 javadoc {
@@ -85,6 +83,8 @@ javadoc {
 
 publishing {
     repositories {
+        mavenLocal()
+
         maven {
             name = "Kales-Maven-Snapshot"
             url = "https://maven.kaleko.dev/public-snapshot/"
@@ -118,13 +118,13 @@ publishing {
     }
 
     publications {
-        ghp(MavenPublication) {
+        main(MavenPublication) {
             groupId = project.group
             artifactId = "bjsl"
             version = project.version
 
             artifact tasks.jar
-            artifact tasks.shadedJar
+            artifact tasks.shadowJar
             artifact tasks.sourcesJar
             artifact tasks.javadocJar
 
