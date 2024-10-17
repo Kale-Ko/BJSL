@@ -1,11 +1,12 @@
 plugins {
     id "java"
-    id "com.gradleup.shadow" version "8.3.0"
+    id "java-library"
+    id "com.gradleup.shadow" version "8.3.3"
     id "maven-publish"
 }
 
-project.group = "io.github.kale_ko"
-project.version = project.project_version
+group = "io.github.kale_ko"
+version = project_version
 
 repositories {
     maven {
@@ -16,20 +17,20 @@ repositories {
 }
 
 dependencies {
-    implementation "com.fasterxml.jackson.core:jackson-core:${project.jackson_version}"
-    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${project.jackson_version}"
-    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-toml:${project.jackson_version}"
-    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${project.jackson_version}"
-    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-csv:${project.jackson_version}"
-    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-properties:${project.jackson_version}"
-    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-smile:${project.jackson_version}"
+    api "com.fasterxml.jackson.core:jackson-core:${jackson_version}"
+    api "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${jackson_version}"
+    api "com.fasterxml.jackson.dataformat:jackson-dataformat-toml:${jackson_version}"
+    api "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${jackson_version}"
+    api "com.fasterxml.jackson.dataformat:jackson-dataformat-csv:${jackson_version}"
+    api "com.fasterxml.jackson.dataformat:jackson-dataformat-properties:${jackson_version}"
+    api "com.fasterxml.jackson.dataformat:jackson-dataformat-smile:${jackson_version}"
 
     compileOnly "org.jetbrains:annotations:24.0.1"
 }
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(project.java_version)
+        languageVersion = JavaLanguageVersion.of(java_version)
     }
 
     withSourcesJar()
@@ -44,10 +45,10 @@ jar {
     manifest {
         attributes "Name": "io/github/kale_ko/bjsl/",
                 "Specification-Title": "BJSL",
-                "Specification-Version": project.version,
+                "Specification-Version": version,
                 "Specification-Vendor": "Kale-Ko",
                 "Implementation-Title": "io.github.kale_ko.bjsl",
-                "Implementation-Version": project.version,
+                "Implementation-Version": version,
                 "Implementation-Vendor": "Kale-Ko",
                 "Sealed": true
     }
@@ -62,7 +63,7 @@ build {
 }
 
 javadoc {
-    title = project.name + " " + project.version
+    title = name + " " + version
 
     options.encoding = "UTF-8"
     options.locale = "en"
@@ -73,7 +74,7 @@ javadoc {
     doFirst {
         mkdir "./build/"
         mkdir "./build/docs/"
-        file("./build/docs/overview.html").text = "<html><body><p class=\"overview\">" + project.project_description + "</p></body></html>"
+        file("./build/docs/overview.html").text = "<html><body><p class=\"overview\">" + project_description + "</p></body></html>"
     }
 
     options {
@@ -119,9 +120,9 @@ publishing {
 
     publications {
         main(MavenPublication) {
-            groupId = project.group
+            groupId = group
             artifactId = "bjsl"
-            version = project.version
+            version = version
 
             artifact tasks.jar
             artifact tasks.shadowJar
@@ -140,19 +141,16 @@ publishing {
                 def developerNode = node.appendNode("developers").appendNode("developer")
                 developerNode.appendNode("id", "kale-ko")
                 developerNode.appendNode("name", "Kale Ko")
-                developerNode.appendNode("url", "https://kaleko.dev/")
+                developerNode.appendNode("url", "https://www.kaleko.dev/")
                 developerNode.appendNode("email", "contact@kaleko.dev")
 
                 def scmNode = node.appendNode("scm")
                 scmNode.appendNode("connection", "scm:git:git@github.com:Kale-Ko/BJSL.git")
                 scmNode.appendNode("developerConnection", "scm:git:git@github.com:Kale-Ko/BJSL.git")
-                scmNode.appendNode("tag", "master")
+                scmNode.appendNode("tag", "main")
                 scmNode.appendNode("url", "https://github.com/Kale-Ko/BJSL/")
 
                 def dependenciesNode = node.appendNode("dependencies")
-
-                def dependencyManagementNode = node.appendNode("dependencyManagement")
-                dependencyManagementNode.appendNode("dependencies")
 
                 configurations.compileClasspath.resolvedConfiguration.getFirstLevelModuleDependencies().each {
                     def dependencyNode = dependenciesNode.appendNode("dependency")
