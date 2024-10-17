@@ -45,10 +45,10 @@ jar {
     manifest {
         attributes "Name": "io/github/kale_ko/bjsl/",
                 "Specification-Title": "BJSL",
-                "Specification-Version": version,
+                "Specification-Version": project_version,
                 "Specification-Vendor": "Kale-Ko",
                 "Implementation-Title": "io.github.kale_ko.bjsl",
-                "Implementation-Version": version,
+                "Implementation-Version": project_version,
                 "Implementation-Vendor": "Kale-Ko",
                 "Sealed": true
     }
@@ -63,7 +63,7 @@ build {
 }
 
 javadoc {
-    title = name + " " + version
+    title = name + " " + project_version
 
     options.encoding = "UTF-8"
     options.locale = "en"
@@ -122,7 +122,7 @@ publishing {
         main(MavenPublication) {
             groupId = group
             artifactId = "bjsl"
-            version = version
+            version = project_version
 
             artifact tasks.jar
             artifact tasks.shadowJar
@@ -152,11 +152,28 @@ publishing {
 
                 def dependenciesNode = node.appendNode("dependencies")
 
+                def compileDependencies = []
+
                 configurations.compileClasspath.resolvedConfiguration.getFirstLevelModuleDependencies().each {
                     def dependencyNode = dependenciesNode.appendNode("dependency")
                     dependencyNode.appendNode("groupId", it.moduleGroup)
                     dependencyNode.appendNode("artifactId", it.moduleName)
                     dependencyNode.appendNode("version", it.moduleVersion)
+                    dependencyNode.appendNode("scope", "compile")
+
+                    compileDependencies.push(it.moduleGroup + ":" + it.moduleName + ":" + it.moduleVersion)
+                }
+
+                configurations.runtimeClasspath.resolvedConfiguration.getFirstLevelModuleDependencies().each {
+                    if (compileDependencies.contains(it.moduleGroup + ":" + it.moduleName + ":" + it.moduleVersion)) {
+                        return
+                    }
+
+                    def dependencyNode = dependenciesNode.appendNode("dependency")
+                    dependencyNode.appendNode("groupId", it.moduleGroup)
+                    dependencyNode.appendNode("artifactId", it.moduleName)
+                    dependencyNode.appendNode("version", it.moduleVersion)
+                    dependencyNode.appendNode("scope", "runtime")
                 }
             }
         }
