@@ -22,7 +22,7 @@ jobs:
           distribution: temurin
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Build
         run: ./gradlew build
@@ -42,13 +42,13 @@ jobs:
           GH_PACKAGES_USER: ${{ secrets.GH_PACKAGES_USER }}
           GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
 
-      - name: Publish Pages
+      - name: Publish JavaDocs
         uses: jamesives/github-pages-deploy-action@v4
         with:
           git-config-name: "github-actions[bot]"
           git-config-email: "41898282+github-actions[bot]@users.noreply.github.com"
           commit-message: "Update JavaDocs"
-          folder: build/docs/javadoc
+          folder: build/docs/javadoc/
           branch: pages
-          target-folder: docs
+          target-folder: docs/
           clean: true
