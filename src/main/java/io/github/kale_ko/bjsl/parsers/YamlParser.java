@@ -6,12 +6,10 @@ import com.fasterxml.jackson.core.StreamWriteFeature;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.core.util.Separators;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactoryBuilder;
-import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import com.fasterxml.jackson.dataformat.yaml.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.yaml.snakeyaml.DumperOptions;
 
 /**
  * A parser for interfacing with YAML
@@ -137,11 +135,30 @@ public class YamlParser extends Parser<YAMLFactory, YAMLMapper> {
          */
         public @NotNull YamlParser build() {
             YAMLFactoryBuilder factoryBuilder = YAMLFactory.builder();
+            factoryBuilder = factoryBuilder.configure(StreamReadFeature.STRICT_DUPLICATE_DETECTION, true);
             factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
+            factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_BIG_NUMBER_PARSER, true);
             factoryBuilder = factoryBuilder.configure(StreamWriteFeature.USE_FAST_DOUBLE_WRITER, true);
-            factoryBuilder = factoryBuilder.configure(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN, true);
+            factoryBuilder = factoryBuilder.configure(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN, false);
+            factoryBuilder = factoryBuilder.configure(YAMLGenerator.Feature.WRITE_DOC_START_MARKER, false);
+            factoryBuilder = factoryBuilder.configure(YAMLGenerator.Feature.ALLOW_LONG_KEYS, true);
             factoryBuilder = factoryBuilder.configure(YAMLGenerator.Feature.SPLIT_LINES, false);
+            factoryBuilder = factoryBuilder.configure(YAMLGenerator.Feature.MINIMIZE_QUOTES, false);
+            factoryBuilder = factoryBuilder.configure(YAMLGenerator.Feature.INDENT_ARRAYS, true);
+            factoryBuilder = factoryBuilder.configure(YAMLGenerator.Feature.INDENT_ARRAYS_WITH_INDICATOR, true);
             factoryBuilder = factoryBuilder.configure(YAMLGenerator.Feature.USE_PLATFORM_LINE_BREAKS, this.crlf);
+            factoryBuilder = factoryBuilder.configure(YAMLParser.Feature.EMPTY_STRING_AS_NULL, false);
+
+            DumperOptions dumperOptions = new DumperOptions();
+
+            dumperOptions.setIndent(this.indentLevel);
+            dumperOptions.setIndicatorIndent(this.indentLevel);
+            dumperOptions.setIndentWithIndicator(true);
+            dumperOptions.setLineBreak(this.crlf ? DumperOptions.LineBreak.WIN : DumperOptions.LineBreak.UNIX);
+            dumperOptions.setSplitLines(false);
+            dumperOptions.setDefaultScalarStyle(DumperOptions.ScalarStyle.LITERAL);
+
+            factoryBuilder.dumperOptions(dumperOptions);
 
             YAMLFactory factory = factoryBuilder.build();
 
@@ -152,7 +169,7 @@ public class YamlParser extends Parser<YAMLFactory, YAMLMapper> {
             indenter = indenter.withLinefeed(this.crlf ? "\r\n" : "\n");
 
             Separators separators = new Separators();
-            separators = separators.withObjectFieldValueSpacing(Separators.Spacing.BOTH);
+            separators = separators.withObjectFieldValueSpacing(Separators.Spacing.AFTER);
             separators = separators.withObjectEntrySpacing(Separators.Spacing.AFTER);
             separators = separators.withArrayValueSpacing(Separators.Spacing.AFTER);
 
