@@ -19,10 +19,7 @@ repositories {
 dependencies {
     api "com.fasterxml.jackson.core:jackson-core:${jackson_version}"
     api "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${jackson_version}"
-    api "com.fasterxml.jackson.dataformat:jackson-dataformat-toml:${jackson_version}"
     api "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${jackson_version}"
-    api "com.fasterxml.jackson.dataformat:jackson-dataformat-csv:${jackson_version}"
-    api "com.fasterxml.jackson.dataformat:jackson-dataformat-properties:${jackson_version}"
     api "com.fasterxml.jackson.dataformat:jackson-dataformat-smile:${jackson_version}"
 
     compileOnly "org.jetbrains:annotations:24.0.1"
