@@ -8,13 +8,13 @@ import org.jetbrains.annotations.NotNull;
  * @version 1.7.0
  * @since 1.7.0
  */
-public class ParsingException extends RuntimeException {
+public class ParserException extends RuntimeException {
     /**
-     * Create a new ParsingException
+     * Create a new ParserException
      *
      * @param cause The cause of the exception
      */
-    public ParsingException(@NotNull Exception cause) {
+    public ParserException(@NotNull Exception cause) {
         super("Error while parsing:", cause);
     }
 }

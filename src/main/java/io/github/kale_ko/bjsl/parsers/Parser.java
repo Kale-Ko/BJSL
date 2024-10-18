@@ -12,7 +12,7 @@ import io.github.kale_ko.bjsl.elements.ParsedElement;
 import io.github.kale_ko.bjsl.elements.ParsedObject;
 import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
 import io.github.kale_ko.bjsl.parsers.exception.InvalidTypeException;
-import io.github.kale_ko.bjsl.parsers.exception.ParsingException;
+import io.github.kale_ko.bjsl.parsers.exception.ParserException;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import org.jetbrains.annotations.NotNull;
@@ -151,7 +151,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
                 throw new InvalidTypeException(tree.getClass());
             }
         } catch (Exception e) {
-            throw new ParsingException(e);
+            throw new ParserException(e);
         }
     }
 
@@ -225,7 +225,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
                 throw new InvalidTypeException(element.getClass());
             }
         } catch (Exception e) {
-            throw new ParsingException(e);
+            throw new ParserException(e);
         }
     }
 
@@ -269,7 +269,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
 
             return outputStream.toByteArray();
         } catch (Exception e) {
-            throw new ParsingException(e);
+            throw new ParserException(e);
         }
     }
 
@@ -291,7 +291,7 @@ public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec
 
             return outputStream.toByteArray();
         } catch (Exception e) {
-            throw new ParsingException(e);
+            throw new ParserException(e);
         }
     }
 
