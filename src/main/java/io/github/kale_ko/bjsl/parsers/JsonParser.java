@@ -177,35 +177,42 @@ public class JsonParser extends Parser<JsonFactory, JsonMapper> {
          */
         public @NotNull JsonParser build() {
             JsonFactoryBuilder factoryBuilder = (JsonFactoryBuilder) JsonFactory.builder();
+            factoryBuilder = factoryBuilder.configure(StreamReadFeature.STRICT_DUPLICATE_DETECTION, true);
             factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
+            factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_BIG_NUMBER_PARSER, true);
             factoryBuilder = factoryBuilder.configure(StreamWriteFeature.USE_FAST_DOUBLE_WRITER, true);
-            factoryBuilder = factoryBuilder.configure(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN, true);
+            factoryBuilder = factoryBuilder.configure(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN, false);
+            factoryBuilder = factoryBuilder.configure(JsonReadFeature.ALLOW_JAVA_COMMENTS, true);
+            factoryBuilder = factoryBuilder.configure(JsonReadFeature.ALLOW_YAML_COMMENTS, true);
+            factoryBuilder = factoryBuilder.configure(JsonReadFeature.ALLOW_MISSING_VALUES, true);
+            factoryBuilder = factoryBuilder.configure(JsonReadFeature.ALLOW_SINGLE_QUOTES, true);
             factoryBuilder = factoryBuilder.configure(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER, true);
             factoryBuilder = factoryBuilder.configure(JsonReadFeature.ALLOW_LEADING_DECIMAL_POINT_FOR_NUMBERS, true);
+            factoryBuilder = factoryBuilder.configure(JsonReadFeature.ALLOW_TRAILING_DECIMAL_POINT_FOR_NUMBERS, false);
             factoryBuilder = factoryBuilder.configure(JsonReadFeature.ALLOW_LEADING_PLUS_SIGN_FOR_NUMBERS, true);
-            factoryBuilder = factoryBuilder.configure(JsonReadFeature.ALLOW_LEADING_ZEROS_FOR_NUMBERS, true);
+            factoryBuilder = factoryBuilder.configure(JsonReadFeature.ALLOW_LEADING_ZEROS_FOR_NUMBERS, false);
             factoryBuilder = factoryBuilder.configure(JsonReadFeature.ALLOW_NON_NUMERIC_NUMBERS, true);
-            factoryBuilder = factoryBuilder.configure(JsonReadFeature.ALLOW_SINGLE_QUOTES, true);
             factoryBuilder = factoryBuilder.configure(JsonReadFeature.ALLOW_TRAILING_COMMA, true);
-            factoryBuilder = factoryBuilder.configure(JsonReadFeature.ALLOW_TRAILING_DECIMAL_POINT_FOR_NUMBERS, true);
             factoryBuilder = factoryBuilder.configure(JsonWriteFeature.ESCAPE_NON_ASCII, true);
             factoryBuilder = factoryBuilder.configure(JsonWriteFeature.WRITE_HEX_UPPER_CASE, true);
+            factoryBuilder = factoryBuilder.configure(JsonWriteFeature.WRITE_NAN_AS_STRINGS, false);
+            factoryBuilder = factoryBuilder.configure(JsonWriteFeature.COMBINE_UNICODE_SURROGATES_IN_UTF8, true);
 
             JsonFactory factory = factoryBuilder.build();
 
-            DefaultPrettyPrinter prettyPrinter;
+            DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
 
             if (prettyPrint) {
-                prettyPrinter = new DefaultPrettyPrinter();
-
                 DefaultIndenter indenter = new DefaultIndenter();
                 indenter = indenter.withIndent(" ".repeat(this.indentLevel));
-                indenter = indenter.withLinefeed(this.crlf ? "\r\n" : "\n");
+                indenter = indenter.withLinefeed(this.indentLevel > 0 ? (this.crlf ? "\r\n" : "\n") : "");
 
                 Separators separators = new Separators();
-                separators = separators.withObjectFieldValueSpacing(Separators.Spacing.BOTH);
-                separators = separators.withObjectEntrySpacing(Separators.Spacing.AFTER);
-                separators = separators.withArrayValueSpacing(Separators.Spacing.AFTER);
+                separators = separators.withObjectFieldValueSpacing(Separators.Spacing.AFTER);
+                separators = separators.withObjectEntrySpacing(this.indentLevel <= 0 ? Separators.Spacing.AFTER : Separators.Spacing.NONE);
+                separators = separators.withArrayValueSpacing(this.indentLevel <= 0 ? Separators.Spacing.AFTER : Separators.Spacing.NONE);
+                separators = separators.withObjectEmptySeparator(" ");
+                separators = separators.withArrayEmptySeparator(" ");
 
                 prettyPrinter = prettyPrinter.withObjectIndenter(indenter).withArrayIndenter(indenter).withSeparators(separators);
 
@@ -221,8 +228,6 @@ public class JsonParser extends Parser<JsonFactory, JsonMapper> {
                     }
                 }
             } else {
-                prettyPrinter = new DefaultPrettyPrinter();
-
                 DefaultIndenter indenter = new DefaultIndenter();
                 indenter = indenter.withIndent("");
                 indenter = indenter.withLinefeed("");
