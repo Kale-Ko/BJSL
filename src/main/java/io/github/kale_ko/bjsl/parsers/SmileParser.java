@@ -56,11 +56,15 @@ public class SmileParser extends Parser<SmileFactory, SmileMapper> {
          */
         public @NotNull SmileParser build() {
             SmileFactoryBuilder factoryBuilder = SmileFactory.builder();
+            factoryBuilder = factoryBuilder.configure(StreamReadFeature.STRICT_DUPLICATE_DETECTION, true);
             factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);
+            factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_BIG_NUMBER_PARSER, true);
             factoryBuilder = factoryBuilder.configure(StreamWriteFeature.USE_FAST_DOUBLE_WRITER, true);
-            factoryBuilder = factoryBuilder.configure(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN, true);
+            factoryBuilder = factoryBuilder.configure(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN, false);
+            factoryBuilder = factoryBuilder.configure(SmileGenerator.Feature.WRITE_HEADER, true);
+            factoryBuilder = factoryBuilder.configure(SmileGenerator.Feature.WRITE_END_MARKER, true);
             factoryBuilder = factoryBuilder.configure(SmileGenerator.Feature.CHECK_SHARED_NAMES, true);
-            factoryBuilder = factoryBuilder.configure(SmileGenerator.Feature.CHECK_SHARED_STRING_VALUES, true);
+            factoryBuilder = factoryBuilder.configure(SmileGenerator.Feature.CHECK_SHARED_STRING_VALUES, false);
 
             SmileFactory factory = factoryBuilder.build();
 
