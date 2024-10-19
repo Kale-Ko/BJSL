@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Define the default value for a field
+ * Define the default value for a field. The type of the field will be used to pick which value is read.
  *
  * @since 1.0.0
  */
