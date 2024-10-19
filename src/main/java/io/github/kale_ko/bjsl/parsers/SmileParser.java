@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
  * <p>
  * Uses the Jackson-DataFormat smile parser
  *
- * @version 1.1.0
+ * @version 2.0.0
  * @since 1.0.0
  */
 public class SmileParser extends Parser<SmileFactory, SmileMapper> {
@@ -35,7 +35,7 @@ public class SmileParser extends Parser<SmileFactory, SmileMapper> {
     /**
      * A builder class for creating new {@link SmileParser}s
      *
-     * @version 1.0.0
+     * @version 2.0.0
      * @since 1.0.0
      */
     public static class Builder {

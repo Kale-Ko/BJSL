@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
  * <p>
  * Uses the default Jackson json parser
  *
- * @version 1.1.0
+ * @version 2.0.0
  * @since 1.0.0
  */
 public class JsonParser extends Parser<JsonFactory, JsonMapper> {
@@ -39,7 +39,7 @@ public class JsonParser extends Parser<JsonFactory, JsonMapper> {
     /**
      * A builder class for creating new {@link JsonParser}s
      *
-     * @version 1.0.0
+     * @version 2.0.0
      * @since 1.0.0
      */
     public static class Builder {
