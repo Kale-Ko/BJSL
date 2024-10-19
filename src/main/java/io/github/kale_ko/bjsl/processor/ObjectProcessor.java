@@ -42,33 +42,33 @@ import org.jetbrains.annotations.Nullable;
  * <p>
  * Also has options for reducing the amount of output keys
  *
- * @version 1.0.0
+ * @version 2.0.0
  * @since 1.0.0
  */
 public class ObjectProcessor {
     /**
-     * Weather null values should be ignored when serializing
+     * Weather null values should be ignored when serializing maps and objects
      *
      * @since 1.0.0
      */
     protected final boolean ignoreNulls;
 
     /**
-     * Weather null values should be ignored when serializing maps and arrays
+     * Weather null values should be ignored when serializing lists and arrays
      *
      * @since 4.0.0
      */
     protected final boolean ignoreArrayNulls;
 
     /**
-     * Weather empty objects (Objects with a size of 0) should be ignored when serializing
+     * Weather empty objects (Objects with a size of 0) should be ignored when serializing maps and objects
      *
      * @since 1.0.0
      */
     protected final boolean ignoreEmptyObjects;
 
     /**
-     * Weather default values should be ignored when serializing
+     * Weather default values should be ignored when serializing maps and objects
      * <p>
      * These can either be gotten from @{@link Default} annotations or the value in a new instance of the object
      *
@@ -93,10 +93,10 @@ public class ObjectProcessor {
     /**
      * Create a new Parser using certain factories
      *
-     * @param ignoreNulls        Weather null values should be ignored when serializing
-     * @param ignoreArrayNulls   Weather null values should be ignored when serializing maps and arrays
-     * @param ignoreEmptyObjects Weather empty objects (Objects with a size of 0) should be ignored when serializing
-     * @param ignoreDefaults     Weather default values should be ignored when serializing
+     * @param ignoreNulls        Weather null values should be ignored when serializing maps and objects
+     * @param ignoreArrayNulls   Weather null values should be ignored when serializing lists and arrays
+     * @param ignoreEmptyObjects Weather empty objects (Objects with a size of 0) should be ignored when serializing maps and objects
+     * @param ignoreDefaults     Weather default values should be ignored when serializing maps and objects
      * @param caseSensitiveEnums Weather checks for enum names should be case-sensitive
      * @param typeProcessors     A map of object types to type processors
      *
@@ -116,12 +116,12 @@ public class ObjectProcessor {
     /**
      * A builder class for creating new {@link ObjectProcessor}s
      *
-     * @version 1.0.0
+     * @version 2.0.0
      * @since 1.0.0
      */
     public static class Builder {
         /**
-         * Weather or not null values should be ignored when serializing
+         * Weather or not null values should be ignored when serializing maps and objects
          * <p>
          * Default is false
          *
@@ -130,16 +130,16 @@ public class ObjectProcessor {
         protected boolean ignoreNulls = false;
 
         /**
-         * Weather null values should be ignored when serializing maps and arrays
+         * Weather null values should be ignored when serializing lists and arrays
          * <p>
          * Default is true
          *
          * @since 4.0.0
          */
-        protected boolean ignoreArrayNulls = true;
+        protected boolean ignoreArrayNulls = false;
 
         /**
-         * Weather or not empty objects (Objects with a size of 0) should be ignored when serializing
+         * Weather or not empty objects (Objects with a size of 0) should be ignored when serializing maps and objects
          * <p>
          * Default is false
          *
@@ -148,7 +148,7 @@ public class ObjectProcessor {
         protected boolean ignoreEmptyObjects = false;
 
         /**
-         * Weather or not default values should be ignored when serializing
+         * Weather or not default values should be ignored when serializing maps and objects
          * <p>
          * These can either be gotten from @{@link Default} annotations or the value in a new instance of the object
          * <p>
@@ -190,11 +190,11 @@ public class ObjectProcessor {
         }
 
         /**
-         * Get weather or not null values should be ignored when serializing
+         * Get weather or not null values should be ignored when serializing maps and objects
          * <p>
          * Default is false
          *
-         * @return Weather or not null values should be ignored when serializing
+         * @return Weather or not null values should be ignored when serializing maps and objects
          *
          * @since 1.0.0
          */
@@ -203,11 +203,11 @@ public class ObjectProcessor {
         }
 
         /**
-         * Set weather or not null values should be ignored when serializing
+         * Set weather or not null values should be ignored when serializing maps and objects
          * <p>
          * Default is false
          *
-         * @param value Weather or not null values should be ignored when serializing
+         * @param value Weather or not null values should be ignored when serializing maps and objects
          *
          * @return Self for chaining
          *
@@ -220,11 +220,11 @@ public class ObjectProcessor {
         }
 
         /**
-         * Get weather or not null values should be ignored when serializing maps and arrays
+         * Get weather or not null values should be ignored when serializing lists and arrays
          * <p>
          * Default is false
          *
-         * @return Weather or not null values should be ignored when serializing maps and arrays
+         * @return Weather or not null values should be ignored when serializing lists and arrays
          *
          * @since 4.0.0
          */
@@ -233,13 +233,11 @@ public class ObjectProcessor {
         }
 
         /**
-         * <b>DISABLING THIS MAY CAUSE ISSUES</b>
+         * Set weather or not null values should be ignored when serializing lists and arrays
          * <p>
-         * Set weather or not null values should be ignored when serializing maps and arrays
-         * <p>
-         * Default is true
+         * Default is false
          *
-         * @param value Weather or not null values should be ignored when serializing maps and arrays
+         * @param value Weather or not null values should be ignored when serializing lists and arrays
          *
          * @return Self for chaining
          *
@@ -252,11 +250,11 @@ public class ObjectProcessor {
         }
 
         /**
-         * Get weather or not empty objects (Objects with a size of 0) should be ignored when serializing
+         * Get weather or not empty objects (Objects with a size of 0) should be ignored when serializing maps and objects
          * <p>
          * Default is false
          *
-         * @return Weather or not empty objects (Objects with a size of 0) should be ignored when serializing
+         * @return Weather or not empty objects (Objects with a size of 0) should be ignored when serializing maps and objects
          *
          * @since 1.0.0
          */
@@ -265,11 +263,11 @@ public class ObjectProcessor {
         }
 
         /**
-         * Set weather or not empty objects (Objects with a size of 0) should be ignored when serializing
+         * Set weather or not empty objects (Objects with a size of 0) should be ignored when serializing maps and objects
          * <p>
          * Default is false
          *
-         * @param value Weather or not empty objects (Objects with a size of 0) should be ignored when serializing
+         * @param value Weather or not empty objects (Objects with a size of 0) should be ignored when serializing maps and objects
          *
          * @return Self for chaining
          *
@@ -282,13 +280,13 @@ public class ObjectProcessor {
         }
 
         /**
-         * Get weather or not default values should be ignored when serializing
+         * Get weather or not default values should be ignored when serializing maps and objects
          * <p>
          * These can either be gotten from @{@link Default} annotations or the value in a new instance of the object
          * <p>
          * Default is false
          *
-         * @return Weather or not default values should be ignored when serializing
+         * @return Weather or not default values should be ignored when serializing maps and objects
          *
          * @since 1.0.0
          */
@@ -297,13 +295,13 @@ public class ObjectProcessor {
         }
 
         /**
-         * Set weather or not default values should be ignored when serializing
+         * Set weather or not default values should be ignored when serializing maps and objects
          * <p>
          * These can either be gotten from @{@link Default} annotations or the value in a new instance of the object
          * <p>
          * Default is false
          *
-         * @param value Weather or not default values should be ignored when serializing
+         * @param value Weather or not default values should be ignored when serializing maps and objects
          *
          * @return Self for chaining
          *
@@ -1264,7 +1262,7 @@ public class ObjectProcessor {
                         if (object != null) {
                             for (Map.Entry<String, ParsedElement> entry : element.asObject().getEntries()) {
                                 Object subObject = toObject(entry.getValue(), type.getContentType());
-                                if (!(((ignoreNulls || ignoreArrayNulls) && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
+                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
                                     object.put(entry.getKey(), subObject);
                                 }
                             }
@@ -1339,7 +1337,7 @@ public class ObjectProcessor {
                         if (object != null) {
                             for (ParsedElement subElement : element.asArray().getValues()) {
                                 Object subObject = toObject(subElement, type.getContentType());
-                                if (!(((ignoreNulls || ignoreArrayNulls) && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
+                                if (!((ignoreNulls  && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
                                     object.add(subObject);
                                 }
                             }
@@ -1351,12 +1349,12 @@ public class ObjectProcessor {
                     } else if (type instanceof ArrayType) {
                         int nonNull = element.asArray().getSize();
 
-                        if (ignoreNulls || ignoreArrayNulls || ignoreEmptyObjects) {
+                        if (ignoreArrayNulls || ignoreEmptyObjects) {
                             nonNull = 0;
 
                             for (ParsedElement subElement : element.asArray().getValues()) {
                                 Object subObject = toObject(subElement, type.getRawClass().getComponentType());
-                                if (!(((ignoreNulls || ignoreArrayNulls) && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
+                                if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
                                     nonNull++;
                                 }
                             }
@@ -1458,7 +1456,7 @@ public class ObjectProcessor {
                             int i = 0;
                             for (ParsedElement subElement : element.asArray().getValues()) {
                                 Object subObject = toObject(subElement, type.getRawClass().getComponentType());
-                                if (!(((ignoreNulls || ignoreArrayNulls) && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
+                                if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
                                     array[i] = subObject;
 
                                     i++;
@@ -1472,12 +1470,12 @@ public class ObjectProcessor {
                     } else if (!type.getRawClass().isInterface()) {
                         int nonNull = element.asArray().getSize();
 
-                        if (ignoreNulls || ignoreArrayNulls || ignoreEmptyObjects) {
+                        if (ignoreArrayNulls || ignoreEmptyObjects) {
                             nonNull = 0;
 
                             for (ParsedElement subElement : element.asArray().getValues()) {
                                 Object subObject = toObject(subElement, type.getRawClass());
-                                if (!(((ignoreNulls || ignoreArrayNulls) && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
+                                if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
                                     nonNull++;
                                 }
                             }
@@ -1579,7 +1577,7 @@ public class ObjectProcessor {
                             int i = 0;
                             for (ParsedElement subElement : element.asArray().getValues()) {
                                 Object subObject = toObject(subElement, type.getRawClass());
-                                if (!(((ignoreNulls || ignoreArrayNulls) && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
+                                if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
                                     array[i] = subObject;
 
                                     i++;

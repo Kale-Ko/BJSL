@@ -16,7 +16,7 @@ import org.yaml.snakeyaml.DumperOptions;
  * <p>
  * Uses the Jackson-DataFormat yaml parser
  *
- * @version 1.1.0
+ * @version 2.0.0
  * @since 1.0.0
  */
 public class YamlParser extends Parser<YAMLFactory, YAMLMapper> {
@@ -36,7 +36,7 @@ public class YamlParser extends Parser<YAMLFactory, YAMLMapper> {
     /**
      * A builder class for creating new {@link YamlParser}s
      *
-     * @version 1.0.0
+     * @version 2.0.0
      * @since 1.0.0
      */
     public static class Builder {

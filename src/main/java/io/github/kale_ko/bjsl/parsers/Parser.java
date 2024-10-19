@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
  * @param <T> The type of the factory used for converting to/from trees/strings
  * @param <V> The type of the codec used for converting to/from trees/strings
  *
- * @version 1.3.0
+ * @version 2.0.0
  * @since 1.0.0
  */
 public abstract class Parser<T extends TokenStreamFactory, V extends ObjectCodec> {
