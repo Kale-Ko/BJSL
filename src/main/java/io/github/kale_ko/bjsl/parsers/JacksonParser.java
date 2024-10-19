@@ -70,14 +70,9 @@ public abstract class JacksonParser<T extends TokenStreamFactory, V extends Obje
     }
 
     /**
-     * Parse this string into a {@link ParsedElement}
-     *
-     * @param data The string to parse
-     *
-     * @return The string passed parsed to a {@link ParsedElement}
+     * {@inheritDoc}
      *
      * @implNote Calls {@link #toElement(byte[])} with the bytes of the passed string ({@link String#getBytes()})
-     * @since 1.0.0
      */
     @Override
     public @NotNull ParsedElement toElement(@NotNull String data) {
@@ -85,13 +80,7 @@ public abstract class JacksonParser<T extends TokenStreamFactory, V extends Obje
     }
 
     /**
-     * Parse these bytes into a {@link ParsedElement}
-     *
-     * @param data The bytes to parse
-     *
-     * @return The bytes passed parsed to a {@link ParsedElement}
-     *
-     * @since 1.0.0
+     * {@inheritDoc}
      */
     @Override
     public @NotNull ParsedElement toElement(byte @NotNull [] data) {
@@ -155,14 +144,9 @@ public abstract class JacksonParser<T extends TokenStreamFactory, V extends Obje
     }
 
     /**
-     * Serializes this element into a String
-     *
-     * @param element The element to serialize
-     *
-     * @return The element passed serialized to a String
+     * {@inheritDoc}
      *
      * @implNote Calls {@link #toBytes(ParsedElement)} and uses {@link String#String(byte[])} to create a string from that
-     * @since 1.0.0
      */
     @Override
     public @NotNull String toString(@NotNull ParsedElement element) {
@@ -170,13 +154,7 @@ public abstract class JacksonParser<T extends TokenStreamFactory, V extends Obje
     }
 
     /**
-     * Serializes this element into bytes
-     *
-     * @param element The element to serialize
-     *
-     * @return The element passed serialized to bytes
-     *
-     * @since 1.0.0
+     * {@inheritDoc}
      */
     @Override
     public byte @NotNull [] toBytes(@NotNull ParsedElement element) {

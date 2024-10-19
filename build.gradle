@@ -60,13 +60,20 @@ build {
 }
 
 javadoc {
-    title = name + " " + project_version
+    title = project.name + " " + project.version
 
     options.encoding = "UTF-8"
     options.locale = "en"
 
+    options.showFromProtected()
+
+    options.linkSource = true
+    options.noDeprecatedList = true
+
     options.author = true
     options.version = true
+
+    options.tags = ["apiNote:TCMF:API note:", "implNote:TCMF:Implementation note:"]
 
     doFirst {
         mkdir "./build/"
