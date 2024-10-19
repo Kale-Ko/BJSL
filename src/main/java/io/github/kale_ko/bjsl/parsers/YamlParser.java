@@ -19,9 +19,9 @@ import org.yaml.snakeyaml.DumperOptions;
  * @version 2.0.0
  * @since 1.0.0
  */
-public class YamlParser extends Parser<YAMLFactory, YAMLMapper> {
+public class YamlParser extends JacksonParser<YAMLFactory, YAMLMapper> {
     /**
-     * Create a new Parser using certain factories
+     * Create a new JacksonParser using certain factories
      *
      * @param factory       The factory used for converting to/from trees/strings
      * @param mapper        The mapper used for converting to/from trees/strings
