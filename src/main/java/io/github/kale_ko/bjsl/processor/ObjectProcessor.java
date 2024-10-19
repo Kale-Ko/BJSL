@@ -1039,6 +1039,7 @@ public class ObjectProcessor {
      *
      * @return A new Object of passed type with the values of element
      *
+     * @throws io.github.kale_ko.bjsl.processor.exception.ProcessorException If there is an exception while processing
      * @since 1.0.0
      */
     @SuppressWarnings("unchecked")
@@ -1056,6 +1057,7 @@ public class ObjectProcessor {
      *
      * @return A new Object of passed type with the values of element
      *
+     * @throws io.github.kale_ko.bjsl.processor.exception.ProcessorException If there is an exception while processing
      * @since 1.0.0
      */
     public @Nullable Object toObject(@NotNull ParsedElement element, @NotNull Type type) {
@@ -1070,6 +1072,7 @@ public class ObjectProcessor {
      *
      * @return A new Object of passed type with the values of element
      *
+     * @throws io.github.kale_ko.bjsl.processor.exception.ProcessorException If there is an exception while processing
      * @since 1.0.0
      */
     @SuppressWarnings("unchecked")
@@ -1651,6 +1654,7 @@ public class ObjectProcessor {
      *
      * @return A new {@link io.github.kale_ko.bjsl.elements.ParsedElement} with the values of object
      *
+     * @throws io.github.kale_ko.bjsl.processor.exception.ProcessorException If there is an exception while processing
      * @since 1.0.0
      */
     public @NotNull ParsedElement toElement(@Nullable Object object) {
