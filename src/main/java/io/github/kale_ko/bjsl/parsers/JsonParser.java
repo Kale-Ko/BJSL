@@ -22,9 +22,9 @@ import org.jetbrains.annotations.Nullable;
  * @version 2.0.0
  * @since 1.0.0
  */
-public class JsonParser extends Parser<JsonFactory, JsonMapper> {
+public class JsonParser extends JacksonParser<JsonFactory, JsonMapper> {
     /**
-     * Create a new Parser using certain factories
+     * Create a new JacksonParser using certain factories
      *
      * @param factory       The factory used for converting to/from trees/strings
      * @param mapper        The mapper used for converting to/from trees/strings

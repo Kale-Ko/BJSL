@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
  * @version 2.0.0
  * @since 1.1.0
  */
-public class BJSL<T extends Parser<?, ?>> {
+public class BJSL<T extends Parser> {
     /**
      * The JSON parser used by static calls
      * <p>
@@ -140,7 +140,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parse this string into a {@link ParsedElement}
      * <p>
-     * Calls {@link Parser#toElement(String)}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(String)}
      *
      * @param data The string to parse
      *
@@ -155,7 +155,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parse these bytes into a {@link ParsedElement}
      * <p>
-     * Calls {@link Parser#toElement(byte[])}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(byte[])}
      *
      * @param data The bytes to parse
      *
@@ -170,7 +170,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parses and maps this string into an Object
      * <p>
-     * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(String)}
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(String)}
      *
      * @param data  The string to map
      * @param clazz The object type to map to
@@ -187,7 +187,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parses and maps these bytes into an Object
      * <p>
-     * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(byte[])}
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(byte[])}
      *
      * @param data  The bytes to map
      * @param clazz The object type to map to
@@ -204,7 +204,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parses and maps this string into an Object
      * <p>
-     * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(String)}
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(String)}
      *
      * @param data The string to map
      * @param type The object type to map to
@@ -220,7 +220,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parses and maps these bytes into an Object
      * <p>
-     * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(byte[])}
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(byte[])}
      *
      * @param data The bytes to map
      * @param type The object type to map to
@@ -236,7 +236,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parses and maps this string into an Object
      * <p>
-     * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(String)}
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(String)}
      *
      * @param data The string to map
      * @param type The object type to map to
@@ -252,7 +252,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parses and maps these bytes into an Object
      * <p>
-     * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(byte[])}
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(byte[])}
      *
      * @param data The bytes to map
      * @param type The object type to map to
@@ -268,7 +268,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Serializes this element into a String
      * <p>
-     * Calls {@link Parser#toString(ParsedElement)}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.JacksonParser#toString(ParsedElement)}
      *
      * @param element The element to serialize
      *
@@ -283,7 +283,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Serializes this element into bytes
      * <p>
-     * Calls {@link Parser#toBytes(ParsedElement)}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.JacksonParser#toBytes(ParsedElement)}
      *
      * @param element The element to serialize
      *
@@ -298,7 +298,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Serializes this object into a String
      * <p>
-     * Calls {@link Parser#toString(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.JacksonParser#toString(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
      * @param object The object to serialize
      *
@@ -313,7 +313,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Serializes this object into bytes
      * <p>
-     * Calls {@link Parser#toBytes(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.JacksonParser#toBytes(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
      * @param object The object to serialize
      *
@@ -436,7 +436,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parse this string into a {@link ParsedElement}
      * <p>
-     * Calls {@link Parser#toElement(String)}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(String)}
      *
      * @param data The string to parse
      *
@@ -451,7 +451,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parse these bytes into a {@link ParsedElement}
      * <p>
-     * Calls {@link Parser#toElement(byte[])}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(byte[])}
      *
      * @param data The bytes to parse
      *
@@ -466,7 +466,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parses and maps this string into an Object
      * <p>
-     * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(String)}
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(String)}
      *
      * @param data  The string to map
      * @param clazz The object type to map to
@@ -483,7 +483,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parses and maps these bytes into an Object
      * <p>
-     * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(byte[])}
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(byte[])}
      *
      * @param data  The bytes to map
      * @param clazz The object type to map to
@@ -500,7 +500,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parses and maps this string into an Object
      * <p>
-     * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(String)}
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(String)}
      *
      * @param data The string to map
      * @param type The object type to map to
@@ -516,7 +516,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parses and maps these bytes into an Object
      * <p>
-     * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(byte[])}
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(byte[])}
      *
      * @param data The bytes to map
      * @param type The object type to map to
@@ -532,7 +532,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parses and maps this string into an Object
      * <p>
-     * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(String)}
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(String)}
      *
      * @param data The string to map
      * @param type The object type to map to
@@ -548,7 +548,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parses and maps these bytes into an Object
      * <p>
-     * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(byte[])}
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(byte[])}
      *
      * @param data The bytes to map
      * @param type The object type to map to
@@ -564,7 +564,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Serializes this element into a String
      * <p>
-     * Calls {@link Parser#toString(ParsedElement)}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.JacksonParser#toString(ParsedElement)}
      *
      * @param element The element to serialize
      *
@@ -579,7 +579,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Serializes this element into a String
      * <p>
-     * Calls {@link Parser#toString(ParsedElement)}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.JacksonParser#toString(ParsedElement)}
      *
      * @param element The element to serialize
      * @param pretty  Weather to pretty print the data
@@ -599,7 +599,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Serializes this element into bytes
      * <p>
-     * Calls {@link Parser#toBytes(ParsedElement)}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.JacksonParser#toBytes(ParsedElement)}
      *
      * @param element The element to serialize
      *
@@ -614,7 +614,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Serializes this element into bytes
      * <p>
-     * Calls {@link Parser#toBytes(ParsedElement)}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.JacksonParser#toBytes(ParsedElement)}
      *
      * @param element The element to serialize
      * @param pretty  Weather to pretty print the data
@@ -634,7 +634,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Serializes this object into a String
      * <p>
-     * Calls {@link Parser#toString(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.JacksonParser#toString(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
      * @param object The object to serialize
      *
@@ -649,7 +649,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Serializes this object into a String
      * <p>
-     * Calls {@link Parser#toString(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.JacksonParser#toString(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
      * @param object The object to serialize
      * @param pretty Weather to pretty print the data
@@ -665,7 +665,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Serializes this object into bytes
      * <p>
-     * Calls {@link Parser#toBytes(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.JacksonParser#toBytes(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
      * @param object The object to serialize
      *
@@ -680,7 +680,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Serializes this object into bytes
      * <p>
-     * Calls {@link Parser#toBytes(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.JacksonParser#toBytes(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
      * @param object The object to serialize
      * @param pretty Weather to pretty print the data
@@ -740,7 +740,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parse this string into a {@link ParsedElement}
      * <p>
-     * Calls {@link Parser#toElement(String)}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(String)}
      *
      * @param data The string to parse
      *
@@ -755,7 +755,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parse these bytes into a {@link ParsedElement}
      * <p>
-     * Calls {@link Parser#toElement(byte[])}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(byte[])}
      *
      * @param data The bytes to parse
      *
@@ -770,7 +770,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parses and maps this string into an Object
      * <p>
-     * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(String)}
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(String)}
      *
      * @param data  The string to map
      * @param clazz The object type to map to
@@ -787,7 +787,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parses and maps these bytes into an Object
      * <p>
-     * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(byte[])}
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(byte[])}
      *
      * @param data  The bytes to map
      * @param clazz The object type to map to
@@ -804,7 +804,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parses and maps this string into an Object
      * <p>
-     * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(String)}
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(String)}
      *
      * @param data The string to map
      * @param type The object type to map to
@@ -820,7 +820,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parses and maps these bytes into an Object
      * <p>
-     * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(byte[])}
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(byte[])}
      *
      * @param data The bytes to map
      * @param type The object type to map to
@@ -836,7 +836,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parses and maps this string into an Object
      * <p>
-     * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(String)}
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(String)}
      *
      * @param data The string to map
      * @param type The object type to map to
@@ -852,7 +852,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parses and maps these bytes into an Object
      * <p>
-     * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(byte[])}
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(byte[])}
      *
      * @param data The bytes to map
      * @param type The object type to map to
@@ -868,7 +868,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Serializes this element into a String
      * <p>
-     * Calls {@link Parser#toString(ParsedElement)}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.JacksonParser#toString(ParsedElement)}
      *
      * @param element The element to serialize
      *
@@ -883,7 +883,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Serializes this element into bytes
      * <p>
-     * Calls {@link Parser#toBytes(ParsedElement)}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.JacksonParser#toBytes(ParsedElement)}
      *
      * @param element The element to serialize
      *
@@ -898,7 +898,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Serializes this object into a String
      * <p>
-     * Calls {@link Parser#toString(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.JacksonParser#toString(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
      * @param object The object to serialize
      *
@@ -913,7 +913,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Serializes this object into bytes
      * <p>
-     * Calls {@link Parser#toBytes(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.JacksonParser#toBytes(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
      * @param object The object to serialize
      *
@@ -972,7 +972,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parse these bytes into a {@link ParsedElement}
      * <p>
-     * Calls {@link Parser#toElement(byte[])}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(byte[])}
      *
      * @param data The bytes to parse
      *
@@ -987,7 +987,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parses and maps these bytes into an Object
      * <p>
-     * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link Parser#toElement(byte[])}
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Class)} on {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(byte[])}
      *
      * @param data  The bytes to map
      * @param clazz The object type to map to
@@ -1004,7 +1004,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parses and maps these bytes into an Object
      * <p>
-     * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link Parser#toElement(byte[])}
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, Type)} on {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(byte[])}
      *
      * @param data The bytes to map
      * @param type The object type to map to
@@ -1020,7 +1020,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Parses and maps these bytes into an Object
      * <p>
-     * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link Parser#toElement(byte[])}
+     * Calls {@link ObjectProcessor#toObject(ParsedElement, JavaType)} on {@link io.github.kale_ko.bjsl.parsers.Parser#toElement(byte[])}
      *
      * @param data The bytes to map
      * @param type The object type to map to
@@ -1036,7 +1036,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Serializes this element into bytes
      * <p>
-     * Calls {@link Parser#toBytes(ParsedElement)}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.JacksonParser#toBytes(ParsedElement)}
      *
      * @param element The element to serialize
      *
@@ -1051,7 +1051,7 @@ public class BJSL<T extends Parser<?, ?>> {
     /**
      * Serializes this object into bytes
      * <p>
-     * Calls {@link Parser#toBytes(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
+     * Calls {@link io.github.kale_ko.bjsl.parsers.JacksonParser#toBytes(ParsedElement)} on {@link ObjectProcessor#toElement(Object)}
      *
      * @param object The object to serialize
      *

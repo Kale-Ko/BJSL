@@ -93,7 +93,7 @@ public class ObjectProcessor {
     protected final @NotNull Map<JavaType, TypeProcessor> typeProcessors;
 
     /**
-     * Create a new Parser using certain factories
+     * Create a new ObjectProcessor using certain factories
      *
      * @param ignoreNulls        Weather null values should be ignored when serializing maps and objects
      * @param ignoreArrayNulls   Weather null values should be ignored when serializing lists and arrays
