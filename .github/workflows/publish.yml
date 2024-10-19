@@ -18,7 +18,7 @@ jobs:
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
-          java-version: 11
+          java-version: 21
           distribution: temurin
 
       - name: Setup Gradle
@@ -32,6 +32,20 @@ jobs:
           MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
           GH_PACKAGES_USER: ${{ secrets.GH_PACKAGES_USER }}
           GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+
+      - name: Upload Builds
+        uses: actions/upload-artifact@v4
+        with:
+          name: builds
+          path: build/libs/*.jar
+          compression-level: 9
+
+      - name: Upload JavaDocs
+        uses: actions/upload-artifact@v4
+        with:
+          name: javadocs
+          path: build/docs/javadoc/
+          compression-level: 9
 
       - name: Publish
         run: ./gradlew publish
