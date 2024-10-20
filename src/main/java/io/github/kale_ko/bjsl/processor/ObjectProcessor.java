@@ -1853,7 +1853,7 @@ public class ObjectProcessor {
         }
     }
 
-    private @Nullable String toString(@Nullable Object object) {
+    private @NotNull String toString(@Nullable Object object) {
         try {
             ParsedElement element = toElement(object);
 
