@@ -12,6 +12,7 @@ import java.lang.annotation.Target;
  */
 @Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
+@Deprecated(forRemoval=true)
 public @interface Default {
     /**
      * The value as a string
