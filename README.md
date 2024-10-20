@@ -68,6 +68,8 @@ Once you have both just call [`#toObject(element, class)`](https://bjsl.kaleko.d
 You are then free to modify the returned value.\
 When you would like to re-serialize it call [`#toElement(object)`](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/ObjectProcessor.html#toElement(java.lang.Object))
 
+The only notable limitation of the [`ObjectProcessor`](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/ObjectProcessor.html) is that Map keys must be translated to a [`ParsedPrimitive`](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/elements/ParsedPrimitive.html) type. This can be done using [`TypeProcessor`](#type-processors)s, just output some type of [`ParsedPrimitive`](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/elements/ParsedPrimitive.html). This is already done for all default types, see below.
+
 ## Type Processors
 
 [`TypeProcessor`](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/TypeProcessor.html)s are extensions of the [`ObjectProcessor`](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/ObjectProcessor.html) that allow you to serialize and deserialize any class in whatever way you see fit.
@@ -166,6 +168,9 @@ public class Data {
 
     protected String exampleString = "hello world!"; // All primitive types including arrays are supported
 
+    @NeverSerialize
+    protected String excludedString = "goodbye world :("; // This won't get included in the output because it is marked to never serialize
+    
     public static void main(String[] args) throws IOException {
         JsonParser parser = new JsonParser.Builder().build(); // Create the parser with default options
         ObjectProcessor processor = new ObjectProcessor.Builder().build(); // Create the processor with default options
