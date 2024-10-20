@@ -47,6 +47,7 @@ import org.jetbrains.annotations.Nullable;
  * @version 2.0.0
  * @since 1.0.0
  */
+@SuppressWarnings("deprecation")
 public class ObjectProcessor {
     /**
      * Weather null values should be ignored when serializing maps and objects
