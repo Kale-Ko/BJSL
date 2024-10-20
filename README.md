@@ -48,7 +48,7 @@ When you are done call [`#build()`](https://bjsl.kaleko.dev/docs/io/github/kale_
 
 You start with a [`ParsedElement`](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/elements/ParsedElement.html) of some kind ([`ParsedObject`](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/elements/ParsedObject.html), [`ParsedArray`](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/elements/ParsedArray.html)), likely attained from a [`Parser`](#parsers), and a class you would like to deserialize it to.
 
-An example class could be something like
+An example class could be something like:
 ```java
 public class User {
     private double foo;
@@ -70,13 +70,61 @@ When you would like to re-serialize it call [`#toElement(object)`](https://bjsl.
 
 ## Type Processors
 
-TODO
+[`TypeProcessor`](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/TypeProcessor.html)s are extensions of the [`ObjectProcessor`](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/ObjectProcessor.html) that allow you to serialize and deserialize any class in whatever way you see fit.
+
+An example used in the default processors is as follows:
+```java
+TypeProcessor uuidTypeProcessor = new TypeProcessor() {
+    @Override
+    public @NotNull ParsedElement toElement(@Nullable Object object) {
+        if (object == null) {
+            return ParsedPrimitive.fromNull();
+        }
+
+        if (object instanceof UUID) {
+            return ParsedPrimitive.fromString(object.toString());
+        } else {
+            throw new InvalidParameterException("object must be UUID");
+        }
+    }
+
+    @Override
+    public @Nullable Object toObject(@NotNull ParsedElement element) {
+        if (element.isPrimitive() && element.asPrimitive().isNull()) {
+            return null;
+        }
+
+        if (element.isPrimitive() && element.asPrimitive().isString()) {
+            return UUID.fromString(element.asPrimitive().asString());
+        } else {
+            throw new InvalidParameterException("object must be String");
+        }
+    }
+};
+```
+
+These are registered when building an [`ObjectProcessor`](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/ObjectProcessor.html) with [`#createTypeProcessor(class, typeProcessor)`](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/ObjectProcessor.Builder.html#createTypeProcessor(java.lang.Class,io.github.kale_ko.bjsl.processor.TypeProcessor))
+
+There is also a list of default type processors that can be toggled using [`#setEnableDefaultTypeProcessors(bool)`](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/ObjectProcessor.Builder.html#setEnableDefaultTypeProcessors(boolean))\
+This includes the following:
+- `java.util.UUID`
+- `java.net.URI`
+- `java.net.URL`
+- `java.nio.Path`
+- `java.io.File`
+- `java.net.InetAddress`
+- `java.net.InetSocketAddress`
+- `java.util.Calendar`
+- `java.util.Date`
+- `java.time.Instant`
+
+If you think of something not on this list that you think should be feel free to open an issue.
 
 ## Annotations and Conditions
 
 There are a couple of annotation types that can be used on serialized fields.
 
-- [@AlwaysSerialize](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/annotations/AlwaysSerialize.html) - Always serialize this field, even if it is marked transient.
+- [@AlwaysSerialize](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/annotations/AlwaysSerialize.html) - Always serialize this field, even if it is marked transient or to be excluded by ignores.
 - [@DontSerialize](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/annotations/DontSerialize.html) - Never serialize this field, does the same thing as marking the field as transient.
 - [@Rename](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/annotations/Rename.html) - Rename a field to this value when outputting and from this when inputting. (This does not convert old data to match, intended use is for renaming a java field and not updating data)
 

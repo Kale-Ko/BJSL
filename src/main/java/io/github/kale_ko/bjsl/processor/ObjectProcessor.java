@@ -1081,6 +1081,7 @@ public class ObjectProcessor {
                 return null;
             }
 
+            // TODO Order type processors based on how "close" the class handler is to the type processor handler
             for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
                 if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
                     return typeProcessor.getValue().toObject(element);
