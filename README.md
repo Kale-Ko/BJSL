@@ -24,7 +24,7 @@ It takes in object trees and transforms them into standard java objects and then
 
 ### Creation
 
-To create an object processor create a new [`ObjectProcessor.Builder`](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/ObjectProcessor.Builder.html). This will allow you to access a few options before building the processor.
+To create an object processor construct a new [`ObjectProcessor.Builder`](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/ObjectProcessor.Builder.html). This will allow you to access a few options before building the processor.
 
 - [ignoreNulls](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/ObjectProcessor.Builder.html#setIgnoreNulls(boolean)) -
 Ignore nulls allows you to not have null values output into the object tree when serializing maps and objects.
@@ -69,6 +69,10 @@ You are then free to modify the returned value.\
 When you would like to re-serialize it call [`#toElement(object)`](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/ObjectProcessor.html#toElement(java.lang.Object))
 
 ## Type Processors
+
+TODO
+
+## Annotations
 
 TODO
 
