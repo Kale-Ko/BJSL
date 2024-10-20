@@ -18,10 +18,7 @@ import io.github.kale_ko.bjsl.processor.conditions.ExpectGreaterThan;
 import io.github.kale_ko.bjsl.processor.conditions.ExpectIsNull;
 import io.github.kale_ko.bjsl.processor.conditions.ExpectLessThan;
 import io.github.kale_ko.bjsl.processor.conditions.ExpectNotNull;
-import io.github.kale_ko.bjsl.processor.exception.EnumExpectedException;
-import io.github.kale_ko.bjsl.processor.exception.ExpectFailedException;
-import io.github.kale_ko.bjsl.processor.exception.InitializationException;
-import io.github.kale_ko.bjsl.processor.exception.ProcessorException;
+import io.github.kale_ko.bjsl.processor.exception.*;
 import io.github.kale_ko.bjsl.processor.reflection.InitializationUtil;
 import java.io.File;
 import java.io.PrintWriter;
@@ -1259,9 +1256,9 @@ public class ObjectProcessor {
             } else if (!type.getRawClass().isAnonymousClass() && !type.getRawClass().isAnnotation()) {
                 if (element instanceof ParsedObject) {
                     if (type instanceof MapType) {
-                        Map<String, Object> object;
+                        Map<Object, Object> object;
                         if (!type.getRawClass().isInterface()) {
-                            object = (Map<String, Object>) InitializationUtil.initialize(type.getRawClass());
+                            object = (Map<Object, Object>) InitializationUtil.initialize(type.getRawClass());
                         } else {
                             object = InitializationUtil.initialize(LinkedHashMap.class);
                         }
@@ -1269,7 +1266,7 @@ public class ObjectProcessor {
                         for (Map.Entry<String, ParsedElement> entry : element.asObject().getEntries()) {
                             Object subObject = toObject(entry.getValue(), type.getContentType());
                             if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
-                                object.put(entry.getKey(), subObject);
+                                object.put(toObject(ParsedPrimitive.fromString(entry.getKey()), type.getBindings().getTypeParameters().get(0)), subObject);
                             }
                         }
 
@@ -1787,7 +1784,7 @@ public class ObjectProcessor {
                 for (Map.Entry<?, ?> entry : Map.copyOf((Map<?, ?>) object).entrySet()) {
                     ParsedElement subElement = toElement(entry.getValue());
                     if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
-                        objectElement.set(entry.getKey().toString(), subElement);
+                        objectElement.set(toString(entry.getKey()), subElement);
                     }
                 }
 
@@ -1855,6 +1852,51 @@ public class ObjectProcessor {
             throw new ProcessorException(e);
         }
     }
+
+    private @Nullable String toString(@Nullable Object object) {
+        try {
+            ParsedElement element = toElement(object);
+
+            if (element.isPrimitive()) {
+                ParsedPrimitive primitive = element.asPrimitive();
+
+                if (primitive.isString()) {
+                    return primitive.asString();
+                } else if (primitive.isByte()) {
+                    return Byte.toString(primitive.asByte());
+                } else if (primitive.isChar()) {
+                    return Character.toString(primitive.asChar());
+                } else if (primitive.isShort()) {
+                    return Short.toString(primitive.asShort());
+                } else if (primitive.isInteger()) {
+                    return Integer.toString(primitive.asInteger());
+                } else if (primitive.isLong()) {
+                    return Long.toString(primitive.asLong());
+                } else if (primitive.isBigInteger()) {
+                    return primitive.asBigInteger().toString();
+                } else if (primitive.isFloat()) {
+                    return Float.toString(primitive.asFloat());
+                } else if (primitive.isDouble()) {
+                    return Double.toString(primitive.asDouble());
+                } else if (primitive.isBigDecimal()) {
+                    return primitive.asBigDecimal().toString();
+                } else if (primitive.isBoolean()) {
+                    return Boolean.toString(primitive.asBoolean());
+                } else if (primitive.isNull()) {
+                    return "null";
+                } else {
+                    throw new NotAPrimitiveException(element);
+                }
+            } else {
+                throw new NotAPrimitiveException(element);
+            }
+        } catch (ProcessorException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ProcessorException(e);
+        }
+    }
+
 
     /**
      * Get all the fields on a class and its superclasses
