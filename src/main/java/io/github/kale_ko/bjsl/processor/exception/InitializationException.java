@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Thrown when a type can't be initialized
  *
- * @version 1.7.0
+ * @version 2.0.0
  * @since 1.7.0
  */
 public class InitializationException extends RuntimeException {
@@ -15,6 +15,15 @@ public class InitializationException extends RuntimeException {
      * @param type The type that was unable to be initialized
      */
     public InitializationException(@NotNull Class<?> type) {
-        super("No 0-args constructors for \"" + type.getSimpleName() + "\" found and unsafe initialization failed");
+        super("No 0-args constructors for \"" + type.getSimpleName() + "\" found");
+    }
+
+    /**
+     * Create a new InitializationException
+     *
+     * @param cause The cause of the exception
+     */
+    public InitializationException(@NotNull Exception cause) {
+        super(cause);
     }
 }

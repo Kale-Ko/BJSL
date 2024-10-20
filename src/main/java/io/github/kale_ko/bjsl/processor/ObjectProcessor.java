@@ -24,6 +24,8 @@ import io.github.kale_ko.bjsl.processor.exception.InitializationException;
 import io.github.kale_ko.bjsl.processor.exception.ProcessorException;
 import io.github.kale_ko.bjsl.processor.reflection.InitializationUtil;
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -1264,109 +1266,101 @@ public class ObjectProcessor {
                             object = InitializationUtil.initialize(LinkedHashMap.class);
                         }
 
-                        if (object != null) {
-                            for (Map.Entry<String, ParsedElement> entry : element.asObject().getEntries()) {
-                                Object subObject = toObject(entry.getValue(), type.getContentType());
-                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
-                                    object.put(entry.getKey(), subObject);
-                                }
+                        for (Map.Entry<String, ParsedElement> entry : element.asObject().getEntries()) {
+                            Object subObject = toObject(entry.getValue(), type.getContentType());
+                            if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
+                                object.put(entry.getKey(), subObject);
                             }
-
-                            return object;
-                        } else {
-                            throw new InitializationException(type.getRawClass());
                         }
+
+                        return object;
                     } else if (!type.getRawClass().isInterface()) {
                         Object object = InitializationUtil.initialize(type.getRawClass());
 
-                        if (object != null) {
-                            List<Field> fields = getFields(object.getClass());
+                        List<Field> fields = getFields(object.getClass());
 
-                            for (Field field : fields) {
-                                if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
-                                    boolean shouldSerialize = !(Modifier.isTransient(field.getModifiers()) || field.getName().startsWith("this$"));
+                        for (Field field : fields) {
+                            if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
+                                boolean shouldSerialize = !(Modifier.isTransient(field.getModifiers()) || field.getName().startsWith("this$"));
 
-                                    String subKey = field.getName();
-                                    boolean expect = false;
+                                String subKey = field.getName();
+                                boolean expect = false;
 
-                                    for (Annotation annotation : field.getDeclaredAnnotations()) {
-                                        if (annotation.annotationType() == AlwaysSerialize.class) {
-                                            shouldSerialize = true;
-                                        } else if (annotation.annotationType() == NeverSerialize.class) {
-                                            shouldSerialize = false;
-                                        } else if (annotation.annotationType() == Rename.class) {
-                                            subKey = ((Rename) annotation).value();
-                                        } else if (annotation.annotationType() == ExpectNotNull.class || annotation.annotationType() == ExpectIsNull.class || annotation.annotationType() == ExpectGreaterThan.class || annotation.annotationType() == ExpectLessThan.class) {
-                                            expect = true;
-                                        }
+                                for (Annotation annotation : field.getDeclaredAnnotations()) {
+                                    if (annotation.annotationType() == AlwaysSerialize.class) {
+                                        shouldSerialize = true;
+                                    } else if (annotation.annotationType() == NeverSerialize.class) {
+                                        shouldSerialize = false;
+                                    } else if (annotation.annotationType() == Rename.class) {
+                                        subKey = ((Rename) annotation).value();
+                                    } else if (annotation.annotationType() == ExpectNotNull.class || annotation.annotationType() == ExpectIsNull.class || annotation.annotationType() == ExpectGreaterThan.class || annotation.annotationType() == ExpectLessThan.class) {
+                                        expect = true;
                                     }
+                                }
 
-                                    if (shouldSerialize && element.asObject().has(subKey)) {
-                                        Object subObject = toObject(element.asObject().get(subKey), field.getGenericType());
-                                        if (expect) {
-                                            for (Annotation annotation : field.getDeclaredAnnotations()) {
-                                                if (annotation.annotationType() == ExpectNotNull.class) {
-                                                    if (subObject == null) {
-                                                        throw new ExpectFailedException(subKey + " != null");
+                                if (shouldSerialize && element.asObject().has(subKey)) {
+                                    Object subObject = toObject(element.asObject().get(subKey), field.getGenericType());
+                                    if (expect) {
+                                        for (Annotation annotation : field.getDeclaredAnnotations()) {
+                                            if (annotation.annotationType() == ExpectNotNull.class) {
+                                                if (subObject == null) {
+                                                    throw new ExpectFailedException(subKey + " != null");
+                                                }
+                                            } else if (annotation.annotationType() == ExpectIsNull.class) {
+                                                if (subObject != null) {
+                                                    throw new ExpectFailedException(subKey + " == null");
+                                                }
+                                            } else if (annotation.annotationType() == ExpectGreaterThan.class) {
+                                                if (object.getClass() == Byte.class || object.getClass() == Short.class || object.getClass() == Integer.class) {
+                                                    if (subObject == null || (int) subObject > (((ExpectLessThan) annotation).intValue() - (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
+                                                        throw new ExpectFailedException(subKey + " >" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).intValue());
                                                     }
-                                                } else if (annotation.annotationType() == ExpectIsNull.class) {
-                                                    if (subObject != null) {
-                                                        throw new ExpectFailedException(subKey + " == null");
+                                                } else if (object.getClass() == Long.class) {
+                                                    if (subObject == null || (long) subObject > (((ExpectLessThan) annotation).longValue() - (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
+                                                        throw new ExpectFailedException(subKey + " >" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).longValue());
                                                     }
-                                                } else if (annotation.annotationType() == ExpectGreaterThan.class) {
-                                                    if (object.getClass() == Byte.class || object.getClass() == Short.class || object.getClass() == Integer.class) {
-                                                        if (subObject == null || (int) subObject > (((ExpectLessThan) annotation).intValue() - (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
-                                                            throw new ExpectFailedException(subKey + " >" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).intValue());
-                                                        }
-                                                    } else if (object.getClass() == Long.class) {
-                                                        if (subObject == null || (long) subObject > (((ExpectLessThan) annotation).longValue() - (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
-                                                            throw new ExpectFailedException(subKey + " >" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).longValue());
-                                                        }
-                                                    } else if (object.getClass() == Float.class) {
-                                                        if (subObject == null || (float) subObject > (((ExpectLessThan) annotation).floatValue() - (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
-                                                            throw new ExpectFailedException(subKey + " >" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).floatValue());
-                                                        }
-                                                    } else if (object.getClass() == Double.class) {
-                                                        if (subObject == null || (double) subObject > (((ExpectLessThan) annotation).doubleValue() - (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
-                                                            throw new ExpectFailedException(subKey + " >" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).doubleValue());
-                                                        }
-                                                    } else {
-                                                        throw new ExpectFailedException(subKey + " is not a number");
+                                                } else if (object.getClass() == Float.class) {
+                                                    if (subObject == null || (float) subObject > (((ExpectLessThan) annotation).floatValue() - (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
+                                                        throw new ExpectFailedException(subKey + " >" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).floatValue());
                                                     }
-                                                } else if (annotation.annotationType() == ExpectLessThan.class) {
-                                                    if (object.getClass() == Byte.class || object.getClass() == Short.class || object.getClass() == Integer.class) {
-                                                        if (subObject == null || (int) subObject < (((ExpectLessThan) annotation).intValue() + (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
-                                                            throw new ExpectFailedException(subKey + " <" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).intValue());
-                                                        }
-                                                    } else if (object.getClass() == Long.class) {
-                                                        if (subObject == null || (long) subObject < (((ExpectLessThan) annotation).longValue() + (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
-                                                            throw new ExpectFailedException(subKey + " <" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).longValue());
-                                                        }
-                                                    } else if (object.getClass() == Float.class) {
-                                                        if (subObject == null || (float) subObject < (((ExpectLessThan) annotation).floatValue() + (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
-                                                            throw new ExpectFailedException(subKey + " <" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).floatValue());
-                                                        }
-                                                    } else if (object.getClass() == Double.class) {
-                                                        if (subObject == null || (double) subObject < (((ExpectLessThan) annotation).doubleValue() + (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
-                                                            throw new ExpectFailedException(subKey + " <" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).doubleValue());
-                                                        }
-                                                    } else {
-                                                        throw new ExpectFailedException(subKey + " is not a number");
+                                                } else if (object.getClass() == Double.class) {
+                                                    if (subObject == null || (double) subObject > (((ExpectLessThan) annotation).doubleValue() - (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
+                                                        throw new ExpectFailedException(subKey + " >" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).doubleValue());
                                                     }
+                                                } else {
+                                                    throw new ExpectFailedException(subKey + " is not a number");
+                                                }
+                                            } else if (annotation.annotationType() == ExpectLessThan.class) {
+                                                if (object.getClass() == Byte.class || object.getClass() == Short.class || object.getClass() == Integer.class) {
+                                                    if (subObject == null || (int) subObject < (((ExpectLessThan) annotation).intValue() + (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
+                                                        throw new ExpectFailedException(subKey + " <" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).intValue());
+                                                    }
+                                                } else if (object.getClass() == Long.class) {
+                                                    if (subObject == null || (long) subObject < (((ExpectLessThan) annotation).longValue() + (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
+                                                        throw new ExpectFailedException(subKey + " <" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).longValue());
+                                                    }
+                                                } else if (object.getClass() == Float.class) {
+                                                    if (subObject == null || (float) subObject < (((ExpectLessThan) annotation).floatValue() + (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
+                                                        throw new ExpectFailedException(subKey + " <" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).floatValue());
+                                                    }
+                                                } else if (object.getClass() == Double.class) {
+                                                    if (subObject == null || (double) subObject < (((ExpectLessThan) annotation).doubleValue() + (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
+                                                        throw new ExpectFailedException(subKey + " <" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).doubleValue());
+                                                    }
+                                                } else {
+                                                    throw new ExpectFailedException(subKey + " is not a number");
                                                 }
                                             }
                                         }
-                                        if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
-                                            field.set(object, subObject);
-                                        }
+                                    }
+                                    if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
+                                        field.set(object, subObject);
                                     }
                                 }
                             }
-
-                            return object;
-                        } else {
-                            throw new InitializationException(type.getRawClass());
                         }
+
+                        return object;
                     } else {
                         throw new InvalidTypeException(type.getRawClass());
                     }
@@ -1379,18 +1373,14 @@ public class ObjectProcessor {
                             object = InitializationUtil.initialize(LinkedList.class);
                         }
 
-                        if (object != null) {
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                Object subObject = toObject(subElement, type.getContentType());
-                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
-                                    object.add(subObject);
-                                }
+                        for (ParsedElement subElement : element.asArray().getValues()) {
+                            Object subObject = toObject(subElement, type.getContentType());
+                            if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
+                                object.add(subObject);
                             }
-
-                            return object;
-                        } else {
-                            throw new InitializationException(type.getRawClass());
                         }
+
+                        return object;
                     } else if (type instanceof ArrayType) {
                         int nonNull = element.asArray().getSize();
 
@@ -1808,9 +1798,17 @@ public class ObjectProcessor {
                 Object defaultObject = null;
 
                 if (ignoreDefaults) {
-                    defaultObject = InitializationUtil.initialize(object.getClass());
-                    if (defaultObject == null && BJSL.getLogger() != null) {
-                        BJSL.getLogger().warning("Initialization of " + object.getClass().getSimpleName() + " failed, defaults will not be ignored");
+                    try {
+                        defaultObject = InitializationUtil.initialize(object.getClass());
+                    } catch (InitializationException e) {
+                        if (BJSL.getLogger() != null) {
+                            BJSL.getLogger().warning("Initialization of " + object.getClass().getSimpleName() + " failed, defaults will not be ignored.");
+
+                            StringWriter stringWriter = new StringWriter();
+                            PrintWriter writer = new PrintWriter(stringWriter);
+                            e.printStackTrace(writer);
+                            BJSL.getLogger().warning(stringWriter.toString());
+                        }
                     }
                 }
 
