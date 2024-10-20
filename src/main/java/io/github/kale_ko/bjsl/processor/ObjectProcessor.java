@@ -12,8 +12,7 @@ import io.github.kale_ko.bjsl.elements.ParsedObject;
 import io.github.kale_ko.bjsl.elements.ParsedPrimitive;
 import io.github.kale_ko.bjsl.parsers.exception.InvalidTypeException;
 import io.github.kale_ko.bjsl.processor.annotations.AlwaysSerialize;
-import io.github.kale_ko.bjsl.processor.annotations.Default;
-import io.github.kale_ko.bjsl.processor.annotations.DontSerialize;
+import io.github.kale_ko.bjsl.processor.annotations.NeverSerialize;
 import io.github.kale_ko.bjsl.processor.annotations.Rename;
 import io.github.kale_ko.bjsl.processor.conditions.ExpectGreaterThan;
 import io.github.kale_ko.bjsl.processor.conditions.ExpectIsNull;
@@ -47,7 +46,6 @@ import org.jetbrains.annotations.Nullable;
  * @version 2.0.0
  * @since 1.0.0
  */
-@SuppressWarnings("deprecation")
 public class ObjectProcessor {
     /**
      * Weather null values should be ignored when serializing maps and objects
@@ -73,7 +71,7 @@ public class ObjectProcessor {
     /**
      * Weather default values should be ignored when serializing maps and objects
      * <p>
-     * These can either be gotten from @{@link Default} annotations or the value in a new instance of the object
+     * These are gotten from the value in a new instance of the object
      *
      * @since 1.0.0
      */
@@ -153,7 +151,7 @@ public class ObjectProcessor {
         /**
          * Weather or not default values should be ignored when serializing maps and objects
          * <p>
-         * These can either be gotten from @{@link Default} annotations or the value in a new instance of the object
+         * These are gotten from the value in a new instance of the object
          * <p>
          * Default is false
          *
@@ -285,7 +283,7 @@ public class ObjectProcessor {
         /**
          * Get weather or not default values should be ignored when serializing maps and objects
          * <p>
-         * These can either be gotten from @{@link Default} annotations or the value in a new instance of the object
+         * These are gotten from the value in a new instance of the object
          * <p>
          * Default is false
          *
@@ -300,7 +298,7 @@ public class ObjectProcessor {
         /**
          * Set weather or not default values should be ignored when serializing maps and objects
          * <p>
-         * These can either be gotten from @{@link Default} annotations or the value in a new instance of the object
+         * These are gotten from the value in a new instance of the object
          * <p>
          * Default is false
          *
@@ -1293,7 +1291,7 @@ public class ObjectProcessor {
                                     for (Annotation annotation : field.getDeclaredAnnotations()) {
                                         if (annotation.annotationType() == AlwaysSerialize.class) {
                                             shouldSerialize = true;
-                                        } else if (annotation.annotationType() == DontSerialize.class) {
+                                        } else if (annotation.annotationType() == NeverSerialize.class) {
                                             shouldSerialize = false;
                                         } else if (annotation.annotationType() == Rename.class) {
                                             subKey = ((Rename) annotation).value();
@@ -1839,46 +1837,8 @@ public class ObjectProcessor {
                         for (Annotation annotation : field.getDeclaredAnnotations()) {
                             if (annotation.annotationType() == AlwaysSerialize.class) {
                                 shouldSerialize = true;
-                            } else if (annotation.annotationType() == DontSerialize.class) {
+                            } else if (annotation.annotationType() == NeverSerialize.class) {
                                 shouldSerialize = false;
-                            } else if (annotation.annotationType() == Default.class) {
-                                Default defaultAnnotation = (Default) annotation;
-
-                                if (ignoreDefaults && subElement.isPrimitive()) {
-                                    if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.STRING && !defaultAnnotation.stringValue().isEmpty()) {
-                                        if (field.get(object) != null && field.get(object).equals(defaultAnnotation.stringValue())) {
-                                            shouldSerialize = false;
-                                        }
-                                    } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.BYTE && defaultAnnotation.byteValue() != Byte.MIN_VALUE) {
-                                        if (field.get(object) != null && field.get(object).equals(defaultAnnotation.byteValue())) {
-                                            shouldSerialize = false;
-                                        }
-                                    } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.CHAR && defaultAnnotation.charValue() != Character.MIN_VALUE) {
-                                        if (field.get(object) != null && field.get(object).equals(defaultAnnotation.charValue())) {
-                                            shouldSerialize = false;
-                                        }
-                                    } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.SHORT && defaultAnnotation.shortValue() != Short.MIN_VALUE) {
-                                        if (field.get(object) != null && field.get(object).equals(defaultAnnotation.shortValue())) {
-                                            shouldSerialize = false;
-                                        }
-                                    } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.INTEGER && defaultAnnotation.intValue() != Integer.MIN_VALUE) {
-                                        if (field.get(object) != null && field.get(object).equals(defaultAnnotation.intValue())) {
-                                            shouldSerialize = false;
-                                        }
-                                    } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.LONG && defaultAnnotation.longValue() != Long.MIN_VALUE) {
-                                        if (field.get(object) != null && field.get(object).equals(defaultAnnotation.longValue())) {
-                                            shouldSerialize = false;
-                                        }
-                                    } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.DOUBLE && defaultAnnotation.doubleValue() != Double.MIN_VALUE) {
-                                        if (field.get(object) != null && field.get(object).equals(defaultAnnotation.doubleValue())) {
-                                            shouldSerialize = false;
-                                        }
-                                    } else if (subElement.asPrimitive().getType() == ParsedPrimitive.PrimitiveType.FLOAT && defaultAnnotation.floatValue() != Float.MIN_VALUE) {
-                                        if (field.get(object) != null && field.get(object).equals(defaultAnnotation.floatValue())) {
-                                            shouldSerialize = false;
-                                        }
-                                    }
-                                }
                             } else if (annotation.annotationType() == Rename.class) {
                                 subKey = ((Rename) annotation).value();
                             }
