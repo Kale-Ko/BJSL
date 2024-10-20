@@ -72,9 +72,19 @@ When you would like to re-serialize it call [`#toElement(object)`](https://bjsl.
 
 TODO
 
-## Annotations
+## Annotations and Conditions
 
-TODO
+There are a couple of annotation types that can be used on serialized fields.
+
+- [@AlwaysSerialize](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/annotations/AlwaysSerialize.html) - Always serialize this field, even if it is marked transient.
+- [@DontSerialize](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/annotations/DontSerialize.html) - Never serialize this field, does the same thing as marking the field as transient.
+- [@Rename](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/annotations/Rename.html) - Rename a field to this value when outputting and from this when inputting. (This does not convert old data to match, intended use is for renaming a java field and not updating data)
+
+There are also a few values that can be used to require certain conditions on deserialized values.
+
+- [@ExpectNotNull](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/conditions/ExpectNotNull.html) - Expect that a value is never null
+- [@ExpectGreaterThan](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/conditions/ExpectGreaterThan.html) - Expect that a value is greater than (or equal to) this
+- [@ExpectLessThan](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/conditions/ExpectLessThan.html) - Expect that a value is less than (or equal to) this
 
 ## Full example
 
