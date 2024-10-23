@@ -1,8 +1,8 @@
 package io.github.kale_ko.bjsl.elements;
 
-import io.github.kale_ko.bjsl.BJSL;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Unmodifiable;
 /**
  * A wrapper for an ordered map used to represent an Object in most data formats
  *
- * @version 1.0.0
+ * @version 2.0.0
  * @since 1.0.0
  */
 public class ParsedObject extends ParsedElement {
@@ -21,15 +21,6 @@ public class ParsedObject extends ParsedElement {
      * @since 1.0.0
      */
     final @NotNull Map<String, ParsedElement> object;
-
-    /**
-     * Create a new {@link ParsedObject}
-     *
-     * @since 1.0.0
-     */
-    ParsedObject() {
-        this(new LinkedHashMap<>());
-    }
 
     /**
      * Create a new {@link ParsedObject} from an object
@@ -62,8 +53,8 @@ public class ParsedObject extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public @NotNull @Unmodifiable List<Map.Entry<String, ParsedElement>> getEntries() {
-        return List.copyOf(this.object.entrySet());
+    public @NotNull @Unmodifiable Collection<Map.Entry<String, ParsedElement>> getEntries() {
+        return Collections.unmodifiableCollection(this.object.entrySet());
     }
 
     /**
@@ -75,8 +66,8 @@ public class ParsedObject extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public @NotNull @Unmodifiable List<String> getKeys() {
-        return List.copyOf(this.object.keySet());
+    public @NotNull @Unmodifiable Collection<String> getKeys() {
+        return Collections.unmodifiableCollection(this.object.keySet());
     }
 
     /**
@@ -88,8 +79,8 @@ public class ParsedObject extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public @NotNull @Unmodifiable List<ParsedElement> getValues() {
-        return List.copyOf(this.object.values());
+    public @NotNull @Unmodifiable Collection<ParsedElement> getValues() {
+        return Collections.unmodifiableCollection(this.object.values());
     }
 
     /**
@@ -116,11 +107,10 @@ public class ParsedObject extends ParsedElement {
      * @since 1.0.0
      */
     public @NotNull ParsedElement get(@NotNull String key) {
-        if (this.object.containsKey(key)) {
-            return this.object.get(key);
-        } else {
-            throw new NullPointerException("Key does not exist on this object");
+        if (!this.object.containsKey(key)) {
+            throw new NullPointerException("Key \"" + key + "\" does not exist on this object");
         }
+        return this.object.get(key);
     }
 
     /**
@@ -132,7 +122,6 @@ public class ParsedObject extends ParsedElement {
      * @since 1.0.0
      */
     public void set(@NotNull String key, @NotNull ParsedElement value) {
-        this.object.remove(key);
         this.object.put(key, value);
     }
 
@@ -144,28 +133,23 @@ public class ParsedObject extends ParsedElement {
      * @since 1.0.0
      */
     public void remove(@NotNull String key) {
-        if (this.object.containsKey(key)) {
-            this.object.remove(key);
-        } else {
-            throw new NullPointerException("Key does not exist on this object");
-        }
+        this.object.remove(key);
     }
 
     @Override
     public @NotNull String toString() {
-        return this.getClass().getSimpleName() + "=" + BJSL.stringifyJson(this);
+        return this.getClass().getSimpleName() + "[object=" + this.object + "]";
     }
 
     @Override
     public boolean equals(@Nullable Object obj) {
-        if (obj == null) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
-        if (obj instanceof ParsedObject) {
-            return this.object.equals(((ParsedObject) obj).object);
-        }
-
-        return false;
+        return ((ParsedObject) obj).object.equals(this.object);
     }
 
     @Override
@@ -181,7 +165,7 @@ public class ParsedObject extends ParsedElement {
      * @since 1.0.0
      */
     public static @NotNull ParsedObject create() {
-        return new ParsedObject();
+        return new ParsedObject(new LinkedHashMap<>());
     }
 
     /**

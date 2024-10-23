@@ -1,6 +1,5 @@
 package io.github.kale_ko.bjsl.elements;
 
-import io.github.kale_ko.bjsl.BJSL;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import org.jetbrains.annotations.NotNull;
@@ -9,9 +8,9 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A wrapper for a primitive object used to represent String/int/float/etc. values
  * <p>
- * Note: Values are often not stored as their normal type but rather higher bit types for ease of conversion
+ * Note: Values are not stored as their normal type but rather higher bit types for ease of conversion
  *
- * @version 1.0.0
+ * @version 2.0.0
  * @since 1.0.0
  */
 public class ParsedPrimitive extends ParsedElement {
@@ -289,39 +288,51 @@ public class ParsedPrimitive extends ParsedElement {
      * @since 1.0.0
      */
     public Object get() {
-        if (this.primitiveType == PrimitiveType.STRING) {
-            return (String) this.primitive;
-        } else if (this.primitiveType == PrimitiveType.BYTE) {
-            return (byte) (long) this.primitive;
-        } else if (this.primitiveType == PrimitiveType.CHAR) {
-            return (char) (long) this.primitive;
-        } else if (this.primitiveType == PrimitiveType.SHORT) {
-            return (short) (long) this.primitive;
-        } else if (this.primitiveType == PrimitiveType.INTEGER) {
-            return (int) (long) this.primitive;
-        } else if (this.primitiveType == PrimitiveType.LONG) {
-            return (long) this.primitive;
-        } else if (this.primitiveType == PrimitiveType.BIGINTEGER) {
-            return (BigInteger) this.primitive;
-        } else if (this.primitiveType == PrimitiveType.FLOAT) {
-            return (float) (double) this.primitive;
-        } else if (this.primitiveType == PrimitiveType.DOUBLE) {
-            return (double) this.primitive;
-        } else if (this.primitiveType == PrimitiveType.BIGDECIMAL) {
-            return (BigDecimal) this.primitive;
-        } else if (this.primitiveType == PrimitiveType.BOOLEAN) {
-            return (boolean) this.primitive;
-        } else if (this.primitiveType == PrimitiveType.NULL) {
-            return null;
-        } else {
-            throw new ClassCastException("Value is not a primitive");
+        switch (this.primitiveType) {
+            case STRING: {
+                return (String) this.primitive;
+            }
+            case BYTE: {
+                return (byte) (long) this.primitive;
+            }
+            case CHAR: {
+                return (char) (long) this.primitive;
+            }
+            case SHORT: {
+                return (short) (long) this.primitive;
+            }
+            case INTEGER: {
+                return (int) (long) this.primitive;
+            }
+            case LONG: {
+                return (long) this.primitive;
+            }
+            case BIGINTEGER: {
+                return (BigInteger) this.primitive;
+            }
+            case FLOAT: {
+                return (float) (double) this.primitive;
+            }
+            case DOUBLE: {
+                return (double) this.primitive;
+            }
+            case BIGDECIMAL: {
+                return (BigDecimal) this.primitive;
+            }
+            case BOOLEAN: {
+                return (boolean) this.primitive;
+            }
+            case NULL: {
+                return this.primitive;
+            }
+            default: {
+                throw new ClassCastException("Value is not a primitive");
+            }
         }
     }
 
     /**
      * Get the value of this primitive as a string
-     * <p>
-     * Note: Does not catch casting errors
      *
      * @return The value of this primitive as a string
      *
@@ -329,17 +340,14 @@ public class ParsedPrimitive extends ParsedElement {
      * @since 1.0.0
      */
     public @NotNull String asString() {
-        if (this.primitiveType == PrimitiveType.STRING) {
-            return (String) this.primitive;
-        } else {
+        if (this.primitiveType != PrimitiveType.STRING) {
             throw new ClassCastException("Value is not a string");
         }
+        return (String) this.primitive;
     }
 
     /**
      * Get the value of this primitive as a byte
-     * <p>
-     * Note: Does not catch casting errors
      *
      * @return The value of this primitive as a byte
      *
@@ -347,17 +355,14 @@ public class ParsedPrimitive extends ParsedElement {
      * @since 1.0.0
      */
     public byte asByte() {
-        if (this.primitiveType == PrimitiveType.BYTE) {
-            return (byte) (long) this.primitive;
-        } else {
+        if (this.primitiveType != PrimitiveType.BYTE) {
             throw new ClassCastException("Value is not a byte");
         }
+        return (byte) (long) this.primitive;
     }
 
     /**
      * Get the value of this primitive as a char
-     * <p>
-     * Note: Does not catch casting errors
      *
      * @return The value of this primitive as a char
      *
@@ -365,17 +370,14 @@ public class ParsedPrimitive extends ParsedElement {
      * @since 1.0.0
      */
     public char asChar() {
-        if (this.primitiveType == PrimitiveType.CHAR) {
-            return (char) (long) this.primitive;
-        } else {
+        if (this.primitiveType != PrimitiveType.CHAR) {
             throw new ClassCastException("Value is not a char");
         }
+        return (char) (long) this.primitive;
     }
 
     /**
      * Get the value of this primitive as a short
-     * <p>
-     * Note: Does not catch casting errors
      *
      * @return The value of this primitive as a short
      *
@@ -383,17 +385,14 @@ public class ParsedPrimitive extends ParsedElement {
      * @since 1.0.0
      */
     public short asShort() {
-        if (this.primitiveType == PrimitiveType.SHORT) {
-            return (short) (long) this.primitive;
-        } else {
+        if (this.primitiveType != PrimitiveType.SHORT) {
             throw new ClassCastException("Value is not a short");
         }
+        return (short) (long) this.primitive;
     }
 
     /**
      * Get the value of this primitive as an integer
-     * <p>
-     * Note: Does not catch casting errors
      *
      * @return The value of this primitive as an integer
      *
@@ -401,17 +400,14 @@ public class ParsedPrimitive extends ParsedElement {
      * @since 1.0.0
      */
     public int asInteger() {
-        if (this.primitiveType == PrimitiveType.INTEGER) {
-            return (int) (long) this.primitive;
-        } else {
+        if (this.primitiveType != PrimitiveType.INTEGER) {
             throw new ClassCastException("Value is not a integer");
         }
+        return (int) (long) this.primitive;
     }
 
     /**
      * Get the value of this primitive as a long
-     * <p>
-     * Note: Does not catch casting errors
      *
      * @return The value of this primitive as a long
      *
@@ -419,17 +415,14 @@ public class ParsedPrimitive extends ParsedElement {
      * @since 1.0.0
      */
     public long asLong() {
-        if (this.primitiveType == PrimitiveType.LONG) {
-            return (long) this.primitive;
-        } else {
+        if (this.primitiveType != PrimitiveType.LONG) {
             throw new ClassCastException("Value is not a long");
         }
+        return (long) this.primitive;
     }
 
     /**
      * Get the value of this primitive as a big integer
-     * <p>
-     * Note: Does not catch casting errors
      *
      * @return The value of this primitive as a big integer
      *
@@ -437,17 +430,14 @@ public class ParsedPrimitive extends ParsedElement {
      * @since 1.0.0
      */
     public @NotNull BigInteger asBigInteger() {
-        if (this.primitiveType == PrimitiveType.BIGINTEGER) {
-            return (BigInteger) this.primitive;
-        } else {
+        if (this.primitiveType != PrimitiveType.BIGINTEGER) {
             throw new ClassCastException("Value is not a big integer");
         }
+        return (BigInteger) this.primitive;
     }
 
     /**
      * Get the value of this primitive as a float
-     * <p>
-     * Note: Does not catch casting errors
      *
      * @return The value of this primitive as a float
      *
@@ -455,17 +445,14 @@ public class ParsedPrimitive extends ParsedElement {
      * @since 1.0.0
      */
     public float asFloat() {
-        if (this.primitiveType == PrimitiveType.FLOAT) {
-            return (float) (double) this.primitive;
-        } else {
+        if (this.primitiveType != PrimitiveType.FLOAT) {
             throw new ClassCastException("Value is not a float");
         }
+        return (float) (double) this.primitive;
     }
 
     /**
      * Get the value of this primitive as a double
-     * <p>
-     * Note: Does not catch casting errors
      *
      * @return The value of this primitive as a double
      *
@@ -473,17 +460,14 @@ public class ParsedPrimitive extends ParsedElement {
      * @since 1.0.0
      */
     public double asDouble() {
-        if (this.primitiveType == PrimitiveType.DOUBLE) {
-            return (double) this.primitive;
-        } else {
+        if (this.primitiveType != PrimitiveType.DOUBLE) {
             throw new ClassCastException("Value is not a double");
         }
+        return (double) this.primitive;
     }
 
     /**
      * Get the value of this primitive as a big decimal
-     * <p>
-     * Note: Does not catch casting errors
      *
      * @return The value of this primitive as a big decimal
      *
@@ -491,17 +475,14 @@ public class ParsedPrimitive extends ParsedElement {
      * @since 1.0.0
      */
     public @NotNull BigDecimal asBigDecimal() {
-        if (this.primitiveType == PrimitiveType.BIGDECIMAL) {
-            return (BigDecimal) this.primitive;
-        } else {
+        if (this.primitiveType != PrimitiveType.BIGDECIMAL) {
             throw new ClassCastException("Value is not a big decimal");
         }
+        return (BigDecimal) this.primitive;
     }
 
     /**
      * Get the value of this primitive as a boolean
-     * <p>
-     * Note: Does not catch casting errors
      *
      * @return The value of this primitive as a boolean
      *
@@ -509,17 +490,14 @@ public class ParsedPrimitive extends ParsedElement {
      * @since 1.0.0
      */
     public boolean asBoolean() {
-        if (this.primitiveType == PrimitiveType.BOOLEAN) {
-            return (boolean) this.primitive;
-        } else {
+        if (this.primitiveType != PrimitiveType.BOOLEAN) {
             throw new ClassCastException("Value is not a boolean");
         }
+        return (boolean) this.primitive;
     }
 
     /**
      * Get the value of this primitive as null
-     * <p>
-     * Note: Does not catch casting errors
      *
      * @return The value of this primitive as null
      *
@@ -527,37 +505,33 @@ public class ParsedPrimitive extends ParsedElement {
      * @since 1.0.0
      */
     public @Nullable Object asNull() {
-        if (this.primitiveType == PrimitiveType.NULL) {
-            return this.primitive;
-        } else {
+        if (this.primitiveType != PrimitiveType.NULL) {
             throw new ClassCastException("Value is not null");
         }
+        return this.primitive;
     }
 
     @Override
     public @NotNull String toString() {
-        return this.getClass().getSimpleName() + "=" + BJSL.stringifyJson(this);
+        return this.getClass().getSimpleName() + "[primitiveType=" + this.primitiveType + ", primitive=" + this.primitive + "]";
     }
 
     @Override
     public boolean equals(@Nullable Object obj) {
-        if (obj == null) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
-        if (obj instanceof ParsedPrimitive) {
-            if (this.primitive != null) {
-                return this.primitive.equals(((ParsedPrimitive) obj).primitive);
-            } else {
-                return ((ParsedPrimitive) obj).primitive == null;
-            }
-        }
-
-        return false;
+        return ((ParsedPrimitive) obj).primitiveType == this.primitiveType && (((ParsedPrimitive) obj).primitive != null ? ((ParsedPrimitive) obj).primitive.equals(this.primitive) : this.primitive == null);
     }
 
     @Override
     public int hashCode() {
-        return this.primitive != null ? this.primitive.hashCode() : 0;
+        int result = this.primitiveType.hashCode();
+        result = 31 * result + (this.primitive != null ? this.primitive.hashCode() : 0);
+        return result;
     }
 
     /**
@@ -573,7 +547,10 @@ public class ParsedPrimitive extends ParsedElement {
     public static @NotNull ParsedPrimitive from(@Nullable Object value) {
         if (value == null) {
             return fromNull();
-        } else if (value instanceof String) {
+        }
+
+        // TODO
+        if (value instanceof String) {
             return fromString((String) value);
         } else if (value instanceof Byte) {
             return fromByte((byte) value);
