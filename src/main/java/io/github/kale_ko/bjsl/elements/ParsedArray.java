@@ -1,6 +1,7 @@
 package io.github.kale_ko.bjsl.elements;
 
-import io.github.kale_ko.bjsl.BJSL;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +11,7 @@ import org.jetbrains.annotations.Unmodifiable;
 /**
  * A wrapper for an ordered map used to represent an Array in most data formats
  *
- * @version 1.0.0
+ * @version 2.0.0
  * @since 1.0.0
  */
 public class ParsedArray extends ParsedElement {
@@ -20,15 +21,6 @@ public class ParsedArray extends ParsedElement {
      * @since 1.0.0
      */
     final @NotNull List<ParsedElement> array;
-
-    /**
-     * Create a new {@link ParsedArray}
-     *
-     * @since 1.0.0
-     */
-    ParsedArray() {
-        this(new LinkedList<>());
-    }
 
     /**
      * Create a new {@link ParsedArray} from an array
@@ -61,8 +53,8 @@ public class ParsedArray extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public @NotNull @Unmodifiable List<ParsedElement> getValues() {
-        return List.copyOf(this.array);
+    public @NotNull @Unmodifiable Collection<ParsedElement> getValues() {
+        return Collections.unmodifiableCollection(this.array);
     }
 
     /**
@@ -76,11 +68,7 @@ public class ParsedArray extends ParsedElement {
      * @since 1.0.0
      */
     public @NotNull ParsedElement get(int index) {
-        if (index >= 0 && index < this.array.size()) {
-            return this.array.get(index);
-        } else {
-            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds for length " + this.array.size());
-        }
+        return this.array.get(index);
     }
 
     /**
@@ -104,11 +92,7 @@ public class ParsedArray extends ParsedElement {
      * @since 1.0.0
      */
     public void addAt(int index, @NotNull ParsedElement value) {
-        if (index >= 0 && index <= this.array.size()) {
-            this.array.add(index, value);
-        } else {
-            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds for length " + this.array.size());
-        }
+        this.array.add(index, value);
     }
 
     /**
@@ -118,10 +102,8 @@ public class ParsedArray extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public void addAll(@NotNull List<ParsedElement> values) {
-        for (ParsedElement value : values) {
-            this.add(value);
-        }
+    public void addAll(@NotNull Collection<ParsedElement> values) {
+        this.array.addAll(values);
     }
 
     /**
@@ -134,11 +116,7 @@ public class ParsedArray extends ParsedElement {
      * @since 1.0.0
      */
     public void set(int index, @NotNull ParsedElement value) {
-        if (index >= 0 && index < this.array.size()) {
-            this.array.set(index, value);
-        } else {
-            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds for length " + this.array.size());
-        }
+        this.array.set(index, value);
     }
 
     /**
@@ -150,28 +128,23 @@ public class ParsedArray extends ParsedElement {
      * @since 1.0.0
      */
     public void remove(int index) {
-        if (index >= 0 && index < this.array.size()) {
-            this.array.remove(index);
-        } else {
-            throw new IndexOutOfBoundsException("Index " + index + " is out of bounds for length " + this.array.size());
-        }
+        this.array.remove(index);
     }
 
     @Override
     public @NotNull String toString() {
-        return this.getClass().getSimpleName() + "=" + BJSL.stringifyJson(this);
+        return this.getClass().getSimpleName() + "[array=" + this.array + "]";
     }
 
     @Override
     public boolean equals(@Nullable Object obj) {
-        if (obj == null) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
-        if (obj instanceof ParsedArray) {
-            return this.array.equals(((ParsedArray) obj).array);
-        }
-
-        return false;
+        return ((ParsedArray) obj).array.equals(this.array);
     }
 
     @Override
@@ -187,7 +160,7 @@ public class ParsedArray extends ParsedElement {
      * @since 1.0.0
      */
     public static @NotNull ParsedArray create() {
-        return new ParsedArray();
+        return new ParsedArray(new LinkedList<>());
     }
 
     /**
@@ -199,7 +172,7 @@ public class ParsedArray extends ParsedElement {
      *
      * @since 1.0.0
      */
-    public static @NotNull ParsedArray from(@NotNull List<ParsedElement> array) {
+    public static @NotNull ParsedArray from(@NotNull Collection<ParsedElement> array) {
         return new ParsedArray(new LinkedList<>(array));
     }
 }
