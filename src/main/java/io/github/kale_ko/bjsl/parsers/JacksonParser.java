@@ -17,6 +17,7 @@ import io.github.kale_ko.bjsl.parsers.exception.InvalidTypeException;
 import io.github.kale_ko.bjsl.parsers.exception.ParserException;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -99,8 +100,8 @@ public abstract class JacksonParser<T extends TokenStreamFactory, V extends Obje
                         ObjectNode objectNode = (ObjectNode) node;
                         ParsedObject objectElement = ParsedObject.create();
 
-                        objectNode.fieldNames().forEachRemaining(subKey -> {
-                            toElements(objectElement, subKey, objectNode.get(subKey));
+                        objectNode.fields().forEachRemaining(subEntry -> {
+                            toElements(objectElement, subEntry.getKey(), subEntry.getValue());
                         });
 
                         return objectElement;
@@ -178,11 +179,11 @@ public abstract class JacksonParser<T extends TokenStreamFactory, V extends Obje
     public byte @NotNull [] toBytes(@NotNull ParsedElement element) {
         try {
             if (element instanceof ParsedObject) {
-                ParsedObject objectElement = element.asObject();
+                ParsedObject objectElement = (ParsedObject) element;
 
                 ObjectNode node = JsonNodeFactory.instance.objectNode();
-                for (String subKey : objectElement.getKeys()) {
-                    toNodes(node, subKey, objectElement.get(subKey));
+                for (Map.Entry<String, ParsedElement> subElement : objectElement.getEntries()) {
+                    toNodes(node, subElement.getKey(), subElement.getValue());
                 }
 
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -194,7 +195,7 @@ public abstract class JacksonParser<T extends TokenStreamFactory, V extends Obje
 
                 return outputStream.toByteArray();
             } else if (element instanceof ParsedArray) {
-                ParsedArray arrayElement = element.asArray();
+                ParsedArray arrayElement = (ParsedArray) element;
 
                 ArrayNode node = JsonNodeFactory.instance.arrayNode();
                 for (ParsedElement subElement : arrayElement.getValues()) {
@@ -210,11 +211,7 @@ public abstract class JacksonParser<T extends TokenStreamFactory, V extends Obje
 
                 return outputStream.toByteArray();
             } else if (element instanceof ParsedPrimitive) {
-                if (!element.asPrimitive().isNull()) {
-                    return element.asPrimitive().get().toString().getBytes(StandardCharsets.UTF_8);
-                } else {
-                    return "null".getBytes(StandardCharsets.UTF_8);
-                }
+                return String.valueOf(element.asPrimitive().get()).getBytes(StandardCharsets.UTF_8);
             } else {
                 throw new InvalidTypeException(element.getClass());
             }
@@ -307,15 +304,13 @@ public abstract class JacksonParser<T extends TokenStreamFactory, V extends Obje
                 ParsedObject subElement = ParsedObject.create();
 
                 if (element instanceof ParsedObject) {
-                    ParsedObject objectElement = (ParsedObject) element;
-                    objectElement.set(key, subElement);
+                    ((ParsedObject) element).set(key, subElement);
                 } else if (element instanceof ParsedArray) {
-                    ParsedArray arrayElement = (ParsedArray) element;
-                    arrayElement.add(subElement);
+                    ((ParsedArray) element).add(subElement);
                 }
 
-                objectNode.fieldNames().forEachRemaining(subKey -> {
-                    toElements(subElement, subKey, objectNode.get(subKey));
+                objectNode.fields().forEachRemaining(subEntry -> {
+                    toElements(subElement, subEntry.getKey(), subEntry.getValue());
                 });
 
                 break;
@@ -325,11 +320,9 @@ public abstract class JacksonParser<T extends TokenStreamFactory, V extends Obje
                 ParsedArray subElement = ParsedArray.create();
 
                 if (element instanceof ParsedObject) {
-                    ParsedObject objectElement = (ParsedObject) element;
-                    objectElement.set(key, subElement);
+                    ((ParsedObject) element).set(key, subElement);
                 } else if (element instanceof ParsedArray) {
-                    ParsedArray arrayElement = (ParsedArray) element;
-                    arrayElement.add(subElement);
+                    ((ParsedArray) element).add(subElement);
                 }
 
                 arrayNode.elements().forEachRemaining(subNode -> {
@@ -444,8 +437,8 @@ public abstract class JacksonParser<T extends TokenStreamFactory, V extends Obje
                 ((ArrayNode) node).add(subNode);
             }
 
-            for (String subKey : objectElement.getKeys()) {
-                toNodes(subNode, subKey, objectElement.get(subKey));
+            for (Map.Entry<String, ParsedElement> subElement : objectElement.getEntries()) {
+                toNodes(subNode, subElement.getKey(), subElement.getValue());
             }
         } else if (element instanceof ParsedArray) {
             ParsedArray arrayElement = (ParsedArray) element;
