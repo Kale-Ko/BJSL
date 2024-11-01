@@ -549,7 +549,6 @@ public class ParsedPrimitive extends ParsedElement {
             return fromNull();
         }
 
-        // TODO
         if (value instanceof String) {
             return fromString((String) value);
         } else if (value instanceof Byte) {

@@ -72,6 +72,23 @@ public class ParsedArray extends ParsedElement {
     }
 
     /**
+     * Get the value of a certain index in this array even if it doesn't exist
+     *
+     * @param index The index to get
+     *
+     * @return The value of a certain index in this array or null if it doesn't exist
+     *
+     * @since 2.0.0
+     */
+    public @Nullable ParsedElement getOrNull(int index) {
+        try {
+            return this.array.get(index);
+        } catch (IndexOutOfBoundsException e) {
+            return null;
+        }
+    }
+
+    /**
      * Add a value to this array at the end
      *
      * @param value The value to add
