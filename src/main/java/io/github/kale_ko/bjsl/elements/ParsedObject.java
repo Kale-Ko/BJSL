@@ -114,6 +114,19 @@ public class ParsedObject extends ParsedElement {
     }
 
     /**
+     * Get the value of a certain key this object stores even if it doesn't exist
+     *
+     * @param key The key to get
+     *
+     * @return The value of a certain key this object stores or null if it doesn't exist
+     *
+     * @since 2.0.0
+     */
+    public @NotNull ParsedElement getOrNull(@NotNull String key) {
+        return this.object.get(key);
+    }
+
+    /**
      * Set the value of a certain key this object stores
      *
      * @param key   The key to set
