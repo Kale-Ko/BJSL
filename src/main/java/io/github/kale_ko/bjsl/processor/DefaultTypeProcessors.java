@@ -510,7 +510,7 @@ public final class DefaultTypeProcessors {
             if (object instanceof InetAddress) {
                 byte[] address = ((InetAddress) object).getAddress();
 
-                switch (options.getDateMode()) {
+                switch (options.getInetAddressMode()) {
                     case STRING: {
                         if (address.length == 4) {
                             String[] addressBytes = new String[4];
@@ -670,7 +670,7 @@ public final class DefaultTypeProcessors {
                 byte[] address = ((InetSocketAddress) object).getAddress().getAddress();
                 int port = ((InetSocketAddress) object).getPort();
 
-                switch (options.getDateMode()) {
+                switch (options.getInetAddressMode()) {
                     case STRING: {
                         if (address.length == 4) {
                             String[] addressBytes = new String[4];
