@@ -37,7 +37,7 @@ public final class DefaultTypeProcessors {
 
         public enum InetAddressMode {
             STRING,
-            LONG
+            NUMBER
         }
 
         public enum DateMode {
@@ -165,7 +165,9 @@ public final class DefaultTypeProcessors {
                         byteBuffer.putLong(uuid.getLeastSignificantBits());
 
                         ParsedArray byteArray = ParsedArray.create();
-                        for (byte b : byteBuffer.array()) {
+                        byte[] array = new byte[16];
+                        byteBuffer.position(0).get(array);
+                        for (byte b : array) {
                             byteArray.add(ParsedPrimitive.fromByte(b));
                         }
                         return byteArray;
@@ -176,7 +178,9 @@ public final class DefaultTypeProcessors {
                         shortBuffer.putLong(uuid.getLeastSignificantBits());
 
                         ParsedArray shortArray = ParsedArray.create();
-                        for (short s : shortBuffer.asShortBuffer().array()) {
+                        short[] array = new short[8];
+                        shortBuffer.position(0).asShortBuffer().get(array);
+                        for (short s : array) {
                             shortArray.add(ParsedPrimitive.fromShort(s));
                         }
                         return shortArray;
@@ -187,7 +191,9 @@ public final class DefaultTypeProcessors {
                         intBuffer.putLong(uuid.getLeastSignificantBits());
 
                         ParsedArray intArray = ParsedArray.create();
-                        for (int i : intBuffer.asIntBuffer().array()) {
+                        int[] array = new int[4];
+                        intBuffer.position(0).asIntBuffer().get(array);
+                        for (int i : array) {
                             intArray.add(ParsedPrimitive.fromInteger(i));
                         }
                         return intArray;
@@ -198,7 +204,9 @@ public final class DefaultTypeProcessors {
                         longBuffer.putLong(uuid.getLeastSignificantBits());
 
                         ParsedArray longArray = ParsedArray.create();
-                        for (long l : longBuffer.asLongBuffer().array()) {
+                        long[] array = new long[2];
+                        longBuffer.position(0).asLongBuffer().get(array);
+                        for (long l : array) {
                             longArray.add(ParsedPrimitive.fromLong(l));
                         }
                         return longArray;
@@ -335,6 +343,8 @@ public final class DefaultTypeProcessors {
                         throw new RuntimeException();
                     }
                 }
+
+                buffer = buffer.position(0);
 
                 return new UUID(buffer.getLong(), buffer.getLong());
             } else if (element.isPrimitive()) {
