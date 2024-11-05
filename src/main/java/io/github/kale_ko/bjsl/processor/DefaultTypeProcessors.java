@@ -524,16 +524,46 @@ public final class DefaultTypeProcessors {
 
                             return ParsedPrimitive.fromString(String.join(".", addressBytes));
                         } else if (address.length == 16) {
-                            String[] addressBytes = new String[8];
+                            StringBuilder stringBuilder = new StringBuilder();
+
+                            int currentIndex = -1, currentLength = 0;
+                            int maxIndex = -1, maxLength = 0;
 
                             for (int i = 0; i < 8; i++) {
-                                addressBytes[i] = Integer.toUnsignedString(((address[i * 2] & 0xFF) << 8) + (address[(i * 2) + 1] & 0xFF), 16);
-                                while (options.isFillAddresses() && addressBytes[i].length() < 4) {
-                                    addressBytes[i] = "0" + addressBytes[i];
+                                if ((((address[i * 2] & 0xFF) << 8) + (address[(i * 2) + 1] & 0xFF)) == 0) {
+                                    if (currentLength == 0) {
+                                        currentIndex = i;
+                                    }
+
+                                    currentLength++;
+                                } else {
+                                    if (currentLength > maxLength) {
+                                        maxIndex = currentIndex;
+                                        maxLength = currentLength;
+                                    }
+
+                                    currentLength = 0;
                                 }
                             }
 
-                            return ParsedPrimitive.fromString(String.join(":", addressBytes));
+                            for (int i = 0; i < 8; i++) {
+                                if (!options.isFillAddresses() && i == maxIndex) {
+                                    stringBuilder.append(":");
+                                    i += maxLength - 1;
+                                } else {
+                                    StringBuilder subStringBuilder = new StringBuilder(Integer.toUnsignedString(((address[i * 2] & 0xFF) << 8) + (address[(i * 2) + 1] & 0xFF), 16));
+                                    while (options.isFillAddresses() && subStringBuilder.length() < 4) {
+                                        subStringBuilder.insert(0, "0");
+                                    }
+                                    stringBuilder.append(subStringBuilder);
+
+                                    if (i < 7) {
+                                        stringBuilder.append(":");
+                                    }
+                                }
+                            }
+
+                            return ParsedPrimitive.fromString(stringBuilder.toString());
                         } else {
                             throw new InvalidParameterException("InetAddress must be IPv4 or IPv6");
                         }
@@ -684,16 +714,50 @@ public final class DefaultTypeProcessors {
 
                             return ParsedPrimitive.fromString(String.join(".", addressBytes) + ":" + Integer.toUnsignedString(port, 10));
                         } else if (address.length == 16) {
-                            String[] addressBytes = new String[8];
+                            StringBuilder stringBuilder = new StringBuilder();
+                            stringBuilder.append("[");
+
+                            int currentIndex = -1, currentLength = 0;
+                            int maxIndex = -1, maxLength = 0;
 
                             for (int i = 0; i < 8; i++) {
-                                addressBytes[i] = Integer.toUnsignedString(((address[i * 2] & 0xFF) << 8) + (address[(i * 2) + 1] & 0xFF), 16);
-                                while (options.isFillAddresses() && addressBytes[i].length() < 4) {
-                                    addressBytes[i] = "0" + addressBytes[i];
+                                if ((((address[i * 2] & 0xFF) << 8) + (address[(i * 2) + 1] & 0xFF)) == 0) {
+                                    if (currentLength == 0) {
+                                        currentIndex = i;
+                                    }
+
+                                    currentLength++;
+                                } else {
+                                    if (currentLength > maxLength) {
+                                        maxIndex = currentIndex;
+                                        maxLength = currentLength;
+                                    }
+
+                                    currentLength = 0;
                                 }
                             }
 
-                            return ParsedPrimitive.fromString("[" + String.join(":", addressBytes) + "]:" + Integer.toUnsignedString(port, 10));
+                            for (int i = 0; i < 8; i++) {
+                                if (!options.isFillAddresses() && i == maxIndex) {
+                                    stringBuilder.append(":");
+                                    i += maxLength - 1;
+                                } else {
+                                    StringBuilder subStringBuilder = new StringBuilder(Integer.toUnsignedString(((address[i * 2] & 0xFF) << 8) + (address[(i * 2) + 1] & 0xFF), 16));
+                                    while (options.isFillAddresses() && subStringBuilder.length() < 4) {
+                                        subStringBuilder.insert(0, "0");
+                                    }
+                                    stringBuilder.append(subStringBuilder);
+
+                                    if (i < 7) {
+                                        stringBuilder.append(":");
+                                    }
+                                }
+                            }
+
+                            stringBuilder.append("]:");
+                            stringBuilder.append(Integer.toUnsignedString(port, 10));
+
+                            return ParsedPrimitive.fromString(stringBuilder.toString());
                         } else {
                             throw new InvalidParameterException("InetSocketAddress must be IPv4 or IPv6");
                         }
