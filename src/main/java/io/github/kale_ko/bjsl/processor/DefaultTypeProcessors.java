@@ -868,11 +868,11 @@ public final class DefaultTypeProcessors {
                                 int port;
 
                                 for (int i = 0; i < 8; i++) {
-                                    address[i * 2] = (byte) ((Integer.parseUnsignedInt(addressBytes[i + (addressBytes.length == 11 ? 1 : 0)], 16) << 8) & 0xFF);
+                                    address[i * 2] = (byte) ((Integer.parseUnsignedInt(addressBytes[i + (addressBytes.length == 11 ? 1 : 0)], 16) >> 8) & 0xFF);
                                     address[(i * 2) + 1] = (byte) (Integer.parseUnsignedInt(addressBytes[i + (addressBytes.length == 11 ? 1 : 0)], 16) & 0xFF);
                                 }
 
-                                port = Integer.parseUnsignedInt(addressBytes[8] + (addressBytes.length == 11 ? 2 : 0), 10);
+                                port = Integer.parseUnsignedInt(addressBytes[8 + (addressBytes.length == 11 ? 2 : 0)], 10);
 
                                 return new InetSocketAddress(InetAddress.getByAddress(address), port);
                             } else {
