@@ -639,9 +639,24 @@ public final class DefaultTypeProcessors {
                 switch (element.asPrimitive().getType()) {
                     case STRING: {
                         try {
-                            String[] addressBytes = element.asPrimitive().asString().split("[.:\\[\\]]");
+                            String addressString = element.asPrimitive().asString();
+                            if (addressString.startsWith("[") && addressString.endsWith("]")) {
+                                addressString = addressString.substring(1, addressString.length() - 1);
+                            }
 
-                            if (addressBytes.length == 4) {
+                            if (addressString.equalsIgnoreCase("::")) {
+                                return InetAddress.getByAddress(new byte[16]);
+                            }
+                            if (addressString.startsWith("::")) {
+                                addressString = addressString.substring(1);
+                            }
+                            if (addressString.endsWith("::")) {
+                                addressString = addressString.substring(0, addressString.length() - 1);
+                            }
+
+                            String[] addressBytes = addressString.split("[.:]", -1);
+
+                            if (addressBytes.length == 4 && addressString.contains(".") && !addressString.contains(":")) {
                                 byte[] address = new byte[4];
 
                                 for (int i = 0; i < 4; i++) {
@@ -649,20 +664,33 @@ public final class DefaultTypeProcessors {
                                 }
 
                                 return InetAddress.getByAddress(address);
-                            } else if (addressBytes.length == 8 || addressBytes.length == 10) {
+                            } else if (addressString.contains(":") && !addressString.contains(".")) {
                                 byte[] address = new byte[16];
 
-                                for (int i = 0; i < 8; i++) {
-                                    address[i * 2] = (byte) ((Integer.parseUnsignedInt(addressBytes[i + (addressBytes.length == 10 ? 1 : 0)], 16) >> 8) & 0xFF);
-                                    address[(i * 2) + 1] = (byte) (Integer.parseUnsignedInt(addressBytes[i + (addressBytes.length == 10 ? 1 : 0)], 16) & 0xFF);
+                                for (int i = 0, j = 0; i < 8; i++) {
+                                    if (addressBytes[i + j].isEmpty()) {
+                                        int length = 8 - addressBytes.length;
+                                        i += length;
+                                        j -= length;
+                                        continue;
+                                    }
+
+                                    address[(i) * 2] = (byte) ((Integer.parseUnsignedInt(addressBytes[i + j], 16) >> 8) & 0xFF);
+                                    address[((i) * 2) + 1] = (byte) (Integer.parseUnsignedInt(addressBytes[i + j], 16) & 0xFF);
                                 }
 
                                 return InetAddress.getByAddress(address);
                             } else {
-                                throw new InvalidParameterException("InetAddress must be IPv4 or IPv6");
+                                throw new InvalidParameterException("InetAddress is not IPv4 or IPv6");
                             }
                         } catch (UnknownHostException e) {
-                            throw new InvalidParameterException("object is an invalid InetAddress");
+                            throw new RuntimeException("object is an invalid InetAddress", e);
+                        } catch (InvalidParameterException e) {
+                            try {
+                                return InetAddress.getByName(element.asPrimitive().asString());
+                            } catch (UnknownHostException e2) {
+                                throw new RuntimeException("object is an invalid InetAddress", e2);
+                            }
                         }
                     }
                     case BYTE:
@@ -723,7 +751,7 @@ public final class DefaultTypeProcessors {
         }
     };
 
-    public final @NotNull TypeProcessor INET_SOCKET_ADDRESS_P = new TypeProcessor() {
+    public final @NotNull TypeProcessor INETSOCKET_ADDRESS_P = new TypeProcessor() {
         final BigInteger MASK_8 = BigInteger.TWO.pow(8).subtract(BigInteger.ONE);
         final BigInteger MASK_32 = BigInteger.TWO.pow(32).subtract(BigInteger.ONE);
         final BigInteger MASK_48 = BigInteger.TWO.pow(48).subtract(BigInteger.ONE);
@@ -876,36 +904,72 @@ public final class DefaultTypeProcessors {
                 switch (element.asPrimitive().getType()) {
                     case STRING: {
                         try {
-                            String[] addressBytes = element.asPrimitive().asString().split("[.:\\[\\]]");
+                            String fullString = element.asPrimitive().asString();
+                            String addressString = fullString;
+                            if (addressString.startsWith("[") && addressString.lastIndexOf("]:") != -1) {
+                                addressString = addressString.substring(1, addressString.lastIndexOf("]:"));
+                            } else {
+                                addressString = addressString.substring(0, addressString.lastIndexOf(":"));
+                            }
+                            String portString = fullString.substring(fullString.lastIndexOf(":") + 1);
 
-                            if (addressBytes.length == 5) {
+                            if (addressString.equalsIgnoreCase("::")) {
+                                return InetAddress.getByAddress(new byte[16]);
+                            }
+                            if (addressString.startsWith("::")) {
+                                addressString = addressString.substring(1);
+                            }
+                            if (addressString.endsWith("::")) {
+                                addressString = addressString.substring(0, addressString.length() - 1);
+                            }
+
+                            String[] addressBytes = addressString.split("[.:]", -1);
+                            int port = Integer.parseUnsignedInt(portString, 10);
+
+                            if (addressBytes.length == 4 && addressString.contains(".") && !addressString.contains(":")) {
                                 byte[] address = new byte[4];
-                                int port;
 
                                 for (int i = 0; i < 4; i++) {
                                     address[i] = (byte) (Integer.parseUnsignedInt(addressBytes[i], 10) & 0xFF);
                                 }
 
-                                port = Integer.parseUnsignedInt(addressBytes[4], 10);
-
                                 return new InetSocketAddress(InetAddress.getByAddress(address), port);
-                            } else if (addressBytes.length == 9 || addressBytes.length == 11) {
+                            } else if (addressString.contains(":") && !addressString.contains(".")) {
                                 byte[] address = new byte[16];
-                                int port;
 
-                                for (int i = 0; i < 8; i++) {
-                                    address[i * 2] = (byte) ((Integer.parseUnsignedInt(addressBytes[i + (addressBytes.length == 11 ? 1 : 0)], 16) >> 8) & 0xFF);
-                                    address[(i * 2) + 1] = (byte) (Integer.parseUnsignedInt(addressBytes[i + (addressBytes.length == 11 ? 1 : 0)], 16) & 0xFF);
+                                for (int i = 0, j = 0; i < 8; i++) {
+                                    if (addressBytes[i + j].isEmpty()) {
+                                        int length = 8 - addressBytes.length;
+                                        i += length;
+                                        j -= length;
+                                        continue;
+                                    }
+
+                                    address[(i) * 2] = (byte) ((Integer.parseUnsignedInt(addressBytes[i + j], 16) >> 8) & 0xFF);
+                                    address[((i) * 2) + 1] = (byte) (Integer.parseUnsignedInt(addressBytes[i + j], 16) & 0xFF);
                                 }
-
-                                port = Integer.parseUnsignedInt(addressBytes[8 + (addressBytes.length == 11 ? 2 : 0)], 10);
 
                                 return new InetSocketAddress(InetAddress.getByAddress(address), port);
                             } else {
-                                throw new InvalidParameterException("InetSocketAddress must be IPv4 or IPv6");
+                                throw new InvalidParameterException("InetAddress is not IPv4 or IPv6");
                             }
                         } catch (UnknownHostException e) {
-                            throw new InvalidParameterException("object is an invalid InetSocketAddress");
+                            throw new RuntimeException("object is an invalid InetAddress", e);
+                        } catch (InvalidParameterException e) {
+                            String fullString = element.asPrimitive().asString();
+                            String addressString = fullString;
+                            if (addressString.lastIndexOf(":") != -1) {
+                                addressString = addressString.substring(0, addressString.lastIndexOf(":"));
+                            }
+                            String portString = fullString.substring(fullString.lastIndexOf(":") + 1);
+
+                            int port = Integer.parseUnsignedInt(portString, 10);
+
+                            try {
+                                return new InetSocketAddress(InetAddress.getByName(addressString), port);
+                            } catch (UnknownHostException e2) {
+                                throw new RuntimeException("object is an invalid InetAddress", e2);
+                            }
                         }
                     }
                     case LONG: {
@@ -1176,7 +1240,7 @@ public final class DefaultTypeProcessors {
         }
 
         if (!builder.hasTypeProcessor(InetSocketAddress.class)) {
-            builder.createTypeProcessor(InetSocketAddress.class, typeProcessors.INET_SOCKET_ADDRESS_P);
+            builder.createTypeProcessor(InetSocketAddress.class, typeProcessors.INETSOCKET_ADDRESS_P);
         }
 
         if (!builder.hasTypeProcessor(Calendar.class)) {
