@@ -175,11 +175,11 @@ public class ObjectProcessor {
         protected final @NotNull Map<JavaType, TypeProcessor> typeProcessors = new HashMap<>();
 
         /**
-         * Weather or not to enable the default type processors
+         * The options for the default type processors, null means disable the default type processors
          *
-         * @since 1.4.0
+         * @since 2.0.0
          */
-        protected boolean enableDefaultTypeProcessors = true;
+        protected @Nullable DefaultTypeProcessors.Options defaultTypeProcessorsOptions = DefaultTypeProcessors.Options.DEFAULT;
 
         /**
          * Create a new {@link ObjectProcessor} builder
@@ -564,33 +564,27 @@ public class ObjectProcessor {
         }
 
         /**
-         * Get weather or not to enable the default type processors
-         * <p>
-         * Default is true
+         * Get the options for the default type processors, null means disable the default type processors
          *
-         * @return Weather or not to enable the default type processors
+         * @return The options for the default type processors, null means disable the default type processors
          *
-         * @since 1.4.0
+         * @since 2.0.0
          */
-        public boolean getEnableDefaultTypeProcessors() {
-            return this.enableDefaultTypeProcessors;
+        public @Nullable DefaultTypeProcessors.Options getDefaultTypeProcessorsOptions() {
+            return this.defaultTypeProcessorsOptions;
         }
 
         /**
-         * Set weather or not to enable the default type processors
-         * <p>
-         * There are default type processors defined for {@link UUID}, {@link URI}, {@link URL}, {@link Path}, {@link File}, {@link InetAddress}, {@link InetSocketAddress}, {@link Calendar}, {@link Date}, and {@link Instant}
-         * <p>
-         * Default is true
+         * Set the options for the default type processors, null means disable the default type processors
          *
-         * @param value Weather or not to enable the default type processors
+         * @param value The options for the default type processors, null means disable the default type processors
          *
          * @return Self for chaining
          *
-         * @since 1.4.0
+         * @since 2.0.0
          */
-        public @NotNull Builder setEnableDefaultTypeProcessors(boolean value) {
-            this.enableDefaultTypeProcessors = value;
+        public @NotNull Builder setEnableDefaultTypeProcessors(@Nullable DefaultTypeProcessors.Options value) {
+            this.defaultTypeProcessorsOptions = value;
 
             return this;
         }
@@ -603,7 +597,7 @@ public class ObjectProcessor {
          * @since 1.0.0
          */
         public @NotNull ObjectProcessor build() {
-            if (this.enableDefaultTypeProcessors) {
+            if (this.defaultTypeProcessorsOptions != null) {
                 DefaultTypeProcessors.registry(this);
             }
 
