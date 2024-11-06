@@ -563,9 +563,20 @@ public final class DefaultTypeProcessors {
                                     }
                                 }
 
+                                if (currentLength > maxLength) {
+                                    maxIndex = currentIndex;
+                                    maxLength = currentLength;
+                                }
+
+                                boolean first = true;
+
                                 for (int i = 0; i < 8; i++) {
                                     if (!options.isFillAddresses() && i == maxIndex) {
                                         stringBuilder.append(":");
+                                        if (first) {
+                                            stringBuilder.append(":");
+                                            first = false;
+                                        }
                                         i += maxLength - 1;
                                     } else {
                                         StringBuilder subStringBuilder = new StringBuilder(Integer.toUnsignedString(((address[i * 2] & 0xFF) << 8) + (address[(i * 2) + 1] & 0xFF), 16));
@@ -577,6 +588,8 @@ public final class DefaultTypeProcessors {
                                         if (i < 7) {
                                             stringBuilder.append(":");
                                         }
+
+                                        first = false;
                                     }
                                 }
 
@@ -784,9 +797,20 @@ public final class DefaultTypeProcessors {
                                     }
                                 }
 
+                                if (currentLength > maxLength) {
+                                    maxIndex = currentIndex;
+                                    maxLength = currentLength;
+                                }
+
+                                boolean first = true;
+
                                 for (int i = 0; i < 8; i++) {
                                     if (!options.isFillAddresses() && i == maxIndex) {
                                         stringBuilder.append(":");
+                                        if (first) {
+                                            stringBuilder.append(":");
+                                            first = false;
+                                        }
                                         i += maxLength - 1;
                                     } else {
                                         StringBuilder subStringBuilder = new StringBuilder(Integer.toUnsignedString(((address[i * 2] & 0xFF) << 8) + (address[(i * 2) + 1] & 0xFF), 16));
@@ -798,6 +822,8 @@ public final class DefaultTypeProcessors {
                                         if (i < 7) {
                                             stringBuilder.append(":");
                                         }
+
+                                        first = false;
                                     }
                                 }
 
