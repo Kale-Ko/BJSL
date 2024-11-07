@@ -599,10 +599,13 @@ public final class DefaultTypeProcessors {
                             }
                         }
                         case NUMBER: {
+                            byte[] extendedAddress = new byte[address.length + 1]; // Avoid our number being interpreted as a signed number
+                            System.arraycopy(address, 0, extendedAddress, 1, address.length);
+
                             if (address.length == 4) {
-                                return ParsedPrimitive.fromBigInteger(new BigInteger(address));
+                                return ParsedPrimitive.fromBigInteger(new BigInteger(extendedAddress));
                             } else if (address.length == 16) {
-                                return ParsedPrimitive.fromBigInteger(new BigInteger(address).or(BigInteger.ONE.shiftRight(128)));
+                                return ParsedPrimitive.fromBigInteger(new BigInteger(extendedAddress).or(BigInteger.ONE.shiftLeft(128)));
                             } else {
                                 throw new InvalidParameterException("InetAddress must be IPv4 or IPv6");
                             }
@@ -864,10 +867,13 @@ public final class DefaultTypeProcessors {
                             }
                         }
                         case NUMBER: {
+                            byte[] extendedAddress = new byte[address.length + 1]; // Avoid our number being interpreted as a signed number
+                            System.arraycopy(address, 0, extendedAddress, 1, address.length);
+
                             if (address.length == 4) {
-                                return ParsedPrimitive.fromBigInteger(new BigInteger(address).or(new BigInteger(new byte[] { (byte) ((port >> 8) & 0xFF), (byte) (port & 0xFF), 0, 0, 0, 0 })));
+                                return ParsedPrimitive.fromBigInteger(new BigInteger(extendedAddress).or(new BigInteger(new byte[] { (byte) ((port >> 8) & 0xFF), (byte) (port & 0xFF), 0, 0, 0, 0 })));
                             } else if (address.length == 16) {
-                                return ParsedPrimitive.fromBigInteger(new BigInteger(address).or(new BigInteger(new byte[] { (byte) ((port >> 8) & 0xFF), (byte) (port & 0xFF), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })).or(BigInteger.ONE.shiftRight(128)));
+                                return ParsedPrimitive.fromBigInteger(new BigInteger(extendedAddress).or(new BigInteger(new byte[] { (byte) ((port >> 8) & 0xFF), (byte) (port & 0xFF), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })).or(BigInteger.ONE.shiftLeft(128)));
                             } else {
                                 throw new InvalidParameterException("InetAddress must be IPv4 or IPv6");
                             }
