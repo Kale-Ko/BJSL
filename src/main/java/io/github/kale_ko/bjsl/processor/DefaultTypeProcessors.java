@@ -499,6 +499,8 @@ public final class DefaultTypeProcessors {
     };
 
     public final @NotNull TypeProcessor INET_ADDRESS_P = new TypeProcessor() {
+        final BigInteger MASK_8 = BigInteger.TWO.pow(8).subtract(BigInteger.ONE);
+        final BigInteger MASK_32 = BigInteger.TWO.pow(32).subtract(BigInteger.ONE);
         final BigInteger MASK_128 = BigInteger.TWO.pow(128).subtract(BigInteger.ONE);
 
         @Override
@@ -733,15 +735,27 @@ public final class DefaultTypeProcessors {
                             throw new InvalidParameterException("object is an invalid InetAddress");
                         }
                     case BIGINTEGER: {
-                        BigInteger bigInt = element.asPrimitive().asBigInteger().and(MASK_128);
-                        byte[] address = bigInt.toByteArray();
+                        BigInteger bigInt = element.asPrimitive().asBigInteger();
+                        BigInteger upper = bigInt.shiftRight(128);
 
-                        System.out.println(address.length + ": " + Arrays.toString(address)); // TODO Make sure IPv4 is length 4
+                        boolean isIPv4 = upper.and(MASK_8).equals(BigInteger.ZERO);
+
+                        BigInteger lower = bigInt.and(isIPv4 ? MASK_32 : MASK_128);
+                        byte[] address = lower.toByteArray();
+
+                        if ((isIPv4 && address.length < 4) || (!isIPv4 && address.length < 16)) {
+                            byte[] fullAddress = new byte[isIPv4 ? 4 : 16];
+                            System.arraycopy(address, 0, fullAddress, fullAddress.length - address.length, address.length);
+                            address = fullAddress;
+                        }
+                        if ((isIPv4 && address.length > 4) || (!isIPv4 && address.length > 16)) {
+                            address = Arrays.copyOfRange(address, address.length - (isIPv4 ? 4 : 16), address.length);
+                        }
 
                         try {
                             return InetAddress.getByAddress(address);
                         } catch (UnknownHostException e) {
-                            throw new InvalidParameterException("object is an invalid InetAddress");
+                            throw new RuntimeException("object is an invalid InetAddress", e);
                         }
                     }
                     default: {
@@ -759,10 +773,11 @@ public final class DefaultTypeProcessors {
         final BigInteger MASK_32 = BigInteger.TWO.pow(32).subtract(BigInteger.ONE);
         final BigInteger MASK_48 = BigInteger.TWO.pow(48).subtract(BigInteger.ONE);
         final BigInteger MASK_128 = BigInteger.TWO.pow(128).subtract(BigInteger.ONE);
-        final BigInteger MASK_144 = BigInteger.TWO.pow(144).subtract(BigInteger.ONE);
+        final BigInteger MASK_136 = BigInteger.TWO.pow(136).subtract(BigInteger.ONE);
+        final BigInteger MASK_152 = BigInteger.TWO.pow(152).subtract(BigInteger.ONE);
 
         final BigInteger MASK_32_48 = MASK_48.subtract(MASK_32);
-        final BigInteger MASK_128_144 = MASK_144.subtract(MASK_128);
+        final BigInteger MASK_136_152 = MASK_152.subtract(MASK_136);
 
         @Override
         public @NotNull ParsedElement toElement(@Nullable Object object) {
@@ -999,7 +1014,16 @@ public final class DefaultTypeProcessors {
                         BigInteger lower = bigInt.and(isIPv4 ? MASK_32 : MASK_128);
                         byte[] address = lower.toByteArray();
 
-                        int port = bigInt.and(isIPv4 ? MASK_32_48 : MASK_128_144).shiftRight(isIPv4 ? 32 : 128).shortValue();
+                        if ((isIPv4 && address.length < 4) || (!isIPv4 && address.length < 16)) {
+                            byte[] fullAddress = new byte[isIPv4 ? 4 : 16];
+                            System.arraycopy(address, 0, fullAddress, fullAddress.length - address.length, address.length);
+                            address = fullAddress;
+                        }
+                        if ((isIPv4 && address.length > 4) || (!isIPv4 && address.length > 16)) {
+                            address = Arrays.copyOfRange(address, address.length - (isIPv4 ? 4 : 16), address.length);
+                        }
+
+                        int port = bigInt.and(isIPv4 ? MASK_32_48 : MASK_136_152).shiftRight(isIPv4 ? 32 : 136).shortValue();
 
                         try {
                             return new InetSocketAddress(InetAddress.getByAddress(address), port);
