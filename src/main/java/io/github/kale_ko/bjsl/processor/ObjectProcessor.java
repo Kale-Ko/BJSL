@@ -583,7 +583,7 @@ public class ObjectProcessor {
          *
          * @since 2.0.0
          */
-        public @NotNull Builder setEnableDefaultTypeProcessors(@Nullable DefaultTypeProcessors.Options value) {
+        public @NotNull Builder setDefaultTypeProcessorsOptions(@Nullable DefaultTypeProcessors.Options value) {
             this.defaultTypeProcessorsOptions = value;
 
             return this;
@@ -598,7 +598,7 @@ public class ObjectProcessor {
          */
         public @NotNull ObjectProcessor build() {
             if (this.defaultTypeProcessorsOptions != null) {
-                DefaultTypeProcessors.registry(this);
+                DefaultTypeProcessors.register(this);
             }
 
             return new ObjectProcessor(this.ignoreNulls, this.ignoreArrayNulls, this.ignoreEmptyObjects, this.ignoreDefaults, this.caseSensitiveEnums, this.typeProcessors);

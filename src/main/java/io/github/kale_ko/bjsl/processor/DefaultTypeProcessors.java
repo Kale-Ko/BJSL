@@ -30,7 +30,7 @@ public final class DefaultTypeProcessors {
             SHORT_ARRAY,
             INT_ARRAY,
             LONG_ARRAY,
-            BIGINT
+            NUMBER
         }
 
         public enum InetAddressMode {
@@ -209,7 +209,7 @@ public final class DefaultTypeProcessors {
                         }
                         return longArray;
                     }
-                    case BIGINT: {
+                    case NUMBER: {
                         ByteBuffer bigIntBuffer = ByteBuffer.wrap(new byte[16]);
                         bigIntBuffer.putLong(uuid.getMostSignificantBits());
                         bigIntBuffer.putLong(uuid.getLeastSignificantBits());
@@ -1238,7 +1238,7 @@ public final class DefaultTypeProcessors {
         }
     };
 
-    public static void registry(@NotNull ObjectProcessor.Builder builder) {
+    public static void register(@NotNull ObjectProcessor.Builder builder) {
         if (builder.getDefaultTypeProcessorsOptions() == null) {
             return;
         }
