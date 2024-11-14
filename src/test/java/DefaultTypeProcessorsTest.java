@@ -33,26 +33,6 @@ public class DefaultTypeProcessorsTest {
     protected final DefaultTypeProcessors typeProcessorsMode5 = new DefaultTypeProcessors(new DefaultTypeProcessors.Options(DefaultTypeProcessors.Options.UUIDMode.LONG_ARRAY, DefaultTypeProcessors.Options.InetAddressMode.NUMBER, false, DefaultTypeProcessors.Options.DateMode.NUMBER, DateTimeFormatter.ISO_DATE_TIME.withLocale(Locale.US).withZone(ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-5)))));
     protected final DefaultTypeProcessors typeProcessorsMode6 = new DefaultTypeProcessors(new DefaultTypeProcessors.Options(DefaultTypeProcessors.Options.UUIDMode.BIGINT, DefaultTypeProcessors.Options.InetAddressMode.NUMBER, false, DefaultTypeProcessors.Options.DateMode.NUMBER, DateTimeFormatter.ISO_DATE_TIME.withLocale(Locale.US).withZone(ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-5)))));
 
-    protected final String uuidString = "e4ec171a-665d-43fa-946e-852cc67cc590";
-    protected final ParsedPrimitive uuidStringElement = ParsedPrimitive.fromString("e4ec171a-665d-43fa-946e-852cc67cc590");
-
-    protected final byte[] uuidBytes = new byte[] { (byte) -28, (byte) -20, (byte) 23, (byte) 26, (byte) 102, (byte) 93, (byte) 67, (byte) -6, (byte) -108, (byte) 110, (byte) -123, (byte) 44, (byte) -58, (byte) 124, (byte) -59, (byte) -112 };
-    protected final ParsedArray uuidByteElements = ParsedArray.from(List.of(ParsedPrimitive.fromByte((byte) -28), ParsedPrimitive.fromByte((byte) -20), ParsedPrimitive.fromByte((byte) 23), ParsedPrimitive.fromByte((byte) 26), ParsedPrimitive.fromByte((byte) 102), ParsedPrimitive.fromByte((byte) 93), ParsedPrimitive.fromByte((byte) 67), ParsedPrimitive.fromByte((byte) -6), ParsedPrimitive.fromByte((byte) -108), ParsedPrimitive.fromByte((byte) 110), ParsedPrimitive.fromByte((byte) -123), ParsedPrimitive.fromByte((byte) 44), ParsedPrimitive.fromByte((byte) -58), ParsedPrimitive.fromByte((byte) 124), ParsedPrimitive.fromByte((byte) -59), ParsedPrimitive.fromByte((byte) -112)));
-
-    protected final short[] uuidShorts = new short[] { (short) -6932, (short) 5914, (short) 26205, (short) 17402, (short) -27538, (short) -31444, (short) -14724, (short) -14960 };
-    protected final ParsedArray uuidShortElements = ParsedArray.from(List.of(ParsedPrimitive.fromShort((short) -6932), ParsedPrimitive.fromShort((short) 5914), ParsedPrimitive.fromShort((short) 26205), ParsedPrimitive.fromShort((short) 17402), ParsedPrimitive.fromShort((short) -27538), ParsedPrimitive.fromShort((short) -31444), ParsedPrimitive.fromShort((short) -14724), ParsedPrimitive.fromShort((short) -14960)));
-
-    protected final int[] uuidIntegers = new int[] { (int) -454289638, (int) 1717388282, (int) -1804696276, (int) -964901488 };
-    protected final ParsedArray uuidIntegerElements = ParsedArray.from(List.of(ParsedPrimitive.fromInteger((int) -454289638), ParsedPrimitive.fromInteger((int) 1717388282), ParsedPrimitive.fromInteger((int) -1804696276), ParsedPrimitive.fromInteger((int) -964901488)));
-
-    protected final long[] uuidLongs = new long[] { (long) -1951159136404290566L, (long) -7751111481302923888L };
-    protected final ParsedArray uuidLongElements = ParsedArray.from(List.of(ParsedPrimitive.fromLong((long) -1951159136404290566L), ParsedPrimitive.fromLong((long) -7751111481302923888L)));
-
-    protected final BigInteger uuidBigInt = new BigInteger(uuidBytes);
-    protected final ParsedPrimitive uuidBigIntElement = ParsedPrimitive.fromBigInteger(new BigInteger(uuidBytes));
-
-    protected final UUID uuidObject = UUID.fromString(uuidString);
-
     protected static class StringBuilderProvider implements ArgumentsProvider {
         protected static class StringBuilderHolder {
             protected final String string;
@@ -108,6 +88,112 @@ public class DefaultTypeProcessorsTest {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return Stream.of(Arguments.argumentSet("test", new StringBufferProvider.StringBufferHolder("test", new StringBuffer("test"))), Arguments.argumentSet("<empty>", new StringBufferProvider.StringBufferHolder("", new StringBuffer(""))), Arguments.argumentSet("\"hello world\"", new StringBufferProvider.StringBufferHolder("\"hello world\"", new StringBuffer("\"hello world\""))));
+        }
+    }
+
+    protected static class UUIDProvider implements ArgumentsProvider {
+        protected static class UUIDHolder {
+            protected final String string;
+
+            protected final byte[] bytes;
+            protected final ParsedArray bytesArray;
+
+            protected final short[] shorts;
+            protected final ParsedArray shortsArray;
+
+            protected final int[] integers;
+            protected final ParsedArray integersArray;
+
+            protected final long[] longs;
+            protected final ParsedArray longsArray;
+
+            protected final BigInteger bigInteger;
+
+            protected final UUID uuid;
+
+            public UUIDHolder(String string, byte[] bytes, short[] shorts, int[] integers, long[] longs, BigInteger bigInteger, UUID uuid) {
+                this.string = string;
+
+                this.bytes = bytes;
+                this.bytesArray = ParsedArray.create();
+                for (byte b : bytes) {
+                    this.bytesArray.add(ParsedPrimitive.fromByte(b));
+                }
+
+                this.shorts = shorts;
+                this.shortsArray = ParsedArray.create();
+                for (short s : shorts) {
+                    this.shortsArray.add(ParsedPrimitive.fromShort(s));
+                }
+
+                this.integers = integers;
+                this.integersArray = ParsedArray.create();
+                for (int i : integers) {
+                    this.integersArray.add(ParsedPrimitive.fromInteger(i));
+                }
+
+                this.longs = longs;
+                this.longsArray = ParsedArray.create();
+                for (long l : longs) {
+                    this.longsArray.add(ParsedPrimitive.fromLong(l));
+                }
+
+                this.bigInteger = bigInteger;
+
+                this.uuid = uuid;
+            }
+
+            public String getString() {
+                return this.string;
+            }
+
+            public byte[] getBytes() {
+                return this.bytes;
+            }
+
+            public ParsedArray getBytesArray() {
+                return this.bytesArray;
+            }
+
+            public short[] getShorts() {
+                return this.shorts;
+            }
+
+            public ParsedArray getShortsArray() {
+                return this.shortsArray;
+            }
+
+            public int[] getIntegers() {
+                return this.integers;
+            }
+
+            public ParsedArray getIntegersArray() {
+                return this.integersArray;
+            }
+
+            public long[] getLongs() {
+                return this.longs;
+            }
+
+            public ParsedArray getLongsArray() {
+                return this.longsArray;
+            }
+
+            public BigInteger getBigInteger() {
+                return this.bigInteger;
+            }
+
+            public UUID getUUID() {
+                return this.uuid;
+            }
+        }
+
+        public UUIDProvider() {
+        }
+
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            return Stream.of(Arguments.argumentSet("e4ec171a-665d-43fa-946e-852cc67cc590", new UUIDProvider.UUIDHolder("e4ec171a-665d-43fa-946e-852cc67cc590", new byte[] { (byte) -28, (byte) -20, (byte) 23, (byte) 26, (byte) 102, (byte) 93, (byte) 67, (byte) -6, (byte) -108, (byte) 110, (byte) -123, (byte) 44, (byte) -58, (byte) 124, (byte) -59, (byte) -112 }, new short[] { (short) -6932, (short) 5914, (short) 26205, (short) 17402, (short) -27538, (short) -31444, (short) -14724, (short) -14960 }, new int[] { (int) -454289638, (int) 1717388282, (int) -1804696276, (int) -964901488 }, new long[] { (long) -1951159136404290566L, (long) -7751111481302923888L }, new BigInteger(new byte[] { (byte) -28, (byte) -20, (byte) 23, (byte) 26, (byte) 102, (byte) 93, (byte) 67, (byte) -6, (byte) -108, (byte) 110, (byte) -123, (byte) 44, (byte) -58, (byte) 124, (byte) -59, (byte) -112 }), UUID.fromString("e4ec171a-665d-43fa-946e-852cc67cc590"))), Arguments.argumentSet("00000000-0000-0000-0000-000000000000", new UUIDProvider.UUIDHolder("00000000-0000-0000-0000-000000000000", new byte[] { (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 }, new short[] { (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00 }, new int[] { (int) 0x00, (int) 0x00, (int) 0x00, (int) 0x00 }, new long[] { (long) 0x00, (long) 0x00 }, new BigInteger(new byte[] { (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 }), UUID.fromString("00000000-0000-0000-0000-000000000000"))), Arguments.argumentSet("ffffffff-ffff-ffff-ffff-ffffffffffff", new UUIDProvider.UUIDHolder("ffffffff-ffff-ffff-ffff-ffffffffffff", new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, new short[] { (short) 0xffff, (short) 0xffff, (short) 0xffff, (short) 0xffff, (short) 0xffff, (short) 0xffff, (short) 0xffff, (short) 0xffff }, new int[] { (int) 0xffffffff, (int) 0xffffffff, (int) 0xffffffff, (int) 0xffffffff }, new long[] { (long) 0xffffffffffffffffL, (long) 0xffffffffffffffffL }, new BigInteger(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }), UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff"))));
         }
     }
 
@@ -566,104 +652,148 @@ public class DefaultTypeProcessorsTest {
         assertNull(obj);
     }
 
-    @Test
-    void toElement_UUID_String() {
-        ParsedElement element = typeProcessorsMode1.UUID_P.toElement(uuidObject);
+    @ParameterizedTest(name="toElement_UUID_String - {argumentSetName}")
+    @Tag("uuid")
+    @Tag("toElement")
+    @ArgumentsSource(UUIDProvider.class)
+    void toElement_UUID_String(UUIDProvider.UUIDHolder holder) {
+        ParsedElement element = typeProcessorsMode1.UUID_P.toElement(holder.getUUID());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.STRING, element.asPrimitive().getType());
-        assertEquals(uuidString, element.asPrimitive().asString());
+        assertEquals(holder.getString(), element.asPrimitive().asString());
     }
 
-    @Test
-    void toElement_UUID_ByteArray() {
-        ParsedElement element = typeProcessorsMode2.UUID_P.toElement(uuidObject);
+    @ParameterizedTest(name="toElement_UUID_ByteArray - {argumentSetName}")
+    @Tag("uuid")
+    @Tag("toElement")
+    @ArgumentsSource(UUIDProvider.class)
+    void toElement_UUID_ByteArray(UUIDProvider.UUIDHolder holder) {
+        ParsedElement element = typeProcessorsMode2.UUID_P.toElement(holder.getUUID());
         assertInstanceOf(ParsedArray.class, element);
         assertEquals(16, element.asArray().getSize());
-        assertEquals(List.copyOf(uuidByteElements.getValues()), List.copyOf(element.asArray().getValues()));
+        assertEquals(List.copyOf(holder.getBytesArray().getValues()), List.copyOf(element.asArray().getValues()));
     }
 
-    @Test
-    void toElement_UUID_ShortArray() {
-        ParsedElement element = typeProcessorsMode3.UUID_P.toElement(uuidObject);
+    @ParameterizedTest(name="toElement_UUID_ShortArray - {argumentSetName}")
+    @Tag("uuid")
+    @Tag("toElement")
+    @ArgumentsSource(UUIDProvider.class)
+    void toElement_UUID_ShortArray(UUIDProvider.UUIDHolder holder) {
+        ParsedElement element = typeProcessorsMode3.UUID_P.toElement(holder.getUUID());
         assertInstanceOf(ParsedArray.class, element);
         assertEquals(8, element.asArray().getSize());
-        assertEquals(List.copyOf(uuidShortElements.getValues()), List.copyOf(element.asArray().getValues()));
+        assertEquals(List.copyOf(holder.getShortsArray().getValues()), List.copyOf(element.asArray().getValues()));
     }
 
-    @Test
-    void toElement_UUID_IntegerArray() {
-        ParsedElement element = typeProcessorsMode4.UUID_P.toElement(uuidObject);
+    @ParameterizedTest(name="toElement_UUID_IntegerArray - {argumentSetName}")
+    @Tag("uuid")
+    @Tag("toElement")
+    @ArgumentsSource(UUIDProvider.class)
+    void toElement_UUID_IntegerArray(UUIDProvider.UUIDHolder holder) {
+        ParsedElement element = typeProcessorsMode4.UUID_P.toElement(holder.getUUID());
         assertInstanceOf(ParsedArray.class, element);
         assertEquals(4, element.asArray().getSize());
-        assertEquals(List.copyOf(uuidIntegerElements.getValues()), List.copyOf(element.asArray().getValues()));
+        assertEquals(List.copyOf(holder.getIntegersArray().getValues()), List.copyOf(element.asArray().getValues()));
     }
 
-    @Test
-    void toElement_UUID_LongArray() {
-        ParsedElement element = typeProcessorsMode5.UUID_P.toElement(uuidObject);
+    @ParameterizedTest(name="toElement_UUID_LongArray - {argumentSetName}")
+    @Tag("uuid")
+    @Tag("toElement")
+    @ArgumentsSource(UUIDProvider.class)
+    void toElement_UUID_LongArray(UUIDProvider.UUIDHolder holder) {
+        ParsedElement element = typeProcessorsMode5.UUID_P.toElement(holder.getUUID());
         assertInstanceOf(ParsedArray.class, element);
         assertEquals(2, element.asArray().getSize());
-        assertEquals(List.copyOf(uuidLongElements.getValues()), List.copyOf(element.asArray().getValues()));
+        assertEquals(List.copyOf(holder.getLongsArray().getValues()), List.copyOf(element.asArray().getValues()));
     }
 
-    @Test
-    void toElement_UUID_BigInt() {
-        ParsedElement element = typeProcessorsMode6.UUID_P.toElement(uuidObject);
+    @ParameterizedTest(name="toElement_UUID_BigInt - {argumentSetName}")
+    @Tag("uuid")
+    @Tag("toElement")
+    @ArgumentsSource(UUIDProvider.class)
+    void toElement_UUID_BigInt(UUIDProvider.UUIDHolder holder) {
+        ParsedElement element = typeProcessorsMode6.UUID_P.toElement(holder.getUUID());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.BIGINTEGER, element.asPrimitive().getType());
-        assertEquals(uuidBigInt, element.asPrimitive().asBigInteger());
+        assertEquals(holder.getBigInteger(), element.asPrimitive().asBigInteger());
     }
 
     @Test
+    @DisplayName("toElement_UUID_Null")
+    @Tag("uuid")
+    @Tag("toElement")
     void toElement_UUID_Null() {
         ParsedElement element = typeProcessorsMode1.UUID_P.toElement(null);
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.NULL, element.asPrimitive().getType());
     }
 
-    @Test
-    void toObject_UUID_String() {
-        Object obj = typeProcessorsMode1.UUID_P.toObject(uuidStringElement);
+    @ParameterizedTest(name="toObject_UUID_String - {argumentSetName}")
+    @Tag("uuid")
+    @Tag("toObject")
+    @ArgumentsSource(UUIDProvider.class)
+    void toObject_UUID_String(UUIDProvider.UUIDHolder holder) {
+        ParsedElement element = ParsedPrimitive.fromString(holder.getString());
+        Object obj = typeProcessorsMode1.UUID_P.toObject(element);
         assertInstanceOf(UUID.class, obj);
-        assertEquals(uuidObject, obj);
+        assertEquals(holder.getUUID(), obj);
+    }
+
+    @ParameterizedTest(name="toObject_UUID_ByteArray - {argumentSetName}")
+    @Tag("uuid")
+    @Tag("toObject")
+    @ArgumentsSource(UUIDProvider.class)
+    void toObject_UUID_ByteArray(UUIDProvider.UUIDHolder holder) {
+        Object obj = typeProcessorsMode2.UUID_P.toObject(holder.getBytesArray());
+        assertInstanceOf(UUID.class, obj);
+        assertEquals(holder.getUUID(), obj);
+    }
+
+    @ParameterizedTest(name="toObject_UUID_ShortArray - {argumentSetName}")
+    @Tag("uuid")
+    @Tag("toObject")
+    @ArgumentsSource(UUIDProvider.class)
+    void toObject_UUID_ShortArray(UUIDProvider.UUIDHolder holder) {
+        Object obj = typeProcessorsMode3.UUID_P.toObject(holder.getShortsArray());
+        assertInstanceOf(UUID.class, obj);
+        assertEquals(holder.getUUID(), obj);
+    }
+
+    @ParameterizedTest(name="toObject_UUID_IntegerArray - {argumentSetName}")
+    @Tag("uuid")
+    @Tag("toObject")
+    @ArgumentsSource(UUIDProvider.class)
+    void toObject_UUID_IntegerArray(UUIDProvider.UUIDHolder holder) {
+        Object obj = typeProcessorsMode4.UUID_P.toObject(holder.getIntegersArray());
+        assertInstanceOf(UUID.class, obj);
+        assertEquals(holder.getUUID(), obj);
+    }
+
+    @ParameterizedTest(name="toObject_UUID_LongArray - {argumentSetName}")
+    @Tag("uuid")
+    @Tag("toObject")
+    @ArgumentsSource(UUIDProvider.class)
+    void toObject_UUID_LongArray(UUIDProvider.UUIDHolder holder) {
+        Object obj = typeProcessorsMode5.UUID_P.toObject(holder.getLongsArray());
+        assertInstanceOf(UUID.class, obj);
+        assertEquals(holder.getUUID(), obj);
+    }
+
+    @ParameterizedTest(name="toObject_UUID_BigInteger - {argumentSetName}")
+    @Tag("uuid")
+    @Tag("toObject")
+    @ArgumentsSource(UUIDProvider.class)
+    void toObject_UUID_BigInteger(UUIDProvider.UUIDHolder holder) {
+        ParsedElement element = ParsedPrimitive.fromBigInteger(holder.getBigInteger());
+        Object obj = typeProcessorsMode6.UUID_P.toObject(element);
+        assertInstanceOf(UUID.class, obj);
+        assertEquals(holder.getUUID(), obj);
     }
 
     @Test
-    void toObject_UUID_ByteArray() {
-        Object obj = typeProcessorsMode1.UUID_P.toObject(uuidByteElements);
-        assertInstanceOf(UUID.class, obj);
-        assertEquals(uuidObject, obj);
-    }
-
-    @Test
-    void toObject_UUID_ShortArray() {
-        Object obj = typeProcessorsMode1.UUID_P.toObject(uuidShortElements);
-        assertInstanceOf(UUID.class, obj);
-        assertEquals(uuidObject, obj);
-    }
-
-    @Test
-    void toObject_UUID_IntegerArray() {
-        Object obj = typeProcessorsMode1.UUID_P.toObject(uuidIntegerElements);
-        assertInstanceOf(UUID.class, obj);
-        assertEquals(uuidObject, obj);
-    }
-
-    @Test
-    void toObject_UUID_LongArray() {
-        Object obj = typeProcessorsMode1.UUID_P.toObject(uuidLongElements);
-        assertInstanceOf(UUID.class, obj);
-        assertEquals(uuidObject, obj);
-    }
-
-    @Test
-    void toObject_UUID_BigInt() {
-        Object obj = typeProcessorsMode1.UUID_P.toObject(uuidBigIntElement);
-        assertInstanceOf(UUID.class, obj);
-        assertEquals(uuidObject, obj);
-    }
-
-    @Test
+    @DisplayName("toObject_UUID_Null")
+    @Tag("uuid")
+    @Tag("toObject")
     void toObject_UUID_Null() {
         ParsedElement element = ParsedPrimitive.fromNull();
         Object obj = typeProcessorsMode1.UUID_P.toObject(element);
