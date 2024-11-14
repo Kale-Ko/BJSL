@@ -12,10 +12,7 @@ import java.security.InvalidParameterException;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -545,6 +542,10 @@ public final class DefaultTypeProcessors {
                             } else if (address.length == 16) {
                                 StringBuilder stringBuilder = new StringBuilder();
 
+                                if (Arrays.equals(address, new byte[address.length])) {
+                                    return ParsedPrimitive.fromString("::");
+                                }
+
                                 int currentIndex = -1, currentLength = 0;
                                 int maxIndex = -1, maxLength = 0;
 
@@ -821,59 +822,65 @@ public final class DefaultTypeProcessors {
                                 return ParsedPrimitive.fromString(String.join(".", addressBytes) + ":" + Integer.toUnsignedString(port, 10));
                             } else if (address.length == 16) {
                                 StringBuilder stringBuilder = new StringBuilder();
-                                stringBuilder.append("[");
 
-                                int currentIndex = -1, currentLength = 0;
-                                int maxIndex = -1, maxLength = 0;
+                                if (!Arrays.equals(address, new byte[address.length])) {
+                                    stringBuilder.append("[");
 
-                                for (int i = 0; i < 8; i++) {
-                                    if ((((address[i * 2] & 0xFF) << 8) + (address[(i * 2) + 1] & 0xFF)) == 0) {
-                                        if (currentLength == 0) {
-                                            currentIndex = i;
+                                    int currentIndex = -1, currentLength = 0;
+                                    int maxIndex = -1, maxLength = 0;
+
+                                    for (int i = 0; i < 8; i++) {
+                                        if ((((address[i * 2] & 0xFF) << 8) + (address[(i * 2) + 1] & 0xFF)) == 0) {
+                                            if (currentLength == 0) {
+                                                currentIndex = i;
+                                            }
+
+                                            currentLength++;
+                                        } else {
+                                            if (currentLength > maxLength) {
+                                                maxIndex = currentIndex;
+                                                maxLength = currentLength;
+                                            }
+
+                                            currentLength = 0;
                                         }
-
-                                        currentLength++;
-                                    } else {
-                                        if (currentLength > maxLength) {
-                                            maxIndex = currentIndex;
-                                            maxLength = currentLength;
-                                        }
-
-                                        currentLength = 0;
                                     }
-                                }
 
-                                if (currentLength > maxLength) {
-                                    maxIndex = currentIndex;
-                                    maxLength = currentLength;
-                                }
+                                    if (currentLength > maxLength) {
+                                        maxIndex = currentIndex;
+                                        maxLength = currentLength;
+                                    }
 
-                                boolean first = true;
+                                    boolean first = true;
 
-                                for (int i = 0; i < 8; i++) {
-                                    if (!options.isFillAddresses() && i == maxIndex) {
-                                        stringBuilder.append(":");
-                                        if (first) {
+                                    for (int i = 0; i < 8; i++) {
+                                        if (!options.isFillAddresses() && i == maxIndex) {
                                             stringBuilder.append(":");
+                                            if (first) {
+                                                stringBuilder.append(":");
+                                                first = false;
+                                            }
+                                            i += maxLength - 1;
+                                        } else {
+                                            StringBuilder subStringBuilder = new StringBuilder(Integer.toUnsignedString(((address[i * 2] & 0xFF) << 8) + (address[(i * 2) + 1] & 0xFF), 16));
+                                            while (options.isFillAddresses() && subStringBuilder.length() < 4) {
+                                                subStringBuilder.insert(0, "0");
+                                            }
+                                            stringBuilder.append(subStringBuilder);
+
+                                            if (i < 7) {
+                                                stringBuilder.append(":");
+                                            }
+
                                             first = false;
                                         }
-                                        i += maxLength - 1;
-                                    } else {
-                                        StringBuilder subStringBuilder = new StringBuilder(Integer.toUnsignedString(((address[i * 2] & 0xFF) << 8) + (address[(i * 2) + 1] & 0xFF), 16));
-                                        while (options.isFillAddresses() && subStringBuilder.length() < 4) {
-                                            subStringBuilder.insert(0, "0");
-                                        }
-                                        stringBuilder.append(subStringBuilder);
-
-                                        if (i < 7) {
-                                            stringBuilder.append(":");
-                                        }
-
-                                        first = false;
                                     }
+
+                                    stringBuilder.append("]:");
+                                } else {
+                                    stringBuilder.append("[::]:");
                                 }
 
-                                stringBuilder.append("]:");
                                 stringBuilder.append(Integer.toUnsignedString(port, 10));
 
                                 return ParsedPrimitive.fromString(stringBuilder.toString());
@@ -933,9 +940,10 @@ public final class DefaultTypeProcessors {
                                 addressString = addressString.substring(0, addressString.lastIndexOf(":"));
                             }
                             String portString = fullString.substring(fullString.lastIndexOf(":") + 1);
+                            int port = Integer.parseUnsignedInt(portString, 10);
 
                             if (addressString.equalsIgnoreCase("::")) {
-                                return InetAddress.getByAddress(new byte[16]);
+                                return new InetSocketAddress(InetAddress.getByAddress(new byte[16]), port);
                             }
                             if (addressString.startsWith("::")) {
                                 addressString = addressString.substring(1);
@@ -945,7 +953,6 @@ public final class DefaultTypeProcessors {
                             }
 
                             String[] addressBytes = addressString.split("[.:]", -1);
-                            int port = Integer.parseUnsignedInt(portString, 10);
 
                             if (addressBytes.length == 4 && addressString.contains(".") && !addressString.contains(":")) {
                                 byte[] address = new byte[4];
