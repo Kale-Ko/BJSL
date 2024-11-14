@@ -10,6 +10,7 @@ import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.security.InvalidParameterException;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
@@ -21,7 +22,7 @@ public final class DefaultTypeProcessors {
     public static final @NotNull DefaultTypeProcessors DEFAULT = new DefaultTypeProcessors(Options.DEFAULT);
 
     public static class Options {
-        public static final @NotNull Options DEFAULT = new Options(Options.UUIDMode.STRING, Options.InetAddressMode.STRING, false, Options.DateMode.STRING, DateTimeFormatter.ISO_DATE_TIME);
+        public static final @NotNull Options DEFAULT = new Options(Options.UUIDMode.STRING, Options.InetAddressMode.STRING, false, Options.DateMode.STRING, DateTimeFormatter.ofPattern("MMMM dd yyyy @ hh:mm:ss.SSS a XXX").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault()));
 
         public enum UUIDMode {
             STRING,
