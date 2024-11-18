@@ -17,13 +17,39 @@ import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-// TODO Docs
+/**
+ * A collection of type processors for common java types that are enabled by default.
+ *
+ * @version 2.0.0
+ * @since 2.0.0
+ */
 public final class DefaultTypeProcessors {
+    /**
+     * The default instance of the default type processors. Uses {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors.Options#DEFAULT}.
+     *
+     * @see io.github.kale_ko.bjsl.processor.DefaultTypeProcessors.Options#DEFAULT
+     * @since 2.0.0
+     */
     public static final @NotNull DefaultTypeProcessors DEFAULT = new DefaultTypeProcessors(Options.DEFAULT);
 
+    /**
+     * An instance of options to pass to the default type processors.
+     *
+     * @since 2.0.0
+     */
     public static class Options {
+        /**
+         * The default instance of the options.
+         *
+         * @since 2.0.0
+         */
         public static final @NotNull Options DEFAULT = new Options(Options.UUIDMode.STRING, Options.InetAddressMode.STRING, false, Options.DateMode.STRING, DateTimeFormatter.ofPattern("MMMM dd yyyy @ hh:mm:ss.SSS a XXX").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault()));
 
+        /**
+         * A mode for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#UUID_P} type processor.
+         *
+         * @since 2.0.0
+         */
         public enum UUIDMode {
             STRING,
             BYTE_ARRAY,
@@ -33,24 +59,74 @@ public final class DefaultTypeProcessors {
             NUMBER
         }
 
+        /**
+         * A mode for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INET_ADDRESS_P} and {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INETSOCKET_ADDRESS_P} type processors.
+         *
+         * @since 2.0.0
+         */
         public enum InetAddressMode {
             STRING,
             NUMBER
         }
 
+        /**
+         * A mode for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#CALENDAR_P}, {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#DATE_P}, and {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INSTANT_P} type processors.
+         *
+         * @since 2.0.0
+         */
         public enum DateMode {
             STRING,
             NUMBER
         }
 
+        /**
+         * A mode for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#UUID_P} type processor.
+         *
+         * @since 2.0.0
+         */
         protected final @NotNull UUIDMode uuidMode;
 
+        /**
+         * A mode for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INET_ADDRESS_P} and {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INETSOCKET_ADDRESS_P} type processors.
+         *
+         * @since 2.0.0
+         */
         protected final @NotNull InetAddressMode inetAddressMode;
+
+        /**
+         * Weather or not to fill in InetAddresses (e.g. 127.0.0.1 &#x2D;&#x3E; 127.000.000.001, 2001:db8::1 &#x2D;&#x3E; 2001:0db8:0000:0000:0000:0000:0000:0001).
+         *
+         * @since 2.0.0
+         */
         protected final boolean fillAddresses;
 
+        /**
+         * A mode for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#CALENDAR_P}, {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#DATE_P}, and {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INSTANT_P} type processors.
+         *
+         * @since 2.0.0
+         */
         protected final @NotNull DateMode dateMode;
+
+        /**
+         * The formatter for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#CALENDAR_P}, {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#DATE_P}, and {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INSTANT_P} type processors.
+         * <p>
+         * This is used for parsing and formatting the dates so <b>be careful changing this</b>
+         *
+         * @since 2.0.0
+         */
         protected final @NotNull DateTimeFormatter dateTimeFormatter;
 
+        /**
+         * Create an instance of Options
+         *
+         * @param uuidMode          A mode for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#UUID_P} type processor.
+         * @param inetAddressMode   A mode for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INET_ADDRESS_P} and {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INETSOCKET_ADDRESS_P} type processors.
+         * @param fillAddresses     Weather or not to fill in InetAddresses (e.g. 127.0.0.1 &#x2D;&#x3E; 127.000.000.001, 2001:db8::1 &#x2D;&#x3E; 2001:0db8:0000:0000:0000:0000:0000:0001).
+         * @param dateMode          A mode for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#CALENDAR_P}, {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#DATE_P}, and {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INSTANT_P} type processors.
+         * @param dateTimeFormatter The formatter for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#CALENDAR_P}, {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#DATE_P}, and {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INSTANT_P} type processors.
+         *
+         * @since 2.0.0
+         */
         public Options(@NotNull UUIDMode uuidMode, @NotNull InetAddressMode inetAddressMode, boolean fillAddresses, @NotNull DateMode dateMode, @NotNull DateTimeFormatter dateTimeFormatter) {
             this.uuidMode = uuidMode;
             this.inetAddressMode = inetAddressMode;
@@ -60,33 +136,87 @@ public final class DefaultTypeProcessors {
             this.dateTimeFormatter = dateTimeFormatter;
         }
 
+        /**
+         * Get the mode for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#UUID_P} type processor.
+         *
+         * @return The mode for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#UUID_P} type processor.
+         *
+         * @since 2.0.0
+         */
         public @NotNull UUIDMode getUuidMode() {
             return this.uuidMode;
         }
 
+        /**
+         * Get the mode for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INET_ADDRESS_P} and {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INETSOCKET_ADDRESS_P} type processors.
+         *
+         * @return The mode for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INET_ADDRESS_P} and {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INETSOCKET_ADDRESS_P} type processors.
+         *
+         * @since 2.0.0
+         */
         public @NotNull InetAddressMode getInetAddressMode() {
             return inetAddressMode;
         }
 
+        /**
+         * Get weather or not to fill in InetAddresses (e.g. 127.0.0.1 &#x2D;&#x3E; 127.000.000.001, 2001:db8::1 &#x2D;&#x3E; 2001:0db8:0000:0000:0000:0000:0000:0001).
+         *
+         * @return Weather or not to fill in InetAddresses (e.g. 127.0.0.1 &#x2D;&#x3E; 127.000.000.001, 2001:db8::1 &#x2D;&#x3E; 2001:0db8:0000:0000:0000:0000:0000:0001).
+         *
+         * @since 2.0.0
+         */
         public boolean isFillAddresses() {
             return this.fillAddresses;
         }
 
+        /**
+         * Get the mode for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#CALENDAR_P}, {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#DATE_P}, and {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INSTANT_P} type processors.
+         *
+         * @return The mode for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#CALENDAR_P}, {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#DATE_P}, and {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INSTANT_P} type processors.
+         *
+         * @since 2.0.0
+         */
         public @NotNull DateMode getDateMode() {
             return this.dateMode;
         }
 
+        /**
+         * Get the formatter for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#CALENDAR_P}, {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#DATE_P}, and {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INSTANT_P} type processors.
+         * <p>
+         * This is used for parsing and formatting the dates so <b>be careful changing this</b>
+         *
+         * @return The formatter for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#CALENDAR_P}, {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#DATE_P}, and {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INSTANT_P} type processors.
+         *
+         * @since 2.0.0
+         */
         public @NotNull DateTimeFormatter getDateTimeFormatter() {
             return this.dateTimeFormatter;
         }
     }
 
+    /**
+     * The options to pass to the type processors
+     *
+     * @since 2.0.0
+     */
     private final @NotNull Options options;
 
+    /**
+     * Create an instance of DefaultTypeProcessors using the given options
+     *
+     * @param options The options to pass to the type processors
+     *
+     * @since 2.0.0
+     */
     public DefaultTypeProcessors(@NotNull Options options) {
         this.options = options;
     }
 
+    /**
+     * A type processor for {@link java.lang.StringBuilder}. Converts to and from a ParsedPrimitive string.
+     *
+     * @since 2.0.0
+     */
     public final @NotNull TypeProcessor STRING_BUILDER_P = new TypeProcessor() {
         @Override
         public @NotNull ParsedElement toElement(@Nullable Object object) {
@@ -115,6 +245,11 @@ public final class DefaultTypeProcessors {
         }
     };
 
+    /**
+     * A type processor for {@link java.lang.StringBuffer}. Converts to and from a ParsedPrimitive string.
+     *
+     * @since 2.0.0
+     */
     public final @NotNull TypeProcessor STRING_BUFFER_P = new TypeProcessor() {
         @Override
         public @NotNull ParsedElement toElement(@Nullable Object object) {
@@ -143,6 +278,11 @@ public final class DefaultTypeProcessors {
         }
     };
 
+    /**
+     * A type processor for {@link java.util.UUID}. Converts to and from a ParsedPrimitive string, array, or bigint.
+     *
+     * @since 2.0.0
+     */
     public final @NotNull TypeProcessor UUID_P = new TypeProcessor() {
         @Override
         public @NotNull ParsedElement toElement(@Nullable Object object) {
@@ -376,6 +516,11 @@ public final class DefaultTypeProcessors {
         }
     };
 
+    /**
+     * A type processor for {@link java.net.URI}. Converts to and from a ParsedPrimitive string.
+     *
+     * @since 2.0.0
+     */
     public final @NotNull TypeProcessor URI_P = new TypeProcessor() {
         @Override
         public @NotNull ParsedElement toElement(@Nullable Object object) {
@@ -408,6 +553,11 @@ public final class DefaultTypeProcessors {
         }
     };
 
+    /**
+     * A type processor for {@link java.net.URL}. Converts to and from a ParsedPrimitive string.
+     *
+     * @since 2.0.0
+     */
     public final @NotNull TypeProcessor URL_P = new TypeProcessor() {
         @Override
         public @NotNull ParsedElement toElement(@Nullable Object object) {
@@ -440,6 +590,11 @@ public final class DefaultTypeProcessors {
         }
     };
 
+    /**
+     * A type processor for {@link java.nio.file.Path}. Converts to and from a ParsedPrimitive string.
+     *
+     * @since 2.0.0
+     */
     public final @NotNull TypeProcessor PATH_P = new TypeProcessor() {
         @Override
         public @NotNull ParsedElement toElement(@Nullable Object object) {
@@ -468,6 +623,11 @@ public final class DefaultTypeProcessors {
         }
     };
 
+    /**
+     * A type processor for {@link java.io.File}. Converts to and from a ParsedPrimitive string.
+     *
+     * @since 2.0.0
+     */
     public final @NotNull TypeProcessor FILE_P = new TypeProcessor() {
         @Override
         public @NotNull ParsedElement toElement(@Nullable Object object) {
@@ -496,6 +656,11 @@ public final class DefaultTypeProcessors {
         }
     };
 
+    /**
+     * A type processor for {@link java.net.InetAddress}. Converts to and from a ParsedPrimitive string or bigint.
+     *
+     * @since 2.0.0
+     */
     public final @NotNull TypeProcessor INET_ADDRESS_P = new TypeProcessor() {
         final BigInteger MASK_8 = BigInteger.TWO.pow(8).subtract(BigInteger.ONE);
         final BigInteger MASK_32 = BigInteger.TWO.pow(32).subtract(BigInteger.ONE);
@@ -770,6 +935,11 @@ public final class DefaultTypeProcessors {
         }
     };
 
+    /**
+     * A type processor for {@link java.net.InetSocketAddress}. Converts to and from a ParsedPrimitive string or bigint.
+     *
+     * @since 2.0.0
+     */
     public final @NotNull TypeProcessor INETSOCKET_ADDRESS_P = new TypeProcessor() {
         final BigInteger MASK_8 = BigInteger.TWO.pow(8).subtract(BigInteger.ONE);
         final BigInteger MASK_32 = BigInteger.TWO.pow(32).subtract(BigInteger.ONE);
@@ -1049,6 +1219,11 @@ public final class DefaultTypeProcessors {
         }
     };
 
+    /**
+     * A type processor for {@link java.util.Calendar}. Converts to and from a ParsedPrimitive string or long.
+     *
+     * @since 2.0.0
+     */
     public final @NotNull TypeProcessor CALENDAR_P = new TypeProcessor() {
         @Override
         public @NotNull ParsedElement toElement(@Nullable Object object) {
@@ -1120,6 +1295,11 @@ public final class DefaultTypeProcessors {
         }
     };
 
+    /**
+     * A type processor for {@link java.util.Date}. Converts to and from a ParsedPrimitive string or long.
+     *
+     * @since 2.0.0
+     */
     public final @NotNull TypeProcessor DATE_P = new TypeProcessor() {
         @Override
         public @NotNull ParsedElement toElement(@Nullable Object object) {
@@ -1181,6 +1361,11 @@ public final class DefaultTypeProcessors {
         }
     };
 
+    /**
+     * A type processor for {@link java.time.Instant}. Converts to and from a ParsedPrimitive string or long.
+     *
+     * @since 2.0.0
+     */
     public final @NotNull TypeProcessor INSTANT_P = new TypeProcessor() {
         @Override
         public @NotNull ParsedElement toElement(@Nullable Object object) {
@@ -1238,7 +1423,14 @@ public final class DefaultTypeProcessors {
         }
     };
 
-    public static void register(@NotNull ObjectProcessor.Builder builder) {
+    /**
+     * Registers the default type processors for a given builder.
+     *
+     * @param builder The builder to register them to.
+     *
+     * @since 2.0.0
+     */
+    static void register(@NotNull ObjectProcessor.Builder builder) {
         if (builder.getDefaultTypeProcessorsOptions() == null) {
             return;
         }
