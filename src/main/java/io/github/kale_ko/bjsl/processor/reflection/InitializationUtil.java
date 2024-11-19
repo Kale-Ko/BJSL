@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 1.7.0
  */
 @SuppressWarnings("unchecked")
-public class InitializationUtil {
+public final class InitializationUtil {
     private InitializationUtil() {
     }
 
@@ -41,7 +41,7 @@ public class InitializationUtil {
         try {
             if (clazz.isMemberClass() && !Modifier.isStatic(clazz.getModifiers())) {
                 if (!allowInitializingNonStaticMemberParents) {
-                    throw new InitializationException(new RuntimeException("Refusing to initialize a non-static member's parent, it is likely you forgot to add the 'static' keyword to your class. If this is not the case call `InitializationUtil#allowInitializingNonStaticMemberParents()`"));
+                    throw new InitializationException(new RuntimeException("Refusing to initialize a non-static member's parent, it is likely you forgot to add the 'static' keyword to your class. If this is not the case call `InitializationUtil#unsafeAINSMP()`"));
                 }
 
                 // Non-static member constructor
@@ -75,7 +75,20 @@ public class InitializationUtil {
      *
      * @return The initialized array instance of clazz with the passed length
      */
-    public static <T> @NotNull Object initializeArray(@NotNull Class<T> clazz, int length) {
+    public static <T> @NotNull T[] initializeArray(@NotNull Class<T> clazz, int length) {
         return (T[]) Array.newInstance(clazz, length);
+    }
+
+    /**
+     * Initialize a primitive array safely using {@link Array#newInstance(Class, int)}
+     *
+     * @param clazz  The class to initialize
+     * @param length The length of the new array
+     * @param <T>    The type to initialize
+     *
+     * @return The initialized array instance of clazz with the passed length
+     */
+    public static <T> @NotNull Object initializePrimitiveArray(@NotNull Class<T> clazz, int length) {
+        return Array.newInstance(clazz, length);
     }
 }
