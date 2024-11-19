@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Expect that a field is always less than a value. The type of the field will be used to pick which value is read.
+ * Expect that a field is always less than a value. The type of the field will be used to pick which value is read
  *
  * @since 2.0.0
  */

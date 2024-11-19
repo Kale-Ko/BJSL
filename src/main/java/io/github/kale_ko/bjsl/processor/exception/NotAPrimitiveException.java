@@ -4,7 +4,7 @@ import io.github.kale_ko.bjsl.elements.ParsedElement;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Thrown when a value is attempted to be used as a map key but is not a string or other string-able primitive.
+ * Thrown when a value is attempted to be used as a map key but is not a string or other string-able primitive
  *
  * @version 2.0.0
  * @since 2.0.0
