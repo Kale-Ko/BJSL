@@ -20,19 +20,13 @@ import io.github.kale_ko.bjsl.processor.conditions.ExpectLessThan;
 import io.github.kale_ko.bjsl.processor.conditions.ExpectNotNull;
 import io.github.kale_ko.bjsl.processor.exception.*;
 import io.github.kale_ko.bjsl.processor.reflection.InitializationUtil;
-import java.io.File;
+import io.github.kale_ko.bjsl.processor.reflection.TypeUtils;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.URI;
-import java.net.URL;
-import java.nio.file.Path;
-import java.time.Instant;
 import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -355,7 +349,7 @@ public class ObjectProcessor {
         }
 
         /**
-         * Check if a type processor exists
+         * Check if a type processor exists for this class
          * <p>
          * Calls {@link #hasTypeProcessor(JavaType)}
          *
@@ -370,7 +364,22 @@ public class ObjectProcessor {
         }
 
         /**
-         * Check if a type processor exists
+         * Check if a type processor exists for this class or a super class
+         * <p>
+         * Calls {@link #hasTypeProcessor(JavaType)}
+         *
+         * @param clazz The class to check for
+         *
+         * @return If a type processor for clazz exists
+         *
+         * @since 1.0.0
+         */
+        public boolean hasTypeOrSupertypeProcessor(@NotNull Class<?> clazz) {
+            return this.hasTypeOrSupertypeProcessor(TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] { }));
+        }
+
+        /**
+         * Check if a type processor exists for this class
          * <p>
          * Calls {@link #hasTypeProcessor(JavaType)}
          *
@@ -385,9 +394,22 @@ public class ObjectProcessor {
         }
 
         /**
-         * Check if a type processor exists
+         * Check if a type processor exists for this class or a super class
          * <p>
-         * Note: This method also checks for superclasses
+         * Calls {@link #hasTypeProcessor(JavaType)}
+         *
+         * @param type The type to check for
+         *
+         * @return If a type processor for type exists
+         *
+         * @since 1.0.0
+         */
+        public boolean hasTypeOrSupertypeProcessor(@NotNull Type type) {
+            return this.hasTypeOrSupertypeProcessor(TypeFactory.defaultInstance().constructType(type));
+        }
+
+        /**
+         * Check if a type processor exists for this class
          *
          * @param type The type to check for
          *
@@ -396,17 +418,24 @@ public class ObjectProcessor {
          * @since 1.0.0
          */
         public boolean hasTypeProcessor(@NotNull JavaType type) {
-            for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
-                if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
-                    return true;
-                }
-            }
-
-            return false;
+            return typeProcessors.entrySet().stream().anyMatch(entry -> TypeUtils.isType(type, entry.getKey()));
         }
 
         /**
-         * Get a type processor
+         * Check if a type processor exists for this class or a super class
+         *
+         * @param type The type to check for
+         *
+         * @return If a type processor for type exists
+         *
+         * @since 1.0.0
+         */
+        public boolean hasTypeOrSupertypeProcessor(@NotNull JavaType type) {
+            return typeProcessors.entrySet().stream().anyMatch(entry -> TypeUtils.isTypeOrSuperTypeOf(type, entry.getKey()));
+        }
+
+        /**
+         * Get a type processor for this class
          * <p>
          * Calls {@link #getTypeProcessor(JavaType)}
          *
@@ -421,7 +450,22 @@ public class ObjectProcessor {
         }
 
         /**
-         * Get a type processor
+         * Get a type processor for this class or a superclass
+         * <p>
+         * Calls {@link #getTypeProcessor(JavaType)}
+         *
+         * @param clazz The class to get
+         *
+         * @return The type processor for class
+         *
+         * @since 1.0.0
+         */
+        public @NotNull TypeProcessor getTypeOrSupertypeProcessor(@NotNull Class<?> clazz) {
+            return this.getTypeOrSupertypeProcessor(TypeFactory.defaultInstance().constructSimpleType(clazz, new JavaType[] { }));
+        }
+
+        /**
+         * Get a type processor for this class
          * <p>
          * Calls {@link #getTypeProcessor(JavaType)}
          *
@@ -436,9 +480,22 @@ public class ObjectProcessor {
         }
 
         /**
-         * Get a type processor
+         * Get a type processor for this class or a superclass
          * <p>
-         * Note: This method also checks for superclasses
+         * Calls {@link #getTypeProcessor(JavaType)}
+         *
+         * @param type The type to get
+         *
+         * @return The type processor for type
+         *
+         * @since 1.0.0
+         */
+        public @NotNull TypeProcessor getTypeOrSupertypeProcessor(@NotNull Type type) {
+            return this.getTypeOrSupertypeProcessor(TypeFactory.defaultInstance().constructType(type));
+        }
+
+        /**
+         * Get a type processor for this class
          *
          * @param type The type to get
          *
@@ -447,13 +504,20 @@ public class ObjectProcessor {
          * @since 1.0.0
          */
         public @NotNull TypeProcessor getTypeProcessor(@NotNull JavaType type) {
-            for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
-                if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
-                    return typeProcessor.getValue();
-                }
-            }
+            return typeProcessors.entrySet().stream().filter(entry -> TypeUtils.isType(type, entry.getKey())).findFirst().orElseThrow().getValue();
+        }
 
-            throw new NullPointerException("A type processor does not exists for class \"" + type.getRawClass().getSimpleName() + "\" or one of its superclasses");
+        /**
+         * Get a type processor for this class or a superclass
+         *
+         * @param type The type to get
+         *
+         * @return The type processor for type
+         *
+         * @since 1.0.0
+         */
+        public @NotNull TypeProcessor getTypeOrSupertypeProcessor(@NotNull JavaType type) {
+            return typeProcessors.entrySet().stream().filter(entry -> TypeUtils.isTypeOrSuperTypeOf(type, entry.getKey())).sorted((entryA, entryB) -> TypeUtils.sortDistance(type, entryA.getKey(), entryB.getKey())).findFirst().orElseThrow().getValue();
         }
 
         /**
@@ -499,10 +563,8 @@ public class ObjectProcessor {
          * @since 1.0.0
          */
         public @NotNull Builder createTypeProcessor(@NotNull JavaType type, @NotNull TypeProcessor value) {
-            for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
-                if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
-                    throw new NullPointerException("A type processor already exists for class \"" + type.getRawClass().getSimpleName() + "\" or one of its superclasses");
-                }
+            if (this.hasTypeProcessor(type)) {
+                throw new NullPointerException("A type processor already exists for class \"" + type.getRawClass().getSimpleName() + "\"");
             }
 
             this.typeProcessors.put(type, value);
@@ -542,8 +604,6 @@ public class ObjectProcessor {
 
         /**
          * Remove a type processor
-         * <p>
-         * Note: This method also checks for superclasses
          *
          * @param type The type to remove
          *
@@ -552,15 +612,13 @@ public class ObjectProcessor {
          * @since 1.0.0
          */
         public @NotNull Builder removeTypeProcessor(@NotNull JavaType type) {
-            for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
-                if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
-                    typeProcessors.remove(typeProcessor.getKey());
-
-                    return this;
-                }
+            if (!this.hasTypeProcessor(type)) {
+                throw new NullPointerException("A type processor does not exists for class \"" + type.getRawClass().getSimpleName() + "\"");
             }
 
-            throw new NullPointerException("A type processor does not exists for class \"" + type.getRawClass().getSimpleName() + "\" or one of its superclasses");
+            this.typeProcessors.remove(type);
+
+            return this;
         }
 
         /**
@@ -617,7 +675,7 @@ public class ObjectProcessor {
      * @return A new Object of passed type with the values of element
      *
      * @throws io.github.kale_ko.bjsl.processor.exception.ProcessorException If there is an exception while processing
-     * @since 1.0.0
+     * @since 1.0.0h
      */
     @SuppressWarnings("unchecked")
     public <T> @Nullable T toObject(@NotNull ParsedElement element, @NotNull Class<T> clazz) {
@@ -659,10 +717,10 @@ public class ObjectProcessor {
                 return null;
             }
 
-            // TODO Order type processors based on how "close" the class handler is to the type processor handler
-            for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
-                if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
-                    return typeProcessor.getValue().toObject(element);
+            {
+                Optional<TypeProcessor> typeProcessor = typeProcessors.entrySet().stream().filter(entry -> TypeUtils.isTypeOrSuperTypeOf(type, entry.getKey())).sorted((entryA, entryB) -> TypeUtils.sortDistance(type, entryA.getKey(), entryB.getKey())).map(Map.Entry::getValue).findFirst();
+                if (typeProcessor.isPresent()) {
+                    return typeProcessor.get().toObject(element);
                 }
             }
 
@@ -670,7 +728,7 @@ public class ObjectProcessor {
                 if (type.getRawClass().isEnum()) {
                     if (element.asPrimitive().isString()) {
                         for (Object value : type.getRawClass().getEnumConstants()) {
-                            if ((caseSensitiveEnums && ((Enum<?>) value).name().equals(element.asPrimitive().asString())) || (!caseSensitiveEnums && ((Enum<?>) value).name().equalsIgnoreCase(element.asPrimitive().asString()))) {
+                            if ((!caseSensitiveEnums && ((Enum<?>) value).name().equalsIgnoreCase(element.asPrimitive().asString())) || (caseSensitiveEnums && ((Enum<?>) value).name().equals(element.asPrimitive().asString()))) {
                                 return value;
                             }
                         }
@@ -845,7 +903,7 @@ public class ObjectProcessor {
                         for (Map.Entry<String, ParsedElement> entry : element.asObject().getEntries()) {
                             Object subObject = toObject(entry.getValue(), type.getContentType());
                             if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
-                                object.put(toObject(ParsedPrimitive.fromString(entry.getKey()), type.getBindings().getTypeParameters().get(0)), subObject);
+                                object.put(toObject(ParsedPrimitive.fromString(entry.getKey()), type.getKeyType()), subObject);
                             }
                         }
 
@@ -854,7 +912,6 @@ public class ObjectProcessor {
                         Object object = InitializationUtil.initialize(type.getRawClass());
 
                         List<Field> fields = getFields(object.getClass());
-
                         for (Field field : fields) {
                             if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
                                 boolean shouldSerialize = !(Modifier.isTransient(field.getModifiers()) || field.getName().startsWith("this$"));
@@ -876,6 +933,7 @@ public class ObjectProcessor {
 
                                 if (shouldSerialize && element.asObject().has(subKey)) {
                                     Object subObject = toObject(element.asObject().get(subKey), field.getGenericType());
+
                                     if (expect) {
                                         for (Annotation annotation : field.getDeclaredAnnotations()) {
                                             if (annotation.annotationType() == ExpectNotNull.class) {
@@ -929,6 +987,7 @@ public class ObjectProcessor {
                                             }
                                         }
                                     }
+
                                     if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
                                         field.set(object, subObject);
                                     }
@@ -951,122 +1010,128 @@ public class ObjectProcessor {
 
                         for (ParsedElement subElement : element.asArray().getValues()) {
                             Object subObject = toObject(subElement, type.getContentType());
-                            if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
+                            if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
                                 object.add(subObject);
                             }
                         }
 
                         return object;
                     } else if (type instanceof ArrayType) {
-                        int nonNull = element.asArray().getSize();
+                        if (type.getRawClass() == byte[].class) {
+                            byte[] array = (byte[]) InitializationUtil.initializePrimitiveArray(byte.class, element.asArray().getSize());
 
-                        if (ignoreArrayNulls || ignoreEmptyObjects) {
-                            nonNull = 0;
-
+                            int i = 0;
                             for (ParsedElement subElement : element.asArray().getValues()) {
-                                Object subObject = toObject(subElement, type.getRawClass().getComponentType());
-                                if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
-                                    nonNull++;
+                                Object subObject = toObject(subElement, byte.class);
+                                array[i] = (byte) (subObject != null ? subObject : 0);
+
+                                i++;
+                            }
+
+                            return array;
+                        } else if (type.getRawClass() == char[].class) {
+                            char[] array = (char[]) InitializationUtil.initializePrimitiveArray(char.class, element.asArray().getSize());
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                Object subObject = toObject(subElement, char.class);
+                                array[i] = (char) (subObject != null ? subObject : 0);
+
+                                i++;
+                            }
+
+                            return array;
+                        } else if (type.getRawClass() == short[].class) {
+                            short[] array = (short[]) InitializationUtil.initializePrimitiveArray(short.class, element.asArray().getSize());
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                Object subObject = toObject(subElement, short.class);
+                                array[i] = (short) (subObject != null ? subObject : 0);
+
+                                i++;
+                            }
+
+                            return array;
+                        } else if (type.getRawClass() == int[].class) {
+                            int[] array = (int[]) InitializationUtil.initializePrimitiveArray(int.class, element.asArray().getSize());
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                Object subObject = toObject(subElement, int.class);
+                                array[i] = (int) (subObject != null ? subObject : 0);
+
+                                i++;
+                            }
+
+                            return array;
+                        } else if (type.getRawClass() == long[].class) {
+                            long[] array = (long[]) InitializationUtil.initializePrimitiveArray(long.class, element.asArray().getSize());
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                Object subObject = toObject(subElement, long.class);
+                                array[i] = (long) (subObject != null ? subObject : 0L);
+
+                                i++;
+                            }
+
+                            return array;
+                        } else if (type.getRawClass() == float[].class) {
+                            float[] array = (float[]) InitializationUtil.initializePrimitiveArray(float.class, element.asArray().getSize());
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                Object subObject = toObject(subElement, float.class);
+                                array[i] = (float) (subObject != null ? subObject : 0.0f);
+
+                                i++;
+                            }
+
+                            return array;
+                        } else if (type.getRawClass() == double[].class) {
+                            double[] array = (double[]) InitializationUtil.initializePrimitiveArray(double.class, element.asArray().getSize());
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                Object subObject = toObject(subElement, double.class);
+                                array[i] = (double) (subObject != null ? subObject : 0.0d);
+
+                                i++;
+                            }
+
+                            return array;
+                        } else if (type.getRawClass() == boolean[].class) {
+                            boolean[] array = (boolean[]) InitializationUtil.initializePrimitiveArray(boolean.class, element.asArray().getSize());
+
+                            int i = 0;
+                            for (ParsedElement subElement : element.asArray().getValues()) {
+                                Object subObject = toObject(subElement, boolean.class);
+                                array[i] = (boolean) (subObject != null ? subObject : false);
+
+                                i++;
+                            }
+
+                            return array;
+                        } else {
+                            int size = element.asArray().getSize();
+
+                            if (ignoreArrayNulls || ignoreEmptyObjects) {
+                                size = 0;
+
+                                for (ParsedElement subElement : element.asArray().getValues()) {
+                                    Object subObject = toObject(subElement, type.getContentType().getRawClass());
+                                    if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
+                                        size++;
+                                    }
                                 }
                             }
-                        }
 
-                        Object result;
-
-                        if (type.getRawClass() == byte[].class) {
-                            byte[] array = (byte[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
+                            Object[] array = InitializationUtil.initializeArray(type.getContentType().getRawClass(), size);
 
                             int i = 0;
                             for (ParsedElement subElement : element.asArray().getValues()) {
-                                array[i] = (byte) toObject(subElement, type.getRawClass().getComponentType());
-
-                                i++;
-                            }
-
-                            result = array;
-                        } else if (type.getRawClass() == char[].class) {
-                            char[] array = (char[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                array[i] = (char) toObject(subElement, type.getRawClass().getComponentType());
-
-                                i++;
-                            }
-
-                            result = array;
-                        } else if (type.getRawClass() == short[].class) {
-                            short[] array = (short[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                array[i] = (short) toObject(subElement, type.getRawClass().getComponentType());
-
-                                i++;
-                            }
-
-                            result = array;
-                        } else if (type.getRawClass() == int[].class) {
-                            int[] array = (int[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                array[i] = (int) toObject(subElement, type.getRawClass().getComponentType());
-
-                                i++;
-                            }
-
-                            result = array;
-                        } else if (type.getRawClass() == long[].class) {
-                            long[] array = (long[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                array[i] = (long) toObject(subElement, type.getRawClass().getComponentType());
-
-                                i++;
-                            }
-
-                            result = array;
-                        } else if (type.getRawClass() == float[].class) {
-                            float[] array = (float[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                array[i] = (float) toObject(subElement, type.getRawClass().getComponentType());
-
-                                i++;
-                            }
-
-                            result = array;
-                        } else if (type.getRawClass() == double[].class) {
-                            double[] array = (double[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                array[i] = (double) toObject(subElement, type.getRawClass().getComponentType());
-
-                                i++;
-                            }
-
-                            result = array;
-                        } else if (type.getRawClass() == boolean[].class) {
-                            boolean[] array = (boolean[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                array[i] = (boolean) toObject(subElement, type.getRawClass().getComponentType());
-
-                                i++;
-                            }
-
-                            result = array;
-                        } else {
-                            Object[] array = (Object[]) InitializationUtil.initializeArray(type.getRawClass().getComponentType(), nonNull);
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                Object subObject = toObject(subElement, type.getRawClass().getComponentType());
+                                Object subObject = toObject(subElement, type.getContentType().getRawClass());
                                 if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
                                     array[i] = subObject;
 
@@ -1074,131 +1139,8 @@ public class ObjectProcessor {
                                 }
                             }
 
-                            result = array;
+                            return array;
                         }
-
-                        return result;
-                    } else if (!type.getRawClass().isInterface()) {
-                        int nonNull = element.asArray().getSize();
-
-                        if (ignoreArrayNulls || ignoreEmptyObjects) {
-                            nonNull = 0;
-
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                Object subObject = toObject(subElement, type.getRawClass());
-                                if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
-                                    nonNull++;
-                                }
-                            }
-                        }
-
-                        Object result;
-
-                        if (type.getRawClass() == byte[].class) {
-                            byte[] array = (byte[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                array[i] = (byte) toObject(subElement, type.getRawClass());
-
-                                i++;
-                            }
-
-                            result = array;
-                        } else if (type.getRawClass() == char[].class) {
-                            char[] array = (char[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                array[i] = (char) toObject(subElement, type.getRawClass());
-
-                                i++;
-                            }
-
-                            result = array;
-                        } else if (type.getRawClass() == short[].class) {
-                            short[] array = (short[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                array[i] = (short) toObject(subElement, type.getRawClass());
-
-                                i++;
-                            }
-
-                            result = array;
-                        } else if (type.getRawClass() == int[].class) {
-                            int[] array = (int[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                array[i] = (int) toObject(subElement, type.getRawClass());
-
-                                i++;
-                            }
-
-                            result = array;
-                        } else if (type.getRawClass() == long[].class) {
-                            long[] array = (long[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                array[i] = (long) toObject(subElement, type.getRawClass());
-
-                                i++;
-                            }
-
-                            result = array;
-                        } else if (type.getRawClass() == float[].class) {
-                            float[] array = (float[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                array[i] = (float) toObject(subElement, type.getRawClass());
-
-                                i++;
-                            }
-
-                            result = array;
-                        } else if (type.getRawClass() == double[].class) {
-                            double[] array = (double[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                array[i] = (double) toObject(subElement, type.getRawClass());
-
-                                i++;
-                            }
-
-                            result = array;
-                        } else if (type.getRawClass() == boolean[].class) {
-                            boolean[] array = (boolean[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                array[i] = (boolean) toObject(subElement, type.getRawClass());
-
-                                i++;
-                            }
-
-                            result = array;
-                        } else {
-                            Object[] array = (Object[]) InitializationUtil.initializeArray(type.getRawClass(), nonNull);
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                Object subObject = toObject(subElement, type.getRawClass());
-                                if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
-                                    array[i] = subObject;
-
-                                    i++;
-                                }
-                            }
-
-                            result = array;
-                        }
-
-                        return result;
                     } else {
                         throw new InvalidTypeException(type.getRawClass());
                     }
@@ -1229,13 +1171,12 @@ public class ObjectProcessor {
                 return ParsedPrimitive.fromNull();
             }
 
-            if (object.getClass().getTypeParameters().length == 0) {
+            {
                 JavaType type = TypeFactory.defaultInstance().constructSimpleType(object.getClass(), new JavaType[] { });
 
-                for (Map.Entry<JavaType, TypeProcessor> typeProcessor : typeProcessors.entrySet()) {
-                    if (typeProcessor.getKey().isTypeOrSuperTypeOf(type.getRawClass())) {
-                        return typeProcessor.getValue().toElement(object);
-                    }
+                Optional<TypeProcessor> typeProcessor = typeProcessors.entrySet().stream().filter(entry -> TypeUtils.isTypeOrSuperTypeOf(type, entry.getKey())).sorted((entryA, entryB) -> TypeUtils.sortDistance(type, entryA.getKey(), entryB.getKey())).map(Map.Entry::getValue).findFirst();
+                if (typeProcessor.isPresent()) {
+                    return typeProcessor.get().toElement(object);
                 }
             }
 
@@ -1252,7 +1193,7 @@ public class ObjectProcessor {
 
                 for (byte item : (byte[]) object) {
                     ParsedElement subElement = toElement(item);
-                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                    if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
                         arrayElement.add(subElement);
                     }
                 }
@@ -1263,7 +1204,7 @@ public class ObjectProcessor {
 
                 for (char item : (char[]) object) {
                     ParsedElement subElement = toElement(item);
-                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                    if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
                         arrayElement.add(subElement);
                     }
                 }
@@ -1274,7 +1215,7 @@ public class ObjectProcessor {
 
                 for (short item : (short[]) object) {
                     ParsedElement subElement = toElement(item);
-                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                    if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
                         arrayElement.add(subElement);
                     }
                 }
@@ -1285,7 +1226,7 @@ public class ObjectProcessor {
 
                 for (int item : (int[]) object) {
                     ParsedElement subElement = toElement(item);
-                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                    if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
                         arrayElement.add(subElement);
                     }
                 }
@@ -1296,7 +1237,7 @@ public class ObjectProcessor {
 
                 for (long item : (long[]) object) {
                     ParsedElement subElement = toElement(item);
-                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                    if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
                         arrayElement.add(subElement);
                     }
                 }
@@ -1307,7 +1248,7 @@ public class ObjectProcessor {
 
                 for (float item : (float[]) object) {
                     ParsedElement subElement = toElement(item);
-                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                    if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
                         arrayElement.add(subElement);
                     }
                 }
@@ -1318,7 +1259,7 @@ public class ObjectProcessor {
 
                 for (double item : (double[]) object) {
                     ParsedElement subElement = toElement(item);
-                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                    if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
                         arrayElement.add(subElement);
                     }
                 }
@@ -1329,7 +1270,7 @@ public class ObjectProcessor {
 
                 for (boolean item : (boolean[]) object) {
                     ParsedElement subElement = toElement(item);
-                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                    if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
                         arrayElement.add(subElement);
                     }
                 }
@@ -1340,7 +1281,7 @@ public class ObjectProcessor {
 
                 for (Object item : (Object[]) object) {
                     ParsedElement subElement = toElement(item);
-                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                    if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
                         arrayElement.add(subElement);
                     }
                 }
@@ -1351,7 +1292,7 @@ public class ObjectProcessor {
 
                 for (Object item : List.copyOf((Collection<?>) object)) {
                     ParsedElement subElement = toElement(item);
-                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                    if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
                         arrayElement.add(subElement);
                     }
                 }
@@ -1362,7 +1303,7 @@ public class ObjectProcessor {
 
                 for (Map.Entry<?, ?> entry : Map.copyOf((Map<?, ?>) object).entrySet()) {
                     ParsedElement subElement = toElement(entry.getValue());
-                    if (!((ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) || (ignoreEmptyObjects && subElement.isArray() && subElement.asArray().getSize() == 0) || (ignoreEmptyObjects && subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                    if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
                         objectElement.set(toString(entry.getKey()), subElement);
                     }
                 }
@@ -1372,13 +1313,12 @@ public class ObjectProcessor {
                 ParsedObject objectElement = ParsedObject.create();
 
                 Object defaultObject = null;
-
                 if (ignoreDefaults) {
                     try {
                         defaultObject = InitializationUtil.initialize(object.getClass());
                     } catch (InitializationException e) {
                         if (BJSL.getLogger() != null) {
-                            BJSL.getLogger().warning("Initialization of " + object.getClass().getSimpleName() + " failed, defaults will not be ignored.");
+                            BJSL.getLogger().warning("Initialization of " + object.getClass().getSimpleName() + " failed, defaults will not be ignored");
 
                             StringWriter stringWriter = new StringWriter();
                             PrintWriter writer = new PrintWriter(stringWriter);
@@ -1389,7 +1329,6 @@ public class ObjectProcessor {
                 }
 
                 List<Field> fields = getFields(object.getClass());
-
                 for (Field field : fields) {
                     if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
                         boolean shouldSerialize = !(Modifier.isTransient(field.getModifiers()) || field.getName().startsWith("this$"));
@@ -1397,15 +1336,15 @@ public class ObjectProcessor {
                         String subKey = field.getName();
                         ParsedElement subElement = toElement(field.get(object));
 
-                        if (ignoreNulls && subElement.isPrimitive() && subElement.asPrimitive().isNull()) {
+                        if (ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) {
                             shouldSerialize = false;
                         }
 
-                        if (ignoreEmptyObjects && ((subElement.isArray() && subElement.asArray().getSize() == 0) || (subElement.isObject() && subElement.asObject().getSize() == 0))) {
+                        if (ignoreEmptyObjects && ((subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0))) {
                             shouldSerialize = false;
                         }
 
-                        if (ignoreDefaults && (subElement.isPrimitive() && !subElement.asPrimitive().isNull() && subElement.asPrimitive().get().equals(field.get(defaultObject)))) {
+                        if (ignoreDefaults && (subElement.isPrimitive() && (!subElement.asPrimitive().isNull() ? subElement.asPrimitive().get().equals(field.get(defaultObject)) : field.get(defaultObject) == null))) {
                             shouldSerialize = false;
                         }
 
@@ -1432,39 +1371,63 @@ public class ObjectProcessor {
         }
     }
 
-    private @NotNull String toString(@Nullable Object object) {
+    /**
+     * Maps this primitive Object into a {@link java.lang.String}
+     *
+     * @param object The object to map
+     *
+     * @return A new {@link java.lang.String} with the value of the object
+     *
+     * @throws io.github.kale_ko.bjsl.processor.exception.ProcessorException If there is an exception while processing
+     * @since 2.0.0
+     */
+    protected @NotNull String toString(@Nullable Object object) {
         try {
             ParsedElement element = toElement(object);
 
             if (element.isPrimitive()) {
                 ParsedPrimitive primitive = element.asPrimitive();
 
-                if (primitive.isString()) {
-                    return primitive.asString();
-                } else if (primitive.isByte()) {
-                    return Byte.toString(primitive.asByte());
-                } else if (primitive.isChar()) {
-                    return Character.toString(primitive.asChar());
-                } else if (primitive.isShort()) {
-                    return Short.toString(primitive.asShort());
-                } else if (primitive.isInteger()) {
-                    return Integer.toString(primitive.asInteger());
-                } else if (primitive.isLong()) {
-                    return Long.toString(primitive.asLong());
-                } else if (primitive.isBigInteger()) {
-                    return primitive.asBigInteger().toString();
-                } else if (primitive.isFloat()) {
-                    return Float.toString(primitive.asFloat());
-                } else if (primitive.isDouble()) {
-                    return Double.toString(primitive.asDouble());
-                } else if (primitive.isBigDecimal()) {
-                    return primitive.asBigDecimal().toString();
-                } else if (primitive.isBoolean()) {
-                    return Boolean.toString(primitive.asBoolean());
-                } else if (primitive.isNull()) {
-                    return "null";
-                } else {
-                    throw new NotAPrimitiveException(element);
+                switch (primitive.getType()) {
+                    case STRING: {
+                        return primitive.asString();
+                    }
+                    case BYTE: {
+                        return Byte.toString(primitive.asByte());
+                    }
+                    case CHAR: {
+                        return Character.toString(primitive.asChar());
+                    }
+                    case SHORT: {
+                        return Short.toString(primitive.asShort());
+                    }
+                    case INTEGER: {
+                        return Integer.toString(primitive.asInteger());
+                    }
+                    case LONG: {
+                        return Long.toString(primitive.asLong());
+                    }
+                    case BIGINTEGER: {
+                        return primitive.asBigInteger().toString();
+                    }
+                    case FLOAT: {
+                        return Float.toString(primitive.asFloat());
+                    }
+                    case DOUBLE: {
+                        return Double.toString(primitive.asDouble());
+                    }
+                    case BIGDECIMAL: {
+                        return primitive.asBigDecimal().toString();
+                    }
+                    case BOOLEAN: {
+                        return Boolean.toString(primitive.asBoolean());
+                    }
+                    case NULL: {
+                        return "null";
+                    }
+                    default: {
+                        throw new NotAPrimitiveException(element);
+                    }
                 }
             } else {
                 throw new NotAPrimitiveException(element);
@@ -1488,23 +1451,19 @@ public class ObjectProcessor {
      * @since 1.0.0
      */
     protected static <T> @NotNull List<Field> getFields(@NotNull Class<T> clazz) {
+        Set<String> fieldNames = new HashSet<>();
         List<Field> fields = new ArrayList<>(Arrays.asList(clazz.getDeclaredFields()));
 
-        if (clazz.getSuperclass() != Object.class && clazz.getSuperclass() != null) {
-            List<Field> parentFields = getFields(clazz.getSuperclass());
+        Class<?> superClazz = clazz.getSuperclass();
+        if (superClazz != null && superClazz != Object.class) {
+            List<Field> superFields = getFields(superClazz);
 
-            for (Field parentField : parentFields) {
-                boolean overwritten = false;
+            for (Field superField : superFields) {
+                boolean overwritten = fieldNames.contains(superField.getName());
 
-                for (Field field : fields) {
-                    if (field.getName().equals(parentField.getName())) {
-                        overwritten = true;
-                        break;
-                    }
-                }
-
-                if (!overwritten && !Modifier.isTransient(parentField.getModifiers())) {
-                    fields.add(parentField);
+                if (!(overwritten || Modifier.isTransient(superField.getModifiers()))) {
+                    fieldNames.add(superField.getName());
+                    fields.add(superField);
                 }
             }
         }
