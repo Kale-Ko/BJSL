@@ -81,7 +81,6 @@ javadoc {
     options.links = [javaVersion < 11 ? ("https://docs.oracle.com/javase/" + javaVersion + "/docs/api/") : ("https://docs.oracle.com/en/java/javase/" + javaVersion + "/docs/api/"),
                      "https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-core/" + jackson_version + "/",
                      "https://javadoc.io/doc/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/" + jackson_version + "/",
-                     "https://javadoc.io/doc/com.fasterxml.jackson.dataformat/jackson-dataformat-xml/" + jackson_version + "/",
                      "https://javadoc.io/doc/com.fasterxml.jackson.dataformat/jackson-dataformat-smile/" + jackson_version + "/",
                      "https://javadoc.io/doc/org.jetbrains/annotations/" + annotations_version + "/"]
 
