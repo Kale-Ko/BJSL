@@ -211,7 +211,8 @@ public abstract class JacksonParser<T extends TokenStreamFactory, V extends Obje
 
                 return outputStream.toByteArray();
             } else if (element instanceof ParsedPrimitive) {
-                return String.valueOf(element.asPrimitive().get()).getBytes(StandardCharsets.UTF_8);
+                Object value = element.asPrimitive().get();
+                return (value != null ? value.toString() : "null").getBytes(StandardCharsets.UTF_8);
             } else {
                 throw new InvalidTypeException(element.getClass());
             }

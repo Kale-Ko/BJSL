@@ -10,6 +10,9 @@ import org.jetbrains.annotations.NotNull;
  * @since 2.0.0
  */
 public final class TypeUtils {
+    private TypeUtils() {
+    }
+
     /**
      * Checks if the given type is the same as the target type
      *
