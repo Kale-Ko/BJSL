@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">package io.github.kale_ko.bjsl.parsers;</a>
+<span class="sourceLineNo">002</span><a id="line.2"></a>
+<span class="sourceLineNo">003</span><a id="line.3">import com.fasterxml.jackson.core.PrettyPrinter;</a>
+<span class="sourceLineNo">004</span><a id="line.4">import com.fasterxml.jackson.core.StreamReadFeature;</a>
+<span class="sourceLineNo">005</span><a id="line.5">import com.fasterxml.jackson.core.StreamWriteFeature;</a>
+<span class="sourceLineNo">006</span><a id="line.6">import com.fasterxml.jackson.dataformat.smile.SmileFactory;</a>
+<span class="sourceLineNo">007</span><a id="line.7">import com.fasterxml.jackson.dataformat.smile.SmileFactoryBuilder;</a>
+<span class="sourceLineNo">008</span><a id="line.8">import com.fasterxml.jackson.dataformat.smile.SmileGenerator;</a>
+<span class="sourceLineNo">009</span><a id="line.9">import com.fasterxml.jackson.dataformat.smile.databind.SmileMapper;</a>
+<span class="sourceLineNo">010</span><a id="line.10">import org.jetbrains.annotations.NotNull;</a>
+<span class="sourceLineNo">011</span><a id="line.11">import org.jetbrains.annotations.Nullable;</a>
+<span class="sourceLineNo">012</span><a id="line.12"></a>
+<span class="sourceLineNo">013</span><a id="line.13">/**</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * A parser for interfacing with Smile (Binary JSON)</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * &lt;p&gt;</a>
+<span class="sourceLineNo">016</span><a id="line.16"> * Uses the Jackson-DataFormat smile parser</a>
+<span class="sourceLineNo">017</span><a id="line.17"> *</a>
+<span class="sourceLineNo">018</span><a id="line.18"> * @version 2.0.0</a>
+<span class="sourceLineNo">019</span><a id="line.19"> * @since 1.0.0</a>
+<span class="sourceLineNo">020</span><a id="line.20"> */</a>
+<span class="sourceLineNo">021</span><a id="line.21">public class SmileParser extends JacksonParser&lt;SmileFactory, SmileMapper&gt; {</a>
+<span class="sourceLineNo">022</span><a id="line.22">    /**</a>
+<span class="sourceLineNo">023</span><a id="line.23">     * Create a new JacksonParser using certain factories</a>
+<span class="sourceLineNo">024</span><a id="line.24">     *</a>
+<span class="sourceLineNo">025</span><a id="line.25">     * @param factory       The factory used for converting to/from trees/strings</a>
+<span class="sourceLineNo">026</span><a id="line.26">     * @param mapper        The mapper used for converting to/from trees/strings</a>
+<span class="sourceLineNo">027</span><a id="line.27">     * @param prettyPrinter The prettyPrinter used for converting to strings</a>
+<span class="sourceLineNo">028</span><a id="line.28">     *</a>
+<span class="sourceLineNo">029</span><a id="line.29">     * @since 1.0.0</a>
+<span class="sourceLineNo">030</span><a id="line.30">     */</a>
+<span class="sourceLineNo">031</span><a id="line.31">    protected SmileParser(@NotNull SmileFactory factory, @NotNull SmileMapper mapper, @Nullable PrettyPrinter prettyPrinter) {</a>
+<span class="sourceLineNo">032</span><a id="line.32">        super(factory, mapper, prettyPrinter);</a>
+<span class="sourceLineNo">033</span><a id="line.33">    }</a>
+<span class="sourceLineNo">034</span><a id="line.34"></a>
+<span class="sourceLineNo">035</span><a id="line.35">    /**</a>
+<span class="sourceLineNo">036</span><a id="line.36">     * A builder class for creating new {@link SmileParser}s</a>
+<span class="sourceLineNo">037</span><a id="line.37">     *</a>
+<span class="sourceLineNo">038</span><a id="line.38">     * @version 2.0.0</a>
+<span class="sourceLineNo">039</span><a id="line.39">     * @since 1.0.0</a>
+<span class="sourceLineNo">040</span><a id="line.40">     */</a>
+<span class="sourceLineNo">041</span><a id="line.41">    public static class Builder {</a>
+<span class="sourceLineNo">042</span><a id="line.42">        /**</a>
+<span class="sourceLineNo">043</span><a id="line.43">         * Create a new {@link SmileParser} builder</a>
+<span class="sourceLineNo">044</span><a id="line.44">         *</a>
+<span class="sourceLineNo">045</span><a id="line.45">         * @since 1.0.0</a>
+<span class="sourceLineNo">046</span><a id="line.46">         */</a>
+<span class="sourceLineNo">047</span><a id="line.47">        public Builder() {</a>
+<span class="sourceLineNo">048</span><a id="line.48">        }</a>
+<span class="sourceLineNo">049</span><a id="line.49"></a>
+<span class="sourceLineNo">050</span><a id="line.50">        /**</a>
+<span class="sourceLineNo">051</span><a id="line.51">         * Uses the current settings to build a new {@link SmileParser}</a>
+<span class="sourceLineNo">052</span><a id="line.52">         *</a>
+<span class="sourceLineNo">053</span><a id="line.53">         * @return A new {@link SmileParser} instance</a>
+<span class="sourceLineNo">054</span><a id="line.54">         *</a>
+<span class="sourceLineNo">055</span><a id="line.55">         * @since 1.0.0</a>
+<span class="sourceLineNo">056</span><a id="line.56">         */</a>
+<span class="sourceLineNo">057</span><a id="line.57">        public @NotNull SmileParser build() {</a>
+<span class="sourceLineNo">058</span><a id="line.58">            SmileFactoryBuilder factoryBuilder = SmileFactory.builder();</a>
+<span class="sourceLineNo">059</span><a id="line.59">            factoryBuilder = factoryBuilder.configure(StreamReadFeature.STRICT_DUPLICATE_DETECTION, true);</a>
+<span class="sourceLineNo">060</span><a id="line.60">            factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_DOUBLE_PARSER, true);</a>
+<span class="sourceLineNo">061</span><a id="line.61">            factoryBuilder = factoryBuilder.configure(StreamReadFeature.USE_FAST_BIG_NUMBER_PARSER, true);</a>
+<span class="sourceLineNo">062</span><a id="line.62">            factoryBuilder = factoryBuilder.configure(StreamWriteFeature.USE_FAST_DOUBLE_WRITER, true);</a>
+<span class="sourceLineNo">063</span><a id="line.63">            factoryBuilder = factoryBuilder.configure(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN, false);</a>
+<span class="sourceLineNo">064</span><a id="line.64">            factoryBuilder = factoryBuilder.configure(SmileGenerator.Feature.WRITE_HEADER, true);</a>
+<span class="sourceLineNo">065</span><a id="line.65">            factoryBuilder = factoryBuilder.configure(SmileGenerator.Feature.WRITE_END_MARKER, true);</a>
+<span class="sourceLineNo">066</span><a id="line.66">            factoryBuilder = factoryBuilder.configure(SmileGenerator.Feature.CHECK_SHARED_NAMES, true);</a>
+<span class="sourceLineNo">067</span><a id="line.67">            factoryBuilder = factoryBuilder.configure(SmileGenerator.Feature.CHECK_SHARED_STRING_VALUES, false);</a>
+<span class="sourceLineNo">068</span><a id="line.68"></a>
+<span class="sourceLineNo">069</span><a id="line.69">            SmileFactory factory = factoryBuilder.build();</a>
+<span class="sourceLineNo">070</span><a id="line.70"></a>
+<span class="sourceLineNo">071</span><a id="line.71">            return new SmileParser(factory, new SmileMapper(factory), null);</a>
+<span class="sourceLineNo">072</span><a id="line.72">        }</a>
+<span class="sourceLineNo">073</span><a id="line.73">    }</a>
+<span class="sourceLineNo">074</span><a id="line.74">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>
