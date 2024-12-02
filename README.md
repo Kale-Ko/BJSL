@@ -107,7 +107,7 @@ TypeProcessor uuidTypeProcessor = new TypeProcessor() {
 
 These are registered when building an [`ObjectProcessor`](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/ObjectProcessor.html) with [`#createTypeProcessor(class, typeProcessor)`](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/ObjectProcessor.Builder.html#createTypeProcessor(java.lang.Class,io.github.kale_ko.bjsl.processor.TypeProcessor))
 
-There is also a list of default type processors that can be toggled using [`#setEnableDefaultTypeProcessors(bool)`](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/ObjectProcessor.Builder.html#setEnableDefaultTypeProcessors(boolean))\
+There is also a list of default type processors that can be modified using [`#setDefaultTypeProcessorsOptions(options)`](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/ObjectProcessor.Builder.html#setDefaultTypeProcessorsOptions(io.github.kale_ko.bjsl.processor.DefaultTypeProcessors.Options))\
 This includes the following:
 - `java.util.UUID`
 - `java.net.URI`
@@ -127,7 +127,7 @@ If you think of something not on this list that you think should be feel free to
 There are a couple of annotation types that can be used on serialized fields.
 
 - [@AlwaysSerialize](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/annotations/AlwaysSerialize.html) - Always serialize this field, even if it is marked transient or to be excluded by ignores.
-- [@DontSerialize](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/annotations/DontSerialize.html) - Never serialize this field, does the same thing as marking the field as transient.
+- [@NeverSerialize](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/annotations/NeverSerialize.html) - Never serialize this field, does the same thing as marking the field as transient.
 - [@Rename](https://bjsl.kaleko.dev/docs/io/github/kale_ko/bjsl/processor/annotations/Rename.html) - Rename a field to this value when outputting and from this when inputting. (This does not convert old data to match, intended use is for renaming a java field and not updating data)
 
 There are also a few values that can be used to require certain conditions on deserialized values.
