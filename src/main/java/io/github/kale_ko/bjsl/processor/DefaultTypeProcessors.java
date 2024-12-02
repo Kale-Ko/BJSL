@@ -43,7 +43,7 @@ public final class DefaultTypeProcessors {
          *
          * @since 2.0.0
          */
-        public static final @NotNull Options DEFAULT = new Options(Options.UUIDMode.STRING, Options.InetAddressMode.STRING, false, Options.DateMode.STRING, DateTimeFormatter.ofPattern("MMMM dd yyyy @ hh:mm:ss.SSS a XXX").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault()));
+        public static final @NotNull Options DEFAULT = new Options(Options.UUIDMode.STRING, Options.InetAddressMode.STRING, false, Options.DateMode.STRING, DateTimeFormatter.ISO_OFFSET_DATE_TIME.withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault()));
 
         /**
          * A mode for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#UUID_P} type processor
