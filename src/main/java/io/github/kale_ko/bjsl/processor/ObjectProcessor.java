@@ -1171,13 +1171,15 @@ public class ObjectProcessor {
                 return ParsedPrimitive.fromNull();
             }
 
-            {
+            try {
                 JavaType type = TypeFactory.defaultInstance().constructSimpleType(object.getClass(), new JavaType[] { });
 
                 Optional<TypeProcessor> typeProcessor = typeProcessors.entrySet().stream().filter(entry -> TypeUtils.isTypeOrSuperTypeOf(type, entry.getKey())).sorted((entryA, entryB) -> TypeUtils.sortDistance(type, entryA.getKey(), entryB.getKey())).map(Map.Entry::getValue).findFirst();
                 if (typeProcessor.isPresent()) {
                     return typeProcessor.get().toElement(object);
                 }
+            } catch (IllegalArgumentException e) {
+                // Class has type parameters, continue
             }
 
             try {

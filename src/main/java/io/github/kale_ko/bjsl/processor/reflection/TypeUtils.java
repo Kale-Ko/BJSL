@@ -38,7 +38,7 @@ public final class TypeUtils {
      * @since 2.0.0
      */
     public static boolean isTypeOrSuperTypeOf(@NotNull JavaType type, @NotNull JavaType targetType) {
-        return type.isTypeOrSuperTypeOf(targetType.getRawClass());
+        return getDistance(type, targetType) >= 0;
     }
 
     /**
