@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * An abstract class that all element types extend from
  *
- * @version 1.0.0
+ * @version 2.1.0
  * @since 1.0.0
  */
 public abstract class ParsedElement {
@@ -18,12 +18,21 @@ public abstract class ParsedElement {
     ParsedElement() {
     }
 
+    /**
+     * {@inheritDoc java.lang.Object}
+     */
     @Override
     public abstract @NotNull String toString();
 
+    /**
+     * {@inheritDoc java.lang.Object}
+     */
     @Override
     public abstract boolean equals(@Nullable Object obj);
 
+    /**
+     * {@inheritDoc java.lang.Object}
+     */
     @Override
     public abstract int hashCode();
 
