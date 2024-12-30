@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Unmodifiable;
 /**
  * A wrapper for an ordered map used to represent an Object in most data formats
  *
- * @version 2.0.0
+ * @version 2.1.0
  * @since 1.0.0
  */
 public class ParsedObject extends ParsedElement {
@@ -46,8 +46,6 @@ public class ParsedObject extends ParsedElement {
 
     /**
      * Get a list of all the key/value pairs this object stores
-     * <p>
-     * Note: Returns a copy of the list
      *
      * @return A list of all the key/value pairs this object stores
      *
@@ -59,8 +57,6 @@ public class ParsedObject extends ParsedElement {
 
     /**
      * Get a list of all the keys this object stores
-     * <p>
-     * Note: Returns a copy of the list
      *
      * @return A list of all the keys this object stores
      *
@@ -72,8 +68,6 @@ public class ParsedObject extends ParsedElement {
 
     /**
      * Get a list of all the values this object stores
-     * <p>
-     * Note: Returns a copy of the list
      *
      * @return A list of all the values this object stores
      *
@@ -149,11 +143,17 @@ public class ParsedObject extends ParsedElement {
         this.object.remove(key);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @NotNull String toString() {
         return this.getClass().getSimpleName() + "[object=" + this.object + "]";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(@Nullable Object obj) {
         if (obj == this) {
@@ -165,6 +165,9 @@ public class ParsedObject extends ParsedElement {
         return ((ParsedObject) obj).object.equals(this.object);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         return this.object.hashCode();
