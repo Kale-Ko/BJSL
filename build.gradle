@@ -93,6 +93,8 @@ javadoc {
     }
 
     options.overview "build/docs/overview.html"
+
+    exclude "src/main/test/"
 }
 
 test {
