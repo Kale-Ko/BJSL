@@ -226,6 +226,7 @@ public class DefaultTypeProcessorsTest {
         }
     }
 
+    @SuppressWarnings("deprecation")
     protected static class URLProvider implements ArgumentsProvider {
         protected static class URLHolder {
             protected final String string;
@@ -446,7 +447,7 @@ public class DefaultTypeProcessorsTest {
         }
 
         @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws URISyntaxException {
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return Stream.of(Arguments.argumentSet("2024-07-04T12:00:00Z", new CalendarProvider.CalendarHolder("July 04 2024 @ 07:00:00.000 AM -05:00", "2024-07-04T07:00:00-05:00", "2024-07-04T12:00:00Z", 1720094400000L, getCalendar(1720094400000L))), Arguments.argumentSet("1970-01-01T00:00:00Z", new CalendarProvider.CalendarHolder("December 31 1969 @ 07:00:00.000 PM -05:00", "1969-12-31T19:00:00-05:00", "1970-01-01T00:00:00Z", 0L, getCalendar(0L))));
         }
 
@@ -502,7 +503,7 @@ public class DefaultTypeProcessorsTest {
         }
 
         @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws URISyntaxException {
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return Stream.of(Arguments.argumentSet("2024-07-04T12:00:00Z", new DateProvider.DateHolder("July 04 2024 @ 07:00:00.000 AM -05:00", "2024-07-04T07:00:00-05:00", "2024-07-04T12:00:00Z", 1720094400000L, getDate(1720094400000L))), Arguments.argumentSet("1970-01-01T00:00:00Z", new DateProvider.DateHolder("December 31 1969 @ 07:00:00.000 PM -05:00", "1969-12-31T19:00:00-05:00", "1970-01-01T00:00:00Z", 0L, getDate(0L))));
         }
 
@@ -556,7 +557,7 @@ public class DefaultTypeProcessorsTest {
         }
 
         @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws URISyntaxException {
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return Stream.of(Arguments.argumentSet("2024-07-04T12:00:00Z", new InstantProvider.InstantHolder("July 04 2024 @ 07:00:00.000 AM -05:00", "2024-07-04T07:00:00-05:00", "2024-07-04T12:00:00Z", 1720094400000L, getInstant(1720094400000L))), Arguments.argumentSet("1970-01-01T00:00:00Z", new InstantProvider.InstantHolder("December 31 1969 @ 07:00:00.000 PM -05:00", "1969-12-31T19:00:00-05:00", "1970-01-01T00:00:00Z", 0L, getInstant(0L))));
         }
 
