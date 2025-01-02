@@ -92,11 +92,9 @@ public abstract class JacksonParser<T extends TokenStreamFactory, V extends Obje
                 tree = parser.readValueAsTree();
             }
 
-            if (tree instanceof JsonNode) {
-                JsonNode node = (JsonNode) tree;
-
+            if (tree instanceof JsonNode node) {
                 switch (node.getNodeType()) {
-                    case OBJECT: {
+                    case OBJECT -> {
                         ObjectNode objectNode = (ObjectNode) node;
                         ParsedObject objectElement = ParsedObject.create();
 
@@ -106,7 +104,7 @@ public abstract class JacksonParser<T extends TokenStreamFactory, V extends Obje
 
                         return objectElement;
                     }
-                    case ARRAY: {
+                    case ARRAY -> {
                         ArrayNode arrayNode = (ArrayNode) node;
                         ParsedArray arrayElement = ParsedArray.create();
 
@@ -116,41 +114,41 @@ public abstract class JacksonParser<T extends TokenStreamFactory, V extends Obje
 
                         return arrayElement;
                     }
-                    case STRING: {
+                    case STRING -> {
                         return ParsedPrimitive.fromString(node.asText());
                     }
-                    case NUMBER: {
+                    case NUMBER -> {
                         switch (node.numberType()) {
-                            case INT: {
+                            case INT -> {
                                 return ParsedPrimitive.fromInteger(node.asInt());
                             }
-                            case LONG: {
+                            case LONG -> {
                                 return ParsedPrimitive.fromLong(node.asLong());
                             }
-                            case BIG_INTEGER: {
+                            case BIG_INTEGER -> {
                                 return ParsedPrimitive.fromBigInteger(node.bigIntegerValue());
                             }
-                            case FLOAT: {
+                            case FLOAT -> {
                                 return ParsedPrimitive.fromFloat((float) node.asDouble());
                             }
-                            case DOUBLE: {
+                            case DOUBLE -> {
                                 return ParsedPrimitive.fromDouble(node.asDouble());
                             }
-                            case BIG_DECIMAL: {
+                            case BIG_DECIMAL -> {
                                 return ParsedPrimitive.fromBigDecimal(node.decimalValue());
                             }
-                            default: {
+                            default -> {
                                 throw new InvalidTypeException(node.getClass());
                             }
                         }
                     }
-                    case BOOLEAN: {
+                    case BOOLEAN -> {
                         return ParsedPrimitive.fromBoolean(node.asBoolean());
                     }
-                    case NULL: {
+                    case NULL -> {
                         return ParsedPrimitive.fromNull();
                     }
-                    default: {
+                    default -> {
                         throw new InvalidTypeException(node.getClass());
                     }
                 }
@@ -178,43 +176,44 @@ public abstract class JacksonParser<T extends TokenStreamFactory, V extends Obje
     @Override
     public byte @NotNull [] toBytes(@NotNull ParsedElement element) {
         try {
-            if (element instanceof ParsedObject) {
-                ParsedObject objectElement = (ParsedObject) element;
+            switch (element) {
+                case ParsedObject objectElement -> {
+                    ObjectNode node = JsonNodeFactory.instance.objectNode();
+                    for (Map.Entry<String, ParsedElement> subElement : objectElement.getEntries()) {
+                        toNodes(node, subElement.getKey(), subElement.getValue());
+                    }
 
-                ObjectNode node = JsonNodeFactory.instance.objectNode();
-                for (Map.Entry<String, ParsedElement> subElement : objectElement.getEntries()) {
-                    toNodes(node, subElement.getKey(), subElement.getValue());
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    try (com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter)) {
+                        generator.setCodec(this.codec);
+                        generator.writeTree(node);
+                    }
+                    outputStream.close();
+
+                    return outputStream.toByteArray();
                 }
+                case ParsedArray arrayElement -> {
+                    ArrayNode node = JsonNodeFactory.instance.arrayNode();
+                    for (ParsedElement subElement : arrayElement.getValues()) {
+                        toNodes(node, "root", subElement);
+                    }
 
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                try (com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter)) {
-                    generator.setCodec(this.codec);
-                    generator.writeTree(node);
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    try (com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter)) {
+                        generator.setCodec(this.codec);
+                        generator.writeTree(node);
+                    }
+                    outputStream.close();
+
+                    return outputStream.toByteArray();
                 }
-                outputStream.close();
-
-                return outputStream.toByteArray();
-            } else if (element instanceof ParsedArray) {
-                ParsedArray arrayElement = (ParsedArray) element;
-
-                ArrayNode node = JsonNodeFactory.instance.arrayNode();
-                for (ParsedElement subElement : arrayElement.getValues()) {
-                    toNodes(node, "root", subElement);
+                case ParsedPrimitive primitiveElement -> {
+                    Object value = primitiveElement.get();
+                    return (value != null ? value.toString() : "null").getBytes(StandardCharsets.UTF_8);
                 }
-
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                try (com.fasterxml.jackson.core.JsonGenerator generator = this.factory.createGenerator(outputStream).setPrettyPrinter(this.prettyPrinter)) {
-                    generator.setCodec(this.codec);
-                    generator.writeTree(node);
+                default -> {
+                    throw new InvalidTypeException(element.getClass());
                 }
-                outputStream.close();
-
-                return outputStream.toByteArray();
-            } else if (element instanceof ParsedPrimitive) {
-                Object value = element.asPrimitive().get();
-                return (value != null ? value.toString() : "null").getBytes(StandardCharsets.UTF_8);
-            } else {
-                throw new InvalidTypeException(element.getClass());
             }
         } catch (Exception e) {
             throw new ParserException(e);
@@ -300,120 +299,165 @@ public abstract class JacksonParser<T extends TokenStreamFactory, V extends Obje
      */
     protected void toElements(@NotNull ParsedElement element, @NotNull String key, @NotNull JsonNode node) {
         switch (node.getNodeType()) {
-            case OBJECT: {
+            case OBJECT -> {
                 ObjectNode objectNode = (ObjectNode) node;
                 ParsedObject subElement = ParsedObject.create();
 
-                if (element instanceof ParsedObject) {
-                    ((ParsedObject) element).set(key, subElement);
-                } else if (element instanceof ParsedArray) {
-                    ((ParsedArray) element).add(subElement);
+                switch (element) {
+                    case ParsedObject parsedObject -> {
+                        parsedObject.set(key, subElement);
+                    }
+                    case ParsedArray parsedArray -> {
+                        parsedArray.add(subElement);
+                    }
+                    default -> {
+                    }
                 }
 
                 objectNode.fields().forEachRemaining(subEntry -> {
                     toElements(subElement, subEntry.getKey(), subEntry.getValue());
                 });
-
-                break;
             }
-            case ARRAY: {
+            case ARRAY -> {
                 ArrayNode arrayNode = (ArrayNode) node;
                 ParsedArray subElement = ParsedArray.create();
 
-                if (element instanceof ParsedObject) {
-                    ((ParsedObject) element).set(key, subElement);
-                } else if (element instanceof ParsedArray) {
-                    ((ParsedArray) element).add(subElement);
+                switch (element) {
+                    case ParsedObject parsedObject -> {
+                        parsedObject.set(key, subElement);
+                    }
+                    case ParsedArray parsedArray -> {
+                        parsedArray.add(subElement);
+                    }
+                    default -> {
+                    }
                 }
 
                 arrayNode.elements().forEachRemaining(subNode -> {
                     toElements(subElement, key, subNode);
                 });
-
-                break;
             }
-            case STRING: {
-                if (element instanceof ParsedObject) {
-                    ((ParsedObject) element).set(key, ParsedPrimitive.fromString(node.asText()));
-                } else if (element instanceof ParsedArray) {
-                    ((ParsedArray) element).add(ParsedPrimitive.fromString(node.asText()));
+            case STRING -> {
+                switch (element) {
+                    case ParsedObject parsedObject -> {
+                        parsedObject.set(key, ParsedPrimitive.fromString(node.asText()));
+                    }
+                    case ParsedArray parsedArray -> {
+                        parsedArray.add(ParsedPrimitive.fromString(node.asText()));
+                    }
+                    default -> {
+                    }
                 }
-                break;
             }
-            case NUMBER: {
+            case NUMBER -> {
                 switch (node.numberType()) {
-                    case INT: {
-                        if (element instanceof ParsedObject) {
-                            ((ParsedObject) element).set(key, ParsedPrimitive.fromInteger(node.asInt()));
-                        } else if (element instanceof ParsedArray) {
-                            ((ParsedArray) element).add(ParsedPrimitive.fromInteger(node.asInt()));
+                    case INT -> {
+                        switch (element) {
+                            case ParsedObject parsedObject -> {
+                                parsedObject.set(key, ParsedPrimitive.fromInteger(node.asInt()));
+                            }
+                            case ParsedArray parsedArray -> {
+                                parsedArray.add(ParsedPrimitive.fromInteger(node.asInt()));
+                            }
+                            default -> {
+                            }
                         }
-                        break;
                     }
-                    case LONG: {
-                        if (element instanceof ParsedObject) {
-                            ((ParsedObject) element).set(key, ParsedPrimitive.fromLong(node.asLong()));
-                        } else if (element instanceof ParsedArray) {
-                            ((ParsedArray) element).add(ParsedPrimitive.fromLong(node.asLong()));
+                    case LONG -> {
+                        switch (element) {
+                            case ParsedObject parsedObject -> {
+                                parsedObject.set(key, ParsedPrimitive.fromLong(node.asLong()));
+                            }
+                            case ParsedArray parsedArray -> {
+                                parsedArray.add(ParsedPrimitive.fromLong(node.asLong()));
+                            }
+                            default -> {
+                            }
                         }
-                        break;
                     }
-                    case BIG_INTEGER: {
-                        if (element instanceof ParsedObject) {
-                            ((ParsedObject) element).set(key, ParsedPrimitive.fromBigInteger(node.bigIntegerValue()));
-                        } else if (element instanceof ParsedArray) {
-                            ((ParsedArray) element).add(ParsedPrimitive.fromBigInteger(node.bigIntegerValue()));
+                    case BIG_INTEGER -> {
+                        switch (element) {
+                            case ParsedObject parsedObject -> {
+                                parsedObject.set(key, ParsedPrimitive.fromBigInteger(node.bigIntegerValue()));
+                            }
+                            case ParsedArray parsedArray -> {
+                                parsedArray.add(ParsedPrimitive.fromBigInteger(node.bigIntegerValue()));
+                            }
+                            default -> {
+                            }
                         }
-                        break;
                     }
-                    case FLOAT: {
-                        if (element instanceof ParsedObject) {
-                            ((ParsedObject) element).set(key, ParsedPrimitive.fromFloat((float) node.asDouble()));
-                        } else if (element instanceof ParsedArray) {
-                            ((ParsedArray) element).add(ParsedPrimitive.fromFloat((float) node.asDouble()));
+                    case FLOAT -> {
+                        switch (element) {
+                            case ParsedObject parsedObject -> {
+                                parsedObject.set(key, ParsedPrimitive.fromFloat((float) node.asDouble()));
+                            }
+                            case ParsedArray parsedArray -> {
+                                parsedArray.add(ParsedPrimitive.fromFloat((float) node.asDouble()));
+                            }
+                            default -> {
+                            }
                         }
-                        break;
                     }
-                    case DOUBLE: {
-                        if (element instanceof ParsedObject) {
-                            ((ParsedObject) element).set(key, ParsedPrimitive.fromDouble(node.asDouble()));
-                        } else if (element instanceof ParsedArray) {
-                            ((ParsedArray) element).add(ParsedPrimitive.fromDouble(node.asDouble()));
+                    case DOUBLE -> {
+                        switch (element) {
+                            case ParsedObject parsedObject -> {
+                                parsedObject.set(key, ParsedPrimitive.fromDouble(node.asDouble()));
+                            }
+                            case ParsedArray parsedArray -> {
+                                parsedArray.add(ParsedPrimitive.fromDouble(node.asDouble()));
+                            }
+                            default -> {
+                            }
                         }
-                        break;
                     }
-                    case BIG_DECIMAL: {
-                        if (element instanceof ParsedObject) {
-                            ((ParsedObject) element).set(key, ParsedPrimitive.fromBigDecimal(node.decimalValue()));
-                        } else if (element instanceof ParsedArray) {
-                            ((ParsedArray) element).add(ParsedPrimitive.fromBigDecimal(node.decimalValue()));
+                    case BIG_DECIMAL -> {
+                        switch (element) {
+                            case ParsedObject parsedObject -> {
+                                parsedObject.set(key, ParsedPrimitive.fromBigDecimal(node.decimalValue()));
+                            }
+                            case ParsedArray parsedArray -> {
+                                parsedArray.add(ParsedPrimitive.fromBigDecimal(node.decimalValue()));
+                            }
+                            default -> {
+                            }
                         }
-                        break;
+                    }
+                    default -> {
+                        if (BJSL.getLogger() != null) {
+                            BJSL.getLogger().warning("Warning while parsing: Node \"" + key + "\" of type \"" + node.getClass().getSimpleName() + "\" is not serializable");
+                        }
                     }
                 }
-                break;
             }
-            case BOOLEAN: {
-                if (element instanceof ParsedObject) {
-                    ((ParsedObject) element).set(key, ParsedPrimitive.fromBoolean(node.asBoolean()));
-                } else if (element instanceof ParsedArray) {
-                    ((ParsedArray) element).add(ParsedPrimitive.fromBoolean(node.asBoolean()));
+            case BOOLEAN -> {
+                switch (element) {
+                    case ParsedObject parsedObject -> {
+                        parsedObject.set(key, ParsedPrimitive.fromBoolean(node.asBoolean()));
+                    }
+                    case ParsedArray parsedArray -> {
+                        parsedArray.add(ParsedPrimitive.fromBoolean(node.asBoolean()));
+                    }
+                    default -> {
+                    }
                 }
-                break;
             }
-            case NULL: {
-                if (element instanceof ParsedObject) {
-                    ((ParsedObject) element).set(key, ParsedPrimitive.fromNull());
-                } else if (element instanceof ParsedArray) {
-                    ((ParsedArray) element).add(ParsedPrimitive.fromNull());
+            case NULL -> {
+                switch (element) {
+                    case ParsedObject parsedObject -> {
+                        parsedObject.set(key, ParsedPrimitive.fromNull());
+                    }
+                    case ParsedArray parsedArray -> {
+                        parsedArray.add(ParsedPrimitive.fromNull());
+                    }
+                    default -> {
+                    }
                 }
-                break;
             }
-            default: {
+            default -> {
                 if (BJSL.getLogger() != null) {
                     BJSL.getLogger().warning("Warning while parsing: Node \"" + key + "\" of type \"" + node.getClass().getSimpleName() + "\" is not serializable");
                 }
-                break;
             }
         }
     }
@@ -427,143 +471,197 @@ public abstract class JacksonParser<T extends TokenStreamFactory, V extends Obje
      *
      * @since 1.0.0
      */
-    protected void toNodes(@NotNull TreeNode node, @NotNull String key, @NotNull ParsedElement element) {
-        if (element instanceof ParsedObject) {
-            ParsedObject objectElement = (ParsedObject) element;
-            ObjectNode subNode = JsonNodeFactory.instance.objectNode();
+    @SuppressWarnings("deprecation")
+    protected void toNodes(@NotNull JsonNode node, @NotNull String key, @NotNull ParsedElement element) {
+        switch (element) {
+            case ParsedObject objectElement -> {
+                ObjectNode subNode = JsonNodeFactory.instance.objectNode();
 
-            if (node instanceof ObjectNode) {
-                ((ObjectNode) node).set(key, subNode);
-            } else if (node instanceof ArrayNode) {
-                ((ArrayNode) node).add(subNode);
-            }
+                switch (node) {
+                    case ObjectNode objectNode -> {
+                        objectNode.put(key, subNode);
+                    }
+                    case ArrayNode arrayNode -> {
+                        arrayNode.add(subNode);
+                    }
+                    default -> {
+                    }
+                }
 
-            for (Map.Entry<String, ParsedElement> subElement : objectElement.getEntries()) {
-                toNodes(subNode, subElement.getKey(), subElement.getValue());
-            }
-        } else if (element instanceof ParsedArray) {
-            ParsedArray arrayElement = (ParsedArray) element;
-            ArrayNode subNode = JsonNodeFactory.instance.arrayNode();
-
-            if (node instanceof ObjectNode) {
-                ((ObjectNode) node).set(key, subNode);
-            } else if (node instanceof ArrayNode) {
-                ((ArrayNode) node).add(subNode);
-            }
-
-            for (ParsedElement subElement : arrayElement.getValues()) {
-                toNodes(subNode, key, subElement);
-            }
-        } else if (element instanceof ParsedPrimitive) {
-            ParsedPrimitive primitiveElement = (ParsedPrimitive) element;
-
-            switch (primitiveElement.getType()) {
-                case STRING: {
-                    if (node instanceof ObjectNode) {
-                        ((ObjectNode) node).put(key, primitiveElement.asString());
-                    } else if (node instanceof ArrayNode) {
-                        ((ArrayNode) node).add(primitiveElement.asString());
-                    }
-                    break;
-                }
-                case BYTE: {
-                    if (node instanceof ObjectNode) {
-                        ((ObjectNode) node).put(key, primitiveElement.asByte());
-                    } else if (node instanceof ArrayNode) {
-                        ((ArrayNode) node).add(primitiveElement.asByte());
-                    }
-                    break;
-                }
-                case CHAR: {
-                    if (node instanceof ObjectNode) {
-                        ((ObjectNode) node).put(key, primitiveElement.asChar());
-                    } else if (node instanceof ArrayNode) {
-                        ((ArrayNode) node).add(primitiveElement.asChar());
-                    }
-                    break;
-                }
-                case SHORT: {
-                    if (node instanceof ObjectNode) {
-                        ((ObjectNode) node).put(key, primitiveElement.asShort());
-                    } else if (node instanceof ArrayNode) {
-                        ((ArrayNode) node).add(primitiveElement.asShort());
-                    }
-                    break;
-                }
-                case INTEGER: {
-                    if (node instanceof ObjectNode) {
-                        ((ObjectNode) node).put(key, primitiveElement.asInteger());
-                    } else if (node instanceof ArrayNode) {
-                        ((ArrayNode) node).add(primitiveElement.asInteger());
-                    }
-                    break;
-                }
-                case LONG: {
-                    if (node instanceof ObjectNode) {
-                        ((ObjectNode) node).put(key, primitiveElement.asLong());
-                    } else if (node instanceof ArrayNode) {
-                        ((ArrayNode) node).add(primitiveElement.asLong());
-                    }
-                    break;
-                }
-                case BIGINTEGER: {
-                    if (node instanceof ObjectNode) {
-                        ((ObjectNode) node).put(key, primitiveElement.asBigInteger());
-                    } else if (node instanceof ArrayNode) {
-                        ((ArrayNode) node).add(primitiveElement.asBigInteger());
-                    }
-                    break;
-                }
-                case FLOAT: {
-                    if (node instanceof ObjectNode) {
-                        ((ObjectNode) node).put(key, primitiveElement.asFloat());
-                    } else if (node instanceof ArrayNode) {
-                        ((ArrayNode) node).add(primitiveElement.asFloat());
-                    }
-                    break;
-                }
-                case DOUBLE: {
-                    if (node instanceof ObjectNode) {
-                        ((ObjectNode) node).put(key, primitiveElement.asDouble());
-                    } else if (node instanceof ArrayNode) {
-                        ((ArrayNode) node).add(primitiveElement.asDouble());
-                    }
-                    break;
-                }
-                case BIGDECIMAL: {
-                    if (node instanceof ObjectNode) {
-                        ((ObjectNode) node).put(key, primitiveElement.asBigDecimal());
-                    } else if (node instanceof ArrayNode) {
-                        ((ArrayNode) node).add(primitiveElement.asBigDecimal());
-                    }
-                    break;
-                }
-                case BOOLEAN: {
-                    if (node instanceof ObjectNode) {
-                        ((ObjectNode) node).put(key, primitiveElement.asBoolean());
-                    } else if (node instanceof ArrayNode) {
-                        ((ArrayNode) node).add(primitiveElement.asBoolean());
-                    }
-                    break;
-                }
-                case NULL: {
-                    if (node instanceof ObjectNode) {
-                        ((ObjectNode) node).putNull(key);
-                    } else if (node instanceof ArrayNode) {
-                        ((ArrayNode) node).addNull();
-                    }
-                    break;
-                }
-                default: {
-                    if (BJSL.getLogger() != null) {
-                        BJSL.getLogger().warning("Warning while parsing: Element \"" + key + "\" of type \"" + primitiveElement.getType() + "\" is not serializable");
-                    }
-                    break;
+                for (Map.Entry<String, ParsedElement> subElement : objectElement.getEntries()) {
+                    toNodes(subNode, subElement.getKey(), subElement.getValue());
                 }
             }
-        } else {
-            if (BJSL.getLogger() != null) {
-                BJSL.getLogger().warning("Warning while parsing: Element \"" + key + "\" of type \"" + element.getClass().getSimpleName() + "\" is not serializable");
+            case ParsedArray arrayElement -> {
+                ArrayNode subNode = JsonNodeFactory.instance.arrayNode();
+
+                switch (node) {
+                    case ObjectNode objectNode -> {
+                        objectNode.put(key, subNode);
+                    }
+                    case ArrayNode arrayNode -> {
+                        arrayNode.add(subNode);
+                    }
+                    default -> {
+                    }
+                }
+
+                for (ParsedElement subElement : arrayElement.getValues()) {
+                    toNodes(subNode, key, subElement);
+                }
+            }
+            case ParsedPrimitive primitiveElement -> {
+                switch (primitiveElement.getType()) {
+                    case STRING -> {
+                        switch (node) {
+                            case ObjectNode objectNode -> {
+                                objectNode.put(key, primitiveElement.asString());
+                            }
+                            case ArrayNode arrayNode -> {
+                                arrayNode.add(primitiveElement.asString());
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    case BYTE -> {
+                        switch (node) {
+                            case ObjectNode objectNode -> {
+                                objectNode.put(key, primitiveElement.asByte());
+                            }
+                            case ArrayNode arrayNode -> {
+                                arrayNode.add(primitiveElement.asByte());
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    case CHAR -> {
+                        switch (node) {
+                            case ObjectNode objectNode -> {
+                                objectNode.put(key, primitiveElement.asChar());
+                            }
+                            case ArrayNode arrayNode -> {
+                                arrayNode.add(primitiveElement.asChar());
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    case SHORT -> {
+                        switch (node) {
+                            case ObjectNode objectNode -> {
+                                objectNode.put(key, primitiveElement.asShort());
+                            }
+                            case ArrayNode arrayNode -> {
+                                arrayNode.add(primitiveElement.asShort());
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    case INTEGER -> {
+                        switch (node) {
+                            case ObjectNode objectNode -> {
+                                objectNode.put(key, primitiveElement.asInteger());
+                            }
+                            case ArrayNode arrayNode -> {
+                                arrayNode.add(primitiveElement.asInteger());
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    case LONG -> {
+                        switch (node) {
+                            case ObjectNode objectNode -> {
+                                objectNode.put(key, primitiveElement.asLong());
+                            }
+                            case ArrayNode arrayNode -> {
+                                arrayNode.add(primitiveElement.asLong());
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    case BIGINTEGER -> {
+                        switch (node) {
+                            case ObjectNode objectNode -> {
+                                objectNode.put(key, primitiveElement.asBigInteger());
+                            }
+                            case ArrayNode arrayNode -> {
+                                arrayNode.add(primitiveElement.asBigInteger());
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    case FLOAT -> {
+                        switch (node) {
+                            case ObjectNode objectNode -> {
+                                objectNode.put(key, primitiveElement.asFloat());
+                            }
+                            case ArrayNode arrayNode -> {
+                                arrayNode.add(primitiveElement.asFloat());
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    case DOUBLE -> {
+                        switch (node) {
+                            case ObjectNode objectNode -> {
+                                objectNode.put(key, primitiveElement.asDouble());
+                            }
+                            case ArrayNode arrayNode -> {
+                                arrayNode.add(primitiveElement.asDouble());
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    case BIGDECIMAL -> {
+                        switch (node) {
+                            case ObjectNode objectNode -> {
+                                objectNode.put(key, primitiveElement.asBigDecimal());
+                            }
+                            case ArrayNode arrayNode -> {
+                                arrayNode.add(primitiveElement.asBigDecimal());
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    case BOOLEAN -> {
+                        switch (node) {
+                            case ObjectNode objectNode -> {
+                                objectNode.put(key, primitiveElement.asBoolean());
+                            }
+                            case ArrayNode arrayNode -> {
+                                arrayNode.add(primitiveElement.asBoolean());
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                    case NULL -> {
+                        switch (node) {
+                            case ObjectNode objectNode -> {
+                                objectNode.putNull(key);
+                            }
+                            case ArrayNode arrayNode -> {
+                                arrayNode.addNull();
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                }
+            }
+            default -> {
+                if (BJSL.getLogger() != null) {
+                    BJSL.getLogger().warning("Warning while parsing: Element \"" + key + "\" of type \"" + element.getClass().getSimpleName() + "\" is not serializable");
+                }
             }
         }
     }
