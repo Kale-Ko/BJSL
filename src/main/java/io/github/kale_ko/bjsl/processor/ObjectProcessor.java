@@ -738,8 +738,6 @@ public class ObjectProcessor {
                         }
 
                         return null;
-                    } else if (element.asPrimitive().isNull()) {
-                        return null;
                     } else {
                         throw new EnumExpectedException(type.getRawClass());
                     }
@@ -891,261 +889,265 @@ public class ObjectProcessor {
                     }
                 }
             } else if (!type.getRawClass().isAnonymousClass() && !type.getRawClass().isAnnotation()) {
-                if (element instanceof ParsedObject) {
-                    if (type instanceof MapType) {
-                        Map<Object, Object> object;
-                        if (!type.getRawClass().isInterface()) {
-                            object = (Map<Object, Object>) InitializationUtil.initialize(type.getRawClass());
-                        } else {
-                            object = InitializationUtil.initialize(LinkedHashMap.class);
-                        }
-
-                        for (Map.Entry<String, ParsedElement> entry : element.asObject().getEntries()) {
-                            Object subObject = toObject(entry.getValue(), type.getContentType());
-                            if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
-                                object.put(toObject(ParsedPrimitive.fromString(entry.getKey()), type.getKeyType()), subObject);
+                switch (element) {
+                    case ParsedObject parsedObject -> {
+                        if (type instanceof MapType) {
+                            Map<Object, Object> object;
+                            if (!type.getRawClass().isInterface()) {
+                                object = (Map<Object, Object>) InitializationUtil.initialize(type.getRawClass());
+                            } else {
+                                object = InitializationUtil.initialize(LinkedHashMap.class);
                             }
-                        }
 
-                        return object;
-                    } else if (!type.getRawClass().isInterface()) {
-                        Object object = InitializationUtil.initialize(type.getRawClass());
-
-                        List<Field> fields = getFields(object.getClass());
-                        for (Field field : fields) {
-                            if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
-                                boolean shouldSerialize = !(Modifier.isTransient(field.getModifiers()) || field.getName().startsWith("this$"));
-
-                                String subKey = field.getName();
-                                boolean expect = false;
-
-                                for (Annotation annotation : field.getDeclaredAnnotations()) {
-                                    if (annotation.annotationType() == AlwaysSerialize.class) {
-                                        shouldSerialize = true;
-                                    } else if (annotation.annotationType() == NeverSerialize.class) {
-                                        shouldSerialize = false;
-                                    } else if (annotation.annotationType() == Rename.class) {
-                                        subKey = ((Rename) annotation).value();
-                                    } else if (annotation.annotationType() == ExpectNotNull.class || annotation.annotationType() == ExpectIsNull.class || annotation.annotationType() == ExpectGreaterThan.class || annotation.annotationType() == ExpectLessThan.class) {
-                                        expect = true;
-                                    }
+                            for (Map.Entry<String, ParsedElement> entry : element.asObject().getEntries()) {
+                                Object subObject = toObject(entry.getValue(), type.getContentType());
+                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
+                                    object.put(toObject(ParsedPrimitive.fromString(entry.getKey()), type.getKeyType()), subObject);
                                 }
+                            }
 
-                                if (shouldSerialize && element.asObject().has(subKey)) {
-                                    Object subObject = toObject(element.asObject().get(subKey), field.getGenericType());
+                            return object;
+                        } else if (!type.getRawClass().isInterface()) {
+                            Object object = InitializationUtil.initialize(type.getRawClass());
 
-                                    if (expect) {
-                                        for (Annotation annotation : field.getDeclaredAnnotations()) {
-                                            if (annotation.annotationType() == ExpectNotNull.class) {
-                                                if (subObject == null) {
-                                                    throw new ExpectFailedException(subKey + " != null");
-                                                }
-                                            } else if (annotation.annotationType() == ExpectIsNull.class) {
-                                                if (subObject != null) {
-                                                    throw new ExpectFailedException(subKey + " == null");
-                                                }
-                                            } else if (annotation.annotationType() == ExpectGreaterThan.class) {
-                                                if (object.getClass() == Byte.class || object.getClass() == Short.class || object.getClass() == Integer.class) {
-                                                    if (subObject == null || (int) subObject > (((ExpectLessThan) annotation).intValue() - (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
-                                                        throw new ExpectFailedException(subKey + " >" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).intValue());
-                                                    }
-                                                } else if (object.getClass() == Long.class) {
-                                                    if (subObject == null || (long) subObject > (((ExpectLessThan) annotation).longValue() - (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
-                                                        throw new ExpectFailedException(subKey + " >" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).longValue());
-                                                    }
-                                                } else if (object.getClass() == Float.class) {
-                                                    if (subObject == null || (float) subObject > (((ExpectLessThan) annotation).floatValue() - (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
-                                                        throw new ExpectFailedException(subKey + " >" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).floatValue());
-                                                    }
-                                                } else if (object.getClass() == Double.class) {
-                                                    if (subObject == null || (double) subObject > (((ExpectLessThan) annotation).doubleValue() - (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
-                                                        throw new ExpectFailedException(subKey + " >" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).doubleValue());
-                                                    }
-                                                } else {
-                                                    throw new ExpectFailedException(subKey + " is not a number");
-                                                }
-                                            } else if (annotation.annotationType() == ExpectLessThan.class) {
-                                                if (object.getClass() == Byte.class || object.getClass() == Short.class || object.getClass() == Integer.class) {
-                                                    if (subObject == null || (int) subObject < (((ExpectLessThan) annotation).intValue() + (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
-                                                        throw new ExpectFailedException(subKey + " <" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).intValue());
-                                                    }
-                                                } else if (object.getClass() == Long.class) {
-                                                    if (subObject == null || (long) subObject < (((ExpectLessThan) annotation).longValue() + (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
-                                                        throw new ExpectFailedException(subKey + " <" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).longValue());
-                                                    }
-                                                } else if (object.getClass() == Float.class) {
-                                                    if (subObject == null || (float) subObject < (((ExpectLessThan) annotation).floatValue() + (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
-                                                        throw new ExpectFailedException(subKey + " <" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).floatValue());
-                                                    }
-                                                } else if (object.getClass() == Double.class) {
-                                                    if (subObject == null || (double) subObject < (((ExpectLessThan) annotation).doubleValue() + (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
-                                                        throw new ExpectFailedException(subKey + " <" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).doubleValue());
-                                                    }
-                                                } else {
-                                                    throw new ExpectFailedException(subKey + " is not a number");
-                                                }
-                                            }
+                            List<Field> fields = getFields(object.getClass());
+                            for (Field field : fields) {
+                                if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
+                                    boolean shouldSerialize = !(Modifier.isTransient(field.getModifiers()) || field.getName().startsWith("this$"));
+
+                                    String subKey = field.getName();
+                                    boolean expect = false;
+
+                                    for (Annotation annotation : field.getDeclaredAnnotations()) {
+                                        if (annotation.annotationType() == AlwaysSerialize.class) {
+                                            shouldSerialize = true;
+                                        } else if (annotation.annotationType() == NeverSerialize.class) {
+                                            shouldSerialize = false;
+                                        } else if (annotation.annotationType() == Rename.class) {
+                                            subKey = ((Rename) annotation).value();
+                                        } else if (annotation.annotationType() == ExpectNotNull.class || annotation.annotationType() == ExpectIsNull.class || annotation.annotationType() == ExpectGreaterThan.class || annotation.annotationType() == ExpectLessThan.class) {
+                                            expect = true;
                                         }
                                     }
 
-                                    if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
-                                        field.set(object, subObject);
+                                    if (shouldSerialize && element.asObject().has(subKey)) {
+                                        Object subObject = toObject(element.asObject().get(subKey), field.getGenericType());
+
+                                        if (expect) {
+                                            for (Annotation annotation : field.getDeclaredAnnotations()) {
+                                                if (annotation.annotationType() == ExpectNotNull.class) {
+                                                    if (subObject == null) {
+                                                        throw new ExpectFailedException(subKey + " != null");
+                                                    }
+                                                } else if (annotation.annotationType() == ExpectIsNull.class) {
+                                                    if (subObject != null) {
+                                                        throw new ExpectFailedException(subKey + " == null");
+                                                    }
+                                                } else if (annotation.annotationType() == ExpectGreaterThan.class) {
+                                                    if (object.getClass() == Byte.class || object.getClass() == Short.class || object.getClass() == Integer.class) {
+                                                        if (subObject == null || (int) subObject > (((ExpectLessThan) annotation).intValue() - (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
+                                                            throw new ExpectFailedException(subKey + " >" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).intValue());
+                                                        }
+                                                    } else if (object.getClass() == Long.class) {
+                                                        if (subObject == null || (long) subObject > (((ExpectLessThan) annotation).longValue() - (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
+                                                            throw new ExpectFailedException(subKey + " >" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).longValue());
+                                                        }
+                                                    } else if (object.getClass() == Float.class) {
+                                                        if (subObject == null || (float) subObject > (((ExpectLessThan) annotation).floatValue() - (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
+                                                            throw new ExpectFailedException(subKey + " >" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).floatValue());
+                                                        }
+                                                    } else if (object.getClass() == Double.class) {
+                                                        if (subObject == null || (double) subObject > (((ExpectLessThan) annotation).doubleValue() - (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
+                                                            throw new ExpectFailedException(subKey + " >" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).doubleValue());
+                                                        }
+                                                    } else {
+                                                        throw new ExpectFailedException(subKey + " is not a number");
+                                                    }
+                                                } else if (annotation.annotationType() == ExpectLessThan.class) {
+                                                    if (object.getClass() == Byte.class || object.getClass() == Short.class || object.getClass() == Integer.class) {
+                                                        if (subObject == null || (int) subObject < (((ExpectLessThan) annotation).intValue() + (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
+                                                            throw new ExpectFailedException(subKey + " <" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).intValue());
+                                                        }
+                                                    } else if (object.getClass() == Long.class) {
+                                                        if (subObject == null || (long) subObject < (((ExpectLessThan) annotation).longValue() + (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
+                                                            throw new ExpectFailedException(subKey + " <" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).longValue());
+                                                        }
+                                                    } else if (object.getClass() == Float.class) {
+                                                        if (subObject == null || (float) subObject < (((ExpectLessThan) annotation).floatValue() + (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
+                                                            throw new ExpectFailedException(subKey + " <" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).floatValue());
+                                                        }
+                                                    } else if (object.getClass() == Double.class) {
+                                                        if (subObject == null || (double) subObject < (((ExpectLessThan) annotation).doubleValue() + (((ExpectLessThan) annotation).orEqual() ? 1 : 0))) {
+                                                            throw new ExpectFailedException(subKey + " <" + (((ExpectLessThan) annotation).orEqual() ? "=" : "") + " " + ((ExpectLessThan) annotation).doubleValue());
+                                                        }
+                                                    } else {
+                                                        throw new ExpectFailedException(subKey + " is not a number");
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
+                                            field.set(object, subObject);
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                        return object;
-                    } else {
-                        throw new InvalidTypeException(type.getRawClass());
+                            return object;
+                        } else {
+                            throw new InvalidTypeException(type.getRawClass());
+                        }
                     }
-                } else if (element instanceof ParsedArray) {
-                    if (type instanceof CollectionType) {
-                        Collection<Object> object;
-                        if (!type.getRawClass().isInterface()) {
-                            object = (Collection<Object>) InitializationUtil.initialize(type.getRawClass());
-                        } else {
-                            object = InitializationUtil.initialize(LinkedList.class);
-                        }
-
-                        for (ParsedElement subElement : element.asArray().getValues()) {
-                            Object subObject = toObject(subElement, type.getContentType());
-                            if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
-                                object.add(subObject);
+                    case ParsedArray parsedArray -> {
+                        if (type instanceof CollectionType) {
+                            Collection<Object> object;
+                            if (!type.getRawClass().isInterface()) {
+                                object = (Collection<Object>) InitializationUtil.initialize(type.getRawClass());
+                            } else {
+                                object = InitializationUtil.initialize(LinkedList.class);
                             }
-                        }
 
-                        return object;
-                    } else if (type instanceof ArrayType) {
-                        if (type.getRawClass() == byte[].class) {
-                            byte[] array = (byte[]) InitializationUtil.initializePrimitiveArray(byte.class, element.asArray().getSize());
-
-                            int i = 0;
                             for (ParsedElement subElement : element.asArray().getValues()) {
-                                Object subObject = toObject(subElement, byte.class);
-                                array[i] = (byte) (subObject != null ? subObject : 0);
-
-                                i++;
-                            }
-
-                            return array;
-                        } else if (type.getRawClass() == char[].class) {
-                            char[] array = (char[]) InitializationUtil.initializePrimitiveArray(char.class, element.asArray().getSize());
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                Object subObject = toObject(subElement, char.class);
-                                array[i] = (char) (subObject != null ? subObject : 0);
-
-                                i++;
-                            }
-
-                            return array;
-                        } else if (type.getRawClass() == short[].class) {
-                            short[] array = (short[]) InitializationUtil.initializePrimitiveArray(short.class, element.asArray().getSize());
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                Object subObject = toObject(subElement, short.class);
-                                array[i] = (short) (subObject != null ? subObject : 0);
-
-                                i++;
-                            }
-
-                            return array;
-                        } else if (type.getRawClass() == int[].class) {
-                            int[] array = (int[]) InitializationUtil.initializePrimitiveArray(int.class, element.asArray().getSize());
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                Object subObject = toObject(subElement, int.class);
-                                array[i] = (int) (subObject != null ? subObject : 0);
-
-                                i++;
-                            }
-
-                            return array;
-                        } else if (type.getRawClass() == long[].class) {
-                            long[] array = (long[]) InitializationUtil.initializePrimitiveArray(long.class, element.asArray().getSize());
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                Object subObject = toObject(subElement, long.class);
-                                array[i] = (long) (subObject != null ? subObject : 0L);
-
-                                i++;
-                            }
-
-                            return array;
-                        } else if (type.getRawClass() == float[].class) {
-                            float[] array = (float[]) InitializationUtil.initializePrimitiveArray(float.class, element.asArray().getSize());
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                Object subObject = toObject(subElement, float.class);
-                                array[i] = (float) (subObject != null ? subObject : 0.0f);
-
-                                i++;
-                            }
-
-                            return array;
-                        } else if (type.getRawClass() == double[].class) {
-                            double[] array = (double[]) InitializationUtil.initializePrimitiveArray(double.class, element.asArray().getSize());
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                Object subObject = toObject(subElement, double.class);
-                                array[i] = (double) (subObject != null ? subObject : 0.0d);
-
-                                i++;
-                            }
-
-                            return array;
-                        } else if (type.getRawClass() == boolean[].class) {
-                            boolean[] array = (boolean[]) InitializationUtil.initializePrimitiveArray(boolean.class, element.asArray().getSize());
-
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                Object subObject = toObject(subElement, boolean.class);
-                                array[i] = (boolean) (subObject != null ? subObject : false);
-
-                                i++;
-                            }
-
-                            return array;
-                        } else {
-                            int size = element.asArray().getSize();
-
-                            if (ignoreArrayNulls || ignoreEmptyObjects) {
-                                size = 0;
-
-                                for (ParsedElement subElement : element.asArray().getValues()) {
-                                    Object subObject = toObject(subElement, type.getContentType().getRawClass());
-                                    if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
-                                        size++;
-                                    }
+                                Object subObject = toObject(subElement, type.getContentType());
+                                if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
+                                    object.add(subObject);
                                 }
                             }
 
-                            Object[] array = InitializationUtil.initializeArray(type.getContentType().getRawClass(), size);
+                            return object;
+                        } else if (type instanceof ArrayType) {
+                            if (type.getRawClass() == byte[].class) {
+                                byte[] array = (byte[]) InitializationUtil.initializePrimitiveArray(byte.class, element.asArray().getSize());
 
-                            int i = 0;
-                            for (ParsedElement subElement : element.asArray().getValues()) {
-                                Object subObject = toObject(subElement, type.getContentType().getRawClass());
-                                if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
-                                    array[i] = subObject;
+                                int i = 0;
+                                for (ParsedElement subElement : element.asArray().getValues()) {
+                                    Object subObject = toObject(subElement, byte.class);
+                                    array[i] = (byte) (subObject != null ? subObject : 0);
 
                                     i++;
                                 }
-                            }
 
-                            return array;
+                                return array;
+                            } else if (type.getRawClass() == char[].class) {
+                                char[] array = (char[]) InitializationUtil.initializePrimitiveArray(char.class, element.asArray().getSize());
+
+                                int i = 0;
+                                for (ParsedElement subElement : element.asArray().getValues()) {
+                                    Object subObject = toObject(subElement, char.class);
+                                    array[i] = (char) (subObject != null ? subObject : 0);
+
+                                    i++;
+                                }
+
+                                return array;
+                            } else if (type.getRawClass() == short[].class) {
+                                short[] array = (short[]) InitializationUtil.initializePrimitiveArray(short.class, element.asArray().getSize());
+
+                                int i = 0;
+                                for (ParsedElement subElement : element.asArray().getValues()) {
+                                    Object subObject = toObject(subElement, short.class);
+                                    array[i] = (short) (subObject != null ? subObject : 0);
+
+                                    i++;
+                                }
+
+                                return array;
+                            } else if (type.getRawClass() == int[].class) {
+                                int[] array = (int[]) InitializationUtil.initializePrimitiveArray(int.class, element.asArray().getSize());
+
+                                int i = 0;
+                                for (ParsedElement subElement : element.asArray().getValues()) {
+                                    Object subObject = toObject(subElement, int.class);
+                                    array[i] = (int) (subObject != null ? subObject : 0);
+
+                                    i++;
+                                }
+
+                                return array;
+                            } else if (type.getRawClass() == long[].class) {
+                                long[] array = (long[]) InitializationUtil.initializePrimitiveArray(long.class, element.asArray().getSize());
+
+                                int i = 0;
+                                for (ParsedElement subElement : element.asArray().getValues()) {
+                                    Object subObject = toObject(subElement, long.class);
+                                    array[i] = (long) (subObject != null ? subObject : 0L);
+
+                                    i++;
+                                }
+
+                                return array;
+                            } else if (type.getRawClass() == float[].class) {
+                                float[] array = (float[]) InitializationUtil.initializePrimitiveArray(float.class, element.asArray().getSize());
+
+                                int i = 0;
+                                for (ParsedElement subElement : element.asArray().getValues()) {
+                                    Object subObject = toObject(subElement, float.class);
+                                    array[i] = (float) (subObject != null ? subObject : 0.0f);
+
+                                    i++;
+                                }
+
+                                return array;
+                            } else if (type.getRawClass() == double[].class) {
+                                double[] array = (double[]) InitializationUtil.initializePrimitiveArray(double.class, element.asArray().getSize());
+
+                                int i = 0;
+                                for (ParsedElement subElement : element.asArray().getValues()) {
+                                    Object subObject = toObject(subElement, double.class);
+                                    array[i] = (double) (subObject != null ? subObject : 0.0d);
+
+                                    i++;
+                                }
+
+                                return array;
+                            } else if (type.getRawClass() == boolean[].class) {
+                                boolean[] array = (boolean[]) InitializationUtil.initializePrimitiveArray(boolean.class, element.asArray().getSize());
+
+                                int i = 0;
+                                for (ParsedElement subElement : element.asArray().getValues()) {
+                                    Object subObject = toObject(subElement, boolean.class);
+                                    array[i] = (boolean) (subObject != null ? subObject : false);
+
+                                    i++;
+                                }
+
+                                return array;
+                            } else {
+                                int size = element.asArray().getSize();
+
+                                if (ignoreArrayNulls || ignoreEmptyObjects) {
+                                    size = 0;
+
+                                    for (ParsedElement subElement : element.asArray().getValues()) {
+                                        Object subObject = toObject(subElement, type.getContentType().getRawClass());
+                                        if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
+                                            size++;
+                                        }
+                                    }
+                                }
+
+                                Object[] array = InitializationUtil.initializeArray(type.getContentType().getRawClass(), size);
+
+                                int i = 0;
+                                for (ParsedElement subElement : element.asArray().getValues()) {
+                                    Object subObject = toObject(subElement, type.getContentType().getRawClass());
+                                    if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
+                                        array[i] = subObject;
+
+                                        i++;
+                                    }
+                                }
+
+                                return array;
+                            }
+                        } else {
+                            throw new InvalidTypeException(type.getRawClass());
                         }
-                    } else {
+                    }
+                    default -> {
                         throw new InvalidTypeException(type.getRawClass());
                     }
-                } else {
-                    throw new InvalidTypeException(type.getRawClass());
                 }
             } else {
                 throw new InvalidTypeException(type.getRawClass());
@@ -1185,188 +1187,202 @@ public class ObjectProcessor {
             try {
                 return ParsedPrimitive.from(object);
             } catch (ClassCastException e) {
-                // Continue
+                // Not a primitive, continue
             }
 
-            if (object instanceof Enum<?>) {
-                return ParsedPrimitive.fromString(((Enum<?>) object).name());
-            } else if (object instanceof byte[]) {
-                ParsedArray arrayElement = ParsedArray.create();
-
-                for (byte item : (byte[]) object) {
-                    ParsedElement subElement = toElement(item);
-                    if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
-                        arrayElement.add(subElement);
-                    }
+            switch (object) {
+                case Enum<?> anEnum -> {
+                    return ParsedPrimitive.fromString(anEnum.name());
                 }
+                case byte[] bytes -> {
+                    ParsedArray arrayElement = ParsedArray.create();
 
-                return arrayElement;
-            } else if (object instanceof char[]) {
-                ParsedArray arrayElement = ParsedArray.create();
-
-                for (char item : (char[]) object) {
-                    ParsedElement subElement = toElement(item);
-                    if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
-                        arrayElement.add(subElement);
-                    }
-                }
-
-                return arrayElement;
-            } else if (object instanceof short[]) {
-                ParsedArray arrayElement = ParsedArray.create();
-
-                for (short item : (short[]) object) {
-                    ParsedElement subElement = toElement(item);
-                    if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
-                        arrayElement.add(subElement);
-                    }
-                }
-
-                return arrayElement;
-            } else if (object instanceof int[]) {
-                ParsedArray arrayElement = ParsedArray.create();
-
-                for (int item : (int[]) object) {
-                    ParsedElement subElement = toElement(item);
-                    if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
-                        arrayElement.add(subElement);
-                    }
-                }
-
-                return arrayElement;
-            } else if (object instanceof long[]) {
-                ParsedArray arrayElement = ParsedArray.create();
-
-                for (long item : (long[]) object) {
-                    ParsedElement subElement = toElement(item);
-                    if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
-                        arrayElement.add(subElement);
-                    }
-                }
-
-                return arrayElement;
-            } else if (object instanceof float[]) {
-                ParsedArray arrayElement = ParsedArray.create();
-
-                for (float item : (float[]) object) {
-                    ParsedElement subElement = toElement(item);
-                    if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
-                        arrayElement.add(subElement);
-                    }
-                }
-
-                return arrayElement;
-            } else if (object instanceof double[]) {
-                ParsedArray arrayElement = ParsedArray.create();
-
-                for (double item : (double[]) object) {
-                    ParsedElement subElement = toElement(item);
-                    if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
-                        arrayElement.add(subElement);
-                    }
-                }
-
-                return arrayElement;
-            } else if (object instanceof boolean[]) {
-                ParsedArray arrayElement = ParsedArray.create();
-
-                for (boolean item : (boolean[]) object) {
-                    ParsedElement subElement = toElement(item);
-                    if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
-                        arrayElement.add(subElement);
-                    }
-                }
-
-                return arrayElement;
-            } else if (object instanceof Object[]) {
-                ParsedArray arrayElement = ParsedArray.create();
-
-                for (Object item : (Object[]) object) {
-                    ParsedElement subElement = toElement(item);
-                    if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
-                        arrayElement.add(subElement);
-                    }
-                }
-
-                return arrayElement;
-            } else if (object instanceof Collection<?>) {
-                ParsedArray arrayElement = ParsedArray.create();
-
-                for (Object item : List.copyOf((Collection<?>) object)) {
-                    ParsedElement subElement = toElement(item);
-                    if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
-                        arrayElement.add(subElement);
-                    }
-                }
-
-                return arrayElement;
-            } else if (object instanceof Map<?, ?>) {
-                ParsedObject objectElement = ParsedObject.create();
-
-                for (Map.Entry<?, ?> entry : Map.copyOf((Map<?, ?>) object).entrySet()) {
-                    ParsedElement subElement = toElement(entry.getValue());
-                    if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
-                        objectElement.set(toString(entry.getKey()), subElement);
-                    }
-                }
-
-                return objectElement;
-            } else {
-                ParsedObject objectElement = ParsedObject.create();
-
-                Object defaultObject = null;
-                if (ignoreDefaults) {
-                    try {
-                        defaultObject = InitializationUtil.initialize(object.getClass());
-                    } catch (InitializationException e) {
-                        if (BJSL.getLogger() != null) {
-                            BJSL.getLogger().warning("Initialization of " + object.getClass().getSimpleName() + " failed, defaults will not be ignored");
-
-                            StringWriter stringWriter = new StringWriter();
-                            PrintWriter writer = new PrintWriter(stringWriter);
-                            e.printStackTrace(writer);
-                            BJSL.getLogger().warning(stringWriter.toString());
+                    for (byte item : bytes) {
+                        ParsedElement subElement = toElement(item);
+                        if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
+                            arrayElement.add(subElement);
                         }
                     }
+
+                    return arrayElement;
                 }
+                case char[] chars -> {
+                    ParsedArray arrayElement = ParsedArray.create();
 
-                List<Field> fields = getFields(object.getClass());
-                for (Field field : fields) {
-                    if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
-                        boolean shouldSerialize = !(Modifier.isTransient(field.getModifiers()) || field.getName().startsWith("this$"));
-
-                        String subKey = field.getName();
-                        ParsedElement subElement = toElement(field.get(object));
-
-                        if (ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) {
-                            shouldSerialize = false;
+                    for (char item : chars) {
+                        ParsedElement subElement = toElement(item);
+                        if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
+                            arrayElement.add(subElement);
                         }
+                    }
 
-                        if (ignoreEmptyObjects && ((subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0))) {
-                            shouldSerialize = false;
+                    return arrayElement;
+                }
+                case short[] shorts -> {
+                    ParsedArray arrayElement = ParsedArray.create();
+
+                    for (short item : shorts) {
+                        ParsedElement subElement = toElement(item);
+                        if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
+                            arrayElement.add(subElement);
                         }
+                    }
 
-                        if (ignoreDefaults && (subElement.isPrimitive() && (!subElement.asPrimitive().isNull() ? subElement.asPrimitive().get().equals(field.get(defaultObject)) : field.get(defaultObject) == null))) {
-                            shouldSerialize = false;
+                    return arrayElement;
+                }
+                case int[] integers -> {
+                    ParsedArray arrayElement = ParsedArray.create();
+
+                    for (int item : integers) {
+                        ParsedElement subElement = toElement(item);
+                        if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
+                            arrayElement.add(subElement);
                         }
+                    }
 
-                        for (Annotation annotation : field.getDeclaredAnnotations()) {
-                            if (annotation.annotationType() == AlwaysSerialize.class) {
-                                shouldSerialize = true;
-                            } else if (annotation.annotationType() == NeverSerialize.class) {
-                                shouldSerialize = false;
-                            } else if (annotation.annotationType() == Rename.class) {
-                                subKey = ((Rename) annotation).value();
+                    return arrayElement;
+                }
+                case long[] longs -> {
+                    ParsedArray arrayElement = ParsedArray.create();
+
+                    for (long item : longs) {
+                        ParsedElement subElement = toElement(item);
+                        if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
+                            arrayElement.add(subElement);
+                        }
+                    }
+
+                    return arrayElement;
+                }
+                case float[] floats -> {
+                    ParsedArray arrayElement = ParsedArray.create();
+
+                    for (float item : floats) {
+                        ParsedElement subElement = toElement(item);
+                        if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
+                            arrayElement.add(subElement);
+                        }
+                    }
+
+                    return arrayElement;
+                }
+                case double[] doubles -> {
+                    ParsedArray arrayElement = ParsedArray.create();
+
+                    for (double item : doubles) {
+                        ParsedElement subElement = toElement(item);
+                        if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
+                            arrayElement.add(subElement);
+                        }
+                    }
+
+                    return arrayElement;
+                }
+                case boolean[] booleans -> {
+                    ParsedArray arrayElement = ParsedArray.create();
+
+                    for (boolean item : booleans) {
+                        ParsedElement subElement = toElement(item);
+                        if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
+                            arrayElement.add(subElement);
+                        }
+                    }
+
+                    return arrayElement;
+                }
+                case Object[] objects -> {
+                    ParsedArray arrayElement = ParsedArray.create();
+
+                    for (Object item : objects) {
+                        ParsedElement subElement = toElement(item);
+                        if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
+                            arrayElement.add(subElement);
+                        }
+                    }
+
+                    return arrayElement;
+                }
+                case Collection<?> objects -> {
+                    ParsedArray arrayElement = ParsedArray.create();
+
+                    for (Object item : List.copyOf(objects)) {
+                        ParsedElement subElement = toElement(item);
+                        if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
+                            arrayElement.add(subElement);
+                        }
+                    }
+
+                    return arrayElement;
+                }
+                case Map<?, ?> map -> {
+                    ParsedObject objectElement = ParsedObject.create();
+
+                    for (Map.Entry<?, ?> entry : Map.copyOf(map).entrySet()) {
+                        ParsedElement subElement = toElement(entry.getValue());
+                        if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
+                            objectElement.set(toString(entry.getKey()), subElement);
+                        }
+                    }
+
+                    return objectElement;
+                }
+                default -> {
+                    ParsedObject objectElement = ParsedObject.create();
+
+                    Object defaultObject = null;
+                    if (ignoreDefaults) {
+                        try {
+                            defaultObject = InitializationUtil.initialize(object.getClass());
+                        } catch (InitializationException e) {
+                            if (BJSL.getLogger() != null) {
+                                BJSL.getLogger().warning("Initialization of " + object.getClass().getSimpleName() + " failed, defaults will not be ignored");
+
+                                StringWriter stringWriter = new StringWriter();
+                                PrintWriter writer = new PrintWriter(stringWriter);
+                                e.printStackTrace(writer);
+                                BJSL.getLogger().warning(stringWriter.toString());
                             }
                         }
+                    }
 
-                        if (shouldSerialize) {
-                            objectElement.set(subKey, subElement);
+                    List<Field> fields = getFields(object.getClass());
+                    for (Field field : fields) {
+                        if (!Modifier.isStatic(field.getModifiers()) && (field.canAccess(object) || field.trySetAccessible())) {
+                            boolean shouldSerialize = !(Modifier.isTransient(field.getModifiers()) || field.getName().startsWith("this$"));
+
+                            String subKey = field.getName();
+                            ParsedElement subElement = toElement(field.get(object));
+
+                            if (ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) {
+                                shouldSerialize = false;
+                            }
+
+                            if (ignoreEmptyObjects && ((subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0))) {
+                                shouldSerialize = false;
+                            }
+
+                            if (ignoreDefaults && (subElement.isPrimitive() && (!subElement.asPrimitive().isNull() ? subElement.asPrimitive().get().equals(field.get(defaultObject)) : field.get(defaultObject) == null))) {
+                                shouldSerialize = false;
+                            }
+
+                            for (Annotation annotation : field.getDeclaredAnnotations()) {
+                                if (annotation.annotationType() == AlwaysSerialize.class) {
+                                    shouldSerialize = true;
+                                } else if (annotation.annotationType() == NeverSerialize.class) {
+                                    shouldSerialize = false;
+                                } else if (annotation.annotationType() == Rename.class) {
+                                    subKey = ((Rename) annotation).value();
+                                }
+                            }
+
+                            if (shouldSerialize) {
+                                objectElement.set(subKey, subElement);
+                            }
                         }
                     }
-                }
 
-                return objectElement;
+                    return objectElement;
+                }
             }
         } catch (Exception e) {
             throw new ProcessorException(e);
@@ -1390,47 +1406,7 @@ public class ObjectProcessor {
             if (element.isPrimitive()) {
                 ParsedPrimitive primitive = element.asPrimitive();
 
-                switch (primitive.getType()) {
-                    case STRING: {
-                        return primitive.asString();
-                    }
-                    case BYTE: {
-                        return Byte.toString(primitive.asByte());
-                    }
-                    case CHAR: {
-                        return Character.toString(primitive.asChar());
-                    }
-                    case SHORT: {
-                        return Short.toString(primitive.asShort());
-                    }
-                    case INTEGER: {
-                        return Integer.toString(primitive.asInteger());
-                    }
-                    case LONG: {
-                        return Long.toString(primitive.asLong());
-                    }
-                    case BIGINTEGER: {
-                        return primitive.asBigInteger().toString();
-                    }
-                    case FLOAT: {
-                        return Float.toString(primitive.asFloat());
-                    }
-                    case DOUBLE: {
-                        return Double.toString(primitive.asDouble());
-                    }
-                    case BIGDECIMAL: {
-                        return primitive.asBigDecimal().toString();
-                    }
-                    case BOOLEAN: {
-                        return Boolean.toString(primitive.asBoolean());
-                    }
-                    case NULL: {
-                        return "null";
-                    }
-                    default: {
-                        throw new NotAPrimitiveException(element);
-                    }
-                }
+                return primitive.toString();
             } else {
                 throw new NotAPrimitiveException(element);
             }
