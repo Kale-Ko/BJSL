@@ -34,23 +34,7 @@ public class DefaultTypeProcessorsTest {
     protected final DefaultTypeProcessors typeProcessorsMode6 = new DefaultTypeProcessors(new DefaultTypeProcessors.Options(DefaultTypeProcessors.Options.UUIDMode.NUMBER, DefaultTypeProcessors.Options.InetAddressMode.NUMBER, false, DefaultTypeProcessors.Options.DateMode.NUMBER, DateTimeFormatter.ISO_DATE_TIME.withLocale(Locale.US).withZone(ZoneId.ofOffset("UTC", ZoneOffset.ofHours(-5)))));
 
     protected static class StringBuilderProvider implements ArgumentsProvider {
-        protected static class StringBuilderHolder {
-            protected final String string;
-            protected final StringBuilder stringBuilder;
-
-            public StringBuilderHolder(String string, StringBuilder stringBuilder) {
-                this.string = string;
-
-                this.stringBuilder = stringBuilder;
-            }
-
-            public String getString() {
-                return this.string;
-            }
-
-            public StringBuilder getStringBuilder() {
-                return this.stringBuilder;
-            }
+        protected record StringBuilderHolder(String string, StringBuilder stringBuilder) {
         }
 
         public StringBuilderProvider() {
@@ -58,28 +42,12 @@ public class DefaultTypeProcessorsTest {
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
-            return Stream.of(Arguments.argumentSet("test", new StringBuilderProvider.StringBuilderHolder("test", new StringBuilder("test"))), Arguments.argumentSet("<empty>", new StringBuilderProvider.StringBuilderHolder("", new StringBuilder(""))), Arguments.argumentSet("\"hello world\"", new StringBuilderProvider.StringBuilderHolder("\"hello world\"", new StringBuilder("\"hello world\""))));
+            return Stream.of(Arguments.argumentSet("test", new StringBuilderProvider.StringBuilderHolder("test", new StringBuilder("test"))), Arguments.argumentSet("<empty>", new StringBuilderProvider.StringBuilderHolder("", new StringBuilder())), Arguments.argumentSet("\"hello world\"", new StringBuilderProvider.StringBuilderHolder("\"hello world\"", new StringBuilder("\"hello world\""))));
         }
     }
 
     protected static class StringBufferProvider implements ArgumentsProvider {
-        protected static class StringBufferHolder {
-            protected final String string;
-            protected final StringBuffer stringBuffer;
-
-            public StringBufferHolder(String string, StringBuffer stringBuffer) {
-                this.string = string;
-
-                this.stringBuffer = stringBuffer;
-            }
-
-            public String getString() {
-                return this.string;
-            }
-
-            public StringBuffer getStringBuffer() {
-                return this.stringBuffer;
-            }
+        protected record StringBufferHolder(String string, StringBuffer stringBuffer) {
         }
 
         public StringBufferProvider() {
@@ -87,7 +55,7 @@ public class DefaultTypeProcessorsTest {
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
-            return Stream.of(Arguments.argumentSet("test", new StringBufferProvider.StringBufferHolder("test", new StringBuffer("test"))), Arguments.argumentSet("<empty>", new StringBufferProvider.StringBufferHolder("", new StringBuffer(""))), Arguments.argumentSet("\"hello world\"", new StringBufferProvider.StringBufferHolder("\"hello world\"", new StringBuffer("\"hello world\""))));
+            return Stream.of(Arguments.argumentSet("test", new StringBufferProvider.StringBufferHolder("test", new StringBuffer("test"))), Arguments.argumentSet("<empty>", new StringBufferProvider.StringBufferHolder("", new StringBuffer())), Arguments.argumentSet("\"hello world\"", new StringBufferProvider.StringBufferHolder("\"hello world\"", new StringBuffer("\"hello world\""))));
         }
     }
 
@@ -193,28 +161,12 @@ public class DefaultTypeProcessorsTest {
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
-            return Stream.of(Arguments.argumentSet("e4ec171a-665d-43fa-946e-852cc67cc590", new UUIDProvider.UUIDHolder("e4ec171a-665d-43fa-946e-852cc67cc590", new byte[] { (byte) -28, (byte) -20, (byte) 23, (byte) 26, (byte) 102, (byte) 93, (byte) 67, (byte) -6, (byte) -108, (byte) 110, (byte) -123, (byte) 44, (byte) -58, (byte) 124, (byte) -59, (byte) -112 }, new short[] { (short) -6932, (short) 5914, (short) 26205, (short) 17402, (short) -27538, (short) -31444, (short) -14724, (short) -14960 }, new int[] { (int) -454289638, (int) 1717388282, (int) -1804696276, (int) -964901488 }, new long[] { (long) -1951159136404290566L, (long) -7751111481302923888L }, new BigInteger(new byte[] { (byte) -28, (byte) -20, (byte) 23, (byte) 26, (byte) 102, (byte) 93, (byte) 67, (byte) -6, (byte) -108, (byte) 110, (byte) -123, (byte) 44, (byte) -58, (byte) 124, (byte) -59, (byte) -112 }), UUID.fromString("e4ec171a-665d-43fa-946e-852cc67cc590"))), Arguments.argumentSet("00000000-0000-0000-0000-000000000000", new UUIDProvider.UUIDHolder("00000000-0000-0000-0000-000000000000", new byte[] { (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 }, new short[] { (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00 }, new int[] { (int) 0x00, (int) 0x00, (int) 0x00, (int) 0x00 }, new long[] { (long) 0x00, (long) 0x00 }, new BigInteger(new byte[] { (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 }), UUID.fromString("00000000-0000-0000-0000-000000000000"))), Arguments.argumentSet("ffffffff-ffff-ffff-ffff-ffffffffffff", new UUIDProvider.UUIDHolder("ffffffff-ffff-ffff-ffff-ffffffffffff", new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, new short[] { (short) 0xffff, (short) 0xffff, (short) 0xffff, (short) 0xffff, (short) 0xffff, (short) 0xffff, (short) 0xffff, (short) 0xffff }, new int[] { (int) 0xffffffff, (int) 0xffffffff, (int) 0xffffffff, (int) 0xffffffff }, new long[] { (long) 0xffffffffffffffffL, (long) 0xffffffffffffffffL }, new BigInteger(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }), UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff"))));
+            return Stream.of(Arguments.argumentSet("e4ec171a-665d-43fa-946e-852cc67cc590", new UUIDProvider.UUIDHolder("e4ec171a-665d-43fa-946e-852cc67cc590", new byte[] { (byte) -28, (byte) -20, (byte) 23, (byte) 26, (byte) 102, (byte) 93, (byte) 67, (byte) -6, (byte) -108, (byte) 110, (byte) -123, (byte) 44, (byte) -58, (byte) 124, (byte) -59, (byte) -112 }, new short[] { (short) -6932, (short) 5914, (short) 26205, (short) 17402, (short) -27538, (short) -31444, (short) -14724, (short) -14960 }, new int[] { -454289638, 1717388282, -1804696276, -964901488 }, new long[] { -1951159136404290566L, -7751111481302923888L }, new BigInteger(new byte[] { (byte) -28, (byte) -20, (byte) 23, (byte) 26, (byte) 102, (byte) 93, (byte) 67, (byte) -6, (byte) -108, (byte) 110, (byte) -123, (byte) 44, (byte) -58, (byte) 124, (byte) -59, (byte) -112 }), UUID.fromString("e4ec171a-665d-43fa-946e-852cc67cc590"))), Arguments.argumentSet("00000000-0000-0000-0000-000000000000", new UUIDProvider.UUIDHolder("00000000-0000-0000-0000-000000000000", new byte[] { (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 }, new short[] { (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00 }, new int[] { 0x00, 0x00, 0x00, 0x00 }, new long[] { (long) 0x00, (long) 0x00 }, new BigInteger(new byte[] { (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 }), UUID.fromString("00000000-0000-0000-0000-000000000000"))), Arguments.argumentSet("ffffffff-ffff-ffff-ffff-ffffffffffff", new UUIDProvider.UUIDHolder("ffffffff-ffff-ffff-ffff-ffffffffffff", new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, new short[] { (short) 0xffff, (short) 0xffff, (short) 0xffff, (short) 0xffff, (short) 0xffff, (short) 0xffff, (short) 0xffff, (short) 0xffff }, new int[] { 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff }, new long[] { 0xffffffffffffffffL, 0xffffffffffffffffL }, new BigInteger(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }), UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff"))));
         }
     }
 
     protected static class URIProvider implements ArgumentsProvider {
-        protected static class URIHolder {
-            protected final String string;
-            protected final URI uri;
-
-            public URIHolder(String string, URI uri) {
-                this.string = string;
-
-                this.uri = uri;
-            }
-
-            public String getString() {
-                return this.string;
-            }
-
-            public URI getURI() {
-                return this.uri;
-            }
+        protected record URIHolder(String string, URI uri) {
         }
 
         public URIProvider() {
@@ -228,23 +180,7 @@ public class DefaultTypeProcessorsTest {
 
     @SuppressWarnings("deprecation")
     protected static class URLProvider implements ArgumentsProvider {
-        protected static class URLHolder {
-            protected final String string;
-            protected final URL url;
-
-            public URLHolder(String string, URL url) {
-                this.string = string;
-
-                this.url = url;
-            }
-
-            public String getString() {
-                return this.string;
-            }
-
-            public URL getURL() {
-                return this.url;
-            }
+        protected record URLHolder(String string, URL url) {
         }
 
         public URLProvider() {
@@ -257,23 +193,7 @@ public class DefaultTypeProcessorsTest {
     }
 
     protected static class PathProvider implements ArgumentsProvider {
-        protected static class PathHolder {
-            protected final String string;
-            protected final Path path;
-
-            public PathHolder(String string, Path path) {
-                this.string = string;
-
-                this.path = path;
-            }
-
-            public String getString() {
-                return this.string;
-            }
-
-            public Path getPath() {
-                return this.path;
-            }
+        protected record PathHolder(String string, Path path) {
         }
 
         public PathProvider() {
@@ -286,23 +206,7 @@ public class DefaultTypeProcessorsTest {
     }
 
     protected static class FileProvider implements ArgumentsProvider {
-        protected static class FileHolder {
-            protected final String string;
-            protected final File file;
-
-            public FileHolder(String string, File file) {
-                this.string = string;
-
-                this.file = file;
-            }
-
-            public String getString() {
-                return this.string;
-            }
-
-            public File getFile() {
-                return this.file;
-            }
+        protected record FileHolder(String string, File file) {
         }
 
         public FileProvider() {
@@ -315,38 +219,7 @@ public class DefaultTypeProcessorsTest {
     }
 
     protected static class InetAddressProvider implements ArgumentsProvider {
-        protected static class InetAddressHolder {
-            protected final String smallString;
-            protected final String fullString;
-
-            protected final BigInteger bigInteger;
-
-            protected final InetAddress inetAddress;
-
-            public InetAddressHolder(String smallString, String fullString, BigInteger bigInteger, InetAddress inetAddress) {
-                this.smallString = smallString;
-                this.fullString = fullString;
-
-                this.bigInteger = bigInteger;
-
-                this.inetAddress = inetAddress;
-            }
-
-            public String getSmallString() {
-                return this.smallString;
-            }
-
-            public String getFullString() {
-                return this.fullString;
-            }
-
-            public BigInteger getBigInteger() {
-                return this.bigInteger;
-            }
-
-            public InetAddress getInetAddress() {
-                return this.inetAddress;
-            }
+        protected record InetAddressHolder(String smallString, String fullString, BigInteger bigInteger, InetAddress inetAddress) {
         }
 
         public InetAddressProvider() {
@@ -359,38 +232,7 @@ public class DefaultTypeProcessorsTest {
     }
 
     protected static class InetSocketAddressProvider implements ArgumentsProvider {
-        protected static class InetSocketAddressHolder {
-            protected final String smallString;
-            protected final String fullString;
-
-            protected final BigInteger bigInteger;
-
-            protected final InetSocketAddress inetSocketAddress;
-
-            public InetSocketAddressHolder(String smallString, String fullString, BigInteger bigInteger, InetSocketAddress inetSocketAddress) {
-                this.smallString = smallString;
-                this.fullString = fullString;
-
-                this.bigInteger = bigInteger;
-
-                this.inetSocketAddress = inetSocketAddress;
-            }
-
-            public String getSmallString() {
-                return this.smallString;
-            }
-
-            public String getFullString() {
-                return this.fullString;
-            }
-
-            public BigInteger getBigInteger() {
-                return this.bigInteger;
-            }
-
-            public InetSocketAddress getInetSocketAddress() {
-                return this.inetSocketAddress;
-            }
+        protected record InetSocketAddressHolder(String smallString, String fullString, BigInteger bigInteger, InetSocketAddress inetSocketAddress) {
         }
 
         public InetSocketAddressProvider() {
@@ -403,44 +245,7 @@ public class DefaultTypeProcessorsTest {
     }
 
     protected static class CalendarProvider implements ArgumentsProvider {
-        protected static class CalendarHolder {
-            protected final String defaultString;
-            protected final String isoDateTimeString;
-            protected final String isoInstantString;
-
-            protected final long number;
-
-            protected final Calendar calendar;
-
-            public CalendarHolder(String defaultString, String isoDateTimeString, String isoInstantString, long number, Calendar calendar) {
-                this.defaultString = defaultString;
-                this.isoDateTimeString = isoDateTimeString;
-                this.isoInstantString = isoInstantString;
-
-                this.number = number;
-
-                this.calendar = calendar;
-            }
-
-            public String getDefaultString() {
-                return this.defaultString;
-            }
-
-            public String getIsoDateTimeString() {
-                return this.isoDateTimeString;
-            }
-
-            public String getIsoInstantString() {
-                return this.isoInstantString;
-            }
-
-            public long getNumber() {
-                return this.number;
-            }
-
-            public Calendar getCalendar() {
-                return this.calendar;
-            }
+        protected record CalendarHolder(String defaultString, String isoDateTimeString, String isoInstantString, long number, Calendar calendar) {
         }
 
         public CalendarProvider() {
@@ -459,44 +264,7 @@ public class DefaultTypeProcessorsTest {
     }
 
     protected static class DateProvider implements ArgumentsProvider {
-        protected static class DateHolder {
-            protected final String defaultString;
-            protected final String isoDateTimeString;
-            protected final String isoInstantString;
-
-            protected final long number;
-
-            protected final Date date;
-
-            public DateHolder(String defaultString, String isoDateTimeString, String isoInstantString, long number, Date date) {
-                this.defaultString = defaultString;
-                this.isoDateTimeString = isoDateTimeString;
-                this.isoInstantString = isoInstantString;
-
-                this.number = number;
-
-                this.date = date;
-            }
-
-            public String getDefaultString() {
-                return this.defaultString;
-            }
-
-            public String getIsoDateTimeString() {
-                return this.isoDateTimeString;
-            }
-
-            public String getIsoInstantString() {
-                return this.isoInstantString;
-            }
-
-            public long getNumber() {
-                return this.number;
-            }
-
-            public Date getDate() {
-                return this.date;
-            }
+        protected record DateHolder(String defaultString, String isoDateTimeString, String isoInstantString, long number, Date date) {
         }
 
         public DateProvider() {
@@ -513,44 +281,7 @@ public class DefaultTypeProcessorsTest {
     }
 
     protected static class InstantProvider implements ArgumentsProvider {
-        protected static class InstantHolder {
-            protected final String defaultString;
-            protected final String isoInstantTimeString;
-            protected final String isoInstantString;
-
-            protected final long number;
-
-            protected final Instant instant;
-
-            public InstantHolder(String defaultString, String isoInstantTimeString, String isoInstantString, long number, Instant instant) {
-                this.defaultString = defaultString;
-                this.isoInstantTimeString = isoInstantTimeString;
-                this.isoInstantString = isoInstantString;
-
-                this.number = number;
-
-                this.instant = instant;
-            }
-
-            public String getDefaultString() {
-                return this.defaultString;
-            }
-
-            public String getIsoInstantTimeString() {
-                return this.isoInstantTimeString;
-            }
-
-            public String getIsoInstantString() {
-                return this.isoInstantString;
-            }
-
-            public long getNumber() {
-                return this.number;
-            }
-
-            public Instant getInstant() {
-                return this.instant;
-            }
+        protected record InstantHolder(String defaultString, String isoInstantTimeString, String isoInstantString, long number, Instant instant) {
         }
 
         public InstantProvider() {
@@ -574,10 +305,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(StringBuilderProvider.class)
     void toElement_StringBuilder_String(StringBuilderProvider.StringBuilderHolder holder) {
-        ParsedElement element = typeProcessorsMode1.STRING_BUILDER_P.toElement(holder.getStringBuilder());
+        ParsedElement element = typeProcessorsMode1.STRING_BUILDER_P.toElement(holder.stringBuilder());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.STRING, element.asPrimitive().getType());
-        assertEquals(holder.getString(), element.asPrimitive().asString());
+        assertEquals(holder.string(), element.asPrimitive().asString());
     }
 
     @Test
@@ -595,10 +326,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(StringBuilderProvider.class)
     void toObject_StringBuilder_String(StringBuilderProvider.StringBuilderHolder holder) {
-        ParsedElement element = ParsedPrimitive.fromString(holder.getString());
+        ParsedElement element = ParsedPrimitive.fromString(holder.string());
         Object obj = typeProcessorsMode1.STRING_BUILDER_P.toObject(element);
         assertInstanceOf(StringBuilder.class, obj);
-        assertEquals(holder.getString(), obj.toString());
+        assertEquals(holder.string(), obj.toString());
     }
 
     @Test
@@ -616,10 +347,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(StringBufferProvider.class)
     void toElement_StringBuffer_String(StringBufferProvider.StringBufferHolder holder) {
-        ParsedElement element = typeProcessorsMode1.STRING_BUFFER_P.toElement(holder.getStringBuffer());
+        ParsedElement element = typeProcessorsMode1.STRING_BUFFER_P.toElement(holder.stringBuffer());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.STRING, element.asPrimitive().getType());
-        assertEquals(holder.getString(), element.asPrimitive().asString());
+        assertEquals(holder.string(), element.asPrimitive().asString());
     }
 
     @Test
@@ -637,10 +368,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(StringBufferProvider.class)
     void toObject_StringBuffer_String(StringBufferProvider.StringBufferHolder holder) {
-        ParsedElement element = ParsedPrimitive.fromString(holder.getString());
+        ParsedElement element = ParsedPrimitive.fromString(holder.string());
         Object obj = typeProcessorsMode1.STRING_BUFFER_P.toObject(element);
         assertInstanceOf(StringBuffer.class, obj);
-        assertEquals(holder.getString(), obj.toString());
+        assertEquals(holder.string(), obj.toString());
     }
 
     @Test
@@ -806,10 +537,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(URIProvider.class)
     void toElement_URI_String(URIProvider.URIHolder holder) {
-        ParsedElement element = typeProcessorsMode1.URI_P.toElement(holder.getURI());
+        ParsedElement element = typeProcessorsMode1.URI_P.toElement(holder.uri());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.STRING, element.asPrimitive().getType());
-        assertEquals(holder.getString(), element.asPrimitive().asString());
+        assertEquals(holder.string(), element.asPrimitive().asString());
     }
 
     @Test
@@ -827,10 +558,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(URIProvider.class)
     void toObject_URI_String(URIProvider.URIHolder holder) {
-        ParsedElement element = ParsedPrimitive.fromString(holder.getString());
+        ParsedElement element = ParsedPrimitive.fromString(holder.string());
         Object obj = typeProcessorsMode1.URI_P.toObject(element);
         assertInstanceOf(URI.class, obj);
-        assertEquals(holder.getURI(), obj);
+        assertEquals(holder.uri(), obj);
     }
 
     @Test
@@ -848,10 +579,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(URLProvider.class)
     void toElement_URL_String(URLProvider.URLHolder holder) {
-        ParsedElement element = typeProcessorsMode1.URL_P.toElement(holder.getURL());
+        ParsedElement element = typeProcessorsMode1.URL_P.toElement(holder.url());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.STRING, element.asPrimitive().getType());
-        assertEquals(holder.getString(), element.asPrimitive().asString());
+        assertEquals(holder.string(), element.asPrimitive().asString());
     }
 
     @Test
@@ -869,10 +600,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(URLProvider.class)
     void toObject_URL_String(URLProvider.URLHolder holder) {
-        ParsedElement element = ParsedPrimitive.fromString(holder.getString());
+        ParsedElement element = ParsedPrimitive.fromString(holder.string());
         Object obj = typeProcessorsMode1.URL_P.toObject(element);
         assertInstanceOf(URL.class, obj);
-        assertEquals(holder.getURL(), obj);
+        assertEquals(holder.url(), obj);
     }
 
     @Test
@@ -890,10 +621,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(PathProvider.class)
     void toElement_Path_String(PathProvider.PathHolder holder) {
-        ParsedElement element = typeProcessorsMode1.PATH_P.toElement(holder.getPath());
+        ParsedElement element = typeProcessorsMode1.PATH_P.toElement(holder.path());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.STRING, element.asPrimitive().getType());
-        assertEquals(holder.getString(), element.asPrimitive().asString());
+        assertEquals(holder.string(), element.asPrimitive().asString());
     }
 
     @Test
@@ -911,10 +642,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(PathProvider.class)
     void toObject_Path_String(PathProvider.PathHolder holder) {
-        ParsedElement element = ParsedPrimitive.fromString(holder.getString());
+        ParsedElement element = ParsedPrimitive.fromString(holder.string());
         Object obj = typeProcessorsMode1.PATH_P.toObject(element);
         assertInstanceOf(Path.class, obj);
-        assertEquals(holder.getPath(), obj);
+        assertEquals(holder.path(), obj);
     }
 
     @Test
@@ -932,10 +663,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(FileProvider.class)
     void toElement_File_String(FileProvider.FileHolder holder) {
-        ParsedElement element = typeProcessorsMode1.FILE_P.toElement(holder.getFile());
+        ParsedElement element = typeProcessorsMode1.FILE_P.toElement(holder.file());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.STRING, element.asPrimitive().getType());
-        assertEquals(holder.getString(), element.asPrimitive().asString());
+        assertEquals(holder.string(), element.asPrimitive().asString());
     }
 
     @Test
@@ -953,10 +684,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(FileProvider.class)
     void toObject_File_String(FileProvider.FileHolder holder) {
-        ParsedElement element = ParsedPrimitive.fromString(holder.getString());
+        ParsedElement element = ParsedPrimitive.fromString(holder.string());
         Object obj = typeProcessorsMode1.FILE_P.toObject(element);
         assertInstanceOf(File.class, obj);
-        assertEquals(holder.getFile(), obj);
+        assertEquals(holder.file(), obj);
     }
 
     @Test
@@ -974,10 +705,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(InetAddressProvider.class)
     void toElement_InetAddress_String(InetAddressProvider.InetAddressHolder holder) {
-        ParsedElement element = typeProcessorsMode1.INET_ADDRESS_P.toElement(holder.getInetAddress());
+        ParsedElement element = typeProcessorsMode1.INET_ADDRESS_P.toElement(holder.inetAddress());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.STRING, element.asPrimitive().getType());
-        assertEquals(holder.getSmallString(), element.asPrimitive().asString());
+        assertEquals(holder.smallString(), element.asPrimitive().asString());
     }
 
     @ParameterizedTest(name="toElement_InetAddress_String_Fill - {argumentSetName}")
@@ -985,10 +716,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(InetAddressProvider.class)
     void toElement_InetAddress_String_Fill(InetAddressProvider.InetAddressHolder holder) {
-        ParsedElement element = typeProcessorsMode2.INET_ADDRESS_P.toElement(holder.getInetAddress());
+        ParsedElement element = typeProcessorsMode2.INET_ADDRESS_P.toElement(holder.inetAddress());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.STRING, element.asPrimitive().getType());
-        assertEquals(holder.getFullString(), element.asPrimitive().asString());
+        assertEquals(holder.fullString(), element.asPrimitive().asString());
     }
 
     @ParameterizedTest(name="toElement_InetAddress_Number - {argumentSetName}")
@@ -996,14 +727,14 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(InetAddressProvider.class)
     void toElement_InetAddress_Number(InetAddressProvider.InetAddressHolder holder) {
-        if (holder.getBigInteger() == null) {
+        if (holder.bigInteger() == null) {
             return; // TODO Skip
         }
 
-        ParsedElement element = typeProcessorsMode3.INET_ADDRESS_P.toElement(holder.getInetAddress());
+        ParsedElement element = typeProcessorsMode3.INET_ADDRESS_P.toElement(holder.inetAddress());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.BIGINTEGER, element.asPrimitive().getType());
-        assertEquals(holder.getBigInteger(), element.asPrimitive().asBigInteger());
+        assertEquals(holder.bigInteger(), element.asPrimitive().asBigInteger());
     }
 
     @Test
@@ -1021,10 +752,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(InetAddressProvider.class)
     void toObject_InetAddress_String(InetAddressProvider.InetAddressHolder holder) {
-        ParsedElement element = ParsedPrimitive.fromString(holder.getSmallString());
+        ParsedElement element = ParsedPrimitive.fromString(holder.smallString());
         Object obj = typeProcessorsMode1.INET_ADDRESS_P.toObject(element);
         assertInstanceOf(InetAddress.class, obj);
-        assertEquals(holder.getInetAddress(), obj);
+        assertEquals(holder.inetAddress(), obj);
     }
 
     @ParameterizedTest(name="toObject_InetAddress_String_Fill - {argumentSetName}")
@@ -1032,10 +763,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(InetAddressProvider.class)
     void toObject_InetAddress_String_Fill(InetAddressProvider.InetAddressHolder holder) {
-        ParsedElement element = ParsedPrimitive.fromString(holder.getFullString());
+        ParsedElement element = ParsedPrimitive.fromString(holder.fullString());
         Object obj = typeProcessorsMode2.INET_ADDRESS_P.toObject(element);
         assertInstanceOf(InetAddress.class, obj);
-        assertEquals(holder.getInetAddress(), obj);
+        assertEquals(holder.inetAddress(), obj);
     }
 
     @ParameterizedTest(name="toObject_InetAddress_Number - {argumentSetName}")
@@ -1043,14 +774,14 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(InetAddressProvider.class)
     void toObject_InetAddress_Number(InetAddressProvider.InetAddressHolder holder) {
-        if (holder.getBigInteger() == null) {
+        if (holder.bigInteger() == null) {
             return; // TODO Skip
         }
 
-        ParsedElement element = ParsedPrimitive.fromBigInteger(holder.getBigInteger());
+        ParsedElement element = ParsedPrimitive.fromBigInteger(holder.bigInteger());
         Object obj = typeProcessorsMode3.INET_ADDRESS_P.toObject(element);
         assertInstanceOf(InetAddress.class, obj);
-        assertEquals(holder.getInetAddress(), obj);
+        assertEquals(holder.inetAddress(), obj);
     }
 
     @Test
@@ -1068,10 +799,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(InetSocketAddressProvider.class)
     void toElement_InetSocketAddress_String(InetSocketAddressProvider.InetSocketAddressHolder holder) {
-        ParsedElement element = typeProcessorsMode1.INETSOCKET_ADDRESS_P.toElement(holder.getInetSocketAddress());
+        ParsedElement element = typeProcessorsMode1.INETSOCKET_ADDRESS_P.toElement(holder.inetSocketAddress());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.STRING, element.asPrimitive().getType());
-        assertEquals(holder.getSmallString(), element.asPrimitive().asString());
+        assertEquals(holder.smallString(), element.asPrimitive().asString());
     }
 
     @ParameterizedTest(name="toElement_InetSocketAddress_String_Fill - {argumentSetName}")
@@ -1079,10 +810,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(InetSocketAddressProvider.class)
     void toElement_InetSocketAddress_String_Fill(InetSocketAddressProvider.InetSocketAddressHolder holder) {
-        ParsedElement element = typeProcessorsMode2.INETSOCKET_ADDRESS_P.toElement(holder.getInetSocketAddress());
+        ParsedElement element = typeProcessorsMode2.INETSOCKET_ADDRESS_P.toElement(holder.inetSocketAddress());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.STRING, element.asPrimitive().getType());
-        assertEquals(holder.getFullString(), element.asPrimitive().asString());
+        assertEquals(holder.fullString(), element.asPrimitive().asString());
     }
 
     @ParameterizedTest(name="toElement_InetSocketAddress_Number - {argumentSetName}")
@@ -1090,14 +821,14 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(InetSocketAddressProvider.class)
     void toElement_InetSocketAddress_Number(InetSocketAddressProvider.InetSocketAddressHolder holder) {
-        if (holder.getBigInteger() == null) {
+        if (holder.bigInteger() == null) {
             return; // TODO Skip
         }
 
-        ParsedElement element = typeProcessorsMode3.INETSOCKET_ADDRESS_P.toElement(holder.getInetSocketAddress());
+        ParsedElement element = typeProcessorsMode3.INETSOCKET_ADDRESS_P.toElement(holder.inetSocketAddress());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.BIGINTEGER, element.asPrimitive().getType());
-        assertEquals(holder.getBigInteger(), element.asPrimitive().asBigInteger());
+        assertEquals(holder.bigInteger(), element.asPrimitive().asBigInteger());
     }
 
     @Test
@@ -1115,10 +846,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(InetSocketAddressProvider.class)
     void toObject_InetSocketAddress_String(InetSocketAddressProvider.InetSocketAddressHolder holder) {
-        ParsedElement element = ParsedPrimitive.fromString(holder.getSmallString());
+        ParsedElement element = ParsedPrimitive.fromString(holder.smallString());
         Object obj = typeProcessorsMode1.INETSOCKET_ADDRESS_P.toObject(element);
         assertInstanceOf(InetSocketAddress.class, obj);
-        assertEquals(holder.getInetSocketAddress(), obj);
+        assertEquals(holder.inetSocketAddress(), obj);
     }
 
     @ParameterizedTest(name="toObject_InetSocketAddress_String_Fill - {argumentSetName}")
@@ -1126,10 +857,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(InetSocketAddressProvider.class)
     void toObject_InetSocketAddress_String_Fill(InetSocketAddressProvider.InetSocketAddressHolder holder) {
-        ParsedElement element = ParsedPrimitive.fromString(holder.getFullString());
+        ParsedElement element = ParsedPrimitive.fromString(holder.fullString());
         Object obj = typeProcessorsMode2.INETSOCKET_ADDRESS_P.toObject(element);
         assertInstanceOf(InetSocketAddress.class, obj);
-        assertEquals(holder.getInetSocketAddress(), obj);
+        assertEquals(holder.inetSocketAddress(), obj);
     }
 
     @ParameterizedTest(name="toObject_InetSocketAddress_Number - {argumentSetName}")
@@ -1137,14 +868,14 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(InetSocketAddressProvider.class)
     void toObject_InetSocketAddress_Number(InetSocketAddressProvider.InetSocketAddressHolder holder) {
-        if (holder.getBigInteger() == null) {
+        if (holder.bigInteger() == null) {
             return; // TODO Skip
         }
 
-        ParsedElement element = ParsedPrimitive.fromBigInteger(holder.getBigInteger());
+        ParsedElement element = ParsedPrimitive.fromBigInteger(holder.bigInteger());
         Object obj = typeProcessorsMode3.INETSOCKET_ADDRESS_P.toObject(element);
         assertInstanceOf(InetSocketAddress.class, obj);
-        assertEquals(holder.getInetSocketAddress(), obj);
+        assertEquals(holder.inetSocketAddress(), obj);
     }
 
     @Test
@@ -1162,10 +893,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(CalendarProvider.class)
     void toElement_Calendar_String_DEFAULT(CalendarProvider.CalendarHolder holder) {
-        ParsedElement element = typeProcessorsMode1.CALENDAR_P.toElement(holder.getCalendar());
+        ParsedElement element = typeProcessorsMode1.CALENDAR_P.toElement(holder.calendar());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.STRING, element.asPrimitive().getType());
-        assertEquals(holder.getDefaultString(), element.asPrimitive().asString());
+        assertEquals(holder.defaultString(), element.asPrimitive().asString());
     }
 
     @ParameterizedTest(name="toElement_Calendar_String_ISO_DATE_TIME - {argumentSetName}")
@@ -1173,10 +904,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(CalendarProvider.class)
     void toElement_Calendar_String_ISO_DATE_TIME(CalendarProvider.CalendarHolder holder) {
-        ParsedElement element = typeProcessorsMode2.CALENDAR_P.toElement(holder.getCalendar());
+        ParsedElement element = typeProcessorsMode2.CALENDAR_P.toElement(holder.calendar());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.STRING, element.asPrimitive().getType());
-        assertEquals(holder.getIsoDateTimeString(), element.asPrimitive().asString());
+        assertEquals(holder.isoDateTimeString(), element.asPrimitive().asString());
     }
 
     @ParameterizedTest(name="toElement_Calendar_String_ISO_INSTANT - {argumentSetName}")
@@ -1184,10 +915,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(CalendarProvider.class)
     void toElement_Calendar_String_ISO_INSTANT(CalendarProvider.CalendarHolder holder) {
-        ParsedElement element = typeProcessorsMode3.CALENDAR_P.toElement(holder.getCalendar());
+        ParsedElement element = typeProcessorsMode3.CALENDAR_P.toElement(holder.calendar());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.STRING, element.asPrimitive().getType());
-        assertEquals(holder.getIsoInstantString(), element.asPrimitive().asString());
+        assertEquals(holder.isoInstantString(), element.asPrimitive().asString());
     }
 
     @ParameterizedTest(name="toElement_Calendar_Number - {argumentSetName}")
@@ -1195,10 +926,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(CalendarProvider.class)
     void toElement_Calendar_Number(CalendarProvider.CalendarHolder holder) {
-        ParsedElement element = typeProcessorsMode4.CALENDAR_P.toElement(holder.getCalendar());
+        ParsedElement element = typeProcessorsMode4.CALENDAR_P.toElement(holder.calendar());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.LONG, element.asPrimitive().getType());
-        assertEquals(holder.getNumber(), element.asPrimitive().asLong());
+        assertEquals(holder.number(), element.asPrimitive().asLong());
     }
 
     @Test
@@ -1216,10 +947,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(CalendarProvider.class)
     void toObject_Calendar_String_DEFAULT(CalendarProvider.CalendarHolder holder) {
-        ParsedElement element = ParsedPrimitive.fromString(holder.getDefaultString());
+        ParsedElement element = ParsedPrimitive.fromString(holder.defaultString());
         Object obj = typeProcessorsMode1.CALENDAR_P.toObject(element);
         assertInstanceOf(Calendar.class, obj);
-        assertEquals(holder.getCalendar(), obj);
+        assertEquals(holder.calendar(), obj);
     }
 
     @ParameterizedTest(name="toObject_Calendar_String_ISO_DATE_TIME - {argumentSetName}")
@@ -1227,10 +958,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(CalendarProvider.class)
     void toObject_Calendar_String_ISO_DATE_TIME(CalendarProvider.CalendarHolder holder) {
-        ParsedElement element = ParsedPrimitive.fromString(holder.getIsoDateTimeString());
+        ParsedElement element = ParsedPrimitive.fromString(holder.isoDateTimeString());
         Object obj = typeProcessorsMode2.CALENDAR_P.toObject(element);
         assertInstanceOf(Calendar.class, obj);
-        assertEquals(holder.getCalendar(), obj);
+        assertEquals(holder.calendar(), obj);
     }
 
     @ParameterizedTest(name="toObject_Calendar_String_ISO_INSTANT - {argumentSetName}")
@@ -1238,10 +969,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(CalendarProvider.class)
     void toObject_Calendar_String_ISO_INSTANT(CalendarProvider.CalendarHolder holder) {
-        ParsedElement element = ParsedPrimitive.fromString(holder.getIsoInstantString());
+        ParsedElement element = ParsedPrimitive.fromString(holder.isoInstantString());
         Object obj = typeProcessorsMode3.CALENDAR_P.toObject(element);
         assertInstanceOf(Calendar.class, obj);
-        assertEquals(holder.getCalendar(), obj);
+        assertEquals(holder.calendar(), obj);
     }
 
     @ParameterizedTest(name="toObject_Calendar_Number - {argumentSetName}")
@@ -1249,10 +980,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(CalendarProvider.class)
     void toObject_Calendar_Number(CalendarProvider.CalendarHolder holder) {
-        ParsedElement element = ParsedPrimitive.fromLong(holder.getNumber());
+        ParsedElement element = ParsedPrimitive.fromLong(holder.number());
         Object obj = typeProcessorsMode4.CALENDAR_P.toObject(element);
         assertInstanceOf(Calendar.class, obj);
-        assertEquals(holder.getCalendar(), obj);
+        assertEquals(holder.calendar(), obj);
     }
 
     @Test
@@ -1270,10 +1001,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(DateProvider.class)
     void toElement_Date_String_DEFAULT(DateProvider.DateHolder holder) {
-        ParsedElement element = typeProcessorsMode1.DATE_P.toElement(holder.getDate());
+        ParsedElement element = typeProcessorsMode1.DATE_P.toElement(holder.date());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.STRING, element.asPrimitive().getType());
-        assertEquals(holder.getDefaultString(), element.asPrimitive().asString());
+        assertEquals(holder.defaultString(), element.asPrimitive().asString());
     }
 
     @ParameterizedTest(name="toElement_Date_String_ISO_DATE_TIME - {argumentSetName}")
@@ -1281,10 +1012,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(DateProvider.class)
     void toElement_Date_String_ISO_DATE_TIME(DateProvider.DateHolder holder) {
-        ParsedElement element = typeProcessorsMode2.DATE_P.toElement(holder.getDate());
+        ParsedElement element = typeProcessorsMode2.DATE_P.toElement(holder.date());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.STRING, element.asPrimitive().getType());
-        assertEquals(holder.getIsoDateTimeString(), element.asPrimitive().asString());
+        assertEquals(holder.isoDateTimeString(), element.asPrimitive().asString());
     }
 
     @ParameterizedTest(name="toElement_Date_String_ISO_INSTANT - {argumentSetName}")
@@ -1292,10 +1023,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(DateProvider.class)
     void toElement_Date_String_ISO_INSTANT(DateProvider.DateHolder holder) {
-        ParsedElement element = typeProcessorsMode3.DATE_P.toElement(holder.getDate());
+        ParsedElement element = typeProcessorsMode3.DATE_P.toElement(holder.date());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.STRING, element.asPrimitive().getType());
-        assertEquals(holder.getIsoInstantString(), element.asPrimitive().asString());
+        assertEquals(holder.isoInstantString(), element.asPrimitive().asString());
     }
 
     @ParameterizedTest(name="toElement_Date_Number - {argumentSetName}")
@@ -1303,10 +1034,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(DateProvider.class)
     void toElement_Date_Number(DateProvider.DateHolder holder) {
-        ParsedElement element = typeProcessorsMode4.DATE_P.toElement(holder.getDate());
+        ParsedElement element = typeProcessorsMode4.DATE_P.toElement(holder.date());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.LONG, element.asPrimitive().getType());
-        assertEquals(holder.getNumber(), element.asPrimitive().asLong());
+        assertEquals(holder.number(), element.asPrimitive().asLong());
     }
 
     @Test
@@ -1324,10 +1055,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(DateProvider.class)
     void toObject_Date_String_DEFAULT(DateProvider.DateHolder holder) {
-        ParsedElement element = ParsedPrimitive.fromString(holder.getDefaultString());
+        ParsedElement element = ParsedPrimitive.fromString(holder.defaultString());
         Object obj = typeProcessorsMode1.DATE_P.toObject(element);
         assertInstanceOf(Date.class, obj);
-        assertEquals(holder.getDate(), obj);
+        assertEquals(holder.date(), obj);
     }
 
     @ParameterizedTest(name="toObject_Date_String_ISO_DATE_TIME - {argumentSetName}")
@@ -1335,10 +1066,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(DateProvider.class)
     void toObject_Date_String_ISO_DATE_TIME(DateProvider.DateHolder holder) {
-        ParsedElement element = ParsedPrimitive.fromString(holder.getIsoDateTimeString());
+        ParsedElement element = ParsedPrimitive.fromString(holder.isoDateTimeString());
         Object obj = typeProcessorsMode2.DATE_P.toObject(element);
         assertInstanceOf(Date.class, obj);
-        assertEquals(holder.getDate(), obj);
+        assertEquals(holder.date(), obj);
     }
 
     @ParameterizedTest(name="toObject_Date_String_ISO_INSTANT - {argumentSetName}")
@@ -1346,10 +1077,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(DateProvider.class)
     void toObject_Date_String_ISO_INSTANT(DateProvider.DateHolder holder) {
-        ParsedElement element = ParsedPrimitive.fromString(holder.getIsoInstantString());
+        ParsedElement element = ParsedPrimitive.fromString(holder.isoInstantString());
         Object obj = typeProcessorsMode3.DATE_P.toObject(element);
         assertInstanceOf(Date.class, obj);
-        assertEquals(holder.getDate(), obj);
+        assertEquals(holder.date(), obj);
     }
 
     @ParameterizedTest(name="toObject_Date_Number - {argumentSetName}")
@@ -1357,10 +1088,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(DateProvider.class)
     void toObject_Date_Number(DateProvider.DateHolder holder) {
-        ParsedElement element = ParsedPrimitive.fromLong(holder.getNumber());
+        ParsedElement element = ParsedPrimitive.fromLong(holder.number());
         Object obj = typeProcessorsMode4.DATE_P.toObject(element);
         assertInstanceOf(Date.class, obj);
-        assertEquals(holder.getDate(), obj);
+        assertEquals(holder.date(), obj);
     }
 
     @Test
@@ -1378,10 +1109,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(InstantProvider.class)
     void toElement_Instant_String_DEFAULT(InstantProvider.InstantHolder holder) {
-        ParsedElement element = typeProcessorsMode1.INSTANT_P.toElement(holder.getInstant());
+        ParsedElement element = typeProcessorsMode1.INSTANT_P.toElement(holder.instant());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.STRING, element.asPrimitive().getType());
-        assertEquals(holder.getDefaultString(), element.asPrimitive().asString());
+        assertEquals(holder.defaultString(), element.asPrimitive().asString());
     }
 
     @ParameterizedTest(name="toElement_Instant_String_ISO_DATE_TIME - {argumentSetName}")
@@ -1389,10 +1120,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(InstantProvider.class)
     void toElement_Instant_String_ISO_DATE_TIME(InstantProvider.InstantHolder holder) {
-        ParsedElement element = typeProcessorsMode2.INSTANT_P.toElement(holder.getInstant());
+        ParsedElement element = typeProcessorsMode2.INSTANT_P.toElement(holder.instant());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.STRING, element.asPrimitive().getType());
-        assertEquals(holder.getIsoInstantTimeString(), element.asPrimitive().asString());
+        assertEquals(holder.isoInstantTimeString(), element.asPrimitive().asString());
     }
 
     @ParameterizedTest(name="toElement_Instant_String_ISO_INSTANT - {argumentSetName}")
@@ -1400,10 +1131,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(InstantProvider.class)
     void toElement_Instant_String_ISO_INSTANT(InstantProvider.InstantHolder holder) {
-        ParsedElement element = typeProcessorsMode3.INSTANT_P.toElement(holder.getInstant());
+        ParsedElement element = typeProcessorsMode3.INSTANT_P.toElement(holder.instant());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.STRING, element.asPrimitive().getType());
-        assertEquals(holder.getIsoInstantString(), element.asPrimitive().asString());
+        assertEquals(holder.isoInstantString(), element.asPrimitive().asString());
     }
 
     @ParameterizedTest(name="toElement_Instant_Number - {argumentSetName}")
@@ -1411,10 +1142,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toElement")
     @ArgumentsSource(InstantProvider.class)
     void toElement_Instant_Number(InstantProvider.InstantHolder holder) {
-        ParsedElement element = typeProcessorsMode4.INSTANT_P.toElement(holder.getInstant());
+        ParsedElement element = typeProcessorsMode4.INSTANT_P.toElement(holder.instant());
         assertInstanceOf(ParsedPrimitive.class, element);
         assertEquals(ParsedPrimitive.PrimitiveType.LONG, element.asPrimitive().getType());
-        assertEquals(holder.getNumber(), element.asPrimitive().asLong());
+        assertEquals(holder.number(), element.asPrimitive().asLong());
     }
 
     @Test
@@ -1432,10 +1163,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(InstantProvider.class)
     void toObject_Instant_String_DEFAULT(InstantProvider.InstantHolder holder) {
-        ParsedElement element = ParsedPrimitive.fromString(holder.getDefaultString());
+        ParsedElement element = ParsedPrimitive.fromString(holder.defaultString());
         Object obj = typeProcessorsMode1.INSTANT_P.toObject(element);
         assertInstanceOf(Instant.class, obj);
-        assertEquals(holder.getInstant(), obj);
+        assertEquals(holder.instant(), obj);
     }
 
     @ParameterizedTest(name="toObject_Instant_String_ISO_DATE_TIME - {argumentSetName}")
@@ -1443,10 +1174,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(InstantProvider.class)
     void toObject_Instant_String_ISO_DATE_TIME(InstantProvider.InstantHolder holder) {
-        ParsedElement element = ParsedPrimitive.fromString(holder.getIsoInstantTimeString());
+        ParsedElement element = ParsedPrimitive.fromString(holder.isoInstantTimeString());
         Object obj = typeProcessorsMode2.INSTANT_P.toObject(element);
         assertInstanceOf(Instant.class, obj);
-        assertEquals(holder.getInstant(), obj);
+        assertEquals(holder.instant(), obj);
     }
 
     @ParameterizedTest(name="toObject_Instant_String_ISO_INSTANT - {argumentSetName}")
@@ -1454,10 +1185,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(InstantProvider.class)
     void toObject_Instant_String_ISO_INSTANT(InstantProvider.InstantHolder holder) {
-        ParsedElement element = ParsedPrimitive.fromString(holder.getIsoInstantString());
+        ParsedElement element = ParsedPrimitive.fromString(holder.isoInstantString());
         Object obj = typeProcessorsMode3.INSTANT_P.toObject(element);
         assertInstanceOf(Instant.class, obj);
-        assertEquals(holder.getInstant(), obj);
+        assertEquals(holder.instant(), obj);
     }
 
     @ParameterizedTest(name="toObject_Instant_Number - {argumentSetName}")
@@ -1465,10 +1196,10 @@ public class DefaultTypeProcessorsTest {
     @Tag("toObject")
     @ArgumentsSource(InstantProvider.class)
     void toObject_Instant_Number(InstantProvider.InstantHolder holder) {
-        ParsedElement element = ParsedPrimitive.fromLong(holder.getNumber());
+        ParsedElement element = ParsedPrimitive.fromLong(holder.number());
         Object obj = typeProcessorsMode4.INSTANT_P.toObject(element);
         assertInstanceOf(Instant.class, obj);
-        assertEquals(holder.getInstant(), obj);
+        assertEquals(holder.instant(), obj);
     }
 
     @Test

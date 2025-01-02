@@ -254,8 +254,8 @@ public final class DefaultTypeProcessors {
                 return ParsedPrimitive.fromNull();
             }
 
-            if (object instanceof StringBuilder) {
-                return ParsedPrimitive.fromString(((StringBuilder) object).toString());
+            if (object instanceof StringBuilder stringBuilder) {
+                return ParsedPrimitive.fromString(stringBuilder.toString());
             } else {
                 throw new InvalidParameterException("object must be StringBuilder");
             }
@@ -287,8 +287,8 @@ public final class DefaultTypeProcessors {
                 return ParsedPrimitive.fromNull();
             }
 
-            if (object instanceof StringBuffer) {
-                return ParsedPrimitive.fromString(((StringBuffer) object).toString());
+            if (object instanceof StringBuffer stringBuffer) {
+                return ParsedPrimitive.fromString(stringBuffer.toString());
             } else {
                 throw new InvalidParameterException("object must be StringBuffer");
             }
@@ -464,8 +464,8 @@ public final class DefaultTypeProcessors {
                 return ParsedPrimitive.fromNull();
             }
 
-            if (object instanceof URI) {
-                return ParsedPrimitive.fromString(((URI) object).toString());
+            if (object instanceof URI uri) {
+                return ParsedPrimitive.fromString(uri.toString());
             } else {
                 throw new InvalidParameterException("object must be URI");
             }
@@ -501,8 +501,8 @@ public final class DefaultTypeProcessors {
                 return ParsedPrimitive.fromNull();
             }
 
-            if (object instanceof URL) {
-                return ParsedPrimitive.fromString(((URL) object).toString());
+            if (object instanceof URL url) {
+                return ParsedPrimitive.fromString(url.toString());
             } else {
                 throw new InvalidParameterException("object must be URL");
             }
@@ -538,8 +538,8 @@ public final class DefaultTypeProcessors {
                 return ParsedPrimitive.fromNull();
             }
 
-            if (object instanceof Path) {
-                return ParsedPrimitive.fromString(((Path) object).toString());
+            if (object instanceof Path path) {
+                return ParsedPrimitive.fromString(path.toString());
             } else {
                 throw new InvalidParameterException("object must be Path");
             }
@@ -571,8 +571,8 @@ public final class DefaultTypeProcessors {
                 return ParsedPrimitive.fromNull();
             }
 
-            if (object instanceof File) {
-                return ParsedPrimitive.fromString(((File) object).getPath());
+            if (object instanceof File file) {
+                return ParsedPrimitive.fromString(file.getPath());
             } else {
                 throw new InvalidParameterException("object must be File");
             }
@@ -608,8 +608,8 @@ public final class DefaultTypeProcessors {
                 return ParsedPrimitive.fromNull();
             }
 
-            if (object instanceof InetAddress) {
-                boolean hasHostname = !((InetAddress) object).toString().startsWith("/"); // Kinda hacky but the only way
+            if (object instanceof InetAddress inetAddress) {
+                boolean hasHostname = !inetAddress.toString().startsWith("/"); // Kinda hacky but the only way
 
                 // This works but is illegal in newer java versions
                 // try {
@@ -870,8 +870,8 @@ public final class DefaultTypeProcessors {
                 return ParsedPrimitive.fromNull();
             }
 
-            if (object instanceof InetSocketAddress) {
-                boolean hasHostname = !((InetSocketAddress) object).getAddress().toString().startsWith("/"); // Kinda hacky but the only way
+            if (object instanceof InetSocketAddress inetSocketAddress) {
+                boolean hasHostname = !inetSocketAddress.getAddress().toString().startsWith("/"); // Kinda hacky but the only way
 
                 // This works but is illegal in newer java versions
                 // try {
@@ -1144,13 +1144,13 @@ public final class DefaultTypeProcessors {
                 return ParsedPrimitive.fromNull();
             }
 
-            if (object instanceof Calendar) {
+            if (object instanceof Calendar calendar) {
                 switch (options.getDateMode()) {
                     case STRING -> {
-                        return ParsedPrimitive.fromString(options.getDateTimeFormatter().format(Instant.ofEpochMilli(((Calendar) object).getTimeInMillis())));
+                        return ParsedPrimitive.fromString(options.getDateTimeFormatter().format(Instant.ofEpochMilli(calendar.getTimeInMillis())));
                     }
                     case NUMBER -> {
-                        return ParsedPrimitive.fromLong(((Calendar) object).getTimeInMillis());
+                        return ParsedPrimitive.fromLong(calendar.getTimeInMillis());
                     }
                     default -> {
                         throw new RuntimeException();
@@ -1208,13 +1208,13 @@ public final class DefaultTypeProcessors {
                 return ParsedPrimitive.fromNull();
             }
 
-            if (object instanceof Date) {
+            if (object instanceof Date date) {
                 switch (options.getDateMode()) {
                     case STRING -> {
-                        return ParsedPrimitive.fromString(options.getDateTimeFormatter().format(Instant.ofEpochMilli(((Date) object).getTime())));
+                        return ParsedPrimitive.fromString(options.getDateTimeFormatter().format(Instant.ofEpochMilli(date.getTime())));
                     }
                     case NUMBER -> {
-                        return ParsedPrimitive.fromLong(((Date) object).getTime());
+                        return ParsedPrimitive.fromLong(date.getTime());
                     }
                     default -> {
                         throw new RuntimeException();
@@ -1268,13 +1268,13 @@ public final class DefaultTypeProcessors {
                 return ParsedPrimitive.fromNull();
             }
 
-            if (object instanceof Instant) {
+            if (object instanceof Instant instant) {
                 switch (options.getDateMode()) {
                     case STRING -> {
-                        return ParsedPrimitive.fromString(options.getDateTimeFormatter().format((Instant) object));
+                        return ParsedPrimitive.fromString(options.getDateTimeFormatter().format(instant));
                     }
                     case NUMBER -> {
-                        return ParsedPrimitive.fromLong(((Instant) object).toEpochMilli());
+                        return ParsedPrimitive.fromLong((instant).toEpochMilli());
                     }
                     default -> {
                         throw new RuntimeException();
