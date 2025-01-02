@@ -6,10 +6,10 @@ import org.jetbrains.annotations.NotNull;
 /**
  * An abstract class that all parsers extend from
  *
- * @version 2.0.0
+ * @version 2.1.0
  * @since 1.0.0
  */
-public abstract class Parser {
+public interface Parser {
     /**
      * Parse this string into a {@link ParsedElement}
      *
@@ -20,7 +20,7 @@ public abstract class Parser {
      * @throws io.github.kale_ko.bjsl.parsers.exception.ParserException If there is an exception while parsing
      * @since 1.0.0
      */
-    public abstract @NotNull ParsedElement toElement(@NotNull String data);
+    public @NotNull ParsedElement toElement(@NotNull String data);
 
     /**
      * Parse these bytes into a {@link ParsedElement}
@@ -32,7 +32,7 @@ public abstract class Parser {
      * @throws io.github.kale_ko.bjsl.parsers.exception.ParserException If there is an exception while parsing
      * @since 1.0.0
      */
-    public abstract @NotNull ParsedElement toElement(byte @NotNull [] data);
+    public @NotNull ParsedElement toElement(byte @NotNull [] data);
 
     /**
      * Serializes this element into a String
@@ -44,7 +44,7 @@ public abstract class Parser {
      * @throws io.github.kale_ko.bjsl.parsers.exception.ParserException If there is an exception while parsing
      * @since 1.0.0
      */
-    public abstract @NotNull String toString(@NotNull ParsedElement element);
+    public @NotNull String toString(@NotNull ParsedElement element);
 
 
     /**
@@ -57,7 +57,7 @@ public abstract class Parser {
      * @throws io.github.kale_ko.bjsl.parsers.exception.ParserException If there is an exception while parsing
      * @since 1.0.0
      */
-    public abstract byte @NotNull [] toBytes(@NotNull ParsedElement element);
+    public byte @NotNull [] toBytes(@NotNull ParsedElement element);
 
     /**
      * Serializes an empty object element into a string
@@ -67,7 +67,7 @@ public abstract class Parser {
      * @throws io.github.kale_ko.bjsl.parsers.exception.ParserException If there is an exception while parsing
      * @since 1.3.0
      */
-    public abstract @NotNull String emptyString();
+    public @NotNull String emptyString();
 
     /**
      * Serializes an empty array element into a string
@@ -77,7 +77,7 @@ public abstract class Parser {
      * @throws io.github.kale_ko.bjsl.parsers.exception.ParserException If there is an exception while parsing
      * @since 1.4.0
      */
-    public abstract @NotNull String emptyArrayString();
+    public @NotNull String emptyArrayString();
 
     /**
      * Serializes an empty object element into bytes
@@ -87,7 +87,7 @@ public abstract class Parser {
      * @throws io.github.kale_ko.bjsl.parsers.exception.ParserException If there is an exception while parsing
      * @since 1.3.0
      */
-    public abstract byte @NotNull [] emptyBytes();
+    public byte @NotNull [] emptyBytes();
 
     /**
      * Serializes an empty array element into bytes
@@ -97,5 +97,5 @@ public abstract class Parser {
      * @throws io.github.kale_ko.bjsl.parsers.exception.ParserException If there is an exception while parsing
      * @since 1.4.0
      */
-    public abstract byte @NotNull [] emptyArrayBytes();
+    public byte @NotNull [] emptyArrayBytes();
 }

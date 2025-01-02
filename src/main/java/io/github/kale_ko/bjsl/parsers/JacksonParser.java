@@ -29,10 +29,10 @@ import org.jetbrains.annotations.Nullable;
  * @param <T> The type of the factory used for converting to/from trees/strings
  * @param <V> The type of the codec used for converting to/from trees/strings
  *
- * @version 2.0.0
+ * @version 2.1.0
  * @since 1.0.0
  */
-public abstract class JacksonParser<T extends TokenStreamFactory, V extends ObjectCodec> extends Parser {
+public abstract class JacksonParser<T extends TokenStreamFactory, V extends ObjectCodec> implements Parser {
     /**
      * The factory used for converting to/from trees/strings
      *
