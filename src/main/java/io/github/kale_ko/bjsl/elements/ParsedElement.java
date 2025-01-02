@@ -19,19 +19,19 @@ public abstract class ParsedElement {
     }
 
     /**
-     * {@inheritDoc java.lang.Object}
+     * {@inheritDoc}.
      */
     @Override
     public abstract @NotNull String toString();
 
     /**
-     * {@inheritDoc java.lang.Object}
+     * {@inheritDoc}.
      */
     @Override
     public abstract boolean equals(@Nullable Object obj);
 
     /**
-     * {@inheritDoc java.lang.Object}
+     * {@inheritDoc}.
      */
     @Override
     public abstract int hashCode();

@@ -59,7 +59,7 @@ public class ParsedArray extends ParsedElement {
      *
      * @return The value of a certain index in this array
      *
-     * @throws java.lang.IndexOutOfBoundsException If the index is < 0 or >= {@link #getSize()}
+     * @throws java.lang.IndexOutOfBoundsException If the index is &#60; or &#62;&#61; {@link #getSize()}
      * @since 1.0.0
      */
     public @NotNull ParsedElement get(int index) {
@@ -100,7 +100,7 @@ public class ParsedArray extends ParsedElement {
      * @param index The index to add it at
      * @param value The value to add
      *
-     * @throws java.lang.IndexOutOfBoundsException If the index is < 0 or > {@link #getSize()}
+     * @throws java.lang.IndexOutOfBoundsException If the index is &#60; 0 or &#62; {@link #getSize()}
      * @since 1.0.0
      */
     public void addAt(int index, @NotNull ParsedElement value) {
@@ -135,7 +135,7 @@ public class ParsedArray extends ParsedElement {
      * @param index The index to set
      * @param value The value to set
      *
-     * @throws java.lang.IndexOutOfBoundsException If the index is < 0 or >= {@link #getSize()}
+     * @throws java.lang.IndexOutOfBoundsException If the index is &#60; 0 or &#62;&#61; {@link #getSize()}
      * @since 1.0.0
      */
     public void set(int index, @NotNull ParsedElement value) {
@@ -147,7 +147,7 @@ public class ParsedArray extends ParsedElement {
      *
      * @param index The index to remove
      *
-     * @throws java.lang.IndexOutOfBoundsException If the index is < 0 or >= {@link #getSize()}
+     * @throws java.lang.IndexOutOfBoundsException If the index is &#60; 0 or &#62;&#61; {@link #getSize()}
      * @since 1.0.0
      */
     public void remove(int index) {

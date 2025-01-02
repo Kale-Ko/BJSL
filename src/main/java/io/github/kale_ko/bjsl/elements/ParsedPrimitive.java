@@ -1,5 +1,7 @@
 package io.github.kale_ko.bjsl.elements;
 
+import com.fasterxml.jackson.core.io.BigDecimalParser;
+import com.fasterxml.jackson.core.io.BigIntegerParser;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
  * <p>
  * Note: Values are not stored as their normal type but rather higher bit types for ease of conversion
  *
- * @version 2.0.0
+ * @version 2.1.0
  * @since 1.0.0
  */
 public class ParsedPrimitive extends ParsedElement {
@@ -289,43 +291,43 @@ public class ParsedPrimitive extends ParsedElement {
      */
     public Object get() {
         switch (this.primitiveType) {
-            case STRING: {
+            case STRING -> {
                 return (String) this.primitive;
             }
-            case BYTE: {
+            case BYTE -> {
                 return (byte) (long) this.primitive;
             }
-            case CHAR: {
+            case CHAR -> {
                 return (char) (long) this.primitive;
             }
-            case SHORT: {
+            case SHORT -> {
                 return (short) (long) this.primitive;
             }
-            case INTEGER: {
+            case INTEGER -> {
                 return (int) (long) this.primitive;
             }
-            case LONG: {
+            case LONG -> {
                 return (long) this.primitive;
             }
-            case BIGINTEGER: {
+            case BIGINTEGER -> {
                 return (BigInteger) this.primitive;
             }
-            case FLOAT: {
+            case FLOAT -> {
                 return (float) (double) this.primitive;
             }
-            case DOUBLE: {
+            case DOUBLE -> {
                 return (double) this.primitive;
             }
-            case BIGDECIMAL: {
+            case BIGDECIMAL -> {
                 return (BigDecimal) this.primitive;
             }
-            case BOOLEAN: {
+            case BOOLEAN -> {
                 return (boolean) this.primitive;
             }
-            case NULL: {
+            case NULL -> {
                 return this.primitive;
             }
-            default: {
+            default -> {
                 throw new ClassCastException("Value is not a primitive");
             }
         }
@@ -347,6 +349,57 @@ public class ParsedPrimitive extends ParsedElement {
     }
 
     /**
+     * Converts the value of this primitive to a string no matter the type
+     *
+     * @return The value of this primitive as a string
+     *
+     * @since 2.1.0
+     */
+    public @NotNull String toString() {
+        switch (this.primitiveType) {
+            case STRING -> {
+                return (String) this.primitive;
+            }
+            case BYTE -> {
+                return Byte.toString((byte) (long) this.primitive);
+            }
+            case CHAR -> {
+                return Character.toString((char) (long) this.primitive);
+            }
+            case SHORT -> {
+                return Short.toString((short) (long) this.primitive);
+            }
+            case INTEGER -> {
+                return Integer.toString((int) (long) this.primitive);
+            }
+            case LONG -> {
+                return Long.toString((long) this.primitive);
+            }
+            case BIGINTEGER -> {
+                return ((BigInteger) this.primitive).toString();
+            }
+            case FLOAT -> {
+                return Float.toString((float) (double) this.primitive);
+            }
+            case DOUBLE -> {
+                return Double.toString((double) this.primitive);
+            }
+            case BIGDECIMAL -> {
+                return ((BigDecimal) this.primitive).toString();
+            }
+            case BOOLEAN -> {
+                return Boolean.toString((boolean) this.primitive);
+            }
+            case NULL -> {
+                return "null";
+            }
+            default -> {
+                throw new ClassCastException("Value is not a primitive");
+            }
+        }
+    }
+
+    /**
      * Get the value of this primitive as a byte
      *
      * @return The value of this primitive as a byte
@@ -359,6 +412,47 @@ public class ParsedPrimitive extends ParsedElement {
             throw new ClassCastException("Value is not a byte");
         }
         return (byte) (long) this.primitive;
+    }
+
+    /**
+     * Converts the value of this primitive to a byte no matter the type
+     *
+     * @return The value of this primitive as a byte
+     *
+     * @since 2.1.0
+     */
+    public byte toByte() {
+        switch (this.primitiveType) {
+            case STRING -> {
+                return Byte.parseByte((String) this.primitive);
+            }
+            case BYTE,
+                 CHAR,
+                 SHORT,
+                 INTEGER,
+                 LONG -> {
+                return (byte) (long) this.primitive;
+            }
+            case BIGINTEGER -> {
+                return ((BigInteger) this.primitive).byteValue();
+            }
+            case FLOAT,
+                 DOUBLE -> {
+                return (byte) (double) this.primitive;
+            }
+            case BIGDECIMAL -> {
+                return ((BigDecimal) this.primitive).byteValue();
+            }
+            case BOOLEAN -> {
+                return (byte) ((boolean) this.primitive ? 1 : 0);
+            }
+            case NULL -> {
+                return (byte) 0;
+            }
+            default -> {
+                throw new ClassCastException("Value is not a primitive");
+            }
+        }
     }
 
     /**
@@ -377,6 +471,47 @@ public class ParsedPrimitive extends ParsedElement {
     }
 
     /**
+     * Converts the value of this primitive to a char no matter the type
+     *
+     * @return The value of this primitive as a char
+     *
+     * @since 2.1.0
+     */
+    public char toChar() {
+        switch (this.primitiveType) {
+            case STRING -> {
+                return (char) Short.parseShort((String) this.primitive);
+            }
+            case BYTE,
+                 CHAR,
+                 SHORT,
+                 INTEGER,
+                 LONG -> {
+                return (char) (long) this.primitive;
+            }
+            case BIGINTEGER -> {
+                return (char) ((BigInteger) this.primitive).shortValue();
+            }
+            case FLOAT,
+                 DOUBLE -> {
+                return (char) (double) this.primitive;
+            }
+            case BIGDECIMAL -> {
+                return (char) ((BigDecimal) this.primitive).shortValue();
+            }
+            case BOOLEAN -> {
+                return (boolean) this.primitive ? '\u0001' : '\u0000';
+            }
+            case NULL -> {
+                return 0;
+            }
+            default -> {
+                throw new ClassCastException("Value is not a primitive");
+            }
+        }
+    }
+
+    /**
      * Get the value of this primitive as a short
      *
      * @return The value of this primitive as a short
@@ -389,6 +524,47 @@ public class ParsedPrimitive extends ParsedElement {
             throw new ClassCastException("Value is not a short");
         }
         return (short) (long) this.primitive;
+    }
+
+    /**
+     * Converts the value of this primitive to a short no matter the type
+     *
+     * @return The value of this primitive as a short
+     *
+     * @since 2.1.0
+     */
+    public short toShort() {
+        switch (this.primitiveType) {
+            case STRING -> {
+                return Short.parseShort((String) this.primitive);
+            }
+            case BYTE,
+                 CHAR,
+                 SHORT,
+                 INTEGER,
+                 LONG -> {
+                return (short) (long) this.primitive;
+            }
+            case BIGINTEGER -> {
+                return ((BigInteger) this.primitive).shortValue();
+            }
+            case FLOAT,
+                 DOUBLE -> {
+                return (short) (double) this.primitive;
+            }
+            case BIGDECIMAL -> {
+                return ((BigDecimal) this.primitive).shortValue();
+            }
+            case BOOLEAN -> {
+                return (short) ((boolean) this.primitive ? 1 : 0);
+            }
+            case NULL -> {
+                return (short) 0;
+            }
+            default -> {
+                throw new ClassCastException("Value is not a primitive");
+            }
+        }
     }
 
     /**
@@ -407,6 +583,47 @@ public class ParsedPrimitive extends ParsedElement {
     }
 
     /**
+     * Converts the value of this primitive to an int no matter the type
+     *
+     * @return The value of this primitive as an int
+     *
+     * @since 2.1.0
+     */
+    public int toInteger() {
+        switch (this.primitiveType) {
+            case STRING -> {
+                return Integer.parseInt((String) this.primitive);
+            }
+            case BYTE,
+                 CHAR,
+                 SHORT,
+                 INTEGER,
+                 LONG -> {
+                return (int) (long) this.primitive;
+            }
+            case BIGINTEGER -> {
+                return ((BigInteger) this.primitive).intValue();
+            }
+            case FLOAT,
+                 DOUBLE -> {
+                return (int) (double) this.primitive;
+            }
+            case BIGDECIMAL -> {
+                return ((BigDecimal) this.primitive).intValue();
+            }
+            case BOOLEAN -> {
+                return (boolean) this.primitive ? 1 : 0;
+            }
+            case NULL -> {
+                return 0;
+            }
+            default -> {
+                throw new ClassCastException("Value is not a primitive");
+            }
+        }
+    }
+
+    /**
      * Get the value of this primitive as a long
      *
      * @return The value of this primitive as a long
@@ -419,6 +636,47 @@ public class ParsedPrimitive extends ParsedElement {
             throw new ClassCastException("Value is not a long");
         }
         return (long) this.primitive;
+    }
+
+    /**
+     * Converts the value of this primitive to a long no matter the type
+     *
+     * @return The value of this primitive as a long
+     *
+     * @since 2.1.0
+     */
+    public long toLong() {
+        switch (this.primitiveType) {
+            case STRING -> {
+                return Long.parseLong((String) this.primitive);
+            }
+            case BYTE,
+                 CHAR,
+                 SHORT,
+                 INTEGER,
+                 LONG -> {
+                return (long) this.primitive;
+            }
+            case BIGINTEGER -> {
+                return ((BigInteger) this.primitive).longValue();
+            }
+            case FLOAT,
+                 DOUBLE -> {
+                return (long) (double) this.primitive;
+            }
+            case BIGDECIMAL -> {
+                return ((BigDecimal) this.primitive).longValue();
+            }
+            case BOOLEAN -> {
+                return (boolean) this.primitive ? 1L : 0L;
+            }
+            case NULL -> {
+                return 0L;
+            }
+            default -> {
+                throw new ClassCastException("Value is not a primitive");
+            }
+        }
     }
 
     /**
@@ -437,6 +695,47 @@ public class ParsedPrimitive extends ParsedElement {
     }
 
     /**
+     * Converts the value of this primitive to a big integer no matter the type
+     *
+     * @return The value of this primitive as a big integer
+     *
+     * @since 2.1.0
+     */
+    public @NotNull BigInteger toBigInteger() {
+        switch (this.primitiveType) {
+            case STRING -> {
+                return BigIntegerParser.parseWithFastParser((String) this.primitive);
+            }
+            case BYTE,
+                 CHAR,
+                 SHORT,
+                 INTEGER,
+                 LONG -> {
+                return BigInteger.valueOf((long) this.primitive);
+            }
+            case BIGINTEGER -> {
+                return (BigInteger) this.primitive;
+            }
+            case FLOAT,
+                 DOUBLE -> {
+                return BigInteger.valueOf((long) Math.round((double) this.primitive));
+            }
+            case BIGDECIMAL -> {
+                return ((BigDecimal) this.primitive).toBigInteger();
+            }
+            case BOOLEAN -> {
+                return (boolean) this.primitive ? BigInteger.ONE : BigInteger.ZERO;
+            }
+            case NULL -> {
+                return BigInteger.ZERO;
+            }
+            default -> {
+                throw new ClassCastException("Value is not a primitive");
+            }
+        }
+    }
+
+    /**
      * Get the value of this primitive as a float
      *
      * @return The value of this primitive as a float
@@ -449,6 +748,47 @@ public class ParsedPrimitive extends ParsedElement {
             throw new ClassCastException("Value is not a float");
         }
         return (float) (double) this.primitive;
+    }
+
+    /**
+     * Converts the value of this primitive to a float no matter the type
+     *
+     * @return The value of this primitive as a float
+     *
+     * @since 2.1.0
+     */
+    public float toFloat() {
+        switch (this.primitiveType) {
+            case STRING -> {
+                return Float.parseFloat((String) this.primitive);
+            }
+            case BYTE,
+                 CHAR,
+                 SHORT,
+                 INTEGER,
+                 LONG -> {
+                return (float) (long) this.primitive;
+            }
+            case BIGINTEGER -> {
+                return ((BigInteger) this.primitive).floatValue();
+            }
+            case FLOAT,
+                 DOUBLE -> {
+                return (float) (double) this.primitive;
+            }
+            case BIGDECIMAL -> {
+                return ((BigDecimal) this.primitive).floatValue();
+            }
+            case BOOLEAN -> {
+                return (boolean) this.primitive ? 1.0f : 0.0f;
+            }
+            case NULL -> {
+                return 0.0f;
+            }
+            default -> {
+                throw new ClassCastException("Value is not a primitive");
+            }
+        }
     }
 
     /**
@@ -467,6 +807,47 @@ public class ParsedPrimitive extends ParsedElement {
     }
 
     /**
+     * Converts the value of this primitive to a double no matter the type
+     *
+     * @return The value of this primitive as a double
+     *
+     * @since 2.1.0
+     */
+    public double toDouble() {
+        switch (this.primitiveType) {
+            case STRING -> {
+                return Double.parseDouble((String) this.primitive);
+            }
+            case BYTE,
+                 CHAR,
+                 SHORT,
+                 INTEGER,
+                 LONG -> {
+                return (double) (long) this.primitive;
+            }
+            case BIGINTEGER -> {
+                return ((BigInteger) this.primitive).doubleValue();
+            }
+            case FLOAT,
+                 DOUBLE -> {
+                return (double) this.primitive;
+            }
+            case BIGDECIMAL -> {
+                return ((BigDecimal) this.primitive).doubleValue();
+            }
+            case BOOLEAN -> {
+                return (boolean) this.primitive ? 1.0 : 0.0;
+            }
+            case NULL -> {
+                return 0.0;
+            }
+            default -> {
+                throw new ClassCastException("Value is not a primitive");
+            }
+        }
+    }
+
+    /**
      * Get the value of this primitive as a big decimal
      *
      * @return The value of this primitive as a big decimal
@@ -479,6 +860,47 @@ public class ParsedPrimitive extends ParsedElement {
             throw new ClassCastException("Value is not a big decimal");
         }
         return (BigDecimal) this.primitive;
+    }
+
+    /**
+     * Converts the value of this primitive to a big decimal no matter the type
+     *
+     * @return The value of this primitive as a big decimal
+     *
+     * @since 2.1.0
+     */
+    public @NotNull BigDecimal toBigDecimal() {
+        switch (this.primitiveType) {
+            case STRING -> {
+                return BigDecimalParser.parse((String) this.primitive);
+            }
+            case BYTE,
+                 CHAR,
+                 SHORT,
+                 INTEGER,
+                 LONG -> {
+                return BigDecimal.valueOf((long) this.primitive);
+            }
+            case BIGINTEGER -> {
+                return new BigDecimal((BigInteger) this.primitive);
+            }
+            case FLOAT,
+                 DOUBLE -> {
+                return BigDecimal.valueOf((double) this.primitive);
+            }
+            case BIGDECIMAL -> {
+                return (BigDecimal) this.primitive;
+            }
+            case BOOLEAN -> {
+                return (boolean) this.primitive ? BigDecimal.ONE : BigDecimal.ZERO;
+            }
+            case NULL -> {
+                return BigDecimal.ZERO;
+            }
+            default -> {
+                throw new ClassCastException("Value is not a primitive");
+            }
+        }
     }
 
     /**
@@ -497,6 +919,110 @@ public class ParsedPrimitive extends ParsedElement {
     }
 
     /**
+     * Converts the value of this primitive to a boolean no matter the type
+     *
+     * @return The value of this primitive as a boolean
+     *
+     * @since 2.1.0
+     */
+    public boolean toBoolean() {
+        switch (this.primitiveType) {
+            case STRING -> {
+                return Boolean.parseBoolean((String) this.primitive);
+            }
+            case BYTE -> {
+                return (byte) (long) this.primitive != 0;
+            }
+            case CHAR -> {
+                return (char) (long) this.primitive != 0;
+            }
+            case SHORT -> {
+                return (short) (long) this.primitive != 0;
+            }
+            case INTEGER -> {
+                return (int) (long) this.primitive != 0;
+            }
+            case LONG -> {
+                return (long) this.primitive != 0;
+            }
+            case BIGINTEGER -> {
+                return !((BigInteger) this.primitive).equals(BigInteger.ZERO);
+            }
+            case FLOAT -> {
+                return (float) (double) this.primitive != 0;
+            }
+            case DOUBLE -> {
+                return (double) this.primitive != 0;
+            }
+            case BIGDECIMAL -> {
+                return !((BigDecimal) this.primitive).equals(BigDecimal.ZERO);
+            }
+            case BOOLEAN -> {
+                return (boolean) this.primitive;
+            }
+            case NULL -> {
+                return false;
+            }
+            default -> {
+                throw new ClassCastException("Value is not a primitive");
+            }
+        }
+    }
+
+    /**
+     * Converts the value of this primitive to the specified type no matter what type it is
+     *
+     * @param primitiveType The type to convert to
+     *
+     * @return The value of this primitive as the specified type
+     *
+     * @since 2.1.0
+     */
+    public @Nullable Object to(@NotNull PrimitiveType primitiveType) {
+        switch (primitiveType) {
+            case STRING -> {
+                return this.toString();
+            }
+            case BYTE -> {
+                return this.toByte();
+            }
+            case CHAR -> {
+                return this.toChar();
+            }
+            case SHORT -> {
+                return this.toShort();
+            }
+            case INTEGER -> {
+                return this.toInteger();
+            }
+            case LONG -> {
+                return this.toLong();
+            }
+            case BIGINTEGER -> {
+                return this.toBigInteger();
+            }
+            case FLOAT -> {
+                return this.toFloat();
+            }
+            case DOUBLE -> {
+                return this.toDouble();
+            }
+            case BIGDECIMAL -> {
+                return this.toBigDecimal();
+            }
+            case BOOLEAN -> {
+                return this.toBoolean();
+            }
+            case NULL -> {
+                return null;
+            }
+            default -> {
+                throw new ClassCastException("Value is not a primitive");
+            }
+        }
+    }
+
+    /**
      * Get the value of this primitive as null
      *
      * @return The value of this primitive as null
@@ -511,11 +1037,9 @@ public class ParsedPrimitive extends ParsedElement {
         return this.primitive;
     }
 
-    @Override
-    public @NotNull String toString() {
-        return this.getClass().getSimpleName() + "[primitiveType=" + this.primitiveType + ", primitive=" + this.primitive + "]";
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(@Nullable Object obj) {
         if (obj == this) {
@@ -527,6 +1051,9 @@ public class ParsedPrimitive extends ParsedElement {
         return ((ParsedPrimitive) obj).primitiveType == this.primitiveType && (((ParsedPrimitive) obj).primitive != null ? ((ParsedPrimitive) obj).primitive.equals(this.primitive) : this.primitive == null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         int result = this.primitiveType.hashCode();
@@ -549,30 +1076,43 @@ public class ParsedPrimitive extends ParsedElement {
             return fromNull();
         }
 
-        if (value instanceof String) {
-            return fromString((String) value);
-        } else if (value instanceof Byte) {
-            return fromByte((byte) value);
-        } else if (value instanceof Character) {
-            return fromChar((char) value);
-        } else if (value instanceof Short) {
-            return fromShort((short) value);
-        } else if (value instanceof Integer) {
-            return fromInteger((int) value);
-        } else if (value instanceof Long) {
-            return fromLong((long) value);
-        } else if (value instanceof BigInteger) {
-            return fromBigInteger((BigInteger) value);
-        } else if (value instanceof Float) {
-            return fromFloat((float) value);
-        } else if (value instanceof Double) {
-            return fromDouble((double) value);
-        } else if (value instanceof BigDecimal) {
-            return fromBigDecimal((BigDecimal) value);
-        } else if (value instanceof Boolean) {
-            return fromBoolean((boolean) value);
-        } else {
-            throw new ClassCastException("Value is not a primitive");
+        switch (value) {
+            case String string -> {
+                return fromString(string);
+            }
+            case Byte byteValue -> {
+                return fromByte(byteValue);
+            }
+            case Character charValue -> {
+                return fromChar(charValue);
+            }
+            case Short shortValue -> {
+                return fromShort(shortValue);
+            }
+            case Integer intValue -> {
+                return fromInteger(intValue);
+            }
+            case Long longValue -> {
+                return fromLong(longValue);
+            }
+            case BigInteger bigIntegerValue -> {
+                return fromBigInteger(bigIntegerValue);
+            }
+            case Float floatValue -> {
+                return fromFloat(floatValue);
+            }
+            case Double doubleValue -> {
+                return fromDouble(doubleValue);
+            }
+            case BigDecimal bigDecimalValue -> {
+                return fromBigDecimal(bigDecimalValue);
+            }
+            case Boolean booleanValue -> {
+                return fromBoolean(booleanValue);
+            }
+            default -> {
+                throw new ClassCastException("Value is not a primitive");
+            }
         }
     }
 
