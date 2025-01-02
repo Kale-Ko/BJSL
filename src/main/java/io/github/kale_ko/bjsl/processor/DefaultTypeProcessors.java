@@ -290,14 +290,12 @@ public final class DefaultTypeProcessors {
                 return ParsedPrimitive.fromNull();
             }
 
-            if (object instanceof UUID) {
-                UUID uuid = (UUID) object;
-
+            if (object instanceof UUID uuid) {
                 switch (options.getUuidMode()) {
-                    case STRING: {
+                    case STRING -> {
                         return ParsedPrimitive.fromString(uuid.toString());
                     }
-                    case BYTE_ARRAY: {
+                    case BYTE_ARRAY -> {
                         ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[16]);
                         byteBuffer.putLong(uuid.getMostSignificantBits());
                         byteBuffer.putLong(uuid.getLeastSignificantBits());
@@ -310,7 +308,7 @@ public final class DefaultTypeProcessors {
                         }
                         return byteArray;
                     }
-                    case SHORT_ARRAY: {
+                    case SHORT_ARRAY -> {
                         ByteBuffer shortBuffer = ByteBuffer.wrap(new byte[16]);
                         shortBuffer.putLong(uuid.getMostSignificantBits());
                         shortBuffer.putLong(uuid.getLeastSignificantBits());
@@ -323,7 +321,7 @@ public final class DefaultTypeProcessors {
                         }
                         return shortArray;
                     }
-                    case INT_ARRAY: {
+                    case INT_ARRAY -> {
                         ByteBuffer intBuffer = ByteBuffer.wrap(new byte[16]);
                         intBuffer.putLong(uuid.getMostSignificantBits());
                         intBuffer.putLong(uuid.getLeastSignificantBits());
@@ -336,7 +334,7 @@ public final class DefaultTypeProcessors {
                         }
                         return intArray;
                     }
-                    case LONG_ARRAY: {
+                    case LONG_ARRAY -> {
                         ByteBuffer longBuffer = ByteBuffer.wrap(new byte[16]);
                         longBuffer.putLong(uuid.getMostSignificantBits());
                         longBuffer.putLong(uuid.getLeastSignificantBits());
@@ -349,14 +347,14 @@ public final class DefaultTypeProcessors {
                         }
                         return longArray;
                     }
-                    case NUMBER: {
+                    case NUMBER -> {
                         ByteBuffer bigIntBuffer = ByteBuffer.wrap(new byte[16]);
                         bigIntBuffer.putLong(uuid.getMostSignificantBits());
                         bigIntBuffer.putLong(uuid.getLeastSignificantBits());
 
                         return ParsedPrimitive.fromBigInteger(new BigInteger(bigIntBuffer.array()));
                     }
-                    default: {
+                    default -> {
                         throw new RuntimeException();
                     }
                 }
@@ -377,103 +375,19 @@ public final class DefaultTypeProcessors {
                 for (ParsedElement subElement : element.asArray().getValues()) {
                     if (subElement.isPrimitive()) {
                         switch (element.asArray().getSize()) {
-                            case 16: {
-                                switch (subElement.asPrimitive().getType()) {
-                                    case BYTE: {
-                                        buffer.put(subElement.asPrimitive().asByte());
-                                        break;
-                                    }
-                                    case SHORT: {
-                                        buffer.put((byte) subElement.asPrimitive().asShort());
-                                        break;
-                                    }
-                                    case INTEGER: {
-                                        buffer.put((byte) subElement.asPrimitive().asInteger());
-                                        break;
-                                    }
-                                    case LONG: {
-                                        buffer.put((byte) subElement.asPrimitive().asLong());
-                                        break;
-                                    }
-                                    default: {
-                                        throw new RuntimeException();
-                                    }
-                                }
-                                break;
+                            case 16 -> {
+                                buffer.put(subElement.asPrimitive().toByte());
                             }
-                            case 8: {
-                                switch (subElement.asPrimitive().getType()) {
-                                    case BYTE: {
-                                        buffer.putShort(subElement.asPrimitive().asByte());
-                                        break;
-                                    }
-                                    case SHORT: {
-                                        buffer.putShort(subElement.asPrimitive().asShort());
-                                        break;
-                                    }
-                                    case INTEGER: {
-                                        buffer.putShort((short) subElement.asPrimitive().asInteger());
-                                        break;
-                                    }
-                                    case LONG: {
-                                        buffer.putShort((short) subElement.asPrimitive().asLong());
-                                        break;
-                                    }
-                                    default: {
-                                        throw new RuntimeException();
-                                    }
-                                }
-                                break;
+                            case 8 -> {
+                                buffer.putShort(subElement.asPrimitive().toShort());
                             }
-                            case 4: {
-                                switch (subElement.asPrimitive().getType()) {
-                                    case BYTE: {
-                                        buffer.putInt(subElement.asPrimitive().asByte());
-                                        break;
-                                    }
-                                    case SHORT: {
-                                        buffer.putInt(subElement.asPrimitive().asShort());
-                                        break;
-                                    }
-                                    case INTEGER: {
-                                        buffer.putInt(subElement.asPrimitive().asInteger());
-                                        break;
-                                    }
-                                    case LONG: {
-                                        buffer.putInt((int) subElement.asPrimitive().asLong());
-                                        break;
-                                    }
-                                    default: {
-                                        throw new RuntimeException();
-                                    }
-                                }
-                                break;
+                            case 4 -> {
+                                buffer.putInt(subElement.asPrimitive().toInteger());
                             }
-                            case 2: {
-                                switch (subElement.asPrimitive().getType()) {
-                                    case BYTE: {
-                                        buffer.putLong(subElement.asPrimitive().asByte());
-                                        break;
-                                    }
-                                    case SHORT: {
-                                        buffer.putLong(subElement.asPrimitive().asShort());
-                                        break;
-                                    }
-                                    case INTEGER: {
-                                        buffer.putLong(subElement.asPrimitive().asInteger());
-                                        break;
-                                    }
-                                    case LONG: {
-                                        buffer.putLong(subElement.asPrimitive().asLong());
-                                        break;
-                                    }
-                                    default: {
-                                        throw new RuntimeException();
-                                    }
-                                }
-                                break;
+                            case 2 -> {
+                                buffer.putLong(subElement.asPrimitive().toLong());
                             }
-                            default: {
+                            default -> {
                                 throw new RuntimeException();
                             }
                         }
@@ -487,26 +401,18 @@ public final class DefaultTypeProcessors {
                 return new UUID(buffer.getLong(), buffer.getLong());
             } else if (element.isPrimitive()) {
                 switch (element.asPrimitive().getType()) {
-                    case STRING: {
+                    case STRING -> {
                         return UUID.fromString(element.asPrimitive().asString());
                     }
-                    case BYTE: {
-                        return new UUID(0, (long) element.asPrimitive().asByte());
-                    }
-                    case SHORT: {
-                        return new UUID(0, (long) element.asPrimitive().asShort());
-                    }
-                    case INTEGER: {
-                        return new UUID(0, (long) element.asPrimitive().asInteger());
-                    }
-                    case LONG: {
-                        return new UUID(0, element.asPrimitive().asLong());
-                    }
-                    case BIGINTEGER: {
-                        BigInteger bigInt = element.asPrimitive().asBigInteger();
+                    case BYTE,
+                         SHORT,
+                         INTEGER,
+                         LONG,
+                         BIGINTEGER -> {
+                        BigInteger bigInt = element.asPrimitive().toBigInteger();
                         return new UUID(bigInt.shiftRight(64).longValue(), bigInt.longValue());
                     }
-                    default: {
+                    default -> {
                         throw new InvalidParameterException("object must be Array, BigInt, or String");
                     }
                 }
@@ -558,7 +464,7 @@ public final class DefaultTypeProcessors {
      *
      * @since 2.0.0
      */
-    public final @NotNull TypeProcessor URL_P = new TypeProcessor() {
+    @SuppressWarnings("deprecation") public final @NotNull TypeProcessor URL_P = new TypeProcessor() {
         @Override
         public @NotNull ParsedElement toElement(@Nullable Object object) {
             if (object == null) {
@@ -693,7 +599,7 @@ public final class DefaultTypeProcessors {
                     byte[] address = ((InetAddress) object).getAddress();
 
                     switch (options.getInetAddressMode()) {
-                        case STRING: {
+                        case STRING -> {
                             if (address.length == 4) {
                                 String[] addressBytes = new String[4];
 
@@ -767,7 +673,7 @@ public final class DefaultTypeProcessors {
                                 throw new InvalidParameterException("InetAddress must be IPv4 or IPv6");
                             }
                         }
-                        case NUMBER: {
+                        case NUMBER -> {
                             byte[] extendedAddress = new byte[address.length + 1]; // Avoid our number being interpreted as a signed number
                             System.arraycopy(address, 0, extendedAddress, 1, address.length);
 
@@ -779,19 +685,19 @@ public final class DefaultTypeProcessors {
                                 throw new InvalidParameterException("InetAddress must be IPv4 or IPv6");
                             }
                         }
-                        default: {
+                        default -> {
                             throw new RuntimeException();
                         }
                     }
                 } else {
                     switch (options.getInetAddressMode()) {
-                        case STRING: {
+                        case STRING -> {
                             return ParsedPrimitive.fromString(((InetAddress) object).getHostName());
                         }
-                        case NUMBER: {
+                        case NUMBER -> {
                             throw new InvalidParameterException("Cannot convert hostname to Number");
                         }
-                        default: {
+                        default -> {
                             throw new RuntimeException();
                         }
                     }
@@ -809,7 +715,7 @@ public final class DefaultTypeProcessors {
 
             if (element.isPrimitive()) {
                 switch (element.asPrimitive().getType()) {
-                    case STRING: {
+                    case STRING -> {
                         try {
                             String addressString = element.asPrimitive().asString();
                             if (addressString.startsWith("[") && addressString.endsWith("]")) {
@@ -865,43 +771,20 @@ public final class DefaultTypeProcessors {
                             }
                         }
                     }
-                    case BYTE:
-                        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[4]);
-                        byteBuffer.put(element.asPrimitive().asByte());
-
-                        try {
-                            return InetAddress.getByAddress(byteBuffer.array());
-                        } catch (UnknownHostException e) {
-                            throw new InvalidParameterException("object is an invalid InetAddress");
-                        }
-                    case SHORT:
-                        ByteBuffer shortBuffer = ByteBuffer.wrap(new byte[4]);
-                        shortBuffer.putShort(element.asPrimitive().asShort());
-
-                        try {
-                            return InetAddress.getByAddress(shortBuffer.array());
-                        } catch (UnknownHostException e) {
-                            throw new InvalidParameterException("object is an invalid InetAddress");
-                        }
-                    case INTEGER:
-                        ByteBuffer intBuffer = ByteBuffer.wrap(new byte[4]);
-                        intBuffer.putInt(element.asPrimitive().asInteger());
-
-                        try {
-                            return InetAddress.getByAddress(intBuffer.array());
-                        } catch (UnknownHostException e) {
-                            throw new InvalidParameterException("object is an invalid InetAddress");
-                        }
-                    case LONG:
+                    case BYTE,
+                         SHORT,
+                         INTEGER,
+                         LONG -> {
                         ByteBuffer longBuffer = ByteBuffer.wrap(new byte[4]);
-                        longBuffer.putLong(element.asPrimitive().asLong());
+                        longBuffer.putLong(element.asPrimitive().toLong());
 
                         try {
                             return InetAddress.getByAddress(longBuffer.array());
                         } catch (UnknownHostException e) {
                             throw new InvalidParameterException("object is an invalid InetAddress");
                         }
-                    case BIGINTEGER: {
+                    }
+                    case BIGINTEGER -> {
                         BigInteger bigInt = element.asPrimitive().asBigInteger();
                         BigInteger upper = bigInt.shiftRight(128);
 
@@ -925,7 +808,7 @@ public final class DefaultTypeProcessors {
                             throw new RuntimeException("object is an invalid InetAddress", e);
                         }
                     }
-                    default: {
+                    default -> {
                         throw new InvalidParameterException("object must be String");
                     }
                 }
@@ -979,7 +862,7 @@ public final class DefaultTypeProcessors {
                     int port = ((InetSocketAddress) object).getPort();
 
                     switch (options.getInetAddressMode()) {
-                        case STRING: {
+                        case STRING -> {
                             if (address.length == 4) {
                                 String[] addressBytes = new String[4];
 
@@ -1059,7 +942,7 @@ public final class DefaultTypeProcessors {
                                 throw new InvalidParameterException("InetSocketAddress must be IPv4 or IPv6");
                             }
                         }
-                        case NUMBER: {
+                        case NUMBER -> {
                             byte[] extendedAddress = new byte[address.length + 1]; // Avoid our number being interpreted as a signed number
                             System.arraycopy(address, 0, extendedAddress, 1, address.length);
 
@@ -1071,19 +954,19 @@ public final class DefaultTypeProcessors {
                                 throw new InvalidParameterException("InetAddress must be IPv4 or IPv6");
                             }
                         }
-                        default: {
+                        default -> {
                             throw new RuntimeException();
                         }
                     }
                 } else {
                     switch (options.getInetAddressMode()) {
-                        case STRING: {
+                        case STRING -> {
                             return ParsedPrimitive.fromString(((InetSocketAddress) object).getAddress().getHostName() + ":" + ((InetSocketAddress) object).getPort());
                         }
-                        case NUMBER: {
+                        case NUMBER -> {
                             throw new InvalidParameterException("Cannot convert hostname to Number");
                         }
-                        default: {
+                        default -> {
                             throw new RuntimeException();
                         }
                     }
@@ -1101,7 +984,7 @@ public final class DefaultTypeProcessors {
 
             if (element.isPrimitive()) {
                 switch (element.asPrimitive().getType()) {
-                    case STRING: {
+                    case STRING -> {
                         try {
                             String fullString = element.asPrimitive().asString();
                             String addressString = fullString;
@@ -1171,7 +1054,7 @@ public final class DefaultTypeProcessors {
                             }
                         }
                     }
-                    case LONG: {
+                    case LONG -> {
                         ByteBuffer longBuffer = ByteBuffer.wrap(new byte[4]);
                         longBuffer.putLong(element.asPrimitive().asLong() & 0xFFFFFFFFL);
 
@@ -1183,7 +1066,7 @@ public final class DefaultTypeProcessors {
                             throw new InvalidParameterException("object is an invalid InetAddress");
                         }
                     }
-                    case BIGINTEGER: {
+                    case BIGINTEGER -> {
                         BigInteger bigInt = element.asPrimitive().asBigInteger();
                         BigInteger upper = bigInt.shiftRight(128);
 
@@ -1209,7 +1092,7 @@ public final class DefaultTypeProcessors {
                             throw new InvalidParameterException("object is an invalid InetAddress");
                         }
                     }
-                    default: {
+                    default -> {
                         throw new RuntimeException();
                     }
                 }
@@ -1233,13 +1116,13 @@ public final class DefaultTypeProcessors {
 
             if (object instanceof Calendar) {
                 switch (options.getDateMode()) {
-                    case STRING: {
+                    case STRING -> {
                         return ParsedPrimitive.fromString(options.getDateTimeFormatter().format(Instant.ofEpochMilli(((Calendar) object).getTimeInMillis())));
                     }
-                    case NUMBER: {
+                    case NUMBER -> {
                         return ParsedPrimitive.fromLong(((Calendar) object).getTimeInMillis());
                     }
-                    default: {
+                    default -> {
                         throw new RuntimeException();
                     }
                 }
@@ -1256,7 +1139,7 @@ public final class DefaultTypeProcessors {
 
             if (element.isPrimitive()) {
                 switch (element.asPrimitive().getType()) {
-                    case STRING: {
+                    case STRING -> {
                         try {
                             Calendar calendar = Calendar.getInstance();
                             calendar.setTimeInMillis(Instant.from(options.getDateTimeFormatter().parse(element.asPrimitive().asString())).toEpochMilli());
@@ -1265,27 +1148,15 @@ public final class DefaultTypeProcessors {
                             throw new InvalidParameterException("object is an invalid Date");
                         }
                     }
-                    case BYTE: {
+                    case BYTE,
+                         SHORT,
+                         INTEGER,
+                         LONG -> {
                         Calendar calendar = Calendar.getInstance();
-                        calendar.setTimeInMillis((long) element.asPrimitive().asByte());
+                        calendar.setTimeInMillis(element.asPrimitive().toLong());
                         return calendar;
                     }
-                    case SHORT: {
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.setTimeInMillis((long) element.asPrimitive().asShort());
-                        return calendar;
-                    }
-                    case INTEGER: {
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.setTimeInMillis((long) element.asPrimitive().asInteger());
-                        return calendar;
-                    }
-                    case LONG: {
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.setTimeInMillis(element.asPrimitive().asLong());
-                        return calendar;
-                    }
-                    default: {
+                    default -> {
                         throw new InvalidParameterException("object must be String or Long");
                     }
                 }
@@ -1309,13 +1180,13 @@ public final class DefaultTypeProcessors {
 
             if (object instanceof Date) {
                 switch (options.getDateMode()) {
-                    case STRING: {
+                    case STRING -> {
                         return ParsedPrimitive.fromString(options.getDateTimeFormatter().format(Instant.ofEpochMilli(((Date) object).getTime())));
                     }
-                    case NUMBER: {
+                    case NUMBER -> {
                         return ParsedPrimitive.fromLong(((Date) object).getTime());
                     }
-                    default: {
+                    default -> {
                         throw new RuntimeException();
                     }
                 }
@@ -1332,26 +1203,20 @@ public final class DefaultTypeProcessors {
 
             if (element.isPrimitive()) {
                 switch (element.asPrimitive().getType()) {
-                    case STRING: {
+                    case STRING -> {
                         try {
                             return new Date(Instant.from(options.getDateTimeFormatter().parse(element.asPrimitive().asString())).toEpochMilli());
                         } catch (DateTimeParseException e) {
                             throw new InvalidParameterException("object is an invalid Date");
                         }
                     }
-                    case BYTE: {
-                        return new Date((long) element.asPrimitive().asByte());
+                    case BYTE,
+                         SHORT,
+                         INTEGER,
+                         LONG -> {
+                        return new Date(element.asPrimitive().toLong());
                     }
-                    case SHORT: {
-                        return new Date((long) element.asPrimitive().asShort());
-                    }
-                    case INTEGER: {
-                        return new Date((long) element.asPrimitive().asInteger());
-                    }
-                    case LONG: {
-                        return new Date(element.asPrimitive().asLong());
-                    }
-                    default: {
+                    default -> {
                         throw new InvalidParameterException("object must be String or Long");
                     }
                 }
@@ -1375,13 +1240,13 @@ public final class DefaultTypeProcessors {
 
             if (object instanceof Instant) {
                 switch (options.getDateMode()) {
-                    case STRING: {
+                    case STRING -> {
                         return ParsedPrimitive.fromString(options.getDateTimeFormatter().format((Instant) object));
                     }
-                    case NUMBER: {
+                    case NUMBER -> {
                         return ParsedPrimitive.fromLong(((Instant) object).toEpochMilli());
                     }
-                    default: {
+                    default -> {
                         throw new RuntimeException();
                     }
                 }
@@ -1398,22 +1263,16 @@ public final class DefaultTypeProcessors {
 
             if (element.isPrimitive()) {
                 switch (element.asPrimitive().getType()) {
-                    case STRING: {
+                    case STRING -> {
                         return Instant.from(options.getDateTimeFormatter().parse(element.asPrimitive().asString()));
                     }
-                    case BYTE: {
-                        return Instant.ofEpochMilli((long) element.asPrimitive().asByte());
+                    case BYTE,
+                         SHORT,
+                         INTEGER,
+                         LONG -> {
+                        return Instant.ofEpochMilli(element.asPrimitive().toLong());
                     }
-                    case SHORT: {
-                        return Instant.ofEpochMilli((long) element.asPrimitive().asShort());
-                    }
-                    case INTEGER: {
-                        return Instant.ofEpochMilli((long) element.asPrimitive().asInteger());
-                    }
-                    case LONG: {
-                        return Instant.ofEpochMilli(element.asPrimitive().asLong());
-                    }
-                    default: {
+                    default -> {
                         throw new InvalidParameterException("object must be String or Long");
                     }
                 }
