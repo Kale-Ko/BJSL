@@ -267,8 +267,8 @@
 <span class="source-line-no">254</span><span id="line-254">                return ParsedPrimitive.fromNull();</span>
 <span class="source-line-no">255</span><span id="line-255">            }</span>
 <span class="source-line-no">256</span><span id="line-256"></span>
-<span class="source-line-no">257</span><span id="line-257">            if (object instanceof StringBuilder) {</span>
-<span class="source-line-no">258</span><span id="line-258">                return ParsedPrimitive.fromString(((StringBuilder) object).toString());</span>
+<span class="source-line-no">257</span><span id="line-257">            if (object instanceof StringBuilder stringBuilder) {</span>
+<span class="source-line-no">258</span><span id="line-258">                return ParsedPrimitive.fromString(stringBuilder.toString());</span>
 <span class="source-line-no">259</span><span id="line-259">            } else {</span>
 <span class="source-line-no">260</span><span id="line-260">                throw new InvalidParameterException("object must be StringBuilder");</span>
 <span class="source-line-no">261</span><span id="line-261">            }</span>
@@ -300,8 +300,8 @@
 <span class="source-line-no">287</span><span id="line-287">                return ParsedPrimitive.fromNull();</span>
 <span class="source-line-no">288</span><span id="line-288">            }</span>
 <span class="source-line-no">289</span><span id="line-289"></span>
-<span class="source-line-no">290</span><span id="line-290">            if (object instanceof StringBuffer) {</span>
-<span class="source-line-no">291</span><span id="line-291">                return ParsedPrimitive.fromString(((StringBuffer) object).toString());</span>
+<span class="source-line-no">290</span><span id="line-290">            if (object instanceof StringBuffer stringBuffer) {</span>
+<span class="source-line-no">291</span><span id="line-291">                return ParsedPrimitive.fromString(stringBuffer.toString());</span>
 <span class="source-line-no">292</span><span id="line-292">            } else {</span>
 <span class="source-line-no">293</span><span id="line-293">                throw new InvalidParameterException("object must be StringBuffer");</span>
 <span class="source-line-no">294</span><span id="line-294">            }</span>
@@ -477,8 +477,8 @@
 <span class="source-line-no">464</span><span id="line-464">                return ParsedPrimitive.fromNull();</span>
 <span class="source-line-no">465</span><span id="line-465">            }</span>
 <span class="source-line-no">466</span><span id="line-466"></span>
-<span class="source-line-no">467</span><span id="line-467">            if (object instanceof URI) {</span>
-<span class="source-line-no">468</span><span id="line-468">                return ParsedPrimitive.fromString(((URI) object).toString());</span>
+<span class="source-line-no">467</span><span id="line-467">            if (object instanceof URI uri) {</span>
+<span class="source-line-no">468</span><span id="line-468">                return ParsedPrimitive.fromString(uri.toString());</span>
 <span class="source-line-no">469</span><span id="line-469">            } else {</span>
 <span class="source-line-no">470</span><span id="line-470">                throw new InvalidParameterException("object must be URI");</span>
 <span class="source-line-no">471</span><span id="line-471">            }</span>
@@ -514,8 +514,8 @@
 <span class="source-line-no">501</span><span id="line-501">                return ParsedPrimitive.fromNull();</span>
 <span class="source-line-no">502</span><span id="line-502">            }</span>
 <span class="source-line-no">503</span><span id="line-503"></span>
-<span class="source-line-no">504</span><span id="line-504">            if (object instanceof URL) {</span>
-<span class="source-line-no">505</span><span id="line-505">                return ParsedPrimitive.fromString(((URL) object).toString());</span>
+<span class="source-line-no">504</span><span id="line-504">            if (object instanceof URL url) {</span>
+<span class="source-line-no">505</span><span id="line-505">                return ParsedPrimitive.fromString(url.toString());</span>
 <span class="source-line-no">506</span><span id="line-506">            } else {</span>
 <span class="source-line-no">507</span><span id="line-507">                throw new InvalidParameterException("object must be URL");</span>
 <span class="source-line-no">508</span><span id="line-508">            }</span>
@@ -551,8 +551,8 @@
 <span class="source-line-no">538</span><span id="line-538">                return ParsedPrimitive.fromNull();</span>
 <span class="source-line-no">539</span><span id="line-539">            }</span>
 <span class="source-line-no">540</span><span id="line-540"></span>
-<span class="source-line-no">541</span><span id="line-541">            if (object instanceof Path) {</span>
-<span class="source-line-no">542</span><span id="line-542">                return ParsedPrimitive.fromString(((Path) object).toString());</span>
+<span class="source-line-no">541</span><span id="line-541">            if (object instanceof Path path) {</span>
+<span class="source-line-no">542</span><span id="line-542">                return ParsedPrimitive.fromString(path.toString());</span>
 <span class="source-line-no">543</span><span id="line-543">            } else {</span>
 <span class="source-line-no">544</span><span id="line-544">                throw new InvalidParameterException("object must be Path");</span>
 <span class="source-line-no">545</span><span id="line-545">            }</span>
@@ -584,8 +584,8 @@
 <span class="source-line-no">571</span><span id="line-571">                return ParsedPrimitive.fromNull();</span>
 <span class="source-line-no">572</span><span id="line-572">            }</span>
 <span class="source-line-no">573</span><span id="line-573"></span>
-<span class="source-line-no">574</span><span id="line-574">            if (object instanceof File) {</span>
-<span class="source-line-no">575</span><span id="line-575">                return ParsedPrimitive.fromString(((File) object).getPath());</span>
+<span class="source-line-no">574</span><span id="line-574">            if (object instanceof File file) {</span>
+<span class="source-line-no">575</span><span id="line-575">                return ParsedPrimitive.fromString(file.getPath());</span>
 <span class="source-line-no">576</span><span id="line-576">            } else {</span>
 <span class="source-line-no">577</span><span id="line-577">                throw new InvalidParameterException("object must be File");</span>
 <span class="source-line-no">578</span><span id="line-578">            }</span>
@@ -621,8 +621,8 @@
 <span class="source-line-no">608</span><span id="line-608">                return ParsedPrimitive.fromNull();</span>
 <span class="source-line-no">609</span><span id="line-609">            }</span>
 <span class="source-line-no">610</span><span id="line-610"></span>
-<span class="source-line-no">611</span><span id="line-611">            if (object instanceof InetAddress) {</span>
-<span class="source-line-no">612</span><span id="line-612">                boolean hasHostname = !((InetAddress) object).toString().startsWith("/"); // Kinda hacky but the only way</span>
+<span class="source-line-no">611</span><span id="line-611">            if (object instanceof InetAddress inetAddress) {</span>
+<span class="source-line-no">612</span><span id="line-612">                boolean hasHostname = !inetAddress.toString().startsWith("/"); // Kinda hacky but the only way</span>
 <span class="source-line-no">613</span><span id="line-613"></span>
 <span class="source-line-no">614</span><span id="line-614">                // This works but is illegal in newer java versions</span>
 <span class="source-line-no">615</span><span id="line-615">                // try {</span>
@@ -883,8 +883,8 @@
 <span class="source-line-no">870</span><span id="line-870">                return ParsedPrimitive.fromNull();</span>
 <span class="source-line-no">871</span><span id="line-871">            }</span>
 <span class="source-line-no">872</span><span id="line-872"></span>
-<span class="source-line-no">873</span><span id="line-873">            if (object instanceof InetSocketAddress) {</span>
-<span class="source-line-no">874</span><span id="line-874">                boolean hasHostname = !((InetSocketAddress) object).getAddress().toString().startsWith("/"); // Kinda hacky but the only way</span>
+<span class="source-line-no">873</span><span id="line-873">            if (object instanceof InetSocketAddress inetSocketAddress) {</span>
+<span class="source-line-no">874</span><span id="line-874">                boolean hasHostname = !inetSocketAddress.getAddress().toString().startsWith("/"); // Kinda hacky but the only way</span>
 <span class="source-line-no">875</span><span id="line-875"></span>
 <span class="source-line-no">876</span><span id="line-876">                // This works but is illegal in newer java versions</span>
 <span class="source-line-no">877</span><span id="line-877">                // try {</span>
@@ -1157,13 +1157,13 @@
 <span class="source-line-no">1144</span><span id="line-1144">                return ParsedPrimitive.fromNull();</span>
 <span class="source-line-no">1145</span><span id="line-1145">            }</span>
 <span class="source-line-no">1146</span><span id="line-1146"></span>
-<span class="source-line-no">1147</span><span id="line-1147">            if (object instanceof Calendar) {</span>
+<span class="source-line-no">1147</span><span id="line-1147">            if (object instanceof Calendar calendar) {</span>
 <span class="source-line-no">1148</span><span id="line-1148">                switch (options.getDateMode()) {</span>
 <span class="source-line-no">1149</span><span id="line-1149">                    case STRING -&gt; {</span>
-<span class="source-line-no">1150</span><span id="line-1150">                        return ParsedPrimitive.fromString(options.getDateTimeFormatter().format(Instant.ofEpochMilli(((Calendar) object).getTimeInMillis())));</span>
+<span class="source-line-no">1150</span><span id="line-1150">                        return ParsedPrimitive.fromString(options.getDateTimeFormatter().format(Instant.ofEpochMilli(calendar.getTimeInMillis())));</span>
 <span class="source-line-no">1151</span><span id="line-1151">                    }</span>
 <span class="source-line-no">1152</span><span id="line-1152">                    case NUMBER -&gt; {</span>
-<span class="source-line-no">1153</span><span id="line-1153">                        return ParsedPrimitive.fromLong(((Calendar) object).getTimeInMillis());</span>
+<span class="source-line-no">1153</span><span id="line-1153">                        return ParsedPrimitive.fromLong(calendar.getTimeInMillis());</span>
 <span class="source-line-no">1154</span><span id="line-1154">                    }</span>
 <span class="source-line-no">1155</span><span id="line-1155">                    default -&gt; {</span>
 <span class="source-line-no">1156</span><span id="line-1156">                        throw new RuntimeException();</span>
@@ -1221,13 +1221,13 @@
 <span class="source-line-no">1208</span><span id="line-1208">                return ParsedPrimitive.fromNull();</span>
 <span class="source-line-no">1209</span><span id="line-1209">            }</span>
 <span class="source-line-no">1210</span><span id="line-1210"></span>
-<span class="source-line-no">1211</span><span id="line-1211">            if (object instanceof Date) {</span>
+<span class="source-line-no">1211</span><span id="line-1211">            if (object instanceof Date date) {</span>
 <span class="source-line-no">1212</span><span id="line-1212">                switch (options.getDateMode()) {</span>
 <span class="source-line-no">1213</span><span id="line-1213">                    case STRING -&gt; {</span>
-<span class="source-line-no">1214</span><span id="line-1214">                        return ParsedPrimitive.fromString(options.getDateTimeFormatter().format(Instant.ofEpochMilli(((Date) object).getTime())));</span>
+<span class="source-line-no">1214</span><span id="line-1214">                        return ParsedPrimitive.fromString(options.getDateTimeFormatter().format(Instant.ofEpochMilli(date.getTime())));</span>
 <span class="source-line-no">1215</span><span id="line-1215">                    }</span>
 <span class="source-line-no">1216</span><span id="line-1216">                    case NUMBER -&gt; {</span>
-<span class="source-line-no">1217</span><span id="line-1217">                        return ParsedPrimitive.fromLong(((Date) object).getTime());</span>
+<span class="source-line-no">1217</span><span id="line-1217">                        return ParsedPrimitive.fromLong(date.getTime());</span>
 <span class="source-line-no">1218</span><span id="line-1218">                    }</span>
 <span class="source-line-no">1219</span><span id="line-1219">                    default -&gt; {</span>
 <span class="source-line-no">1220</span><span id="line-1220">                        throw new RuntimeException();</span>
@@ -1281,13 +1281,13 @@
 <span class="source-line-no">1268</span><span id="line-1268">                return ParsedPrimitive.fromNull();</span>
 <span class="source-line-no">1269</span><span id="line-1269">            }</span>
 <span class="source-line-no">1270</span><span id="line-1270"></span>
-<span class="source-line-no">1271</span><span id="line-1271">            if (object instanceof Instant) {</span>
+<span class="source-line-no">1271</span><span id="line-1271">            if (object instanceof Instant instant) {</span>
 <span class="source-line-no">1272</span><span id="line-1272">                switch (options.getDateMode()) {</span>
 <span class="source-line-no">1273</span><span id="line-1273">                    case STRING -&gt; {</span>
-<span class="source-line-no">1274</span><span id="line-1274">                        return ParsedPrimitive.fromString(options.getDateTimeFormatter().format((Instant) object));</span>
+<span class="source-line-no">1274</span><span id="line-1274">                        return ParsedPrimitive.fromString(options.getDateTimeFormatter().format(instant));</span>
 <span class="source-line-no">1275</span><span id="line-1275">                    }</span>
 <span class="source-line-no">1276</span><span id="line-1276">                    case NUMBER -&gt; {</span>
-<span class="source-line-no">1277</span><span id="line-1277">                        return ParsedPrimitive.fromLong(((Instant) object).toEpochMilli());</span>
+<span class="source-line-no">1277</span><span id="line-1277">                        return ParsedPrimitive.fromLong((instant).toEpochMilli());</span>
 <span class="source-line-no">1278</span><span id="line-1278">                    }</span>
 <span class="source-line-no">1279</span><span id="line-1279">                    default -&gt; {</span>
 <span class="source-line-no">1280</span><span id="line-1280">                        throw new RuntimeException();</span>

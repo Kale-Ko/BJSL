@@ -914,7 +914,7 @@
 <span class="source-line-no">901</span><span id="line-901"></span>
 <span class="source-line-no">902</span><span id="line-902">                            for (Map.Entry&lt;String, ParsedElement&gt; entry : element.asObject().getEntries()) {</span>
 <span class="source-line-no">903</span><span id="line-903">                                Object subObject = toObject(entry.getValue(), type.getContentType());</span>
-<span class="source-line-no">904</span><span id="line-904">                                if (!((ignoreNulls &amp;&amp; subObject == null) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Object[] &amp;&amp; ((Object[]) subObject).length == 0) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Collection&lt;?&gt; &amp;&amp; ((Collection&lt;?&gt;) subObject).isEmpty()) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Map&lt;?, ?&gt; &amp;&amp; ((Map&lt;?, ?&gt;) subObject).isEmpty()))) {</span>
+<span class="source-line-no">904</span><span id="line-904">                                if (!((ignoreNulls &amp;&amp; subObject == null) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Object[] objects &amp;&amp; objects.length == 0) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Collection&lt;?&gt; collection &amp;&amp; collection.isEmpty()) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Map&lt;?, ?&gt; map &amp;&amp; map.isEmpty()))) {</span>
 <span class="source-line-no">905</span><span id="line-905">                                    object.put(toObject(ParsedPrimitive.fromString(entry.getKey()), type.getKeyType()), subObject);</span>
 <span class="source-line-no">906</span><span id="line-906">                                }</span>
 <span class="source-line-no">907</span><span id="line-907">                            }</span>
@@ -1000,7 +1000,7 @@
 <span class="source-line-no">987</span><span id="line-987">                                            }</span>
 <span class="source-line-no">988</span><span id="line-988">                                        }</span>
 <span class="source-line-no">989</span><span id="line-989"></span>
-<span class="source-line-no">990</span><span id="line-990">                                        if (!((ignoreNulls &amp;&amp; subObject == null) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Object[] &amp;&amp; ((Object[]) subObject).length == 0) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Collection&lt;?&gt; &amp;&amp; ((Collection&lt;?&gt;) subObject).isEmpty()) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Map&lt;?, ?&gt; &amp;&amp; ((Map&lt;?, ?&gt;) subObject).isEmpty()))) {</span>
+<span class="source-line-no">990</span><span id="line-990">                                        if (!((ignoreNulls &amp;&amp; subObject == null) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Object[] objects &amp;&amp; objects.length == 0) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Collection&lt;?&gt; collection &amp;&amp; collection.isEmpty()) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Map&lt;?, ?&gt; map &amp;&amp; map.isEmpty()))) {</span>
 <span class="source-line-no">991</span><span id="line-991">                                            field.set(object, subObject);</span>
 <span class="source-line-no">992</span><span id="line-992">                                        }</span>
 <span class="source-line-no">993</span><span id="line-993">                                    }</span>
@@ -1023,7 +1023,7 @@
 <span class="source-line-no">1010</span><span id="line-1010"></span>
 <span class="source-line-no">1011</span><span id="line-1011">                            for (ParsedElement subElement : element.asArray().getValues()) {</span>
 <span class="source-line-no">1012</span><span id="line-1012">                                Object subObject = toObject(subElement, type.getContentType());</span>
-<span class="source-line-no">1013</span><span id="line-1013">                                if (!((ignoreArrayNulls &amp;&amp; subObject == null) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Object[] &amp;&amp; ((Object[]) subObject).length == 0) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Collection&lt;?&gt; &amp;&amp; ((Collection&lt;?&gt;) subObject).isEmpty()) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Map&lt;?, ?&gt; &amp;&amp; ((Map&lt;?, ?&gt;) subObject).isEmpty()))) {</span>
+<span class="source-line-no">1013</span><span id="line-1013">                                if (!((ignoreArrayNulls &amp;&amp; subObject == null) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Object[] objects &amp;&amp; objects.length == 0) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Collection&lt;?&gt; collection &amp;&amp; collection.isEmpty()) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Map&lt;?, ?&gt; map &amp;&amp; map.isEmpty()))) {</span>
 <span class="source-line-no">1014</span><span id="line-1014">                                    object.add(subObject);</span>
 <span class="source-line-no">1015</span><span id="line-1015">                                }</span>
 <span class="source-line-no">1016</span><span id="line-1016">                            }</span>
@@ -1134,7 +1134,7 @@
 <span class="source-line-no">1121</span><span id="line-1121"></span>
 <span class="source-line-no">1122</span><span id="line-1122">                                    for (ParsedElement subElement : element.asArray().getValues()) {</span>
 <span class="source-line-no">1123</span><span id="line-1123">                                        Object subObject = toObject(subElement, type.getContentType().getRawClass());</span>
-<span class="source-line-no">1124</span><span id="line-1124">                                        if (!((ignoreArrayNulls &amp;&amp; subObject == null) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Object[] &amp;&amp; ((Object[]) subObject).length == 0) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Collection&lt;?&gt; &amp;&amp; ((Collection&lt;?&gt;) subObject).isEmpty()) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Map&lt;?, ?&gt; &amp;&amp; ((Map&lt;?, ?&gt;) subObject).isEmpty()))) {</span>
+<span class="source-line-no">1124</span><span id="line-1124">                                        if (!((ignoreArrayNulls &amp;&amp; subObject == null) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Object[] objects &amp;&amp; objects.length == 0) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Collection&lt;?&gt; collection &amp;&amp; collection.isEmpty()) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Map&lt;?, ?&gt; map &amp;&amp; map.isEmpty()))) {</span>
 <span class="source-line-no">1125</span><span id="line-1125">                                            size++;</span>
 <span class="source-line-no">1126</span><span id="line-1126">                                        }</span>
 <span class="source-line-no">1127</span><span id="line-1127">                                    }</span>
@@ -1145,7 +1145,7 @@
 <span class="source-line-no">1132</span><span id="line-1132">                                int i = 0;</span>
 <span class="source-line-no">1133</span><span id="line-1133">                                for (ParsedElement subElement : element.asArray().getValues()) {</span>
 <span class="source-line-no">1134</span><span id="line-1134">                                    Object subObject = toObject(subElement, type.getContentType().getRawClass());</span>
-<span class="source-line-no">1135</span><span id="line-1135">                                    if (!((ignoreArrayNulls &amp;&amp; subObject == null) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Object[] &amp;&amp; ((Object[]) subObject).length == 0) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Collection&lt;?&gt; &amp;&amp; ((Collection&lt;?&gt;) subObject).isEmpty()) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Map&lt;?, ?&gt; &amp;&amp; ((Map&lt;?, ?&gt;) subObject).isEmpty()))) {</span>
+<span class="source-line-no">1135</span><span id="line-1135">                                    if (!((ignoreArrayNulls &amp;&amp; subObject == null) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Object[] objects &amp;&amp; objects.length == 0) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Collection&lt;?&gt; collection &amp;&amp; collection.isEmpty()) || (ignoreEmptyObjects &amp;&amp; subObject instanceof Map&lt;?, ?&gt; map &amp;&amp; map.isEmpty()))) {</span>
 <span class="source-line-no">1136</span><span id="line-1136">                                        array[i] = subObject;</span>
 <span class="source-line-no">1137</span><span id="line-1137"></span>
 <span class="source-line-no">1138</span><span id="line-1138">                                        i++;</span>
