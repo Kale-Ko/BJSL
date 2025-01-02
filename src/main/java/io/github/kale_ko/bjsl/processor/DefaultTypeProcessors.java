@@ -51,11 +51,29 @@ public final class DefaultTypeProcessors {
          * @since 2.0.0
          */
         public enum UUIDMode {
+            /**
+             * Stored as a string (e.g. "e4ec171a-665d-43fa-946e-852cc67cc590")
+             */
             STRING,
+            /**
+             * Stored as a byte array (e.g. [-28, -20, 23, 26, 102, 93, 67, -6, -108, 110, -123, 44, -58, 124, -59, -112])
+             */
             BYTE_ARRAY,
+            /**
+             * Stored as a short array (e.g. [-6932, 5914, 26205, 17402, -27538, -31444, -14724, -14960])
+             */
             SHORT_ARRAY,
+            /**
+             * Stored as an int array (e.g. [-454289638, 1717388282, -1804696276, -964901488])
+             */
             INT_ARRAY,
+            /**
+             * Stored as a long array (e.g. [-1951159136404290566L, -7751111481302923888L])
+             */
             LONG_ARRAY,
+            /**
+             * Stored as a big integer (e.g. -35992533236330093637743511526032226928)
+             */
             NUMBER
         }
 
@@ -65,7 +83,13 @@ public final class DefaultTypeProcessors {
          * @since 2.0.0
          */
         public enum InetAddressMode {
+            /**
+             * Stored as a string (e.g. "192.168.0.1", "192.168.0.1:8000")
+             */
             STRING,
+            /**
+             * Stored as a big integer (e.g. 34362970603521)
+             */
             NUMBER
         }
 
@@ -75,7 +99,13 @@ public final class DefaultTypeProcessors {
          * @since 2.0.0
          */
         public enum DateMode {
+            /**
+             * Stored as a string (e.g. "July 04 2024 @ 07:00:00.000 AM -05:00", "2024-07-04T07:00:00-05:00", "2024-07-04T12:00:00Z")
+             */
             STRING,
+            /**
+             * Stored as a long (e.g. 1720094400000)
+             */
             NUMBER
         }
 
