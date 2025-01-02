@@ -901,7 +901,7 @@ public class ObjectProcessor {
 
                             for (Map.Entry<String, ParsedElement> entry : element.asObject().getEntries()) {
                                 Object subObject = toObject(entry.getValue(), type.getContentType());
-                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
+                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] objects && objects.length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> collection && collection.isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> map && map.isEmpty()))) {
                                     object.put(toObject(ParsedPrimitive.fromString(entry.getKey()), type.getKeyType()), subObject);
                                 }
                             }
@@ -987,7 +987,7 @@ public class ObjectProcessor {
                                             }
                                         }
 
-                                        if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
+                                        if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] objects && objects.length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> collection && collection.isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> map && map.isEmpty()))) {
                                             field.set(object, subObject);
                                         }
                                     }
@@ -1010,7 +1010,7 @@ public class ObjectProcessor {
 
                             for (ParsedElement subElement : element.asArray().getValues()) {
                                 Object subObject = toObject(subElement, type.getContentType());
-                                if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
+                                if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] objects && objects.length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> collection && collection.isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> map && map.isEmpty()))) {
                                     object.add(subObject);
                                 }
                             }
@@ -1121,7 +1121,7 @@ public class ObjectProcessor {
 
                                     for (ParsedElement subElement : element.asArray().getValues()) {
                                         Object subObject = toObject(subElement, type.getContentType().getRawClass());
-                                        if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
+                                        if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] objects && objects.length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> collection && collection.isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> map && map.isEmpty()))) {
                                             size++;
                                         }
                                     }
@@ -1132,7 +1132,7 @@ public class ObjectProcessor {
                                 int i = 0;
                                 for (ParsedElement subElement : element.asArray().getValues()) {
                                     Object subObject = toObject(subElement, type.getContentType().getRawClass());
-                                    if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] && ((Object[]) subObject).length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> && ((Collection<?>) subObject).isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> && ((Map<?, ?>) subObject).isEmpty()))) {
+                                    if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] objects && objects.length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> collection && collection.isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> map && map.isEmpty()))) {
                                         array[i] = subObject;
 
                                         i++;
