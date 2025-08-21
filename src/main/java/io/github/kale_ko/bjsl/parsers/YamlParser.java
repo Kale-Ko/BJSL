@@ -97,11 +97,11 @@ public class YamlParser extends JacksonParser<YAMLFactory, YAMLMapper> {
         }
 
         /**
-         * Get weather to use crlf or lf line endings
+         * Get whether to use crlf or lf line endings
          * <p>
          * Default is lf
          *
-         * @return Weather to use crlf or lf line endings
+         * @return Whether to use crlf or lf line endings
          *
          * @since 1.0.0
          */
@@ -110,11 +110,11 @@ public class YamlParser extends JacksonParser<YAMLFactory, YAMLMapper> {
         }
 
         /**
-         * Set weather to use crlf or lf line endings
+         * Set whether to use crlf or lf line endings
          * <p>
          * Default is lf
          *
-         * @param value Weather to use crlf or lf line endings
+         * @param value Whether to use crlf or lf line endings
          *
          * @return Self for chaining
          *
