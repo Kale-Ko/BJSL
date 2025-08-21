@@ -664,6 +664,54 @@ public class ObjectProcessor {
     }
 
     /**
+     * Helper method to check if an element should be ignored during serialization
+     *
+     * @param subElement The element to check
+     * @return true if the element should be ignored, false otherwise
+     * @since 2.0.0
+     */
+    private boolean shouldIgnoreElement(@NotNull ParsedElement subElement) {
+        return (ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) ||
+               (ignoreEmptyObjects && ((subElement.isObject() && subElement.asObject().getSize() == 0) ||
+                                      (subElement.isArray() && subElement.asArray().getSize() == 0)));
+    }
+
+    /**
+     * Helper method to create a ParsedArray from an iterable of objects
+     *
+     * @param iterable The iterable to convert
+     * @return A new ParsedArray containing the converted elements
+     * @since 2.0.0
+     */
+    private @NotNull ParsedArray createArrayFromIterable(@NotNull Iterable<?> iterable) {
+        ParsedArray arrayElement = ParsedArray.create();
+        
+        for (Object item : iterable) {
+            ParsedElement subElement = toElement(item);
+            if (!shouldIgnoreElement(subElement)) {
+                arrayElement.add(subElement);
+            }
+        }
+        
+        return arrayElement;
+    }
+
+    /**
+     * Helper method to check if an object should be ignored during deserialization
+     *
+     * @param subObject The object to check
+     * @return true if the object should be ignored, false otherwise
+     * @since 2.0.0
+     */
+    private boolean shouldIgnoreObject(@Nullable Object subObject) {
+        return (ignoreNulls && subObject == null) ||
+               (ignoreArrayNulls && subObject == null) ||
+               (ignoreEmptyObjects && subObject instanceof Object[] objects && objects.length == 0) ||
+               (ignoreEmptyObjects && subObject instanceof Collection<?> collection && collection.isEmpty()) ||
+               (ignoreEmptyObjects && subObject instanceof Map<?, ?> map && map.isEmpty());
+    }
+
+    /**
      * Maps this element into an Object
      * <p>
      * Calls {@link #toObject(ParsedElement, JavaType)}
@@ -675,7 +723,7 @@ public class ObjectProcessor {
      * @return A new Object of passed type with the values of element
      *
      * @throws io.github.kale_ko.bjsl.processor.exception.ProcessorException If there is an exception while processing
-     * @since 1.0.0h
+     * @since 1.0.0
      */
     @SuppressWarnings("unchecked")
     public <T> @Nullable T toObject(@NotNull ParsedElement element, @NotNull Class<T> clazz) {
@@ -901,7 +949,7 @@ public class ObjectProcessor {
 
                             for (Map.Entry<String, ParsedElement> entry : element.asObject().getEntries()) {
                                 Object subObject = toObject(entry.getValue(), type.getContentType());
-                                if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] objects && objects.length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> collection && collection.isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> map && map.isEmpty()))) {
+                                if (!shouldIgnoreObject(subObject)) {
                                     object.put(toObject(ParsedPrimitive.fromString(entry.getKey()), type.getKeyType()), subObject);
                                 }
                             }
@@ -987,7 +1035,7 @@ public class ObjectProcessor {
                                             }
                                         }
 
-                                        if (!((ignoreNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] objects && objects.length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> collection && collection.isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> map && map.isEmpty()))) {
+                                        if (!shouldIgnoreObject(subObject)) {
                                             field.set(object, subObject);
                                         }
                                     }
@@ -1010,7 +1058,7 @@ public class ObjectProcessor {
 
                             for (ParsedElement subElement : element.asArray().getValues()) {
                                 Object subObject = toObject(subElement, type.getContentType());
-                                if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] objects && objects.length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> collection && collection.isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> map && map.isEmpty()))) {
+                                if (!shouldIgnoreObject(subObject)) {
                                     object.add(subObject);
                                 }
                             }
@@ -1121,7 +1169,7 @@ public class ObjectProcessor {
 
                                     for (ParsedElement subElement : element.asArray().getValues()) {
                                         Object subObject = toObject(subElement, type.getContentType().getRawClass());
-                                        if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] objects && objects.length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> collection && collection.isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> map && map.isEmpty()))) {
+                                        if (!shouldIgnoreObject(subObject)) {
                                             size++;
                                         }
                                     }
@@ -1132,7 +1180,7 @@ public class ObjectProcessor {
                                 int i = 0;
                                 for (ParsedElement subElement : element.asArray().getValues()) {
                                     Object subObject = toObject(subElement, type.getContentType().getRawClass());
-                                    if (!((ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] objects && objects.length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> collection && collection.isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> map && map.isEmpty()))) {
+                                    if (!shouldIgnoreObject(subObject)) {
                                         array[i] = subObject;
 
                                         i++;
@@ -1199,7 +1247,7 @@ public class ObjectProcessor {
 
                     for (byte item : bytes) {
                         ParsedElement subElement = toElement(item);
-                        if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
+                        if (!shouldIgnoreElement(subElement)) {
                             arrayElement.add(subElement);
                         }
                     }
@@ -1211,7 +1259,7 @@ public class ObjectProcessor {
 
                     for (char item : chars) {
                         ParsedElement subElement = toElement(item);
-                        if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
+                        if (!shouldIgnoreElement(subElement)) {
                             arrayElement.add(subElement);
                         }
                     }
@@ -1223,7 +1271,7 @@ public class ObjectProcessor {
 
                     for (short item : shorts) {
                         ParsedElement subElement = toElement(item);
-                        if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
+                        if (!shouldIgnoreElement(subElement)) {
                             arrayElement.add(subElement);
                         }
                     }
@@ -1235,7 +1283,7 @@ public class ObjectProcessor {
 
                     for (int item : integers) {
                         ParsedElement subElement = toElement(item);
-                        if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
+                        if (!shouldIgnoreElement(subElement)) {
                             arrayElement.add(subElement);
                         }
                     }
@@ -1247,7 +1295,7 @@ public class ObjectProcessor {
 
                     for (long item : longs) {
                         ParsedElement subElement = toElement(item);
-                        if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
+                        if (!shouldIgnoreElement(subElement)) {
                             arrayElement.add(subElement);
                         }
                     }
@@ -1259,7 +1307,7 @@ public class ObjectProcessor {
 
                     for (float item : floats) {
                         ParsedElement subElement = toElement(item);
-                        if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
+                        if (!shouldIgnoreElement(subElement)) {
                             arrayElement.add(subElement);
                         }
                     }
@@ -1271,7 +1319,7 @@ public class ObjectProcessor {
 
                     for (double item : doubles) {
                         ParsedElement subElement = toElement(item);
-                        if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
+                        if (!shouldIgnoreElement(subElement)) {
                             arrayElement.add(subElement);
                         }
                     }
@@ -1283,7 +1331,7 @@ public class ObjectProcessor {
 
                     for (boolean item : booleans) {
                         ParsedElement subElement = toElement(item);
-                        if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
+                        if (!shouldIgnoreElement(subElement)) {
                             arrayElement.add(subElement);
                         }
                     }
@@ -1291,35 +1339,17 @@ public class ObjectProcessor {
                     return arrayElement;
                 }
                 case Object[] objects -> {
-                    ParsedArray arrayElement = ParsedArray.create();
-
-                    for (Object item : objects) {
-                        ParsedElement subElement = toElement(item);
-                        if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
-                            arrayElement.add(subElement);
-                        }
-                    }
-
-                    return arrayElement;
+                    return createArrayFromIterable(Arrays.asList(objects));
                 }
                 case Collection<?> objects -> {
-                    ParsedArray arrayElement = ParsedArray.create();
-
-                    for (Object item : List.copyOf(objects)) {
-                        ParsedElement subElement = toElement(item);
-                        if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
-                            arrayElement.add(subElement);
-                        }
-                    }
-
-                    return arrayElement;
+                    return createArrayFromIterable(List.copyOf(objects));
                 }
                 case Map<?, ?> map -> {
                     ParsedObject objectElement = ParsedObject.create();
 
                     for (Map.Entry<?, ?> entry : Map.copyOf(map).entrySet()) {
                         ParsedElement subElement = toElement(entry.getValue());
-                        if (!((ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && (subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)))) {
+                        if (!shouldIgnoreElement(subElement)) {
                             objectElement.set(toString(entry.getKey()), subElement);
                         }
                     }
@@ -1353,11 +1383,7 @@ public class ObjectProcessor {
                             String subKey = field.getName();
                             ParsedElement subElement = toElement(field.get(object));
 
-                            if (ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) {
-                                shouldSerialize = false;
-                            }
-
-                            if (ignoreEmptyObjects && ((subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0))) {
+                            if (shouldIgnoreElement(subElement)) {
                                 shouldSerialize = false;
                             }
 
