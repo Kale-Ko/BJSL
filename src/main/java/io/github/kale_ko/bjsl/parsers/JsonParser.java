@@ -223,7 +223,7 @@ public class JsonParser extends JacksonParser<JsonFactory, JsonMapper> {
                 } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
                     if (BJSL.getLogger() != null) {
                         StringWriter writer = new StringWriter();
-                        new RuntimeException("Error while parsing:", e).printStackTrace(new PrintWriter(writer));
+                        new RuntimeException("Error while configuring pretty printer:", e).printStackTrace(new PrintWriter(writer));
                         BJSL.getLogger().severe(writer.toString());
                     }
                 }
