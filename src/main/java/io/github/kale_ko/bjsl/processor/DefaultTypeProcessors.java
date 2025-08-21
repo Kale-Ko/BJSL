@@ -189,7 +189,7 @@ public final class DefaultTypeProcessors {
         }
 
         /**
-         * Get weather or not to fill in InetAddresses (e.g. 127.0.0.1 &#x2D;&#x3E; 127.000.000.001, 2001:db8::1 &#x2D;&#x3E; 2001:0db8:0000:0000:0000:0000:0000:0001)
+         * Get whether or not to fill in InetAddresses (e.g. 127.0.0.1 &#x2D;&#x3E; 127.000.000.001, 2001:db8::1 &#x2D;&#x3E; 2001:0db8:0000:0000:0000:0000:0000:0001)
          *
          * @return Whether or not to fill in InetAddresses (e.g. 127.0.0.1 &#x2D;&#x3E; 127.000.000.001, 2001:db8::1 &#x2D;&#x3E; 2001:0db8:0000:0000:0000:0000:0000:0001)
          *
