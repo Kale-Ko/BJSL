@@ -79,11 +79,11 @@ public class JsonParser extends JacksonParser<JsonFactory, JsonMapper> {
         }
 
         /**
-         * Get weather pretty printing should be enabled or not
+         * Get whether pretty printing should be enabled or not
          * <p>
          * Default is false
          *
-         * @return Weather pretty printing should be enabled or not
+         * @return Whether pretty printing should be enabled or not
          *
          * @since 1.0.0
          */
@@ -92,11 +92,11 @@ public class JsonParser extends JacksonParser<JsonFactory, JsonMapper> {
         }
 
         /**
-         * Set weather pretty printing should be enabled or not
+         * Set whether pretty printing should be enabled or not
          * <p>
          * Default is false
          *
-         * @param value Weather pretty printing should be enabled or not
+         * @param value Whether pretty printing should be enabled or not
          *
          * @return Self for chaining
          *
@@ -139,11 +139,11 @@ public class JsonParser extends JacksonParser<JsonFactory, JsonMapper> {
         }
 
         /**
-         * Get weather to use crlf or lf line endings
+         * Get whether to use crlf or lf line endings
          * <p>
          * Default is lf
          *
-         * @return Weather to use crlf or lf line endings
+         * @return Whether to use crlf or lf line endings
          *
          * @since 1.0.0
          */
@@ -152,11 +152,11 @@ public class JsonParser extends JacksonParser<JsonFactory, JsonMapper> {
         }
 
         /**
-         * Set weather to use crlf or lf line endings
+         * Set whether to use crlf or lf line endings
          * <p>
          * Default is lf
          *
-         * @param value Weather to use crlf or lf line endings
+         * @param value Whether to use crlf or lf line endings
          *
          * @return Self for chaining
          *
