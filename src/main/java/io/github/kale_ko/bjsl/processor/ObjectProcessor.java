@@ -41,28 +41,28 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ObjectProcessor {
     /**
-     * Weather null values should be ignored when serializing maps and objects
+     * Whether null values should be ignored when serializing maps and objects
      *
      * @since 1.0.0
      */
     protected final boolean ignoreNulls;
 
     /**
-     * Weather null values should be ignored when serializing lists and arrays
+     * Whether null values should be ignored when serializing lists and arrays
      *
      * @since 4.0.0
      */
     protected final boolean ignoreArrayNulls;
 
     /**
-     * Weather empty objects (Objects with a size of 0) should be ignored when serializing maps and objects
+     * Whether empty objects (Objects with a size of 0) should be ignored when serializing maps and objects
      *
      * @since 1.0.0
      */
     protected final boolean ignoreEmptyObjects;
 
     /**
-     * Weather default values should be ignored when serializing maps and objects
+     * Whether default values should be ignored when serializing maps and objects
      * <p>
      * These are gotten from the value in a new instance of the object
      *
@@ -71,7 +71,7 @@ public class ObjectProcessor {
     protected final boolean ignoreDefaults;
 
     /**
-     * Weather checks for enum names should be case-sensitive
+     * Whether checks for enum names should be case-sensitive
      *
      * @since 1.0.0
      */
@@ -87,11 +87,11 @@ public class ObjectProcessor {
     /**
      * Create a new ObjectProcessor using certain factories
      *
-     * @param ignoreNulls        Weather null values should be ignored when serializing maps and objects
-     * @param ignoreArrayNulls   Weather null values should be ignored when serializing lists and arrays
-     * @param ignoreEmptyObjects Weather empty objects (Objects with a size of 0) should be ignored when serializing maps and objects
-     * @param ignoreDefaults     Weather default values should be ignored when serializing maps and objects
-     * @param caseSensitiveEnums Weather checks for enum names should be case-sensitive
+     * @param ignoreNulls        Whether null values should be ignored when serializing maps and objects
+     * @param ignoreArrayNulls   Whether null values should be ignored when serializing lists and arrays
+     * @param ignoreEmptyObjects Whether empty objects (Objects with a size of 0) should be ignored when serializing maps and objects
+     * @param ignoreDefaults     Whether default values should be ignored when serializing maps and objects
+     * @param caseSensitiveEnums Whether checks for enum names should be case-sensitive
      * @param typeProcessors     A map of object types to type processors
      *
      * @since 1.0.0
@@ -115,7 +115,7 @@ public class ObjectProcessor {
      */
     public static class Builder {
         /**
-         * Weather or not null values should be ignored when serializing maps and objects
+         * Whether or not null values should be ignored when serializing maps and objects
          * <p>
          * Default is false
          *
@@ -124,7 +124,7 @@ public class ObjectProcessor {
         protected boolean ignoreNulls = false;
 
         /**
-         * Weather null values should be ignored when serializing lists and arrays
+         * Whether null values should be ignored when serializing lists and arrays
          * <p>
          * Default is true
          *
@@ -133,7 +133,7 @@ public class ObjectProcessor {
         protected boolean ignoreArrayNulls = false;
 
         /**
-         * Weather or not empty objects (Objects with a size of 0) should be ignored when serializing maps and objects
+         * Whether or not empty objects (Objects with a size of 0) should be ignored when serializing maps and objects
          * <p>
          * Default is false
          *
@@ -142,7 +142,7 @@ public class ObjectProcessor {
         protected boolean ignoreEmptyObjects = false;
 
         /**
-         * Weather or not default values should be ignored when serializing maps and objects
+         * Whether or not default values should be ignored when serializing maps and objects
          * <p>
          * These are gotten from the value in a new instance of the object
          * <p>
@@ -153,7 +153,7 @@ public class ObjectProcessor {
         protected boolean ignoreDefaults = false;
 
         /**
-         * Weather checks for enum names should be case-sensitive
+         * Whether checks for enum names should be case-sensitive
          * <p>
          * Default is false
          *
@@ -184,11 +184,11 @@ public class ObjectProcessor {
         }
 
         /**
-         * Get weather or not null values should be ignored when serializing maps and objects
+         * Get whether or not null values should be ignored when serializing maps and objects
          * <p>
          * Default is false
          *
-         * @return Weather or not null values should be ignored when serializing maps and objects
+         * @return Whether or not null values should be ignored when serializing maps and objects
          *
          * @since 1.0.0
          */
@@ -197,11 +197,11 @@ public class ObjectProcessor {
         }
 
         /**
-         * Set weather or not null values should be ignored when serializing maps and objects
+         * Set whether or not null values should be ignored when serializing maps and objects
          * <p>
          * Default is false
          *
-         * @param value Weather or not null values should be ignored when serializing maps and objects
+         * @param value Whether or not null values should be ignored when serializing maps and objects
          *
          * @return Self for chaining
          *
@@ -214,11 +214,11 @@ public class ObjectProcessor {
         }
 
         /**
-         * Get weather or not null values should be ignored when serializing lists and arrays
+         * Get whether or not null values should be ignored when serializing lists and arrays
          * <p>
          * Default is false
          *
-         * @return Weather or not null values should be ignored when serializing lists and arrays
+         * @return Whether or not null values should be ignored when serializing lists and arrays
          *
          * @since 4.0.0
          */
@@ -227,11 +227,11 @@ public class ObjectProcessor {
         }
 
         /**
-         * Set weather or not null values should be ignored when serializing lists and arrays
+         * Set whether or not null values should be ignored when serializing lists and arrays
          * <p>
          * Default is false
          *
-         * @param value Weather or not null values should be ignored when serializing lists and arrays
+         * @param value Whether or not null values should be ignored when serializing lists and arrays
          *
          * @return Self for chaining
          *
@@ -244,11 +244,11 @@ public class ObjectProcessor {
         }
 
         /**
-         * Get weather or not empty objects (Objects with a size of 0) should be ignored when serializing maps and objects
+         * Get whether or not empty objects (Objects with a size of 0) should be ignored when serializing maps and objects
          * <p>
          * Default is false
          *
-         * @return Weather or not empty objects (Objects with a size of 0) should be ignored when serializing maps and objects
+         * @return Whether or not empty objects (Objects with a size of 0) should be ignored when serializing maps and objects
          *
          * @since 1.0.0
          */
@@ -257,11 +257,11 @@ public class ObjectProcessor {
         }
 
         /**
-         * Set weather or not empty objects (Objects with a size of 0) should be ignored when serializing maps and objects
+         * Set whether or not empty objects (Objects with a size of 0) should be ignored when serializing maps and objects
          * <p>
          * Default is false
          *
-         * @param value Weather or not empty objects (Objects with a size of 0) should be ignored when serializing maps and objects
+         * @param value Whether or not empty objects (Objects with a size of 0) should be ignored when serializing maps and objects
          *
          * @return Self for chaining
          *
@@ -274,13 +274,13 @@ public class ObjectProcessor {
         }
 
         /**
-         * Get weather or not default values should be ignored when serializing maps and objects
+         * Get whether or not default values should be ignored when serializing maps and objects
          * <p>
          * These are gotten from the value in a new instance of the object
          * <p>
          * Default is false
          *
-         * @return Weather or not default values should be ignored when serializing maps and objects
+         * @return Whether or not default values should be ignored when serializing maps and objects
          *
          * @since 1.0.0
          */
@@ -289,13 +289,13 @@ public class ObjectProcessor {
         }
 
         /**
-         * Set weather or not default values should be ignored when serializing maps and objects
+         * Set whether or not default values should be ignored when serializing maps and objects
          * <p>
          * These are gotten from the value in a new instance of the object
          * <p>
          * Default is false
          *
-         * @param value Weather or not default values should be ignored when serializing maps and objects
+         * @param value Whether or not default values should be ignored when serializing maps and objects
          *
          * @return Self for chaining
          *
@@ -308,11 +308,11 @@ public class ObjectProcessor {
         }
 
         /**
-         * Get weather checks for enum names should be case-sensitive
+         * Get whether checks for enum names should be case-sensitive
          * <p>
          * Default is false
          *
-         * @return Weather checks for enum names should be case-sensitive
+         * @return Whether checks for enum names should be case-sensitive
          *
          * @since 1.0.0
          */
@@ -321,11 +321,11 @@ public class ObjectProcessor {
         }
 
         /**
-         * Set weather checks for enum names should be case-sensitive
+         * Set whether checks for enum names should be case-sensitive
          * <p>
          * Default is false
          *
-         * @param value Weather checks for enum names should be case-sensitive
+         * @param value Whether checks for enum names should be case-sensitive
          *
          * @return Self for chaining
          *

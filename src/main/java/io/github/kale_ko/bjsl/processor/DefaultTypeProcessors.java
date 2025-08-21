@@ -124,7 +124,7 @@ public final class DefaultTypeProcessors {
         protected final @NotNull InetAddressMode inetAddressMode;
 
         /**
-         * Weather or not to fill in InetAddresses (e.g. 127.0.0.1 &#x2D;&#x3E; 127.000.000.001, 2001:db8::1 &#x2D;&#x3E; 2001:0db8:0000:0000:0000:0000:0000:0001)
+         * Whether or not to fill in InetAddresses (e.g. 127.0.0.1 &#x2D;&#x3E; 127.000.000.001, 2001:db8::1 &#x2D;&#x3E; 2001:0db8:0000:0000:0000:0000:0000:0001)
          *
          * @since 2.0.0
          */
@@ -151,7 +151,7 @@ public final class DefaultTypeProcessors {
          *
          * @param uuidMode          A mode for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#UUID_P} type processor
          * @param inetAddressMode   A mode for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INET_ADDRESS_P} and {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INETSOCKET_ADDRESS_P} type processors
-         * @param fillAddresses     Weather or not to fill in InetAddresses (e.g. 127.0.0.1 &#x2D;&#x3E; 127.000.000.001, 2001:db8::1 &#x2D;&#x3E; 2001:0db8:0000:0000:0000:0000:0000:0001)
+         * @param fillAddresses     Whether or not to fill in InetAddresses (e.g. 127.0.0.1 &#x2D;&#x3E; 127.000.000.001, 2001:db8::1 &#x2D;&#x3E; 2001:0db8:0000:0000:0000:0000:0000:0001)
          * @param dateMode          A mode for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#CALENDAR_P}, {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#DATE_P}, and {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INSTANT_P} type processors
          * @param dateTimeFormatter The formatter for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#CALENDAR_P}, {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#DATE_P}, and {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INSTANT_P} type processors
          *
@@ -191,7 +191,7 @@ public final class DefaultTypeProcessors {
         /**
          * Get weather or not to fill in InetAddresses (e.g. 127.0.0.1 &#x2D;&#x3E; 127.000.000.001, 2001:db8::1 &#x2D;&#x3E; 2001:0db8:0000:0000:0000:0000:0000:0001)
          *
-         * @return Weather or not to fill in InetAddresses (e.g. 127.0.0.1 &#x2D;&#x3E; 127.000.000.001, 2001:db8::1 &#x2D;&#x3E; 2001:0db8:0000:0000:0000:0000:0000:0001)
+         * @return Whether or not to fill in InetAddresses (e.g. 127.0.0.1 &#x2D;&#x3E; 127.000.000.001, 2001:db8::1 &#x2D;&#x3E; 2001:0db8:0000:0000:0000:0000:0000:0001)
          *
          * @since 2.0.0
          */
