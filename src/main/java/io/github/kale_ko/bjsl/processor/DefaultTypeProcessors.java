@@ -626,7 +626,7 @@ public final class DefaultTypeProcessors {
                 // }
 
                 if (!hasHostname) {
-                    byte[] address = ((InetAddress) object).getAddress();
+                    byte[] address = inetAddress.getAddress();
 
                     switch (options.getInetAddressMode()) {
                         case STRING -> {
@@ -722,7 +722,7 @@ public final class DefaultTypeProcessors {
                 } else {
                     switch (options.getInetAddressMode()) {
                         case STRING -> {
-                            return ParsedPrimitive.fromString(((InetAddress) object).getHostName());
+                            return ParsedPrimitive.fromString(inetAddress.getHostName());
                         }
                         case NUMBER -> {
                             throw new InvalidParameterException("Cannot convert hostname to Number");
@@ -888,8 +888,8 @@ public final class DefaultTypeProcessors {
                 // }
 
                 if (!hasHostname) {
-                    byte[] address = ((InetSocketAddress) object).getAddress().getAddress();
-                    int port = ((InetSocketAddress) object).getPort();
+                    byte[] address = inetSocketAddress.getAddress().getAddress();
+                    int port = inetSocketAddress.getPort();
 
                     switch (options.getInetAddressMode()) {
                         case STRING -> {
@@ -991,7 +991,7 @@ public final class DefaultTypeProcessors {
                 } else {
                     switch (options.getInetAddressMode()) {
                         case STRING -> {
-                            return ParsedPrimitive.fromString(((InetSocketAddress) object).getAddress().getHostName() + ":" + ((InetSocketAddress) object).getPort());
+                            return ParsedPrimitive.fromString(inetSocketAddress.getAddress().getHostName() + ":" + inetSocketAddress.getPort());
                         }
                         case NUMBER -> {
                             throw new InvalidParameterException("Cannot convert hostname to Number");
