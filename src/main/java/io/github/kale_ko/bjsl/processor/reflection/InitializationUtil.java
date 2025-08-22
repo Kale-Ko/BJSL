@@ -22,12 +22,6 @@ public final class InitializationUtil {
 
     /**
      * Allow initializing non-static member parents
-     * <p>
-     * This is an unsafe operation that enables initialization of non-static inner classes.
-     * Normally, this is disabled to prevent accidentally initializing classes that require
-     * a parent instance. Only enable this if you are certain your code requires it.
-     * <p>
-     * AINSMP stands for "Allow Initializing Non-Static Member Parents"
      *
      * @since 2.0.0
      */
@@ -37,25 +31,19 @@ public final class InitializationUtil {
 
     /**
      * Initialize a class safely using a 0-args constructor
-     * <p>
-     * This method attempts to create a new instance of the specified class using
-     * a no-argument constructor. For non-static inner classes, it will attempt
-     * to initialize the parent class as well (if allowed via {@link #unsafeAINSMP()}).
      *
      * @param clazz The class to initialize
      * @param <T>   The type to initialize
      *
      * @return The initialized instance of clazz
      *
-     * @throws InitializationException if the class cannot be initialized
+     * @throws InitializationException If the class cannot be initialized
      */
     public static <T> @NotNull T initialize(@NotNull Class<T> clazz) {
         try {
             if (clazz.isMemberClass() && !Modifier.isStatic(clazz.getModifiers())) {
                 if (!allowInitializingNonStaticMemberParents) {
-                    throw new InitializationException(new RuntimeException("Refusing to initialize a non-static inner class. " +
-                            "This usually indicates you forgot to add the 'static' keyword to your class declaration. " +
-                            "If you intentionally need to initialize non-static inner classes, call InitializationUtil.unsafeAINSMP() first."));
+                    throw new InitializationException(new RuntimeException("Refusing to initialize a non-static member's parent, it is likely you forgot to add the 'static' keyword to your class. If this is not the case call `InitializationUtil#unsafeAINSMP()`"));
                 }
 
                 // Non-static member constructor
