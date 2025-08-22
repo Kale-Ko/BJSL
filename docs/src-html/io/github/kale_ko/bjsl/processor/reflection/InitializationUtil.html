@@ -49,62 +49,64 @@
 <span class="source-line-no">036</span><span id="line-36">     * @param &lt;T&gt;   The type to initialize</span>
 <span class="source-line-no">037</span><span id="line-37">     *</span>
 <span class="source-line-no">038</span><span id="line-38">     * @return The initialized instance of clazz</span>
-<span class="source-line-no">039</span><span id="line-39">     */</span>
-<span class="source-line-no">040</span><span id="line-40">    public static &lt;T&gt; @NotNull T initialize(@NotNull Class&lt;T&gt; clazz) {</span>
-<span class="source-line-no">041</span><span id="line-41">        try {</span>
-<span class="source-line-no">042</span><span id="line-42">            if (clazz.isMemberClass() &amp;&amp; !Modifier.isStatic(clazz.getModifiers())) {</span>
-<span class="source-line-no">043</span><span id="line-43">                if (!allowInitializingNonStaticMemberParents) {</span>
-<span class="source-line-no">044</span><span id="line-44">                    throw new InitializationException(new RuntimeException("Refusing to initialize a non-static member's parent, it is likely you forgot to add the 'static' keyword to your class. If this is not the case call `InitializationUtil#unsafeAINSMP()`"));</span>
-<span class="source-line-no">045</span><span id="line-45">                }</span>
-<span class="source-line-no">046</span><span id="line-46"></span>
-<span class="source-line-no">047</span><span id="line-47">                // Non-static member constructor</span>
-<span class="source-line-no">048</span><span id="line-48">                for (Constructor&lt;?&gt; constructor : clazz.getDeclaredConstructors()) {</span>
-<span class="source-line-no">049</span><span id="line-49">                    if ((constructor.canAccess(null) || constructor.trySetAccessible()) &amp;&amp; constructor.getParameterTypes().length == 1) {</span>
-<span class="source-line-no">050</span><span id="line-50">                        Object object = initialize(constructor.getParameterTypes()[0]);</span>
-<span class="source-line-no">051</span><span id="line-51">                        return (T) constructor.newInstance(object);</span>
-<span class="source-line-no">052</span><span id="line-52">                    }</span>
-<span class="source-line-no">053</span><span id="line-53">                }</span>
-<span class="source-line-no">054</span><span id="line-54">            } else {</span>
-<span class="source-line-no">055</span><span id="line-55">                // Normal constructor</span>
-<span class="source-line-no">056</span><span id="line-56">                for (Constructor&lt;?&gt; constructor : clazz.getDeclaredConstructors()) {</span>
-<span class="source-line-no">057</span><span id="line-57">                    if ((constructor.canAccess(null) || constructor.trySetAccessible()) &amp;&amp; constructor.getParameterTypes().length == 0) {</span>
-<span class="source-line-no">058</span><span id="line-58">                        return (T) constructor.newInstance();</span>
-<span class="source-line-no">059</span><span id="line-59">                    }</span>
-<span class="source-line-no">060</span><span id="line-60">                }</span>
-<span class="source-line-no">061</span><span id="line-61">            }</span>
-<span class="source-line-no">062</span><span id="line-62">        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {</span>
-<span class="source-line-no">063</span><span id="line-63">            throw new InitializationException(e);</span>
-<span class="source-line-no">064</span><span id="line-64">        }</span>
-<span class="source-line-no">065</span><span id="line-65"></span>
-<span class="source-line-no">066</span><span id="line-66">        throw new InitializationException(clazz);</span>
-<span class="source-line-no">067</span><span id="line-67">    }</span>
-<span class="source-line-no">068</span><span id="line-68"></span>
-<span class="source-line-no">069</span><span id="line-69">    /**</span>
-<span class="source-line-no">070</span><span id="line-70">     * Initialize an array safely using {@link Array#newInstance(Class, int)}</span>
-<span class="source-line-no">071</span><span id="line-71">     *</span>
-<span class="source-line-no">072</span><span id="line-72">     * @param clazz  The class to initialize</span>
-<span class="source-line-no">073</span><span id="line-73">     * @param length The length of the new array</span>
-<span class="source-line-no">074</span><span id="line-74">     * @param &lt;T&gt;    The type to initialize</span>
-<span class="source-line-no">075</span><span id="line-75">     *</span>
-<span class="source-line-no">076</span><span id="line-76">     * @return The initialized array instance of clazz with the passed length</span>
-<span class="source-line-no">077</span><span id="line-77">     */</span>
-<span class="source-line-no">078</span><span id="line-78">    public static &lt;T&gt; @NotNull T[] initializeArray(@NotNull Class&lt;T&gt; clazz, int length) {</span>
-<span class="source-line-no">079</span><span id="line-79">        return (T[]) Array.newInstance(clazz, length);</span>
-<span class="source-line-no">080</span><span id="line-80">    }</span>
-<span class="source-line-no">081</span><span id="line-81"></span>
-<span class="source-line-no">082</span><span id="line-82">    /**</span>
-<span class="source-line-no">083</span><span id="line-83">     * Initialize a primitive array safely using {@link Array#newInstance(Class, int)}</span>
-<span class="source-line-no">084</span><span id="line-84">     *</span>
-<span class="source-line-no">085</span><span id="line-85">     * @param clazz  The class to initialize</span>
-<span class="source-line-no">086</span><span id="line-86">     * @param length The length of the new array</span>
-<span class="source-line-no">087</span><span id="line-87">     * @param &lt;T&gt;    The type to initialize</span>
-<span class="source-line-no">088</span><span id="line-88">     *</span>
-<span class="source-line-no">089</span><span id="line-89">     * @return The initialized array instance of clazz with the passed length</span>
-<span class="source-line-no">090</span><span id="line-90">     */</span>
-<span class="source-line-no">091</span><span id="line-91">    public static &lt;T&gt; @NotNull Object initializePrimitiveArray(@NotNull Class&lt;T&gt; clazz, int length) {</span>
-<span class="source-line-no">092</span><span id="line-92">        return Array.newInstance(clazz, length);</span>
-<span class="source-line-no">093</span><span id="line-93">    }</span>
-<span class="source-line-no">094</span><span id="line-94">}</span>
+<span class="source-line-no">039</span><span id="line-39">     *</span>
+<span class="source-line-no">040</span><span id="line-40">     * @throws InitializationException If the class cannot be initialized</span>
+<span class="source-line-no">041</span><span id="line-41">     */</span>
+<span class="source-line-no">042</span><span id="line-42">    public static &lt;T&gt; @NotNull T initialize(@NotNull Class&lt;T&gt; clazz) {</span>
+<span class="source-line-no">043</span><span id="line-43">        try {</span>
+<span class="source-line-no">044</span><span id="line-44">            if (clazz.isMemberClass() &amp;&amp; !Modifier.isStatic(clazz.getModifiers())) {</span>
+<span class="source-line-no">045</span><span id="line-45">                if (!allowInitializingNonStaticMemberParents) {</span>
+<span class="source-line-no">046</span><span id="line-46">                    throw new InitializationException(new RuntimeException("Refusing to initialize a non-static member's parent, it is likely you forgot to add the 'static' keyword to your class. If this is not the case call `InitializationUtil#unsafeAINSMP()`"));</span>
+<span class="source-line-no">047</span><span id="line-47">                }</span>
+<span class="source-line-no">048</span><span id="line-48"></span>
+<span class="source-line-no">049</span><span id="line-49">                // Non-static member constructor</span>
+<span class="source-line-no">050</span><span id="line-50">                for (Constructor&lt;?&gt; constructor : clazz.getDeclaredConstructors()) {</span>
+<span class="source-line-no">051</span><span id="line-51">                    if ((constructor.canAccess(null) || constructor.trySetAccessible()) &amp;&amp; constructor.getParameterTypes().length == 1) {</span>
+<span class="source-line-no">052</span><span id="line-52">                        Object object = initialize(constructor.getParameterTypes()[0]);</span>
+<span class="source-line-no">053</span><span id="line-53">                        return (T) constructor.newInstance(object);</span>
+<span class="source-line-no">054</span><span id="line-54">                    }</span>
+<span class="source-line-no">055</span><span id="line-55">                }</span>
+<span class="source-line-no">056</span><span id="line-56">            } else {</span>
+<span class="source-line-no">057</span><span id="line-57">                // Normal constructor</span>
+<span class="source-line-no">058</span><span id="line-58">                for (Constructor&lt;?&gt; constructor : clazz.getDeclaredConstructors()) {</span>
+<span class="source-line-no">059</span><span id="line-59">                    if ((constructor.canAccess(null) || constructor.trySetAccessible()) &amp;&amp; constructor.getParameterTypes().length == 0) {</span>
+<span class="source-line-no">060</span><span id="line-60">                        return (T) constructor.newInstance();</span>
+<span class="source-line-no">061</span><span id="line-61">                    }</span>
+<span class="source-line-no">062</span><span id="line-62">                }</span>
+<span class="source-line-no">063</span><span id="line-63">            }</span>
+<span class="source-line-no">064</span><span id="line-64">        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {</span>
+<span class="source-line-no">065</span><span id="line-65">            throw new InitializationException(e);</span>
+<span class="source-line-no">066</span><span id="line-66">        }</span>
+<span class="source-line-no">067</span><span id="line-67"></span>
+<span class="source-line-no">068</span><span id="line-68">        throw new InitializationException(clazz);</span>
+<span class="source-line-no">069</span><span id="line-69">    }</span>
+<span class="source-line-no">070</span><span id="line-70"></span>
+<span class="source-line-no">071</span><span id="line-71">    /**</span>
+<span class="source-line-no">072</span><span id="line-72">     * Initialize an array safely using {@link Array#newInstance(Class, int)}</span>
+<span class="source-line-no">073</span><span id="line-73">     *</span>
+<span class="source-line-no">074</span><span id="line-74">     * @param clazz  The class to initialize</span>
+<span class="source-line-no">075</span><span id="line-75">     * @param length The length of the new array</span>
+<span class="source-line-no">076</span><span id="line-76">     * @param &lt;T&gt;    The type to initialize</span>
+<span class="source-line-no">077</span><span id="line-77">     *</span>
+<span class="source-line-no">078</span><span id="line-78">     * @return The initialized array instance of clazz with the passed length</span>
+<span class="source-line-no">079</span><span id="line-79">     */</span>
+<span class="source-line-no">080</span><span id="line-80">    public static &lt;T&gt; @NotNull T[] initializeArray(@NotNull Class&lt;T&gt; clazz, int length) {</span>
+<span class="source-line-no">081</span><span id="line-81">        return (T[]) Array.newInstance(clazz, length);</span>
+<span class="source-line-no">082</span><span id="line-82">    }</span>
+<span class="source-line-no">083</span><span id="line-83"></span>
+<span class="source-line-no">084</span><span id="line-84">    /**</span>
+<span class="source-line-no">085</span><span id="line-85">     * Initialize a primitive array safely using {@link Array#newInstance(Class, int)}</span>
+<span class="source-line-no">086</span><span id="line-86">     *</span>
+<span class="source-line-no">087</span><span id="line-87">     * @param clazz  The class to initialize</span>
+<span class="source-line-no">088</span><span id="line-88">     * @param length The length of the new array</span>
+<span class="source-line-no">089</span><span id="line-89">     * @param &lt;T&gt;    The type to initialize</span>
+<span class="source-line-no">090</span><span id="line-90">     *</span>
+<span class="source-line-no">091</span><span id="line-91">     * @return The initialized array instance of clazz with the passed length</span>
+<span class="source-line-no">092</span><span id="line-92">     */</span>
+<span class="source-line-no">093</span><span id="line-93">    public static &lt;T&gt; @NotNull Object initializePrimitiveArray(@NotNull Class&lt;T&gt; clazz, int length) {</span>
+<span class="source-line-no">094</span><span id="line-94">        return Array.newInstance(clazz, length);</span>
+<span class="source-line-no">095</span><span id="line-95">    }</span>
+<span class="source-line-no">096</span><span id="line-96">}</span>
 
 
 

@@ -111,7 +111,7 @@
 <span class="source-line-no">098</span><span id="line-98">                        ObjectNode objectNode = (ObjectNode) node;</span>
 <span class="source-line-no">099</span><span id="line-99">                        ParsedObject objectElement = ParsedObject.create();</span>
 <span class="source-line-no">100</span><span id="line-100"></span>
-<span class="source-line-no">101</span><span id="line-101">                        objectNode.fields().forEachRemaining(subEntry -&gt; {</span>
+<span class="source-line-no">101</span><span id="line-101">                        objectNode.propertyStream().forEach(subEntry -&gt; {</span>
 <span class="source-line-no">102</span><span id="line-102">                            toElements(objectElement, subEntry.getKey(), subEntry.getValue());</span>
 <span class="source-line-no">103</span><span id="line-103">                        });</span>
 <span class="source-line-no">104</span><span id="line-104"></span>
@@ -121,7 +121,7 @@
 <span class="source-line-no">108</span><span id="line-108">                        ArrayNode arrayNode = (ArrayNode) node;</span>
 <span class="source-line-no">109</span><span id="line-109">                        ParsedArray arrayElement = ParsedArray.create();</span>
 <span class="source-line-no">110</span><span id="line-110"></span>
-<span class="source-line-no">111</span><span id="line-111">                        arrayNode.elements().forEachRemaining(subNode -&gt; {</span>
+<span class="source-line-no">111</span><span id="line-111">                        arrayNode.valueStream().forEach(subNode -&gt; {</span>
 <span class="source-line-no">112</span><span id="line-112">                            toElements(arrayElement, "root", subNode);</span>
 <span class="source-line-no">113</span><span id="line-113">                        });</span>
 <span class="source-line-no">114</span><span id="line-114"></span>
@@ -327,7 +327,7 @@
 <span class="source-line-no">314</span><span id="line-314">                    }</span>
 <span class="source-line-no">315</span><span id="line-315">                }</span>
 <span class="source-line-no">316</span><span id="line-316"></span>
-<span class="source-line-no">317</span><span id="line-317">                objectNode.fields().forEachRemaining(subEntry -&gt; {</span>
+<span class="source-line-no">317</span><span id="line-317">                objectNode.propertyStream().forEach(subEntry -&gt; {</span>
 <span class="source-line-no">318</span><span id="line-318">                    toElements(subElement, subEntry.getKey(), subEntry.getValue());</span>
 <span class="source-line-no">319</span><span id="line-319">                });</span>
 <span class="source-line-no">320</span><span id="line-320">            }</span>
@@ -346,7 +346,7 @@
 <span class="source-line-no">333</span><span id="line-333">                    }</span>
 <span class="source-line-no">334</span><span id="line-334">                }</span>
 <span class="source-line-no">335</span><span id="line-335"></span>
-<span class="source-line-no">336</span><span id="line-336">                arrayNode.elements().forEachRemaining(subNode -&gt; {</span>
+<span class="source-line-no">336</span><span id="line-336">                arrayNode.valueStream().forEach(subNode -&gt; {</span>
 <span class="source-line-no">337</span><span id="line-337">                    toElements(subElement, key, subNode);</span>
 <span class="source-line-no">338</span><span id="line-338">                });</span>
 <span class="source-line-no">339</span><span id="line-339">            }</span>

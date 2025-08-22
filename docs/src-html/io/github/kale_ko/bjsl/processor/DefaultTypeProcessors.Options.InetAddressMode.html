@@ -137,7 +137,7 @@
 <span class="source-line-no">124</span><span id="line-124">        protected final @NotNull InetAddressMode inetAddressMode;</span>
 <span class="source-line-no">125</span><span id="line-125"></span>
 <span class="source-line-no">126</span><span id="line-126">        /**</span>
-<span class="source-line-no">127</span><span id="line-127">         * Weather or not to fill in InetAddresses (e.g. 127.0.0.1 &amp;#x2D;&amp;#x3E; 127.000.000.001, 2001:db8::1 &amp;#x2D;&amp;#x3E; 2001:0db8:0000:0000:0000:0000:0000:0001)</span>
+<span class="source-line-no">127</span><span id="line-127">         * Whether or not to fill in InetAddresses (e.g. 127.0.0.1 &amp;#x2D;&amp;#x3E; 127.000.000.001, 2001:db8::1 &amp;#x2D;&amp;#x3E; 2001:0db8:0000:0000:0000:0000:0000:0001)</span>
 <span class="source-line-no">128</span><span id="line-128">         *</span>
 <span class="source-line-no">129</span><span id="line-129">         * @since 2.0.0</span>
 <span class="source-line-no">130</span><span id="line-130">         */</span>
@@ -164,7 +164,7 @@
 <span class="source-line-no">151</span><span id="line-151">         *</span>
 <span class="source-line-no">152</span><span id="line-152">         * @param uuidMode          A mode for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#UUID_P} type processor</span>
 <span class="source-line-no">153</span><span id="line-153">         * @param inetAddressMode   A mode for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INET_ADDRESS_P} and {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INETSOCKET_ADDRESS_P} type processors</span>
-<span class="source-line-no">154</span><span id="line-154">         * @param fillAddresses     Weather or not to fill in InetAddresses (e.g. 127.0.0.1 &amp;#x2D;&amp;#x3E; 127.000.000.001, 2001:db8::1 &amp;#x2D;&amp;#x3E; 2001:0db8:0000:0000:0000:0000:0000:0001)</span>
+<span class="source-line-no">154</span><span id="line-154">         * @param fillAddresses     Whether or not to fill in InetAddresses (e.g. 127.0.0.1 &amp;#x2D;&amp;#x3E; 127.000.000.001, 2001:db8::1 &amp;#x2D;&amp;#x3E; 2001:0db8:0000:0000:0000:0000:0000:0001)</span>
 <span class="source-line-no">155</span><span id="line-155">         * @param dateMode          A mode for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#CALENDAR_P}, {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#DATE_P}, and {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INSTANT_P} type processors</span>
 <span class="source-line-no">156</span><span id="line-156">         * @param dateTimeFormatter The formatter for the {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#CALENDAR_P}, {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#DATE_P}, and {@link io.github.kale_ko.bjsl.processor.DefaultTypeProcessors#INSTANT_P} type processors</span>
 <span class="source-line-no">157</span><span id="line-157">         *</span>
@@ -202,9 +202,9 @@
 <span class="source-line-no">189</span><span id="line-189">        }</span>
 <span class="source-line-no">190</span><span id="line-190"></span>
 <span class="source-line-no">191</span><span id="line-191">        /**</span>
-<span class="source-line-no">192</span><span id="line-192">         * Get weather or not to fill in InetAddresses (e.g. 127.0.0.1 &amp;#x2D;&amp;#x3E; 127.000.000.001, 2001:db8::1 &amp;#x2D;&amp;#x3E; 2001:0db8:0000:0000:0000:0000:0000:0001)</span>
+<span class="source-line-no">192</span><span id="line-192">         * Get whether or not to fill in InetAddresses (e.g. 127.0.0.1 &amp;#x2D;&amp;#x3E; 127.000.000.001, 2001:db8::1 &amp;#x2D;&amp;#x3E; 2001:0db8:0000:0000:0000:0000:0000:0001)</span>
 <span class="source-line-no">193</span><span id="line-193">         *</span>
-<span class="source-line-no">194</span><span id="line-194">         * @return Weather or not to fill in InetAddresses (e.g. 127.0.0.1 &amp;#x2D;&amp;#x3E; 127.000.000.001, 2001:db8::1 &amp;#x2D;&amp;#x3E; 2001:0db8:0000:0000:0000:0000:0000:0001)</span>
+<span class="source-line-no">194</span><span id="line-194">         * @return Whether or not to fill in InetAddresses (e.g. 127.0.0.1 &amp;#x2D;&amp;#x3E; 127.000.000.001, 2001:db8::1 &amp;#x2D;&amp;#x3E; 2001:0db8:0000:0000:0000:0000:0000:0001)</span>
 <span class="source-line-no">195</span><span id="line-195">         *</span>
 <span class="source-line-no">196</span><span id="line-196">         * @since 2.0.0</span>
 <span class="source-line-no">197</span><span id="line-197">         */</span>
@@ -639,7 +639,7 @@
 <span class="source-line-no">626</span><span id="line-626">                // }</span>
 <span class="source-line-no">627</span><span id="line-627"></span>
 <span class="source-line-no">628</span><span id="line-628">                if (!hasHostname) {</span>
-<span class="source-line-no">629</span><span id="line-629">                    byte[] address = ((InetAddress) object).getAddress();</span>
+<span class="source-line-no">629</span><span id="line-629">                    byte[] address = inetAddress.getAddress();</span>
 <span class="source-line-no">630</span><span id="line-630"></span>
 <span class="source-line-no">631</span><span id="line-631">                    switch (options.getInetAddressMode()) {</span>
 <span class="source-line-no">632</span><span id="line-632">                        case STRING -&gt; {</span>
@@ -735,7 +735,7 @@
 <span class="source-line-no">722</span><span id="line-722">                } else {</span>
 <span class="source-line-no">723</span><span id="line-723">                    switch (options.getInetAddressMode()) {</span>
 <span class="source-line-no">724</span><span id="line-724">                        case STRING -&gt; {</span>
-<span class="source-line-no">725</span><span id="line-725">                            return ParsedPrimitive.fromString(((InetAddress) object).getHostName());</span>
+<span class="source-line-no">725</span><span id="line-725">                            return ParsedPrimitive.fromString(inetAddress.getHostName());</span>
 <span class="source-line-no">726</span><span id="line-726">                        }</span>
 <span class="source-line-no">727</span><span id="line-727">                        case NUMBER -&gt; {</span>
 <span class="source-line-no">728</span><span id="line-728">                            throw new InvalidParameterException("Cannot convert hostname to Number");</span>
@@ -901,8 +901,8 @@
 <span class="source-line-no">888</span><span id="line-888">                // }</span>
 <span class="source-line-no">889</span><span id="line-889"></span>
 <span class="source-line-no">890</span><span id="line-890">                if (!hasHostname) {</span>
-<span class="source-line-no">891</span><span id="line-891">                    byte[] address = ((InetSocketAddress) object).getAddress().getAddress();</span>
-<span class="source-line-no">892</span><span id="line-892">                    int port = ((InetSocketAddress) object).getPort();</span>
+<span class="source-line-no">891</span><span id="line-891">                    byte[] address = inetSocketAddress.getAddress().getAddress();</span>
+<span class="source-line-no">892</span><span id="line-892">                    int port = inetSocketAddress.getPort();</span>
 <span class="source-line-no">893</span><span id="line-893"></span>
 <span class="source-line-no">894</span><span id="line-894">                    switch (options.getInetAddressMode()) {</span>
 <span class="source-line-no">895</span><span id="line-895">                        case STRING -&gt; {</span>
@@ -1004,7 +1004,7 @@
 <span class="source-line-no">991</span><span id="line-991">                } else {</span>
 <span class="source-line-no">992</span><span id="line-992">                    switch (options.getInetAddressMode()) {</span>
 <span class="source-line-no">993</span><span id="line-993">                        case STRING -&gt; {</span>
-<span class="source-line-no">994</span><span id="line-994">                            return ParsedPrimitive.fromString(((InetSocketAddress) object).getAddress().getHostName() + ":" + ((InetSocketAddress) object).getPort());</span>
+<span class="source-line-no">994</span><span id="line-994">                            return ParsedPrimitive.fromString(inetSocketAddress.getAddress().getHostName() + ":" + inetSocketAddress.getPort());</span>
 <span class="source-line-no">995</span><span id="line-995">                        }</span>
 <span class="source-line-no">996</span><span id="line-996">                        case NUMBER -&gt; {</span>
 <span class="source-line-no">997</span><span id="line-997">                            throw new InvalidParameterException("Cannot convert hostname to Number");</span>
