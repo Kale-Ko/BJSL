@@ -667,48 +667,26 @@ public class ObjectProcessor {
      * Helper method to check if an element should be ignored during serialization
      *
      * @param subElement The element to check
+     *
      * @return true if the element should be ignored, false otherwise
+     *
      * @since 2.0.0
      */
     private boolean shouldIgnoreElement(@NotNull ParsedElement subElement) {
-        return (ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) ||
-               (ignoreEmptyObjects && ((subElement.isObject() && subElement.asObject().getSize() == 0) ||
-                                      (subElement.isArray() && subElement.asArray().getSize() == 0)));
-    }
-
-    /**
-     * Helper method to create a ParsedArray from an iterable of objects
-     *
-     * @param iterable The iterable to convert
-     * @return A new ParsedArray containing the converted elements
-     * @since 2.0.0
-     */
-    private @NotNull ParsedArray createArrayFromIterable(@NotNull Iterable<?> iterable) {
-        ParsedArray arrayElement = ParsedArray.create();
-        
-        for (Object item : iterable) {
-            ParsedElement subElement = toElement(item);
-            if (!shouldIgnoreElement(subElement)) {
-                arrayElement.add(subElement);
-            }
-        }
-        
-        return arrayElement;
+        return (ignoreNulls && (subElement.isPrimitive() && subElement.asPrimitive().isNull())) || (ignoreEmptyObjects && ((subElement.isObject() && subElement.asObject().getSize() == 0) || (subElement.isArray() && subElement.asArray().getSize() == 0)));
     }
 
     /**
      * Helper method to check if an object should be ignored during deserialization
      *
      * @param subObject The object to check
+     *
      * @return true if the object should be ignored, false otherwise
+     *
      * @since 2.0.0
      */
-    private boolean shouldIgnoreObject(@Nullable Object subObject) {
-        return (ignoreNulls && subObject == null) ||
-               (ignoreArrayNulls && subObject == null) ||
-               (ignoreEmptyObjects && subObject instanceof Object[] objects && objects.length == 0) ||
-               (ignoreEmptyObjects && subObject instanceof Collection<?> collection && collection.isEmpty()) ||
-               (ignoreEmptyObjects && subObject instanceof Map<?, ?> map && map.isEmpty());
+    private boolean shouldIgnoreObject(@Nullable Object subObject, boolean isArrayElement) {
+        return (!isArrayElement && ignoreNulls && subObject == null) || (isArrayElement && ignoreArrayNulls && subObject == null) || (ignoreEmptyObjects && subObject instanceof Object[] objects && objects.length == 0) || (ignoreEmptyObjects && subObject instanceof Collection<?> collection && collection.isEmpty()) || (ignoreEmptyObjects && subObject instanceof Map<?, ?> map && map.isEmpty());
     }
 
     /**
@@ -949,7 +927,7 @@ public class ObjectProcessor {
 
                             for (Map.Entry<String, ParsedElement> entry : element.asObject().getEntries()) {
                                 Object subObject = toObject(entry.getValue(), type.getContentType());
-                                if (!shouldIgnoreObject(subObject)) {
+                                if (!shouldIgnoreObject(subObject, false)) {
                                     object.put(toObject(ParsedPrimitive.fromString(entry.getKey()), type.getKeyType()), subObject);
                                 }
                             }
@@ -1035,7 +1013,7 @@ public class ObjectProcessor {
                                             }
                                         }
 
-                                        if (!shouldIgnoreObject(subObject)) {
+                                        if (!shouldIgnoreObject(subObject, false)) {
                                             field.set(object, subObject);
                                         }
                                     }
@@ -1058,7 +1036,7 @@ public class ObjectProcessor {
 
                             for (ParsedElement subElement : element.asArray().getValues()) {
                                 Object subObject = toObject(subElement, type.getContentType());
-                                if (!shouldIgnoreObject(subObject)) {
+                                if (!shouldIgnoreObject(subObject, true)) {
                                     object.add(subObject);
                                 }
                             }
@@ -1169,7 +1147,7 @@ public class ObjectProcessor {
 
                                     for (ParsedElement subElement : element.asArray().getValues()) {
                                         Object subObject = toObject(subElement, type.getContentType().getRawClass());
-                                        if (!shouldIgnoreObject(subObject)) {
+                                        if (!shouldIgnoreObject(subObject, true)) {
                                             size++;
                                         }
                                     }
@@ -1180,7 +1158,7 @@ public class ObjectProcessor {
                                 int i = 0;
                                 for (ParsedElement subElement : element.asArray().getValues()) {
                                     Object subObject = toObject(subElement, type.getContentType().getRawClass());
-                                    if (!shouldIgnoreObject(subObject)) {
+                                    if (!shouldIgnoreObject(subObject, true)) {
                                         array[i] = subObject;
 
                                         i++;
@@ -1245,7 +1223,7 @@ public class ObjectProcessor {
                 case byte[] bytes -> {
                     ParsedArray arrayElement = ParsedArray.create();
 
-                    for (byte item : bytes) {
+                    for (byte item : Arrays.copyOf(bytes, bytes.length)) {
                         ParsedElement subElement = toElement(item);
                         if (!shouldIgnoreElement(subElement)) {
                             arrayElement.add(subElement);
@@ -1257,7 +1235,7 @@ public class ObjectProcessor {
                 case char[] chars -> {
                     ParsedArray arrayElement = ParsedArray.create();
 
-                    for (char item : chars) {
+                    for (char item : Arrays.copyOf(chars, chars.length)) {
                         ParsedElement subElement = toElement(item);
                         if (!shouldIgnoreElement(subElement)) {
                             arrayElement.add(subElement);
@@ -1269,7 +1247,7 @@ public class ObjectProcessor {
                 case short[] shorts -> {
                     ParsedArray arrayElement = ParsedArray.create();
 
-                    for (short item : shorts) {
+                    for (short item : Arrays.copyOf(shorts, shorts.length)) {
                         ParsedElement subElement = toElement(item);
                         if (!shouldIgnoreElement(subElement)) {
                             arrayElement.add(subElement);
@@ -1281,7 +1259,7 @@ public class ObjectProcessor {
                 case int[] integers -> {
                     ParsedArray arrayElement = ParsedArray.create();
 
-                    for (int item : integers) {
+                    for (int item : Arrays.copyOf(integers, integers.length)) {
                         ParsedElement subElement = toElement(item);
                         if (!shouldIgnoreElement(subElement)) {
                             arrayElement.add(subElement);
@@ -1293,7 +1271,7 @@ public class ObjectProcessor {
                 case long[] longs -> {
                     ParsedArray arrayElement = ParsedArray.create();
 
-                    for (long item : longs) {
+                    for (long item : Arrays.copyOf(longs, longs.length)) {
                         ParsedElement subElement = toElement(item);
                         if (!shouldIgnoreElement(subElement)) {
                             arrayElement.add(subElement);
@@ -1305,7 +1283,7 @@ public class ObjectProcessor {
                 case float[] floats -> {
                     ParsedArray arrayElement = ParsedArray.create();
 
-                    for (float item : floats) {
+                    for (float item : Arrays.copyOf(floats, floats.length)) {
                         ParsedElement subElement = toElement(item);
                         if (!shouldIgnoreElement(subElement)) {
                             arrayElement.add(subElement);
@@ -1317,7 +1295,7 @@ public class ObjectProcessor {
                 case double[] doubles -> {
                     ParsedArray arrayElement = ParsedArray.create();
 
-                    for (double item : doubles) {
+                    for (double item : Arrays.copyOf(doubles, doubles.length)) {
                         ParsedElement subElement = toElement(item);
                         if (!shouldIgnoreElement(subElement)) {
                             arrayElement.add(subElement);
@@ -1329,7 +1307,7 @@ public class ObjectProcessor {
                 case boolean[] booleans -> {
                     ParsedArray arrayElement = ParsedArray.create();
 
-                    for (boolean item : booleans) {
+                    for (boolean item : Arrays.copyOf(booleans, booleans.length)) {
                         ParsedElement subElement = toElement(item);
                         if (!shouldIgnoreElement(subElement)) {
                             arrayElement.add(subElement);
@@ -1339,10 +1317,28 @@ public class ObjectProcessor {
                     return arrayElement;
                 }
                 case Object[] objects -> {
-                    return createArrayFromIterable(Arrays.asList(objects));
+                    ParsedArray arrayElement = ParsedArray.create();
+
+                    for (Object item : Arrays.copyOf(objects, objects.length)) {
+                        ParsedElement subElement = toElement(item);
+                        if (!shouldIgnoreElement(subElement)) {
+                            arrayElement.add(subElement);
+                        }
+                    }
+
+                    return arrayElement;
                 }
                 case Collection<?> objects -> {
-                    return createArrayFromIterable(List.copyOf(objects));
+                    ParsedArray arrayElement = ParsedArray.create();
+
+                    for (Object item : List.copyOf(objects)) {
+                        ParsedElement subElement = toElement(item);
+                        if (!shouldIgnoreElement(subElement)) {
+                            arrayElement.add(subElement);
+                        }
+                    }
+
+                    return arrayElement;
                 }
                 case Map<?, ?> map -> {
                     ParsedObject objectElement = ParsedObject.create();
