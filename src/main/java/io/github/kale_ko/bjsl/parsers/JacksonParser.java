@@ -98,7 +98,7 @@ public abstract class JacksonParser<T extends TokenStreamFactory, V extends Obje
                         ObjectNode objectNode = (ObjectNode) node;
                         ParsedObject objectElement = ParsedObject.create();
 
-                        objectNode.fields().forEachRemaining(subEntry -> {
+                        objectNode.propertyStream().forEach(subEntry -> {
                             toElements(objectElement, subEntry.getKey(), subEntry.getValue());
                         });
 
@@ -108,7 +108,7 @@ public abstract class JacksonParser<T extends TokenStreamFactory, V extends Obje
                         ArrayNode arrayNode = (ArrayNode) node;
                         ParsedArray arrayElement = ParsedArray.create();
 
-                        arrayNode.elements().forEachRemaining(subNode -> {
+                        arrayNode.valueStream().forEach(subNode -> {
                             toElements(arrayElement, "root", subNode);
                         });
 
@@ -314,7 +314,7 @@ public abstract class JacksonParser<T extends TokenStreamFactory, V extends Obje
                     }
                 }
 
-                objectNode.fields().forEachRemaining(subEntry -> {
+                objectNode.propertyStream().forEach(subEntry -> {
                     toElements(subElement, subEntry.getKey(), subEntry.getValue());
                 });
             }
@@ -333,7 +333,7 @@ public abstract class JacksonParser<T extends TokenStreamFactory, V extends Obje
                     }
                 }
 
-                arrayNode.elements().forEachRemaining(subNode -> {
+                arrayNode.valueStream().forEach(subNode -> {
                     toElements(subElement, key, subNode);
                 });
             }
